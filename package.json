@@ -1,0 +1,70 @@
+{
+    "name": "fantom-metamask",
+    "version": "0.1.0",
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "serve-chrome-extension": "vue-cli-service serve --mode chrome-extension-development",
+        "build": "vue-cli-service build",
+        "build-chrome-extension": "vue-cli-service build --mode chrome-extension-production && node chrome-extension/manifest.js",
+        "lint": "vue-cli-service lint",
+        "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
+    },
+    "dependencies": {
+        "@yzfe/vue-svgicon-loader": "^1.0.0-alpha.0",
+        "apollo-boost": "^0.4.7",
+        "core-js": "^3.6.4",
+        "graphql": "^14.6.0",
+        "register-service-worker": "^1.6.2",
+        "shortid": "^2.2.15",
+        "subscriptions-transport-ws": "^0.9.16",
+        "vue": "^2.6.11",
+        "vue-apollo": "^3.0.3",
+        "vue-i18n": "^8.0.0",
+        "vue-observe-visibility": "^0.4.6",
+        "vue-router": "^3.1.5",
+        "vue-spinner": "^1.0.3",
+        "vue-svgicon": "^4.0.0-alpha.3",
+        "vue-timeago": "^5.1.2",
+        "vuex": "^3.1.2",
+        "web3": "^1.2.6"
+    },
+    "devDependencies": {
+        "@open-wc/eslint-config": "^2.0.3",
+        "@vue/cli-plugin-babel": "~4.2.0",
+        "@vue/cli-plugin-eslint": "~4.2.0",
+        "@vue/cli-plugin-pwa": "^4.2.3",
+        "@vue/cli-service": "~4.2.0",
+        "babel-eslint": "^10.0.3",
+        "eslint-plugin-vue": "^6.1.2",
+        "sass": "^1.25.0",
+        "sass-loader": "^8.0.2",
+        "vue-cli-plugin-i18n": "~0.6.1",
+        "vue-template-compiler": "^2.6.11"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "eslint:recommended"
+        ],
+        "parserOptions": {
+            "parser": "babel-eslint"
+        },
+        "rules": {}
+    },
+    "browserslist": {
+        "production": [
+            "> 1%",
+            "last 2 versions"
+        ],
+        "development": [
+            "last 1 Chrome versions"
+        ],
+        "chromeextension": [
+            "last 1 Chrome versions"
+        ]
+    }
+}

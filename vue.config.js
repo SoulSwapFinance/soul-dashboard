@@ -3,11 +3,20 @@ const appConfig = require('./app.config.js');
 const path = require('path');
 const svgFilePath = path.join(__dirname, './src/assets/svg');
 
+console.log('--- app config ---');
 console.log(appConfig);
 
 module.exports = {
     publicPath: '',
     outputDir: appConfig.build.outputDir,
+
+    css: {
+        loaderOptions: {
+            scss: {
+                prependData: appConfig.scssData
+            }
+        }
+    },
 
     pwa: {
         name: appConfig.pwa.name,

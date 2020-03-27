@@ -1,15 +1,24 @@
 const appConfig = {
     // app title
-    name: 'Fantom Wallet',
+    name: 'Fantom Metamask',
     // progressive web application
     usePWA: true,
     // pwa settings
     pwa: {
         // name used in pwa manifest
-        name: 'Fantom Wallet'
+        name: 'Fantom Metamask'
     },
     // determines if app is chrome extension
     isChromeExtension: !!process.env.VUE_APP_IS_CHROME_EXTENSION,
+    // chrome extension settings
+    chromeExtension: {
+        // chrome extension version - increase version number, if you want to publish in the chrome web store
+        version: '0.0.1',
+        // chrome extension name
+        name: 'Fantom Metamask',
+        // chrome extension description
+        description: 'Fantom Metamask'
+    },
     // default options for production build
     build: {
         // output dir for production build
@@ -20,15 +29,18 @@ const appConfig = {
 //
 if (appConfig.isChromeExtension) {
     appConfig.usePWA = false;
-    //
-    appConfig.chromeExtensionDir = 'chrome-extension';
 
     appConfig.build = {
         ...{
             // output dir for production build
-            outputDir: `${appConfig.chromeExtensionDir}/app`
+            outputDir: 'chrome-extension/app'
         }
     }
 }
+
+// scss variables prepended to every scss file
+appConfig.scssData = `
+    $IS_CHROME_EXTENSION: ${appConfig.isChromeExtension ? 'true' : 'false'};
+`;
 
 module.exports = appConfig;
