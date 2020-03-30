@@ -1,17 +1,14 @@
 <template>
-    <div class="view-home narrow-container">
-        <f-playground />
+    <div class="view-home">
+        <div class="narrow-container">
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 
 <script>
-    // import FCard from "../components/FCard.vue";
-
-    import FPlayground from "../layouts/FPlayground.vue";
     export default {
         components: {
-            FPlayground
-            // FCard
         }
     }
 </script>

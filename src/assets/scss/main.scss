@@ -3,7 +3,19 @@
 @import "css-variables";
 @import "core/normalize";
 @import "core/reset";
+
 @import "core/all";
+/*
+@import "core/main";
+@import "core/general";
+@import "core/layout";
+@import "core/headings";
+@import "core/lists";
+@import "core/animations-mixins";
+@import "core/animations";
+*/
+
+
 @import "core/_positioning.scss";
 
 //@include flexbox-layout(24);
@@ -50,6 +62,18 @@ a:not(.btn):hover {
     background-color: $error-color-lightest;
     padding: 8px 16px;
     border-radius: 8px;
+}
+
+.w100p {
+    width: 100%;
+}
+
+.fs-big {
+    font-size: $fs-big;
+}
+
+.fs-huge {
+    font-size: $fs-huge;
 }
 
 @if $IS_CHROME_EXTENSION == true {
