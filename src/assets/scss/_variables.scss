@@ -41,6 +41,10 @@ $button-font-weight: normal;
 
 $bp-menu: 768px;
 
+// social media links
+$f-social-media-links-color: lighten($theme-color, 16);
+$f-social-media-links-hover-color: $theme-color;
+
 // css variables
 $f-header-height: var(--f-header-height);
 $f-data-layout-cols-padding: var(--f-data-layout-cols-padding);

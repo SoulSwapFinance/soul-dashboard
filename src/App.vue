@@ -33,18 +33,6 @@
 <style lang="scss">
     @import "./assets/scss/main";
 
-    #app {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        padding-top: $f-header-height;
-
-        main {
-            flex: 1 1;
-            min-height: 700px;
-        }
-    }
-
     .narrow-container {
         padding-top: 16px;
         padding-bottom: 16px;

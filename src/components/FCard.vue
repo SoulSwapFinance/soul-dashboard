@@ -99,8 +99,6 @@
 </script>
 
 <style lang="scss">
-    @import "../assets/scss/vars";
-
     .f-card:not(.off) {
         position: relative;
         padding: $f-card-padding;

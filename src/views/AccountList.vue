@@ -1,7 +1,9 @@
 <template>
     <div class="view-account-list">
-        <h1>Welcome to FantomWallet</h1>
-        <h2>Send, receive and stake your Opera FTM</h2>
+        <div class="intro">
+            <h1>Welcome to FantomWallet</h1>
+            <h2>Send, receive and stake your Opera FTM</h2>
+        </div>
 
         <div class="view-account-main">
             <ul class="no-markers">
@@ -32,14 +34,26 @@
 
 <script>
     import FCard from "../components/FCard.vue";
+    // import {WEIToFTM} from "../utils/transactions.js";
     export default {
         components: {
             FCard
         },
 
+/*
+        async mounted() {
+            const balance = await this.$fWallet.getBalance('0xd1c1bab1edeb382d76e5d8e454a60775d582546d');
+            console.log('mmmm', WEIToFTM(balance));
+
+        },
+*/
+
         data() {
             return {
                 dAccounts: [
+                    {
+                        address: '0x1994e627454649c95ea55885c285343092c1473d'
+                    },
                     {
                         address: '0x1994e627454649c95ea55885c285343092c1473d'
                     },
@@ -55,15 +69,29 @@
 <style lang="scss">
     @import "../assets/scss/vars";
 
-    .view-account-main {
-        margin: 0 auto;
-        max-width: 770px;
+    .view-account-list {
+        .intro {
+            color: rgba(255, 255, 255, 0.75);
+            /*color: $secondary-color-lighter;*/
+            padding: 64px 0 112px;
 
-        > ul {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-column-gap: 32px;
-            grid-row-gap: 32px;
+            h1 {
+                font-size: 48px;
+                color: #fff;
+                /*font-weight: 600;*/
+            }
+        }
+
+        .view-account-main {
+            margin: 0 auto;
+            max-width: 770px;
+
+            > ul {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                grid-column-gap: 32px;
+                grid-row-gap: 32px;
+            }
         }
     }
 </style>

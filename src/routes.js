@@ -8,6 +8,7 @@ import AccountDashboard from "./views/AccountDashboard.vue";
 import AccountSend from "./views/AccountSend.vue";
 import AccountRecieve from "./views/AccountRecieve.vue";
 import AccountStake from "./views/AccountStake.vue";
+import Playground from "./views/Playground.vue";
 
 export const routes = [
     {
@@ -58,6 +59,11 @@ export const routes = [
                 component: AccountStake
             },
         ]
+    },
+    {
+        name: 'playground',
+        path: '/playground',
+        component: Playground
     },
     {
         name: 'not-found',

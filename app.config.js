@@ -1,6 +1,10 @@
 const appConfig = {
     // app title
     name: 'Fantom Metamask',
+    // web3 settings
+    web3: {
+        httpProvider: 'https://rpc.fantom.network/'
+    },
     // progressive web application
     usePWA: true,
     // pwa settings
@@ -40,6 +44,8 @@ if (appConfig.isChromeExtension) {
 
 // scss variables prepended to every scss file
 appConfig.scssData = `
+    @import "src/assets/scss/vars";
+
     $IS_CHROME_EXTENSION: ${appConfig.isChromeExtension ? 'true' : 'false'};
 `;
 
