@@ -1,5 +1,4 @@
 const appConfig = require('./app.config.js');
-
 const path = require('path');
 const svgFilePath = path.join(__dirname, './src/assets/svg');
 
@@ -45,6 +44,8 @@ module.exports = {
         // sets page title
         config.plugin('html').tap(_args => {
             _args[0].title = appConfig.name;
+            _args[0].description = appConfig.description;
+            _args[0].keywords = appConfig.keywords;
             return _args;
         });
 

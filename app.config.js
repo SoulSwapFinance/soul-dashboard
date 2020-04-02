@@ -1,6 +1,23 @@
 const appConfig = {
     // app title
     name: 'Fantom Metamask',
+    // app description
+    description: 'Fantom Metamask',
+    // app keywords
+    keywords: 'fantom, metamask',
+    // apollo client settings
+    apollo: {
+        // list of providers. if one of them is unavailable, another is randomly picked
+        providers: [
+            {
+                http: 'https://api.fantom.rocks/api',
+                // for subscriptions
+                ws: ''
+            }
+        ],
+        // index into providers array of default provider
+        defaultProviderIndex: 0
+    },
     // web3 settings
     web3: {
         httpProvider: 'https://rpc.fantom.network/'
