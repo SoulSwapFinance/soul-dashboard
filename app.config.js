@@ -13,10 +13,15 @@ const appConfig = {
                 http: 'https://api.fantom.rocks/api',
                 // for subscriptions
                 ws: ''
+            },
+            {
+                http: 'https://api2.fantom.rocks/api',
+                // for subscriptions
+                ws: ''
             }
         ],
-        // index into providers array of default provider
-        defaultProviderIndex: 0
+        // index into providers array of default provider or 'random' - takes index randomly
+        defaultProviderIndex: 'random'
     },
     // web3 settings
     web3: {
