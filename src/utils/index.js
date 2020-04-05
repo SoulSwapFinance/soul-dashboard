@@ -20,7 +20,10 @@ export function serializeObject(_obj, _except, _encode) {
     }
 
     so = JSON.stringify(_obj, (_key, _val) => {
-        if (_except && (regExpUsed ? _except.test(_key) : inArray(_key, _except) >= 0)) {
+        if (
+            _except &&
+            (regExpUsed ? _except.test(_key) : inArray(_key, _except) >= 0)
+        ) {
             return;
         }
         if (typeof _val === 'object') {
@@ -60,7 +63,7 @@ export function cloneObject(_obj, _except) {
  * @return {boolean}
  */
 export function isObjectEmpty(_obj) {
-    return (Object.keys(_obj).length === 0) && (_obj.constructor === Object);
+    return Object.keys(_obj).length === 0 && _obj.constructor === Object;
 }
 
 /**
@@ -89,7 +92,7 @@ export function isArray(_obj) {
  * @return {boolean}
  */
 export function isValidIndex(_i, _ar) {
-    return isArray(_ar) && (_i >= 0) && (_i < _ar.length);
+    return isArray(_ar) && _i >= 0 && _i < _ar.length;
 }
 
 /**
@@ -101,7 +104,7 @@ export function isValidIndex(_i, _ar) {
 export function obj2css(_cssObj) {
     let cssStr = '';
 
-    Object.keys(_cssObj).forEach(_prop => {
+    Object.keys(_cssObj).forEach((_prop) => {
         cssStr += `${toKebabCase(_prop)}:${_cssObj[_prop]};`;
     });
 
@@ -145,7 +148,7 @@ export function toCamelCase(_str) {
         spl = _str.split(camelSplitRE);
 
         if (spl.length > 1) {
-            spl = spl.filter(_val => _val !== '');
+            spl = spl.filter((_val) => _val !== '');
 
             spl[0] = lowercaseFirstChar(spl[0]);
 
@@ -171,7 +174,7 @@ export function toKebabCase(_str) {
         spl_ = _str.split(kebabSplitRE);
 
         if (spl_.length > 1) {
-            spl_ = spl_.filter(_val => !camelSplitRE.test(_val));
+            spl_ = spl_.filter((_val) => !camelSplitRE.test(_val));
 
             for (let i = 0, len1 = spl_.length; i < len1; i += 1) {
                 if (i < len1 - 1 && uppercaseCharsRE.test(spl_[i])) {
@@ -308,7 +311,7 @@ export function throttle(_callback, _interval, _leading) {
     return debounce(_callback, _interval, {
         maxWait: _interval,
         leading: _leading || false,
-        trailing: true
+        trailing: true,
     });
 }
 
@@ -320,18 +323,18 @@ export function throttle(_callback, _interval, _leading) {
  * @return {*|null}
  */
 export function getNestedProp(_obj, _path) {
-    const path = (_path ? _path.split('.') : []);
+    const path = _path ? _path.split('.') : [];
     const pathLen = path.length;
     let value = null;
 
-    if (_obj && (pathLen > 0)) {
+    if (_obj && pathLen > 0) {
         if (pathLen === 1) {
             value = _obj[path[0]];
         } else {
             value = _obj;
             for (let i = 0; i < pathLen; i++) {
                 value = value[path[i]];
-                if ((value === null) || (value === undefined)) {
+                if (value === null || value === undefined) {
                     value = null;
                     break;
                 }

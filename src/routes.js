@@ -1,14 +1,14 @@
-import NotFound from "./views/NotFound/NotFound.vue";
+import NotFound from './views/NotFound/NotFound.vue';
 import Home from './views/Home/Home.vue';
-import AccountList from "./views/AccountList/AccountList.vue";
-import CreateAccount from "./views/CreateAccount.vue";
-import RestoreAccount from "./views/RestoreAccount/RestoreAccount.vue";
-import Account from "./views/Account.vue";
-import AccountDashboard from "./views/AccountDashboard.vue";
-import AccountSend from "./views/AccountSend.vue";
-import AccountRecieve from "./views/AccountRecieve.vue";
-import AccountStake from "./views/AccountStake.vue";
-import Playground from "./views/Playground.vue";
+import AccountList from './views/AccountList/AccountList.vue';
+import CreateAccount from './views/CreateAccount.vue';
+import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
+import Account from './views/Account.vue';
+import AccountDashboard from './views/AccountDashboard.vue';
+import AccountSend from './views/AccountSend.vue';
+import AccountRecieve from './views/AccountRecieve.vue';
+import AccountStake from './views/AccountStake.vue';
+import Playground from './views/Playground.vue';
 
 export const routes = [
     {
@@ -19,19 +19,19 @@ export const routes = [
             {
                 name: 'acount-list',
                 path: '',
-                component: AccountList
+                component: AccountList,
             },
             {
                 name: 'create-account',
                 path: '/account/create',
-                component: CreateAccount
+                component: CreateAccount,
             },
             {
                 name: 'restore-account',
                 path: '/account/restore',
-                component: RestoreAccount
-            }
-        ]
+                component: RestoreAccount,
+            },
+        ],
     },
     {
         name: 'account',
@@ -41,33 +41,33 @@ export const routes = [
             {
                 name: 'acount-dashboard',
                 path: '',
-                component: AccountDashboard
+                component: AccountDashboard,
             },
             {
                 name: 'account-send',
                 path: 'send',
-                component: AccountSend
+                component: AccountSend,
             },
             {
                 name: 'account-recieve',
                 path: 'recieve',
-                component: AccountRecieve
+                component: AccountRecieve,
             },
             {
                 name: 'account-stake',
                 path: 'stake',
-                component: AccountStake
+                component: AccountStake,
             },
-        ]
+        ],
     },
     {
         name: 'playground',
         path: '/playground',
-        component: Playground
+        component: Playground,
     },
     {
         name: 'not-found',
         path: '*',
-        component: NotFound
-    }
+        component: NotFound,
+    },
 ];

@@ -10,17 +10,21 @@ const zeroString = '00000000';
  */
 export function addZeros(_number, _digits) {
     // TODO: use i18n current locale
-    const parts =(new Intl.NumberFormat('en-GB')).formatToParts(_number);
+    const parts = new Intl.NumberFormat('en-GB').formatToParts(_number);
     let number = _number;
 
     if (parts.length < 2) {
         // number = `${number}.${zeroString.slice(0, _digits)}`;
         number = `${parts[0].value}.${zeroString.slice(0, _digits)}`;
     } else if (parts[parts.length - 2].type !== 'decimal') {
-        number = `${parts.map(_item => _item.value).join('')}.${zeroString.slice(0, _digits)}`;
+        number = `${parts
+            .map((_item) => _item.value)
+            .join('')}.${zeroString.slice(0, _digits)}`;
     } else {
         const len = parts[parts.length - 1].value.length;
-        number = `${parts.map(_item => _item.value).join('')}${len < _digits ? `${zeroString.slice(0, _digits - len)}`  : ''}`;
+        number = `${parts.map((_item) => _item.value).join('')}${
+            len < _digits ? `${zeroString.slice(0, _digits - len)}` : ''
+        }`;
     }
 
     return number;
@@ -41,9 +45,8 @@ export function timestampToDate(_value) {
         timestamp = formatHexToInt(_value);
     }
 
-
     if (timestamp) {
-        return new Date (timestamp * 1000);
+        return new Date(timestamp * 1000);
     }
 
     return null;
@@ -59,11 +62,11 @@ export function formatDate(_value, _notWeekday) {
         return '';
     }
 
-    const date = (_value instanceof Date ? _value : new Date(_value));
+    const date = _value instanceof Date ? _value : new Date(_value);
     const options = {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
     };
 
     if (!_notWeekday) {
@@ -89,9 +92,10 @@ export function formatDuration(_value) {
         timestamp = formatHexToInt(_value);
     }
 
-
     if (timestamp) {
-        return `${parseInt(timestamp / 3600) % 60}h ${parseInt(timestamp / 60) % 60}m ${timestamp % 60}s`;
+        return `${parseInt(timestamp / 3600) % 60}h ${
+            parseInt(timestamp / 60) % 60
+        }m ${timestamp % 60}s`;
     }
 
     return '';
@@ -104,7 +108,7 @@ export function formatDuration(_value) {
  */
 export function formatNumberByLocale(_number, _digits) {
     // TODO: use i18n current locale
-    let number = (new Intl.NumberFormat('en-GB')).format(_number);
+    let number = new Intl.NumberFormat('en-GB').format(_number);
 
     if (_digits) {
         number = addZeros(_number, _digits);
@@ -125,7 +129,7 @@ export function formatHash(_value) {
     const leftChars = 8;
     const rightChars = 6;
 
-    if (_value.length > (leftChars + rightChars + 3)) {
+    if (_value.length > leftChars + rightChars + 3) {
         return `${_value.slice(0, leftChars)} ... ${_value.slice(-rightChars)}`;
     }
 

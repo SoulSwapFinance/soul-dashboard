@@ -4,7 +4,7 @@
 
         <router-view></router-view>
 
-<!--
+        <!--
         <f-header></f-header>
         <main>
             <router-view></router-view>
@@ -19,31 +19,31 @@
 </template>
 
 <script>
-    import FBreakpoint from "./components/core/FBreakpoints/FBreakpoint.vue";
-    import FBreakpoints from "./components/core/FBreakpoints/FBreakpoints.vue";
-    import {SET_BREAKPOINT} from "./store";
+import FBreakpoint from './components/core/FBreakpoints/FBreakpoint.vue';
+import FBreakpoints from './components/core/FBreakpoints/FBreakpoints.vue';
+import { SET_BREAKPOINT } from './store';
 
-    export default {
-        name: 'App',
+export default {
+    name: 'App',
 
-        components: {
-            FBreakpoint,
-            FBreakpoints
+    components: {
+        FBreakpoint,
+        FBreakpoints,
+    },
+
+    methods: {
+        onFBreakpointChange(_event) {
+            this.$store.commit(SET_BREAKPOINT, _event.detail);
         },
-
-        methods: {
-            onFBreakpointChange(_event) {
-                this.$store.commit(SET_BREAKPOINT, _event.detail);
-            }
-        }
-    }
+    },
+};
 </script>
 
 <style lang="scss">
-    @import "./assets/scss/main";
+@import './assets/scss/main';
 
-    .narrow-container {
-        padding-top: 16px;
-        padding-bottom: 16px;
-    }
+.narrow-container {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
 </style>

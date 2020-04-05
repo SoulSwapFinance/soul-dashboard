@@ -1,6 +1,6 @@
 <template>
     <div class="view-home vertical-layout">
-        <Header/>
+        <Header />
 
         <main class="main">
             <div class="narrow-container">
@@ -8,22 +8,22 @@
             </div>
         </main>
 
-        <Footer/>
+        <Footer />
     </div>
 </template>
 
 <script>
-    import Header from "../../components/Header/Header.vue";
-    import Footer from "../../components/Footer/Footer.vue";
+import Header from '../../components/Header/Header.vue';
+import Footer from '../../components/Footer/Footer.vue';
 
-    export default {
-        components: {
-            Footer,
-            Header
-        }
-    }
+export default {
+    components: {
+        Footer,
+        Header,
+    },
+};
 </script>
 
 <style lang="scss">
-    @import "style";
+@import 'style';
 </style>

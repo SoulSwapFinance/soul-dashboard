@@ -12,9 +12,9 @@ module.exports = {
     css: {
         loaderOptions: {
             scss: {
-                prependData: appConfig.scssData
-            }
-        }
+                prependData: appConfig.scssData,
+            },
+        },
     },
 
     pwa: {
@@ -23,11 +23,11 @@ module.exports = {
         msTileColor: '#1969ff',
         assetsVersion: '4',
         manifestOptions: {
-            background_color: '#1969ff'
+            background_color: '#1969ff',
         },
         workboxOptions: {
-            skipWaiting: true
-        }
+            skipWaiting: true,
+        },
     },
 
     pluginOptions: {
@@ -35,14 +35,13 @@ module.exports = {
             locale: 'en',
             fallbackLocale: 'en',
             localeDir: 'locales',
-            enableInSFC: false
-        }
+            enableInSFC: false,
+        },
     },
 
-    chainWebpack: config => {
-
+    chainWebpack: (config) => {
         // sets page title
-        config.plugin('html').tap(_args => {
+        config.plugin('html').tap((_args) => {
             _args[0].title = appConfig.name;
             _args[0].description = appConfig.description;
             _args[0].keywords = appConfig.keywords;
@@ -56,18 +55,17 @@ module.exports = {
             .loader('@yzfe/vue-svgicon-loader')
             .options({
                 idSeparator: '_',
-                svgFilePath
+                svgFilePath,
             });
-
 
         config.module
             .rule('vue')
             .use('vue-loader')
             .loader('vue-loader')
-            .tap(options => {
+            .tap((options) => {
                 options.transformAssetUrls = options.transformAssetUrls || {};
                 options.transformAssetUrls['icon'] = ['data'];
-                return options
+                return options;
             });
 
         config.module.rule('svg').exclude.add(svgFilePath);
@@ -78,8 +76,7 @@ module.exports = {
 
         if (!appConfig.usePWA) {
             config.plugins.delete('pwa');
-            config.plugins.delete('workbox')
+            config.plugins.delete('workbox');
         }
-
-    }
+    },
 };

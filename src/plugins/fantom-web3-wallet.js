@@ -42,12 +42,12 @@ export default {
                     pk = `0x${pk}`;
                 }
 
-                if ((pk.length !== 66) || !web3.utils.isHexStrict(pk)) {
+                if (pk.length !== 66 || !web3.utils.isHexStrict(pk)) {
                     pk = '';
                 }
 
                 return pk;
-            }
+            },
         };
-    }
+    },
 };

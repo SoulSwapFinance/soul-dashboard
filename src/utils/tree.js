@@ -1,4 +1,4 @@
-import { isArray, inArray } from "./index.js";
+import { isArray, inArray } from './index.js';
 import shortid from 'shortid';
 
 export class Tree {
@@ -41,7 +41,7 @@ export class Tree {
         /** Options for remove walking. */
         this.removeWalkOptions = {
             walkType: 'render',
-            onDataNode: _node => {
+            onDataNode: (_node) => {
                 let id = '';
 
                 if (options.onBeforeNodeRemove) {
@@ -291,7 +291,7 @@ export class Tree {
                     _node || this.root,
                     args,
                     args.renderStartNode || args.noFristWrap,
-                    _args2,
+                    _args2
                 );
                 break;
             default:
@@ -569,7 +569,11 @@ export class Tree {
                             } else {
                                 found = false;
 
-                                for (let j = 0, len2 = children.length; j < len2; j++) {
+                                for (
+                                    let j = 0, len2 = children.length;
+                                    j < len2;
+                                    j++
+                                ) {
                                     if (children[j][pathCode] === ar[0]) {
                                         node = children[j];
                                         found = true;
@@ -583,7 +587,10 @@ export class Tree {
                             }
 
                             if (node) {
-                                if (ar.length === 2 && node[pathCode] !== ar[1]) {
+                                if (
+                                    ar.length === 2 &&
+                                    node[pathCode] !== ar[1]
+                                ) {
                                     quit = true;
                                 }
                             } else {
@@ -631,7 +638,9 @@ export class Tree {
                     } else {
                         aPath.push(
                             this.getNodeIdx(parents[i]) +
-                            (_withPathCode ? `:${parents[i][pathCode]}` : ''),
+                                (_withPathCode
+                                    ? `:${parents[i][pathCode]}`
+                                    : '')
                         );
                     }
                 }
@@ -669,7 +678,9 @@ export class Tree {
      */
     getParents(_idOrNode, _endParentNode, _getObjectIds) {
         let node = this._getNode(_idOrNode, true);
-        const endParentNode = _endParentNode ? this._getNode(_endParentNode, true) : null;
+        const endParentNode = _endParentNode
+            ? this._getNode(_endParentNode, true)
+            : null;
         const parents = [];
 
         if (node) {
@@ -695,9 +706,18 @@ export class Tree {
      * @param {boolean} [_getFirstParent] Get just first parent's match.
      * @return {array|object|null} Array of nodes.
      */
-    getParentsBy(_val, _key, _idOrNode, _endParentNode, _getObjectIds, _getFirstParent) {
+    getParentsBy(
+        _val,
+        _key,
+        _idOrNode,
+        _endParentNode,
+        _getObjectIds,
+        _getFirstParent
+    ) {
         let node = this._getNode(_idOrNode, true);
-        const endParentNode = _endParentNode ? this._getNode(_endParentNode, true) : null;
+        const endParentNode = _endParentNode
+            ? this._getNode(_endParentNode, true)
+            : null;
         const parents = [];
         const vals = isArray(_val) ? _val : [_val];
 
@@ -738,7 +758,11 @@ export class Tree {
 
         if (_node && _idx >= 0) {
             children = _node._c;
-            if (children && children.length > 0 && children[_idx] !== undefined) {
+            if (
+                children &&
+                children.length > 0 &&
+                children[_idx] !== undefined
+            ) {
                 childNode = children[_idx];
             }
         }

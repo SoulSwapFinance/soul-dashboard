@@ -11,7 +11,14 @@
                     <f-card>
                         <h3 slot="title" class="title">
                             <span class="label">Address</span>
-                            <router-link :to="{name: 'account', params: {address: account.address}}" class="break-word fs-big">{{ account.address }}</router-link>
+                            <router-link
+                                :to="{
+                                    name: 'account',
+                                    params: { address: account.address },
+                                }"
+                                class="break-word fs-big"
+                                >{{ account.address }}</router-link
+                            >
                         </h3>
                     </f-card>
                 </li>
@@ -19,10 +26,18 @@
                     <f-card>
                         <div class="row">
                             <div class="col">
-                                <router-link :to="{name: 'create-account'}" class="btn w100p">Create account</router-link>
+                                <router-link
+                                    :to="{ name: 'create-account' }"
+                                    class="btn w100p"
+                                    >Create account</router-link
+                                >
                             </div>
                             <div class="col">
-                                <router-link :to="{name: 'restore-account'}" class="btn w100p">Restore account</router-link>
+                                <router-link
+                                    :to="{ name: 'restore-account' }"
+                                    class="btn w100p"
+                                    >Restore account</router-link
+                                >
                             </div>
                         </div>
                     </f-card>
@@ -33,14 +48,14 @@
 </template>
 
 <script>
-    import FCard from "../../components/core/FCard/FCard.vue";
-    // import {WEIToFTM} from "../utils/transactions.js";
-    export default {
-        components: {
-            FCard
-        },
+import FCard from '../../components/core/FCard/FCard.vue';
+// import {WEIToFTM} from "../utils/transactions.js";
+export default {
+    components: {
+        FCard,
+    },
 
-/*
+    /*
         async mounted() {
             const balance = await this.$fWallet.getBalance('0xd1c1bab1edeb382d76e5d8e454a60775d582546d');
             console.log('mmmm', WEIToFTM(balance));
@@ -48,21 +63,21 @@
         },
 */
 
-        data() {
-            return {
-                dAccounts: [
-                    {
-                        address: '0x1994e627454649c95ea55885c285343092c1473d'
-                    },
-                    {
-                        address: '0xc1d2dd56b59b5900d0b16a2a2794ca63ac904500'
-                    }
-                ]
-            }
-        }
-    }
+    data() {
+        return {
+            dAccounts: [
+                {
+                    address: '0x1994e627454649c95ea55885c285343092c1473d',
+                },
+                {
+                    address: '0xc1d2dd56b59b5900d0b16a2a2794ca63ac904500',
+                },
+            ],
+        };
+    },
+};
 </script>
 
 <style lang="scss">
-    @import "style";
+@import 'style';
 </style>

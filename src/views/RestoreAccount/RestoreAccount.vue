@@ -10,40 +10,40 @@
                 <f-private-key-form @f-form-submit="onPrivateKeyFormSubmit" />
             </div>
         </f-card>
-        <component v-bind:is="currentTabComponent"></component>
+        <component :is="currentTabComponent"></component>
     </div>
 </template>
 
 <script>
-    import FCard from "../../components/core/FCard/FCard.vue";
-    import FPrivateKeyForm from "../../components/forms/PrivateKeyForm.vue";
-    import {findFirstFocusableDescendant} from "../../utils/aria.js";
+import FCard from '../../components/core/FCard/FCard.vue';
+import FPrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
+import { findFirstFocusableDescendant } from '../../utils/aria.js';
 
-    export default {
-        components: {FPrivateKeyForm, FCard},
+export default {
+    components: { FPrivateKeyForm, FCard },
 
-        mounted() {
-            const el = findFirstFocusableDescendant(this.$el);
-            if (el) {
-                el.focus();
-            }
-            // setTimeout(() => {findFirstFocusableDescendant(this.$el)}, 10);
-            // this.$nextTick(() => {findFirstFocusableDescendant(this.$el)});
-        },
-
-        methods: {
-            onPrivateKeyFormSubmit(_event) {
-                const pk = _event.detail.data.pk;
-
-                if (pk) {
-                    console.log('JO!!', pk);
-                    this.$router.replace({name: 'create-account'});
-                }
-            }
+    mounted() {
+        const el = findFirstFocusableDescendant(this.$el);
+        if (el) {
+            el.focus();
         }
-    }
+        // setTimeout(() => {findFirstFocusableDescendant(this.$el)}, 10);
+        // this.$nextTick(() => {findFirstFocusableDescendant(this.$el)});
+    },
+
+    methods: {
+        onPrivateKeyFormSubmit(_event) {
+            const pk = _event.detail.data.pk;
+
+            if (pk) {
+                console.log('JO!!', pk);
+                this.$router.replace({ name: 'create-account' });
+            }
+        },
+    },
+};
 </script>
 
 <style lang="scss">
-    @import "style";
+@import 'style';
 </style>

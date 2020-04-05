@@ -6,7 +6,7 @@ const WEI_IN_FTM = 1000000000000000000;
  * @return {number}
  */
 export function WEIToFTM(_value) {
-    return (_value / WEI_IN_FTM);
+    return _value / WEI_IN_FTM;
 }
 
 /**
@@ -38,7 +38,7 @@ export function getTypeByStr(_str) {
         if (web3utils.isHexStrict(_str)) {
             if (_str.length === 66) {
                 type = 'transaction_hash';
-            // } else if (web3utils.toChecksumAddress(_str)) {
+                // } else if (web3utils.toChecksumAddress(_str)) {
             } else if (web3utils.isAddress(_str)) {
                 type = 'address';
             }

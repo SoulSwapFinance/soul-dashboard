@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import Vue from 'vue';
+import { ApolloClient } from 'apollo-client';
+import { HttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 // New Imports
-import { ApolloLink, concat } from 'apollo-link'
-import { RetryLink } from "apollo-link-retry";
+import { ApolloLink, concat } from 'apollo-link';
+import { RetryLink } from 'apollo-link-retry';
 import { onError } from 'apollo-link-error';
 
-import VueApollo from 'vue-apollo'
+import VueApollo from 'vue-apollo';
 
-import appConfig from "../../app.config.js";
-import {shuffle} from "../utils/array.js";
+import appConfig from '../../app.config.js';
+import { shuffle } from '../utils/array.js';
 
 /**
  * Create an array of shuffled http providers excluding default provider.
@@ -20,7 +20,9 @@ import {shuffle} from "../utils/array.js";
  * @return {Array}
  */
 function setHttpApolloProviders(_providers, _defaultHttpProvider) {
-    const providers = _providers.map(_item => _item.http).filter(_value => _value !== _defaultHttpProvider);
+    const providers = _providers
+        .map((_item) => _item.http)
+        .filter((_value) => _value !== _defaultHttpProvider);
 
     shuffle(providers);
 
@@ -37,22 +39,28 @@ if (defaultProviderIndex === 'random') {
 
 const defaultHttpProvider = apolloProviders[defaultProviderIndex].http;
 let httpProvider = defaultHttpProvider;
-let httpApolloProviders = setHttpApolloProviders(apolloProviders, defaultHttpProvider);
+let httpApolloProviders = setHttpApolloProviders(
+    apolloProviders,
+    defaultHttpProvider
+);
 let lastOperationName = '';
 
 function resetHttpApolloProviders() {
-    httpApolloProviders = setHttpApolloProviders(apolloProviders, defaultHttpProvider);
+    httpApolloProviders = setHttpApolloProviders(
+        apolloProviders,
+        defaultHttpProvider
+    );
     lastOperationName = '';
 }
 
 const httpLink = new HttpLink({
-    uri: httpProvider
+    uri: httpProvider,
 });
 
 const httpProviderMiddleware = new ApolloLink((operation, forward) => {
     // add the authorization to the headers
     operation.setContext({
-        uri: httpProvider
+        uri: httpProvider,
     });
 
     return forward(operation);
@@ -62,8 +70,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
         graphQLErrors.forEach(({ message, locations, path }) =>
             console.log(
-                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-            ),
+                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            )
         );
     if (networkError) {
         console.log(`[Network error]: ${networkError}`);
@@ -75,31 +83,34 @@ const retryLink = new RetryLink({
     delay: {
         initial: 350,
         max: Infinity,
-        jitter: false
+        jitter: false,
     },
     attempts: {
         max: maxRetryLinkAttempts,
         retryIf: (_error, _operation) => {
             // change http provider
-            if ((httpApolloProviders.length > 0)
-                && (!lastOperationName || _operation.operationName === lastOperationName)) {
+            if (
+                httpApolloProviders.length > 0 &&
+                (!lastOperationName ||
+                    _operation.operationName === lastOperationName)
+            ) {
                 httpProvider = httpApolloProviders.pop();
                 lastOperationName = _operation.operationName;
             }
 
             return !!_error;
-        }
-    }
+        },
+    },
 });
 
 const apolloClient = new ApolloClient({
     link: ApolloLink.from([
         errorLink,
         retryLink,
-        concat(httpProviderMiddleware, httpLink)
+        concat(httpProviderMiddleware, httpLink),
     ]),
     cache: new InMemoryCache(),
-    connectToDevTools: true
+    connectToDevTools: true,
 });
 
 Vue.use(VueApollo);
@@ -108,7 +119,7 @@ export const apolloProvider = new VueApollo({
     defaultClient: apolloClient,
     defaultOptions: {
         $query: {
-            fetchPolicy: 'network-only'  // 'cache-and-network', 'network-only', 'cache-first'
-        }
-    }
+            fetchPolicy: 'network-only', // 'cache-and-network', 'network-only', 'cache-first'
+        },
+    },
 });

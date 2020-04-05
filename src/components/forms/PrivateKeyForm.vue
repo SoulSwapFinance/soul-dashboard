@@ -6,11 +6,20 @@
 
                 <div class="main">
                     <label for="pk">Please type in your private key</label>
-                    <input type="text" class="large" id="pk" name="pk" v-model="dPk" @input="onPkInput">
+                    <input
+                        id="pk"
+                        v-model="dPk"
+                        type="text"
+                        class="large"
+                        name="pk"
+                        @input="onPkInput"
+                    />
                 </div>
 
                 <div class="footer">
-                    <button type="submit" class="large" :disabled="dDisabled">Unlock account</button>
+                    <button type="submit" class="large" :disabled="dDisabled">
+                        Unlock account
+                    </button>
                 </div>
             </fieldset>
         </FForm>
@@ -18,44 +27,43 @@
 </template>
 
 <script>
-    import FForm from "../core/FForm/FForm.vue";
+import FForm from '../core/FForm/FForm.vue';
 
-    export default {
-        components: {
-            FForm
+export default {
+    components: {
+        FForm,
+    },
+
+    data() {
+        return {
+            dPk: '',
+            dDisabled: true,
+        };
+    },
+
+    computed: {
+        cPk() {
+            return this.$fWallet.isPrivateKey(this.dPk.trim());
+        },
+    },
+
+    methods: {
+        onPrivateKeyFormSubmit(_event) {
+            _event.detail.data.pk = this.cPk;
+            this.$emit('f-form-submit', _event);
         },
 
-        data() {
-            return {
-                dPk: '',
-                dDisabled: true
+        onPkInput() {
+            const pk = this.cPk;
+
+            this.dDisabled = !pk;
+
+            if (!this.dDisabled) {
+                this.dPk = pk;
             }
         },
-
-        computed: {
-            cPk() {
-                return this.$fWallet.isPrivateKey(this.dPk.trim());
-            }
-        },
-
-        methods: {
-            onPrivateKeyFormSubmit(_event) {
-                _event.detail.data.pk = this.cPk;
-                this.$emit('f-form-submit', _event)
-            },
-
-            onPkInput() {
-                const pk = this.cPk;
-
-                this.dDisabled = !pk;
-
-                if (!this.dDisabled) {
-                    this.dPk = pk;
-                }
-            }
-        }
-    }
+    },
+};
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

@@ -12,27 +12,27 @@ const appConfig = {
             {
                 http: 'https://api.fantom.rocks/api',
                 // for subscriptions
-                ws: ''
+                ws: '',
             },
             {
                 http: 'https://api2.fantom.rocks/api',
                 // for subscriptions
-                ws: ''
-            }
+                ws: '',
+            },
         ],
         // index into providers array of default provider or 'random' - takes index randomly
-        defaultProviderIndex: 'random'
+        defaultProviderIndex: 'random',
     },
     // web3 settings
     web3: {
-        httpProvider: 'https://rpc.fantom.network/'
+        httpProvider: 'https://rpc.fantom.network/',
     },
     // progressive web application
     usePWA: true,
     // pwa settings
     pwa: {
         // name used in pwa manifest
-        name: 'Fantom Metamask'
+        name: 'Fantom Metamask',
     },
     // determines if app is chrome extension
     isChromeExtension: !!process.env.VUE_APP_IS_CHROME_EXTENSION,
@@ -43,13 +43,13 @@ const appConfig = {
         // chrome extension name
         name: 'Fantom Metamask',
         // chrome extension description
-        description: 'Fantom Metamask'
+        description: 'Fantom Metamask',
     },
     // default options for production build
     build: {
         // output dir for production build
-        outputDir: 'dist'
-    }
+        outputDir: 'dist',
+    },
 };
 
 //
@@ -59,9 +59,9 @@ if (appConfig.isChromeExtension) {
     appConfig.build = {
         ...{
             // output dir for production build
-            outputDir: 'chrome-extension/app'
-        }
-    }
+            outputDir: 'chrome-extension/app',
+        },
+    };
 }
 
 // scss variables prepended to every scss file

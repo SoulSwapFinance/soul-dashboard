@@ -3,7 +3,12 @@
         <div class="narrow-container">
             <div class="row no-collapse align-items-center">
                 <div class="col-2">
-                    <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')"><img src="fantom-logo.svg" alt="" class="not-fluid"></router-link>
+                    <router-link
+                        to="/"
+                        class="logo"
+                        :aria-label="$t('view_home.back_to_home')"
+                        ><img src="fantom-logo.svg" alt="" class="not-fluid"
+                    /></router-link>
                 </div>
             </div>
         </div>
@@ -11,15 +16,14 @@
 </template>
 
 <script>
-    /**
-     * Renderes header and takes care of navigation.
-     */
-    export default {
-        components: {
-        }
-    }
+/**
+ * Renderes header and takes care of navigation.
+ */
+export default {
+    components: {},
+};
 </script>
 
 <style lang="scss">
-    @import "style";
+@import 'style';
 </style>

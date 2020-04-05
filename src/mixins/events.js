@@ -1,4 +1,4 @@
-import { uppercaseFirstChar } from "../utils";
+import { uppercaseFirstChar } from '../utils';
 
 /**
  * @param {String} _eventName
@@ -14,8 +14,8 @@ function dispatchCustomEvent(_eventName, _data, _elem) {
             detail: _data,
             cancelable: true,
             bubbles: true,
-            composed: true
-        }),
+            composed: true,
+        })
     );
 }
 
@@ -33,7 +33,7 @@ export default {
             const elem = _elem || this.$el;
 
             // emit vue custom event as well
-            this.$emit(_eventName, {detail: _data});
+            this.$emit(_eventName, { detail: _data });
 
             return dispatchCustomEvent(_eventName, _data, elem);
         },
@@ -57,12 +57,12 @@ export default {
                     throw new Error(
                         `No method '${methodName}' defined. ${
                             this.tagName ? this.tagName.toLowerCase() : ''
-                        }`,
+                        }`
                     );
                 }
             }
 
-            const callback = _event => _callback.call(this, _event);
+            const callback = (_event) => _callback.call(this, _event);
 
             _elem.addEventListener(_eventName, callback, false);
 
@@ -74,7 +74,7 @@ export default {
 
             _DOMEvents[_eventName].push({
                 elem: _elem,
-                callback
+                callback,
             });
         },
 
@@ -103,14 +103,23 @@ export default {
          * @param {String} _eventName
          */
         unbindByEventName(_eventName) {
-            const DOMEventBindings = this._DOMEvents ? this._DOMEvents[_eventName] : null;
+            const DOMEventBindings = this._DOMEvents
+                ? this._DOMEvents[_eventName]
+                : null;
             let binding;
 
             if (DOMEventBindings) {
-                for (let i = 0, len1 = DOMEventBindings.length; i < len1; i += 1) {
+                for (
+                    let i = 0, len1 = DOMEventBindings.length;
+                    i < len1;
+                    i += 1
+                ) {
                     binding = DOMEventBindings[i];
 
-                    binding.elem.removeEventListener(_eventName, binding.callback);
+                    binding.elem.removeEventListener(
+                        _eventName,
+                        binding.callback
+                    );
 
                     delete binding.elem;
                     delete binding.callback;
@@ -133,6 +142,6 @@ export default {
 
                 this._DOMEvents = {};
             }
-        }
-    }
-}
+        },
+    },
+};

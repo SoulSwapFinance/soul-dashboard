@@ -7,6 +7,6 @@ Vue.use(VueTimeago, {
     // We use `date-fns` under the hood
     // So you can use all locales from it
     locales: {
-        'en': require('date-fns/locale/en')
-    }
+        en: require('date-fns/locale/en'),
+    },
 });

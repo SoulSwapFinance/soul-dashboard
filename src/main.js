@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import App from './App.vue'
-import {router} from "@/plugins/router.js";
-import {apolloProvider} from "@/plugins/apollo-provider.js";
+import App from './App.vue';
+import { router } from '@/plugins/router.js';
+import { apolloProvider } from '@/plugins/apollo-provider.js';
 import i18n from '@/plugins/i18n';
 import '@/plugins/vue-timeago.js';
 import '@/plugins/vue-svgicon.js';
 import '@/plugins/vue-observe-visibility.js';
-import {store} from "./store";
+import { store } from './store';
 import './filters.js';
 import './registerServiceWorker';
 import Web3 from 'web3';
@@ -15,9 +15,8 @@ import appConfig from '../app.config.js';
 
 Vue.use(FantomWeb3Wallet, {
     Web3,
-    httpProvider: appConfig.web3.httpProvider
+    httpProvider: appConfig.web3.httpProvider,
 });
-
 
 Vue.config.productionTip = false;
 
@@ -25,9 +24,9 @@ Vue.config.productionTip = false;
 // Vue.config.performance = true;
 
 new Vue({
-    render: h => h(App),
+    render: (h) => h(App),
     router,
     store,
     i18n,
-    apolloProvider
+    apolloProvider,
 }).$mount('#app');

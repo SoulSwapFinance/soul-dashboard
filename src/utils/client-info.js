@@ -83,7 +83,10 @@ export function detect(_window) {
         version = nAgt.substring(nAgt.indexOf('rv:') + 3);
     }
     // Other browsers
-    else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
+    else if (
+        (nameOffset = nAgt.lastIndexOf(' ') + 1) <
+        (verOffset = nAgt.lastIndexOf('/'))
+    ) {
         browser = nAgt.substring(nameOffset, verOffset);
         version = nAgt.substring(verOffset + 1);
         if (browser.toLowerCase() === browser.toUpperCase()) {
@@ -119,7 +122,10 @@ export function detect(_window) {
         { s: 'Windows ME', r: /(Win 9x 4.90|Windows ME)/ },
         { s: 'Windows 98', r: /(Windows 98|Win98)/ },
         { s: 'Windows 95', r: /(Windows 95|Win95|Windows_95)/ },
-        { s: 'Windows NT 4.0', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/ },
+        {
+            s: 'Windows NT 4.0',
+            r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/,
+        },
         { s: 'Windows CE', r: /Windows CE/ },
         { s: 'Windows 3.11', r: /Win16/ },
         { s: 'Android', r: /Android/ },
@@ -171,7 +177,9 @@ export function detect(_window) {
             osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
             if (osVersion) {
                 // eslint-disable-next-line no-bitwise
-                osVersion = `${osVersion[1]}.${osVersion[2]}.${osVersion[3] | 0}`;
+                osVersion = `${osVersion[1]}.${osVersion[2]}.${
+                    osVersion[3] | 0
+                }`;
             }
             break;
     }
@@ -210,11 +218,14 @@ export const clientInfo = detect(window);
 
 export function getLanguageCode() {
     const re = /(\w+)-?/;
-    const lang = (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language;
+    const lang =
+        navigator.languages && navigator.languages.length
+            ? navigator.languages[0]
+            : navigator.language;
     const match = re.exec(lang);
     let code = 'en';
 
-    if (match && (match.length === 2)) {
+    if (match && match.length === 2) {
         // eslint-disable-next-line prefer-destructuring
         code = match[1];
     }
