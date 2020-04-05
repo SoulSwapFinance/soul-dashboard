@@ -1,8 +1,8 @@
-import NotFound from "./views/NotFound.vue";
-import Home from './views/Home.vue';
-import AccountList from "./views/AccountList.vue";
+import NotFound from "./views/NotFound/NotFound.vue";
+import Home from './views/Home/Home.vue';
+import AccountList from "./views/AccountList/AccountList.vue";
 import CreateAccount from "./views/CreateAccount.vue";
-import RestoreAccount from "./views/RestoreAccount.vue";
+import RestoreAccount from "./views/RestoreAccount/RestoreAccount.vue";
 import Account from "./views/Account.vue";
 import AccountDashboard from "./views/AccountDashboard.vue";
 import AccountSend from "./views/AccountSend.vue";
@@ -17,7 +17,7 @@ export const routes = [
         component: Home,
         children: [
             {
-                name: '',
+                name: 'acount-list',
                 path: '',
                 component: AccountList
             },
@@ -39,7 +39,7 @@ export const routes = [
         component: Account,
         children: [
             {
-                name: '',
+                name: 'acount-dashboard',
                 path: '',
                 component: AccountDashboard
             },

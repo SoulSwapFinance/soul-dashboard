@@ -39,25 +39,5 @@
 </script>
 
 <style lang="scss">
-    .f-social-media-links {
-        color: $f-social-media-links-color;
-
-        li {
-            display: inline-block;
-            vertical-align: middle;
-
-            &:not(:last-child) {
-                padding-right: 24px;
-            }
-
-            @include links() {
-                color: inherit;
-                transition: color $transition-length ease;
-            }
-
-            a:not(.btn):hover {
-                color: $f-social-media-links-hover-color;
-            }
-        }
-    }
+    @import "style";
 </style>

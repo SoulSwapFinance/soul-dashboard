@@ -50,6 +50,10 @@ export function isFocusable(_elem) {
     return focusable;
 }
 
+/**
+ * @param {HTMLElement} _elem
+ * @return {HTMLElement|null}
+ */
 export function findFirstFocusableDescendant(_elem) {
     let focusableElem = null;
     let childNodes;
@@ -84,6 +88,10 @@ export function findFirstFocusableDescendant(_elem) {
     return focusableElem;
 }
 
+/**
+ * @param {HTMLElement} _elem
+ * @return {HTMLElement|null}
+ */
 export function findLastFocusableDescendant(_elem) {
     let focusableElem = null;
     let childNodes;

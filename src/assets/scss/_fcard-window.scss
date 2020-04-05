@@ -1,0 +1,13 @@
+.f-card:not(.off).window {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0;
+
+    .header {
+        padding: 24px;
+    }
+
+    .body {
+        padding: 40px;
+    }
+}

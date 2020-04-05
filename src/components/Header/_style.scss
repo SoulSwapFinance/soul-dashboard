@@ -1,0 +1,38 @@
+@import "variables";
+
+.f-header {
+    /*position: -webkit-sticky;*/
+    /*position: sticky;*/
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: $f-header-height;
+    color: #fff;
+    background-color: $theme-color;
+    transition: height $transition-length ease;
+
+    .logo {
+        > img {
+            height: 44px;
+            margin-bottom: 0 !important;
+            transition: opacity $transition-length ease;
+        }
+    }
+}
+
+@include media-max($bp-menu) {
+    .f-header {
+        .logo {
+            position: fixed;
+            /*top: 10px;*/
+            top: 14px;
+            left: 16px;
+            z-index: 11;
+
+            > img {
+                max-height: 30px;
+            }
+        }
+    }
+}

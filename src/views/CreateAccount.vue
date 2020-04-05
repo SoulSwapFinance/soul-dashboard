@@ -10,5 +10,4 @@
 </script>
 
 <style lang="scss">
-    @import "../assets/scss/vars";
 </style>

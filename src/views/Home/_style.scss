@@ -1,0 +1,21 @@
+@import "variables";
+
+.view-home {
+    position: relative;
+    padding-top: $f-header-height;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: $theme-color;
+        width: 100%;
+        height: 512px
+    }
+
+    .main {
+        position: relative;
+        z-index: 1;
+    }
+}

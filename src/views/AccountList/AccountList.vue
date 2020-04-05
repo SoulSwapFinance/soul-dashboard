@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import FCard from "../components/FCard.vue";
+    import FCard from "../../components/core/FCard/FCard.vue";
     // import {WEIToFTM} from "../utils/transactions.js";
     export default {
         components: {
@@ -55,9 +55,6 @@
                         address: '0x1994e627454649c95ea55885c285343092c1473d'
                     },
                     {
-                        address: '0x1994e627454649c95ea55885c285343092c1473d'
-                    },
-                    {
                         address: '0xc1d2dd56b59b5900d0b16a2a2794ca63ac904500'
                     }
                 ]
@@ -67,31 +64,5 @@
 </script>
 
 <style lang="scss">
-    @import "../assets/scss/vars";
-
-    .view-account-list {
-        .intro {
-            color: rgba(255, 255, 255, 0.75);
-            /*color: $secondary-color-lighter;*/
-            padding: 64px 0 112px;
-
-            h1 {
-                font-size: 48px;
-                color: #fff;
-                /*font-weight: 600;*/
-            }
-        }
-
-        .view-account-main {
-            margin: 0 auto;
-            max-width: 770px;
-
-            > ul {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                grid-column-gap: 32px;
-                grid-row-gap: 32px;
-            }
-        }
-    }
+    @import "style";
 </style>

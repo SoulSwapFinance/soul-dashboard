@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import events from "../mixins/events.js";
+    import events from "../../../mixins/events.js";
 
     const _spacesRE = / /g;
 
@@ -86,8 +86,8 @@
                         media: _event.media,
                         matches: _event.matches,
                     };
-                    
-                    this.$store.commit('setBreakpoint', data);
+
+                    this.emitCustomEvent('f-breakpoint-change', data);
                 }
             }
         }

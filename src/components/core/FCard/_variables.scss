@@ -1,0 +1,11 @@
+@import "../variables";
+
+:root {
+    --f-card-padding: 20px;
+}
+
+$f-card-padding: var(--f-card-padding) !default;
+$f-card-border-radius: 20px !default;
+$f-card-background-color: #fff !default;
+$f-card-transition-length: $transition-length !default;
+$f-card-hover-box-shadow: $elev6-shadow !default;

@@ -42,25 +42,5 @@
 </script>
 
 <style lang="scss">
-    @import "../assets/scss/vars";
-
-    .f-transaction-status {
-        display: inline-block;
-        padding: 4px 16px;
-        color: #fff;
-        background-color: $warning-color;
-        border-radius: 16px;
-
-        &.success {
-            background-color: $success-color;
-        }
-
-        &.error {
-            background-color: $error-color;
-        }
-
-        &.pending {
-            color: $body-color;
-        }
-    }
+    @import "style";
 </style>

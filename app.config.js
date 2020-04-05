@@ -66,7 +66,7 @@ if (appConfig.isChromeExtension) {
 
 // scss variables prepended to every scss file
 appConfig.scssData = `
-    @import "src/assets/scss/vars";
+    // @import "src/assets/scss/vars";
 
     $IS_CHROME_EXTENSION: ${appConfig.isChromeExtension ? 'true' : 'false'};
 `;

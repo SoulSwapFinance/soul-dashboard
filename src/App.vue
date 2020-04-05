@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <!--            <router-view :key="$route.path"></router-view>-->
+
         <router-view></router-view>
+
 <!--
         <f-header></f-header>
         <main>
@@ -10,15 +12,16 @@
         <f-footer></f-footer>
 -->
 
-        <f-breakpoints>
+        <f-breakpoints @f-breakpoint-change="onFBreakpointChange">
             <f-breakpoint value="768px" code="menu-mobile"></f-breakpoint>
         </f-breakpoints>
     </div>
 </template>
 
 <script>
-    import FBreakpoint from "./components/FBreakpoint.vue";
-    import FBreakpoints from "./components/FBreakpoints.vue";
+    import FBreakpoint from "./components/core/FBreakpoints/FBreakpoint.vue";
+    import FBreakpoints from "./components/core/FBreakpoints/FBreakpoints.vue";
+    import {SET_BREAKPOINT} from "./store";
 
     export default {
         name: 'App',
@@ -26,6 +29,12 @@
         components: {
             FBreakpoint,
             FBreakpoints
+        },
+
+        methods: {
+            onFBreakpointChange(_event) {
+                this.$store.commit(SET_BREAKPOINT, _event.detail);
+            }
         }
     }
 </script>
