@@ -55,9 +55,7 @@ export default {
                 _callback = this[methodName];
                 if (typeof _callback !== 'function') {
                     throw new Error(
-                        `No method '${methodName}' defined. ${
-                            this.tagName ? this.tagName.toLowerCase() : ''
-                        }`
+                        `No method '${methodName}' defined. ${this.tagName ? this.tagName.toLowerCase() : ''}`
                     );
                 }
             }
@@ -103,23 +101,14 @@ export default {
          * @param {String} _eventName
          */
         unbindByEventName(_eventName) {
-            const DOMEventBindings = this._DOMEvents
-                ? this._DOMEvents[_eventName]
-                : null;
+            const DOMEventBindings = this._DOMEvents ? this._DOMEvents[_eventName] : null;
             let binding;
 
             if (DOMEventBindings) {
-                for (
-                    let i = 0, len1 = DOMEventBindings.length;
-                    i < len1;
-                    i += 1
-                ) {
+                for (let i = 0, len1 = DOMEventBindings.length; i < len1; i += 1) {
                     binding = DOMEventBindings[i];
 
-                    binding.elem.removeEventListener(
-                        _eventName,
-                        binding.callback
-                    );
+                    binding.elem.removeEventListener(_eventName, binding.callback);
 
                     delete binding.elem;
                     delete binding.callback;

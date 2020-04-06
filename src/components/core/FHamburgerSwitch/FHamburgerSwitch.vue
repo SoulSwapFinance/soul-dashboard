@@ -1,10 +1,5 @@
 <template>
-    <div
-        class="f-hamburger-switch"
-        role="switch"
-        :class="[cCssClass, `thickness${thickness}`]"
-        @click="toggle"
-    >
+    <div class="f-hamburger-switch" role="switch" :class="[cCssClass, `thickness${thickness}`]" @click="toggle">
         <div class="cont">
             <div class="l1"></div>
             <div v-if="!twoLines" class="l2"></div>

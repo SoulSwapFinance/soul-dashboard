@@ -17,9 +17,7 @@ export function addZeros(_number, _digits) {
         // number = `${number}.${zeroString.slice(0, _digits)}`;
         number = `${parts[0].value}.${zeroString.slice(0, _digits)}`;
     } else if (parts[parts.length - 2].type !== 'decimal') {
-        number = `${parts
-            .map((_item) => _item.value)
-            .join('')}.${zeroString.slice(0, _digits)}`;
+        number = `${parts.map((_item) => _item.value).join('')}.${zeroString.slice(0, _digits)}`;
     } else {
         const len = parts[parts.length - 1].value.length;
         number = `${parts.map((_item) => _item.value).join('')}${
@@ -93,9 +91,7 @@ export function formatDuration(_value) {
     }
 
     if (timestamp) {
-        return `${parseInt(timestamp / 3600) % 60}h ${
-            parseInt(timestamp / 60) % 60
-        }m ${timestamp % 60}s`;
+        return `${parseInt(timestamp / 3600) % 60}h ${parseInt(timestamp / 60) % 60}m ${timestamp % 60}s`;
     }
 
     return '';

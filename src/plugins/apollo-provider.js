@@ -20,9 +20,7 @@ import { shuffle } from '../utils/array.js';
  * @return {Array}
  */
 function setHttpApolloProviders(_providers, _defaultHttpProvider) {
-    const providers = _providers
-        .map((_item) => _item.http)
-        .filter((_value) => _value !== _defaultHttpProvider);
+    const providers = _providers.map((_item) => _item.http).filter((_value) => _value !== _defaultHttpProvider);
 
     shuffle(providers);
 
@@ -39,17 +37,11 @@ if (defaultProviderIndex === 'random') {
 
 const defaultHttpProvider = apolloProviders[defaultProviderIndex].http;
 let httpProvider = defaultHttpProvider;
-let httpApolloProviders = setHttpApolloProviders(
-    apolloProviders,
-    defaultHttpProvider
-);
+let httpApolloProviders = setHttpApolloProviders(apolloProviders, defaultHttpProvider);
 let lastOperationName = '';
 
 function resetHttpApolloProviders() {
-    httpApolloProviders = setHttpApolloProviders(
-        apolloProviders,
-        defaultHttpProvider
-    );
+    httpApolloProviders = setHttpApolloProviders(apolloProviders, defaultHttpProvider);
     lastOperationName = '';
 }
 
@@ -69,9 +61,7 @@ const httpProviderMiddleware = new ApolloLink((operation, forward) => {
 const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
         graphQLErrors.forEach(({ message, locations, path }) =>
-            console.log(
-                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-            )
+            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
         );
     if (networkError) {
         console.log(`[Network error]: ${networkError}`);
@@ -91,8 +81,7 @@ const retryLink = new RetryLink({
             // change http provider
             if (
                 httpApolloProviders.length > 0 &&
-                (!lastOperationName ||
-                    _operation.operationName === lastOperationName)
+                (!lastOperationName || _operation.operationName === lastOperationName)
             ) {
                 httpProvider = httpApolloProviders.pop();
                 lastOperationName = _operation.operationName;
@@ -104,11 +93,7 @@ const retryLink = new RetryLink({
 });
 
 const apolloClient = new ApolloClient({
-    link: ApolloLink.from([
-        errorLink,
-        retryLink,
-        concat(httpProviderMiddleware, httpLink),
-    ]),
+    link: ApolloLink.from([errorLink, retryLink, concat(httpProviderMiddleware, httpLink)]),
     cache: new InMemoryCache(),
     connectToDevTools: true,
 });

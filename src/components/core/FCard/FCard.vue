@@ -6,9 +6,7 @@
                     <router-link :to="routeUrl">{{ title }}</router-link>
                 </template>
                 <template v-else-if="url">
-                    <a :href="url" target="_blank" rel="nofollow">{{
-                        title
-                    }}</a>
+                    <a :href="url" target="_blank" rel="nofollow">{{ title }}</a>
                 </template>
                 <template v-else>
                     {{ title }}

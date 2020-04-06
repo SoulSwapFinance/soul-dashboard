@@ -83,10 +83,7 @@ export function detect(_window) {
         version = nAgt.substring(nAgt.indexOf('rv:') + 3);
     }
     // Other browsers
-    else if (
-        (nameOffset = nAgt.lastIndexOf(' ') + 1) <
-        (verOffset = nAgt.lastIndexOf('/'))
-    ) {
+    else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
         browser = nAgt.substring(nameOffset, verOffset);
         version = nAgt.substring(verOffset + 1);
         if (browser.toLowerCase() === browser.toUpperCase()) {
@@ -177,9 +174,7 @@ export function detect(_window) {
             osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
             if (osVersion) {
                 // eslint-disable-next-line no-bitwise
-                osVersion = `${osVersion[1]}.${osVersion[2]}.${
-                    osVersion[3] | 0
-                }`;
+                osVersion = `${osVersion[1]}.${osVersion[2]}.${osVersion[3] | 0}`;
             }
             break;
     }
@@ -218,10 +213,7 @@ export const clientInfo = detect(window);
 
 export function getLanguageCode() {
     const re = /(\w+)-?/;
-    const lang =
-        navigator.languages && navigator.languages.length
-            ? navigator.languages[0]
-            : navigator.language;
+    const lang = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
     const match = re.exec(lang);
     let code = 'en';
 

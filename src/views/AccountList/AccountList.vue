@@ -1,5 +1,5 @@
 <template>
-    <div class="view-account-list">
+    <div class="account-list-view">
         <div class="intro">
             <h1>Welcome to FantomWallet</h1>
             <h2>Send, receive and stake your Opera FTM</h2>
@@ -17,27 +17,24 @@
                                     params: { address: account.address },
                                 }"
                                 class="break-word fs-big"
-                                >{{ account.address }}</router-link
                             >
+                                {{ account.address }}
+                            </router-link>
                         </h3>
                     </f-card>
                 </li>
                 <li>
                     <f-card>
                         <div class="row">
-                            <div class="col">
-                                <router-link
-                                    :to="{ name: 'create-account' }"
-                                    class="btn w100p"
-                                    >Create account</router-link
-                                >
+                            <div class="col-12">
+                                <router-link :to="{ name: 'create-account' }" class="btn w100p">
+                                    Create wallet
+                                </router-link>
                             </div>
                             <div class="col">
-                                <router-link
-                                    :to="{ name: 'restore-account' }"
-                                    class="btn w100p"
-                                    >Restore account</router-link
-                                >
+                                <router-link :to="{ name: 'restore-account' }" class="btn w100p">
+                                    Restore wallet
+                                </router-link>
                             </div>
                         </div>
                     </f-card>

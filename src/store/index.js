@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
 
-import { SET_BREAKPOINT, SET_TOKEN_PRICE } from './mutations.type.js';
+import { SET_BREAKPOINT, SET_PRIVATE_KEY, SET_TOKEN_PRICE } from './mutations.type.js';
 
 Vue.use(Vuex);
 
@@ -26,6 +26,19 @@ export const store = new Vuex.Store({
     state: {
         breakpoints: {},
         tokenPrice: 0,
+        pk: '',
+        accounts: [],
+        currAccountIndex: -1,
+    },
+
+    getters: {
+        currentAccount(_state) {
+            return _state.currAccountIndex > -1 ? _state.account[_state.currAccountIndex] : null;
+        },
+
+        pk(_state) {
+            return _state.pk;
+        },
     },
 
     mutations: {
@@ -46,6 +59,16 @@ export const store = new Vuex.Store({
          */
         [SET_TOKEN_PRICE](_state, _tokenPrice) {
             _state.tokenPrice = _tokenPrice;
+        },
+
+        /**
+         * Clear private key if you don't need it anymore!
+         *
+         * @param {object} _state
+         * @param {number} _privateKey
+         */
+        [SET_PRIVATE_KEY](_state, _privateKey) {
+            _state.pk = _privateKey;
         },
     },
 });

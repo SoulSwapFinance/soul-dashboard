@@ -1,28 +1,21 @@
 <template>
-    <div class="ff">
-        <FForm @f-form-submit="onPrivateKeyFormSubmit">
+    <div class="private-key-form">
+        <f-form @f-form-submit="onFormSubmit">
             <fieldset class="">
                 <legend>Private key</legend>
 
                 <div class="main">
                     <label for="pk">Please type in your private key</label>
-                    <input
-                        id="pk"
-                        v-model="dPk"
-                        type="text"
-                        class="large"
-                        name="pk"
-                        @input="onPkInput"
-                    />
+                    <input id="pk" v-model="dPk" type="text" class="large" name="pk" @input="onPkInput" />
                 </div>
 
                 <div class="footer">
                     <button type="submit" class="large" :disabled="dDisabled">
-                        Unlock account
+                        Unlock wallet
                     </button>
                 </div>
             </fieldset>
-        </FForm>
+        </f-form>
     </div>
 </template>
 
@@ -48,7 +41,7 @@ export default {
     },
 
     methods: {
-        onPrivateKeyFormSubmit(_event) {
+        onFormSubmit(_event) {
             _event.detail.data.pk = this.cPk;
             this.$emit('f-form-submit', _event);
         },

@@ -3,10 +3,7 @@
         <div class="narrow-container">
             <div class="row no-collapse align-items-center">
                 <div class="col-2">
-                    <router-link
-                        to="/"
-                        class="logo"
-                        :aria-label="$t('view_home.back_to_home')"
+                    <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')"
                         ><img src="fantom-logo.svg" alt="" class="not-fluid"
                     /></router-link>
                 </div>

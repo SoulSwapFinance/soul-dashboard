@@ -42,9 +42,7 @@ export default {
 
     created() {
         if (this.value && !this.dMedia) {
-            this.dMedia = `only screen and (${
-                this.min ? 'min' : 'max'
-            }-width: ${this.value})`;
+            this.dMedia = `only screen and (${this.min ? 'min' : 'max'}-width: ${this.value})`;
         }
     },
 };

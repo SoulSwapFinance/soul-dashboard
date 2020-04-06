@@ -39,9 +39,7 @@ export function isFocusable(_elem) {
     }
 
     if (!focusable) {
-        focusable =
-            _elem.tabIndex > 0 ||
-            (_elem.tabIndex === 0 && _elem.getAttribute('tabIndex') !== null);
+        focusable = _elem.tabIndex > 0 || (_elem.tabIndex === 0 && _elem.getAttribute('tabIndex') !== null);
     }
 
     if (focusable) {
@@ -61,9 +59,7 @@ export function findFirstFocusableDescendant(_elem) {
     let child;
 
     if (_elem) {
-        childNodes = _elem.assignedNodes
-            ? _elem.assignedNodes()
-            : _elem.childNodes;
+        childNodes = _elem.assignedNodes ? _elem.assignedNodes() : _elem.childNodes;
 
         // Edge/IE
         if (!childNodes && _elem.assignedNodes) {
@@ -101,9 +97,7 @@ export function findLastFocusableDescendant(_elem) {
     let child;
 
     if (_elem) {
-        childNodes = _elem.assignedNodes
-            ? _elem.assignedNodes()
-            : _elem.childNodes;
+        childNodes = _elem.assignedNodes ? _elem.assignedNodes() : _elem.childNodes;
 
         // Edge/IE
         if (!childNodes && _elem.assignedNodes) {
@@ -137,9 +131,7 @@ export function findLastFocusableDescendant(_elem) {
  * @param {string} _id
  */
 export function returnFocus(_id) {
-    const elem = document.querySelector(
-        `[${RECEIVE_FOCUS_FROM_ATTR}="${_id}"]`
-    );
+    const elem = document.querySelector(`[${RECEIVE_FOCUS_FROM_ATTR}="${_id}"]`);
 
     if (elem) {
         elem.removeAttribute(RECEIVE_FOCUS_FROM_ATTR);

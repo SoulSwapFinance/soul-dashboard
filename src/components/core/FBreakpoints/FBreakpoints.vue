@@ -74,9 +74,7 @@ export default {
          */
         onBreakpointChange(_event) {
             const breakpoint = this._breakpoints.filter(
-                (_breakpoint) =>
-                    this.withoutSpaces(_breakpoint.media) ===
-                    this.withoutSpaces(_event.media)
+                (_breakpoint) => this.withoutSpaces(_breakpoint.media) === this.withoutSpaces(_event.media)
             );
             let data;
 

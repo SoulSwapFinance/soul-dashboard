@@ -4,9 +4,7 @@
             <slot>
                 <ul v-if="cItems" class="no-markers">
                     <li v-for="item in cItems" :key="item.id">
-                        <router-link :to="item.url">{{
-                            item.title
-                        }}</router-link>
+                        <router-link :to="item.url">{{ item.title }}</router-link>
                     </li>
                 </ul>
             </slot>

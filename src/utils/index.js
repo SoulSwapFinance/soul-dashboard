@@ -20,10 +20,7 @@ export function serializeObject(_obj, _except, _encode) {
     }
 
     so = JSON.stringify(_obj, (_key, _val) => {
-        if (
-            _except &&
-            (regExpUsed ? _except.test(_key) : inArray(_key, _except) >= 0)
-        ) {
+        if (_except && (regExpUsed ? _except.test(_key) : inArray(_key, _except) >= 0)) {
             return;
         }
         if (typeof _val === 'object') {

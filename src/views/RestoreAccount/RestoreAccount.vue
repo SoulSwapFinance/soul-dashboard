@@ -1,13 +1,13 @@
 <template>
-    <div class="view-restore-account">
+    <div class="restore-account-view">
         <f-card class="window">
             <div class="header">
-                <h1>Restore account</h1>
+                <h1>Restore wallet</h1>
             </div>
             <div class="body">
                 <h2>Private key</h2>
 
-                <f-private-key-form @f-form-submit="onPrivateKeyFormSubmit" />
+                <private-key-form @f-form-submit="onPrivateKeyFormSubmit" />
             </div>
         </f-card>
         <component :is="currentTabComponent"></component>
@@ -16,11 +16,12 @@
 
 <script>
 import FCard from '../../components/core/FCard/FCard.vue';
-import FPrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
+import PrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
+import { SET_PRIVATE_KEY } from '../../store/mutations.type.js';
 
 export default {
-    components: { FPrivateKeyForm, FCard },
+    components: { PrivateKeyForm, FCard },
 
     mounted() {
         const el = findFirstFocusableDescendant(this.$el);
@@ -37,6 +38,7 @@ export default {
 
             if (pk) {
                 console.log('JO!!', pk);
+                this.$store.commit(SET_PRIVATE_KEY, pk);
                 this.$router.replace({ name: 'create-account' });
             }
         },

@@ -7,9 +7,7 @@
                 <router-link :to="{ name: 'account-send' }">Send</router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-recieve' }"
-                    >Recieve</router-link
-                >
+                <router-link :to="{ name: 'account-recieve' }">Recieve</router-link>
             </li>
             <li>
                 <router-link :to="{ name: 'account-stake' }">Stake</router-link>

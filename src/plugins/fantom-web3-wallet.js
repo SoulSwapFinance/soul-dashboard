@@ -35,6 +35,14 @@ export default {
                 return web3.eth.accounts.decrypt(_keystoreJsonV3, _password);
             },
 
+            createAccount() {
+                return web3.eth.accounts.create();
+            },
+
+            toChecksumAddress(_address) {
+                return web3.utils.toChecksumAddress(_address);
+            },
+
             isPrivateKey(_key) {
                 let pk = _key;
 

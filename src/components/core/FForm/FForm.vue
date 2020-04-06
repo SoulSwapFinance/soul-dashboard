@@ -1,11 +1,5 @@
 <template>
-    <form
-        ref="form"
-        method="post"
-        class="f-form"
-        @submit="onSubmit"
-        @change="onChange"
-    >
+    <form ref="form" method="post" class="f-form" @submit="onSubmit" @change="onChange" @input="onInput">
         <slot></slot>
     </form>
 </template>
@@ -70,9 +64,7 @@ export default {
             const container = _container || this.$refs.form;
 
             return container.querySelectorAll(
-                isArray(_names)
-                    ? _names.map((_name) => `[name="${_name}"]`).join(',')
-                    : '[name]'
+                isArray(_names) ? _names.map((_name) => `[name="${_name}"]`).join(',') : '[name]'
             );
         },
 
@@ -219,6 +211,19 @@ export default {
 
                 this._submitAction = this.action;
             }
+        },
+
+        /**
+         * Triggered on form element input event.
+         *
+         * @param {Event} _event
+         */
+        onInput(_event) {
+            this.emitCustomEvent('f-form-input', {
+                eTarget: _event.target,
+                value: this.getElementValue(_event.target),
+                // originalEvent: _event
+            });
         },
     },
 };
