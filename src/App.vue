@@ -21,7 +21,7 @@
 <script>
 import FBreakpoint from './components/core/FBreakpoints/FBreakpoint.vue';
 import FBreakpoints from './components/core/FBreakpoints/FBreakpoints.vue';
-import { SET_BREAKPOINT } from './store';
+import { SET_BREAKPOINT } from './store/mutations.type.js';
 
 export default {
     name: 'App',
