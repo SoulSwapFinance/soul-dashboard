@@ -1,51 +1,67 @@
 <template>
     <div class="restore-account-view">
-        <f-card class="window">
-            <div class="header">
-                <h1>Restore wallet</h1>
-            </div>
-            <div class="body">
-                <h2>Private key</h2>
-
-                <private-key-form @f-form-submit="onPrivateKeyFormSubmit" />
-            </div>
-        </f-card>
-        <component :is="currentTabComponent"></component>
+        <component
+            :is="dCurrentComponent"
+            v-bind="cCurrentComponentProperties"
+            @change-component="onChangeComponent"
+        ></component>
     </div>
 </template>
 
 <script>
-import FCard from '../../components/core/FCard/FCard.vue';
-import PrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
-import { findFirstFocusableDescendant } from '../../utils/aria.js';
-import { SET_PRIVATE_KEY } from '../../store/mutations.type.js';
+import RestoreAccountTabs from '../../components/RestoreAccountTabs/RestoreAccountTabs.vue';
+import CreatePassword from '../../components/CreatePassword/CreatePassword.vue';
 
 export default {
-    components: { PrivateKeyForm, FCard },
+    components: { RestoreAccountTabs, CreatePassword },
 
-    mounted() {
-        const el = findFirstFocusableDescendant(this.$el);
-        if (el) {
-            el.focus();
-        }
-        // setTimeout(() => {findFirstFocusableDescendant(this.$el)}, 10);
-        // this.$nextTick(() => {findFirstFocusableDescendant(this.$el)});
+    data() {
+        return {
+            dCurrentComponent: 'restore-account-tabs',
+        };
+    },
+
+    computed: {
+        cCurrentComponentProperties() {
+            if (this.dCurrentComponent === 'create-password') {
+                return {
+                    privateKey: this._pk,
+                    restoreAccount: true,
+                };
+            }
+
+            return null;
+        },
+    },
+
+    created() {
+        this._pk = '';
     },
 
     methods: {
-        onPrivateKeyFormSubmit(_event) {
-            const pk = _event.detail.data.pk;
+        /**
+         * Delete private key.
+         */
+        deletePK() {
+            this.$nextTick(() => {
+                this._pk = '';
+            });
+        },
 
-            if (pk) {
-                console.log('JO!!', pk);
-                this.$store.commit(SET_PRIVATE_KEY, pk);
-                this.$router.replace({ name: 'create-account' });
+        /**
+         * @param {Object} _event
+         */
+        onChangeComponent(_event) {
+            const data = _event.detail;
+
+            if (data.component === 'private-key-form') {
+                this._pk = data.data.pk;
+                this.dCurrentComponent = 'create-password';
+                this.deletePK();
             }
         },
     },
 };
 </script>
 
-<style lang="scss">
-@import 'style';
-</style>
+<style lang="scss"></style>

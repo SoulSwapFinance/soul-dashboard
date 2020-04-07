@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="footer">
-                    <button type="submit" class="large" :disabled="dSubmitDisabled">
+                    <button type="submit" class="large break-word" style="max-width: 100%;" :disabled="dSubmitDisabled">
                         Download keystore file and continue
                     </button>
                 </div>
@@ -60,6 +60,14 @@ export default {
         FForm,
     },
 
+    props: {
+        // created from restore account view
+        restoreAccount: {
+            type: Boolean,
+            default: false,
+        },
+    },
+
     data() {
         return {
             dPrimaryPwd: '',
@@ -73,7 +81,7 @@ export default {
 
     computed: {
         cSetPasswordT() {
-            return 'Set a new password';
+            return this.restoreAccount ? 'Set a new password' : 'Set a password';
         },
     },
 

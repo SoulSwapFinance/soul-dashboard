@@ -2,7 +2,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
 
-import { SET_BREAKPOINT, SET_PRIVATE_KEY, SET_TOKEN_PRICE } from './mutations.type.js';
+import { APPEND_ACCOUNT, SET_BREAKPOINT, SET_TOKEN_PRICE } from './mutations.type.js';
+import { ADD_ACCOUNT } from './actions.type.js';
+import { fWallet } from '../plugins/fantom-web3-wallet.js';
+import { WEIToFTM } from '../utils/transactions.js';
 
 Vue.use(Vuex);
 
@@ -11,10 +14,12 @@ const vuexPlugins = [];
 const vuexLocalStorage = new VuexPersist({
     // The key to store the state on in the storage provider.
     key: 'vuex',
+    // TODO: write custom storage for chrome.storage
     storage: window.localStorage,
-    // Function that passes the state and returns the state with only the objects you want to store.
+    // Function that passes the state and returns the state with only the Objects you want to store.
     reducer: (_state) => ({
         tokenPrice: _state.tokenPrice,
+        accounts: _state.accounts,
     }),
 });
 
@@ -26,25 +31,24 @@ export const store = new Vuex.Store({
     state: {
         breakpoints: {},
         tokenPrice: 0,
-        pk: '',
         accounts: [],
         currAccountIndex: -1,
     },
 
     getters: {
-        currentAccount(_state) {
-            return _state.currAccountIndex > -1 ? _state.account[_state.currAccountIndex] : null;
+        accounts(_state) {
+            return _state.accounts;
         },
 
-        pk(_state) {
-            return _state.pk;
+        currentAccount(_state) {
+            return _state.currAccountIndex > -1 ? _state.accounts[_state.currAccountIndex] : null;
         },
     },
 
     mutations: {
         /**
-         * @param {object} _state
-         * @param {object} _breakpoint
+         * @param {Object} _state
+         * @param {Object} _breakpoint
          */
         [SET_BREAKPOINT](_state, _breakpoint) {
             _state.breakpoints = {
@@ -54,7 +58,7 @@ export const store = new Vuex.Store({
         },
 
         /**
-         * @param {object} _state
+         * @param {Object} _state
          * @param {number} _tokenPrice
          */
         [SET_TOKEN_PRICE](_state, _tokenPrice) {
@@ -62,13 +66,32 @@ export const store = new Vuex.Store({
         },
 
         /**
-         * Clear private key if you don't need it anymore!
-         *
-         * @param {object} _state
-         * @param {number} _privateKey
+         * @param {Object} _state
+         * @param {Object} _account
          */
-        [SET_PRIVATE_KEY](_state, _privateKey) {
-            _state.pk = _privateKey;
+        [APPEND_ACCOUNT](_state, _account) {
+            // if account is not created already
+            if (!_state.accounts.find((_item) => _item.address === _account.address)) {
+                _state.accounts.push(_account);
+            }
+        },
+    },
+
+    actions: {
+        /**
+         * @param {Object} _context
+         * @param {Object} _keystore
+         */
+        async [ADD_ACCOUNT](_context, _keystore) {
+            const address = `0x${_keystore.address}`;
+            const balance = await fWallet.getBalance(address);
+            const account = {
+                address,
+                balance: WEIToFTM(balance),
+                keystore: _keystore,
+            };
+
+            _context.commit(APPEND_ACCOUNT, account);
         },
     },
 });

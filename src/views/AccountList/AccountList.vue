@@ -7,7 +7,7 @@
 
         <div class="view-account-main">
             <ul class="no-markers">
-                <li v-for="account in dAccounts" :key="account.address">
+                <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
                             <span class="label">Address</span>
@@ -20,6 +20,9 @@
                             >
                                 {{ account.address }}
                             </router-link>
+                            <br /><br />
+                            <span class="label">Balance</span>
+                            <span class="fs-big">{{ account.balance }} FTM</span>
                         </h3>
                     </f-card>
                 </li>
@@ -46,19 +49,13 @@
 
 <script>
 import FCard from '../../components/core/FCard/FCard.vue';
+import { mapGetters } from 'vuex';
+
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
     components: {
         FCard,
     },
-
-    /*
-        async mounted() {
-            const balance = await this.$fWallet.getBalance('0xd1c1bab1edeb382d76e5d8e454a60775d582546d');
-            console.log('mmmm', WEIToFTM(balance));
-
-        },
-*/
 
     data() {
         return {
@@ -71,6 +68,10 @@ export default {
                 },
             ],
         };
+    },
+
+    computed: {
+        ...mapGetters(['accounts']),
     },
 };
 </script>

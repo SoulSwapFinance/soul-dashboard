@@ -1,0 +1,20 @@
+@import "../../assets/scss/vars";
+
+.create-password {
+    .f-card:not(.off).window {
+        .header {
+            color: #fff;
+            background: #6665dd;
+            //border-radius: $f-card-border-radius $f-card-border-radius 0 0;
+            border-radius: 20px 20px 0 0;
+
+            h1 {
+                margin-bottom: 0;
+            }
+        }
+
+        .body {
+            min-height: 440px;
+        }
+    }
+}

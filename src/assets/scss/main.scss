@@ -57,6 +57,7 @@ a:not(.btn):hover {
 
 .break-word {
     word-break: break-word;
+    white-space: normal !important;
 }
 
 .query-error {

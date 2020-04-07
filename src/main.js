@@ -10,7 +10,7 @@ import { store } from './store';
 import './filters.js';
 import './registerServiceWorker';
 import Web3 from 'web3';
-import FantomWeb3Wallet from './plugins/fantom-web3-wallet.js';
+import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
 import appConfig from '../app.config.js';
 
 Vue.use(FantomWeb3Wallet, {
