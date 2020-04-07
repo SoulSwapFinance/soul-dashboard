@@ -56,14 +56,15 @@ export default {
             const pwd = _event.detail.data.primaryPwd;
             let account = null;
             let keystore = null;
+            const fWallet = this.$fWallet;
 
             if (pwd) {
                 // from restore account - private key
                 if (this.privateKey) {
-                    keystore = this.$fWallet.encryptToKeystore(this.privateKey, pwd);
+                    keystore = fWallet.encryptToKeystore(this.privateKey, pwd);
                 } else {
-                    account = this.$fWallet.createAccount();
-                    keystore = this.$fWallet.encryptToKeystore(account.privateKey, pwd);
+                    account = fWallet.createAccount();
+                    keystore = fWallet.encryptToKeystore(account.privateKey, pwd);
 
                     account = null;
                 }
@@ -71,12 +72,22 @@ export default {
                 if (keystore) {
                     fileDownload(
                         JSON.stringify(keystore),
-                        `${this.getKeystoreFileName(this.$fWallet.toChecksumAddress(keystore.address))}.json`
+                        `${this.getKeystoreFileName(fWallet.toChecksumAddress(keystore.address))}.json`
                     );
 
                     if (this.restoreAccount) {
+                        // save account
                         this.$store.dispatch(ADD_ACCOUNT, keystore);
-                        this.$router.push({ path: '/' });
+                        // go to success view
+                        this.$emit('change-component', {
+                            detail: {
+                                from: 'create-password',
+                                to: 'account-success-message',
+                                data: {
+                                    address: fWallet.toChecksumAddress(keystore.address),
+                                },
+                            },
+                        });
                     }
                 }
             }

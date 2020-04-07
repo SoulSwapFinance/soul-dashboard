@@ -1,7 +1,6 @@
-/**
- * Fantom web3 wallet plugin for VUE, based on https://github.com/Fantom-foundation/fantom-web3-wallet
- */
+// Fantom web3 wallet plugin for VUE, based on https://github.com/Fantom-foundation/fantom-web3-wallet
 
+/** @type {FantomWeb3Wallet} */
 export let fWallet = null;
 
 export class FantomWeb3Wallet {

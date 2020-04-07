@@ -1,0 +1,11 @@
+@import "../../assets/scss/vars";
+
+.account-success-message {
+    text-align: center;
+
+    .f-card:not(.off) {
+        padding: 40px;
+        max-width: 470px;
+        margin: 240px auto 0 auto;
+    }
+}

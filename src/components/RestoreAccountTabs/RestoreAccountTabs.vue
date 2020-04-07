@@ -37,7 +37,8 @@ export default {
             if (pk) {
                 this.$emit('change-component', {
                     detail: {
-                        component: 'private-key-form',
+                        from: 'restore-account-tabs',
+                        to: 'private-key-form',
                         data: { pk },
                     },
                 });

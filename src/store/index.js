@@ -83,7 +83,7 @@ export const store = new Vuex.Store({
          * @param {Object} _keystore
          */
         async [ADD_ACCOUNT](_context, _keystore) {
-            const address = `0x${_keystore.address}`;
+            const address = fWallet.toChecksumAddress(_keystore.address);
             const balance = await fWallet.getBalance(address);
             const account = {
                 address,
