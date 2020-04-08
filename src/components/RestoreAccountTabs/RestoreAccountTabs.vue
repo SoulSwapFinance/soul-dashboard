@@ -5,9 +5,12 @@
                 <h1>Restore wallet</h1>
             </div>
             <div class="body">
-                <h2>Private key</h2>
+                <div class="tmp-tabs">
+                    <h2><button @click="onPrivateKeyTabClick">Private key</button></h2>
+                    <h2><button @click="onKeystoreTabClick">Keystore file</button></h2>
+                </div>
 
-                <private-key-form @f-form-submit="onPrivateKeyFormSubmit" />
+                <component :is="dCurrentComponent" v-on="cCurrentComponentListeners"></component>
             </div>
         </f-card>
     </div>
@@ -17,20 +20,51 @@
 import FCard from '../../components/core/FCard/FCard.vue';
 import PrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
+import KeystoreForm from '../forms/KeystoreForm.vue';
+import { ADD_ACCOUNT } from '../../store/actions.type.js';
 
 export default {
-    components: { PrivateKeyForm, FCard },
+    components: { KeystoreForm, PrivateKeyForm, FCard },
+
+    data() {
+        return {
+            dCurrentComponent: 'private-key-form',
+        };
+    },
+
+    computed: {
+        cCurrentComponentListeners() {
+            switch (this.dCurrentComponent) {
+                case 'private-key-form':
+                    return {
+                        'f-form-submit': this.onPrivateKeyFormSubmit,
+                    };
+                case 'keystore-form':
+                    return {
+                        'f-form-submit': this.onKeystoreFormSubmit,
+                    };
+                default:
+                    return null;
+            }
+        },
+    },
 
     mounted() {
         const el = findFirstFocusableDescendant(this.$el);
         if (el) {
             el.focus();
         }
-        // setTimeout(() => {findFirstFocusableDescendant(this.$el)}, 10);
-        // this.$nextTick(() => {findFirstFocusableDescendant(this.$el)});
     },
 
     methods: {
+        onPrivateKeyTabClick() {
+            this.dCurrentComponent = 'private-key-form';
+        },
+
+        onKeystoreTabClick() {
+            this.dCurrentComponent = 'keystore-form';
+        },
+
         onPrivateKeyFormSubmit(_event) {
             const pk = _event.detail.data.pk;
 
@@ -38,8 +72,27 @@ export default {
                 this.$emit('change-component', {
                     detail: {
                         from: 'restore-account-tabs',
-                        to: 'private-key-form',
+                        to: 'create-password',
                         data: { pk },
+                    },
+                });
+            }
+        },
+
+        onKeystoreFormSubmit(_event) {
+            const { keystore } = _event.detail.data;
+
+            if (keystore) {
+                // save account
+                this.$store.dispatch(ADD_ACCOUNT, keystore);
+                // go to success view
+                this.$emit('change-component', {
+                    detail: {
+                        from: 'restore-account-tabs',
+                        to: 'account-success-message',
+                        data: {
+                            address: this.$fWallet.toChecksumAddress(keystore.address),
+                        },
                     },
                 });
             }

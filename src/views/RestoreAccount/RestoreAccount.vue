@@ -19,7 +19,6 @@ export default {
     data() {
         return {
             dCurrentComponent: 'restore-account-tabs',
-            // dCurrentComponent: 'account-success-message',
         };
     },
 
@@ -65,7 +64,7 @@ export default {
         onChangeComponent(_event) {
             const data = _event.detail;
 
-            if (data.to === 'private-key-form') {
+            if (data.to === 'create-password') {
                 this._pk = data.data.pk;
                 this.dCurrentComponent = 'create-password';
                 this.deleteTmpProps();

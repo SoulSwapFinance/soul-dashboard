@@ -47,14 +47,6 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 
-const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
-
-/*
-function checkPrimaryPassword(_pwd) {
-    return _pwd && _pwd.length >= 1 && _pwd.length < 200 && /[A-Z\d]+/.test(_pwd);
-}
-*/
-
 export default {
     components: {
         FForm,
@@ -86,14 +78,10 @@ export default {
     },
 
     methods: {
-        checkPrimaryPassword(_pwd) {
-            return strongPasswordRE.test(_pwd) && _pwd.length < 200;
-        },
-
         checkPasswords() {
             let passwordsOk = false;
 
-            this.dPrimaryPwdOk = this.checkPrimaryPassword(this.dPrimaryPwd);
+            this.dPrimaryPwdOk = this.$fWallet.checkPrimaryPassword(this.dPrimaryPwd);
 
             if (this.dPrimaryPwdOk) {
                 this.dSecondaryPwdOk = this.dPrimaryPwd === this.dSecondaryPwd;

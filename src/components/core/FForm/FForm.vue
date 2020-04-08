@@ -84,6 +84,8 @@ export default {
                             // value = (_elem.value === 'on' ? true : _elem.value);
                         }
                         // alert(_elem.checked + ' ' + value);
+                    } else if (_elem.type === 'file') {
+                        value = _elem.files;
                     } else {
                         value = _elem.value;
                     }

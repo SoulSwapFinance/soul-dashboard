@@ -7,7 +7,7 @@ export class FileReaderP {
      *
      * @param {Blob} _blob
      * @param {String} [_encoding]
-     * @return {Promise<unknown>}
+     * @return {Promise<Object>}
      */
     readAsJSON(_blob, _encoding = 'utf-8') {
         return new Promise((_resolve, _reject) => {
@@ -26,7 +26,7 @@ export class FileReaderP {
     /**
      * @param {Blob} _blob
      * @param {String} [_encoding]
-     * @return {Promise<unknown>}
+     * @return {Promise<String>}
      */
     readAsText(_blob, _encoding = 'utf-8') {
         return new Promise((_resolve, _reject) => {
@@ -40,7 +40,7 @@ export class FileReaderP {
 
     /**
      * @param {Blob} _blob
-     * @return {Promise<unknown>}
+     * @return {Promise<String>}
      */
     readAsDataURL(_blob) {
         return new Promise((_resolve, _reject) => {
@@ -54,7 +54,7 @@ export class FileReaderP {
 
     /**
      * @param {Blob} _blob
-     * @return {Promise<unknown>}
+     * @return {Promise<ArrayBuffer>}
      */
     readAsArrayBuffer(_blob) {
         return new Promise((_resolve, _reject) => {
