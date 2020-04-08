@@ -7,6 +7,7 @@
             <div class="body">
                 <div class="tmp-tabs">
                     <h2><button @click="onPrivateKeyTabClick">Private key</button></h2>
+                    <h2><button @click="onMnemonicTabClick">Mnemonic phrase</button></h2>
                     <h2><button @click="onKeystoreTabClick">Keystore file</button></h2>
                 </div>
 
@@ -19,12 +20,13 @@
 <script>
 import FCard from '../../components/core/FCard/FCard.vue';
 import PrivateKeyForm from '../../components/forms/PrivateKeyForm.vue';
-import { findFirstFocusableDescendant } from '../../utils/aria.js';
+import MnemonicForm from '../forms/MnemonicForm.vue';
 import KeystoreForm from '../forms/KeystoreForm.vue';
+import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
 
 export default {
-    components: { KeystoreForm, PrivateKeyForm, FCard },
+    components: { KeystoreForm, MnemonicForm, PrivateKeyForm, FCard },
 
     data() {
         return {
@@ -38,6 +40,10 @@ export default {
                 case 'private-key-form':
                     return {
                         'f-form-submit': this.onPrivateKeyFormSubmit,
+                    };
+                case 'mnemonic-form':
+                    return {
+                        'f-form-submit': this.onMnemonicFormSubmit,
                     };
                 case 'keystore-form':
                     return {
@@ -61,6 +67,10 @@ export default {
             this.dCurrentComponent = 'private-key-form';
         },
 
+        onMnemonicTabClick() {
+            this.dCurrentComponent = 'mnemonic-form';
+        },
+
         onKeystoreTabClick() {
             this.dCurrentComponent = 'keystore-form';
         },
@@ -77,6 +87,10 @@ export default {
                     },
                 });
             }
+        },
+
+        onMnemonicFormSubmit(_event) {
+            this.onPrivateKeyFormSubmit(_event);
         },
 
         onKeystoreFormSubmit(_event) {

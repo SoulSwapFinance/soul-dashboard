@@ -1,5 +1,11 @@
+// import Bip39 from 'bip39';
+const bip39 = require('bip39');
+const Hdkey = require('hdkey');
+const ethUtil = require('ethereumjs-util');
+
 // const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
 const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})/;
+const mnemonicRE = /^[ a-z]+$/;
 
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
@@ -91,6 +97,45 @@ export class FantomWeb3Wallet {
      */
     checkPrimaryPassword(_pwd) {
         return strongPasswordRE.test(_pwd) && _pwd.length < 200;
+    }
+
+    /**
+     * Test and correct mnemonic phrase - must have 12 or 24 words ([a-z]) separated by space
+     *
+     * @param {String} _mnemonic
+     * @return {String} Corrected mnemonic or empty string.
+     */
+    correctMnemonic(_mnemonic) {
+        const mnemT = _mnemonic.trim();
+        let mnemonic = '';
+        let mnemArr;
+
+        if (mnemonicRE.test(mnemT)) {
+            mnemArr = mnemT.split(/\s+/g);
+            if (mnemArr.length === 12 || mnemArr.length === 24) {
+                mnemonic = mnemArr.join(' ');
+            }
+        }
+
+        return mnemonic;
+    }
+
+    /**
+     * Convert mnemonic phrase to public and private key
+     *
+     * @param {String} _mnemonic
+     * @return {Promise<{privateKey: string, publicAddress: string}>}
+     */
+    async mnemonicToKeys(_mnemonic) {
+        const seed = await bip39.mnemonicToSeed(_mnemonic);
+        const root = Hdkey.fromMasterSeed(seed);
+        const addrNode = root.derive("m/44'/60'/0'/0/0");
+        const pubKey = ethUtil.privateToPublic(addrNode._privateKey);
+        const addr = ethUtil.publicToAddress(pubKey).toString('hex');
+        const publicAddress = ethUtil.toChecksumAddress(addr);
+        const privateKey = ethUtil.bufferToHex(addrNode._privateKey);
+
+        return { publicAddress, privateKey };
     }
 
     /**
