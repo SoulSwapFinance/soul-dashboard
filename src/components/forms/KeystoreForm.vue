@@ -13,6 +13,7 @@
                         accept="application/json"
                         @change="onKeystoreFileChange"
                     />
+                    <div v-if="dKeystoreErrorMsg" class="tmp-error">{{ dKeystoreErrorMsg }}</div>
                     <br />
                     <label for="pwd">Enter your wallet password</label>
                     <input
@@ -51,6 +52,7 @@ export default {
         return {
             dPrimaryPwdOk: true,
             dSubmitDisabled: true,
+            dKeystoreErrorMsg: '',
             dErrorMsg: '',
         };
     },
@@ -84,9 +86,11 @@ export default {
             if (files.length === 1) {
                 try {
                     this._keystore = await this._fileReader.readAsJSON(files[0]);
+                    this.dKeystoreErrorMsg = '';
                     this.checkForm();
                 } catch (e) {
                     this._keystore = null;
+                    this.dKeystoreErrorMsg = 'Not valid JSON file.';
                     this.checkForm();
                 }
             }
@@ -95,11 +99,14 @@ export default {
         onPwdInput(_event) {
             this._pwd = _event.target.value;
 
-            this.dPrimaryPwdOk = this.$fWallet.checkPrimaryPassword(this._pwd);
+            this.dPrimaryPwdOk = this._pwd.length > 0;
 
+            /*
+            this.dPrimaryPwdOk = this.$fWallet.checkPrimaryPassword(this._pwd);
             if (!this.dPrimaryPwdOk) {
                 this._pwd = '';
             }
+            */
 
             this.checkForm();
         },

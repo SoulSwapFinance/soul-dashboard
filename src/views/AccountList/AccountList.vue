@@ -22,7 +22,7 @@
                             </router-link>
                             <br /><br />
                             <span class="label">Balance</span>
-                            <span class="fs-big">{{ account.balance }} FTM</span>
+                            <span class="fs-big">{{ account.balanceFTM }} FTM</span>
                         </h3>
                     </f-card>
                 </li>
