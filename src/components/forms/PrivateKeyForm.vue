@@ -10,6 +10,8 @@
                 </div>
 
                 <div class="footer">
+                    <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
+
                     <button type="submit" class="large" :disabled="dDisabled">
                         Unlock wallet
                     </button>
@@ -21,6 +23,7 @@
 
 <script>
 import FForm from '../core/FForm/FForm.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -31,6 +34,7 @@ export default {
         return {
             dPk: '',
             dDisabled: true,
+            dErrorMsg: '',
         };
     },
 
@@ -38,12 +42,23 @@ export default {
         cPk() {
             return this.$fWallet.isPrivateKey(this.dPk.trim());
         },
+        ...mapGetters(['getAccountByAddress']),
     },
 
     methods: {
         onFormSubmit(_event) {
-            _event.detail.data.pk = this.cPk;
-            this.$emit('f-form-submit', _event);
+            const pk = this.cPk;
+            const account = this.$fWallet.restoreAccountByPrivateKey(pk);
+
+            this.dErrorMsg = '';
+
+            if (this.getAccountByAddress(account.address)) {
+                this.dErrorMsg = 'An account with this address already exist';
+                this.dPk = '';
+            } else {
+                _event.detail.data.pk = pk;
+                this.$emit('f-form-submit', _event);
+            }
         },
 
         onPkInput() {

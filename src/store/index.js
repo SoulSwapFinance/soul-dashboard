@@ -49,6 +49,14 @@ export const store = new Vuex.Store({
         currentAccount(_state) {
             return _state.activeAccountIndex > -1 ? _state.accounts[_state.activeAccountIndex] : null;
         },
+
+        getAccountByAddress(_state) {
+            return (_address) => {
+                const address = fWallet.toChecksumAddress(_address);
+
+                return _state.accounts.find((_item) => _item.address === address);
+            };
+        },
     },
 
     mutations: {

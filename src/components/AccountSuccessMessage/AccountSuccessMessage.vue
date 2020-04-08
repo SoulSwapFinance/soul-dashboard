@@ -2,7 +2,7 @@
     <div class="account-success-message">
         <f-card>
             <h2 class="align-center">You're all set!</h2>
-            <p>You have successfully created your wallet.</p>
+            <p>{{ cMsgT }}</p>
             <router-link
                 :to="{
                     name: 'account',
@@ -23,9 +23,23 @@ export default {
     components: { FCard },
 
     props: {
+        // created from restore account view
+        restoreAccount: {
+            type: Boolean,
+            default: false,
+        },
+        // account address
         address: {
             type: String,
             default: '',
+        },
+    },
+
+    computed: {
+        cMsgT() {
+            return this.restoreAccount
+                ? 'You have successfully restored your wallet.'
+                : 'You have successfully created your wallet.';
         },
     },
 };

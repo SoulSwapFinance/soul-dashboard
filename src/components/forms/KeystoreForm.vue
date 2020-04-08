@@ -42,6 +42,7 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 import { FileReaderP } from '../../utils/file-reader.js';
+import { mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -57,13 +58,9 @@ export default {
         };
     },
 
-    /*
     computed: {
-        cPk() {
-            return this.$fWallet.isPrivateKey(this.dPwd.trim());
-        },
+        ...mapGetters(['getAccountByAddress']),
     },
-    */
 
     created() {
         this._fileReader = new FileReaderP();
@@ -112,13 +109,16 @@ export default {
         },
 
         onFormSubmit(_event) {
-            console.log(this._keystore, this._pwd);
             try {
                 const account = this.$fWallet.decryptFromKeystore(this._keystore, this._pwd);
 
                 if (account) {
-                    _event.detail.data.keystore = this._keystore;
-                    this.$emit('f-form-submit', _event);
+                    if (this.getAccountByAddress(account.address)) {
+                        this.dErrorMsg = 'An account with this address already exist';
+                    } else {
+                        _event.detail.data.keystore = this._keystore;
+                        this.$emit('f-form-submit', _event);
+                    }
                 }
 
                 this._keystore = null;

@@ -33,6 +33,7 @@ export default {
                 case 'account-success-message':
                     return {
                         address: this._address,
+                        restoreAccount: true,
                     };
                 default:
                     return null;
