@@ -17,6 +17,7 @@
                                     params: { address: account.address },
                                 }"
                                 class="break-word fs-big"
+                                aria-label="Address"
                             >
                                 {{ account.address }}
                             </router-link>

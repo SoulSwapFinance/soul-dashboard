@@ -46,6 +46,8 @@
 
 <script>
 import FForm from '../core/FForm/FForm.vue';
+import { ADD_ACCOUNT } from '../../store/actions.type.js';
+import fileDownload from 'js-file-download';
 
 export default {
     components: {
@@ -57,6 +59,11 @@ export default {
         restoreAccount: {
             type: Boolean,
             default: false,
+        },
+        // private key
+        privateKey: {
+            type: String,
+            default: '',
         },
     },
 
@@ -94,6 +101,17 @@ export default {
             return passwordsOk;
         },
 
+        getKeystoreFileName(_publicAddress) {
+            return `UTC--${new Date().toISOString()} -- ${_publicAddress}`;
+        },
+
+        downloadKeystore(_keystore) {
+            fileDownload(
+                JSON.stringify(_keystore),
+                `${this.getKeystoreFileName(this.$fWallet.toChecksumAddress(_keystore.address))}.json`
+            );
+        },
+
         onFormInput() {
             this.dSubmitDisabled = !(this.checkPasswords() && this.dConfirmation);
         },
@@ -102,9 +120,54 @@ export default {
             this.dSubmitDisabled = !(this.checkPasswords() && this.dConfirmation);
         },
 
-        onFormSubmit(_event) {
+        async onFormSubmit(_event) {
+            const pwd = _event.detail.data.primaryPwd;
+            let account = null;
+            let keystore = null;
+            const fWallet = this.$fWallet;
+
             if (this.checkPasswords() && this.dConfirmation) {
-                this.$emit('f-form-submit', _event);
+                if (pwd) {
+                    if (this.privateKey) {
+                        // from restore account - private key, mnemonic
+                        keystore = fWallet.encryptToKeystore(this.privateKey, pwd);
+                    } else if (this.restoreAccount) {
+                        // from restore account - keystore
+                        account = fWallet.createAccount();
+                        keystore = fWallet.encryptToKeystore(account.privateKey, pwd);
+
+                        account = null;
+                    }
+
+                    if (keystore) {
+                        this.downloadKeystore(keystore);
+
+                        if (this.restoreAccount) {
+                            // save account
+                            this.$store.dispatch(ADD_ACCOUNT, keystore);
+                            // go to success view
+                            this.$emit('change-component', {
+                                detail: {
+                                    from: 'create-password-form',
+                                    to: 'account-success-message',
+                                    data: {
+                                        address: fWallet.toChecksumAddress(keystore.address),
+                                    },
+                                },
+                            });
+                        }
+                    } else if (!this.restoreAccount) {
+                        // create new account
+                        account = await this.$fWallet.createMnemonic(pwd);
+                        this.downloadKeystore(account.keystore);
+                        this.$emit('change-component', {
+                            detail: {
+                                from: 'create-password-form',
+                                data: { account },
+                            },
+                        });
+                    }
+                }
             }
         },
     },

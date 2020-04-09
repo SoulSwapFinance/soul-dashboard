@@ -139,6 +139,30 @@ export class FantomWeb3Wallet {
     }
 
     /**
+     * Create mnemonic phrase and get private key and keystore file.
+     *
+     * @param {String} _pwd
+     * @return {Promise<{privateKey: string, mnemonic: string, keystore: EncryptedKeystoreV3Json}>}
+     */
+    async createMnemonic(_pwd) {
+        const mnemonic = bip39.generateMnemonic(256);
+        const { privateKey } = await this.mnemonicToKeys(mnemonic);
+        const keystore = fWallet.encryptToKeystore(privateKey, _pwd);
+
+        return { privateKey, mnemonic, keystore };
+    }
+
+    /**
+     * Split mnemonic phrase.
+     *
+     * @param {String} _mnemonic
+     * @return {Array}
+     */
+    getMnemonicArray(_mnemonic) {
+        return _mnemonic ? _mnemonic.split(/\s+/g) : [];
+    }
+
+    /**
      * @param {String} _key
      * @return {String}
      */

@@ -2,7 +2,7 @@
     <div id="app">
         <!--            <router-view :key="$route.path"></router-view>-->
 
-        <router-view></router-view>
+        <router-view aria-live="polite"></router-view>
 
         <!--
         <f-header></f-header>

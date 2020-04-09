@@ -1,0 +1,25 @@
+@import "../../assets/scss/vars";
+
+.mnemonic-phrase {
+    ul.phrase-list {
+        margin: 32px 0;
+
+        //@include fluid-items(128px, 32px, 32px);
+        @include fluid-items(144px, 16px, 16px);
+
+        > li {
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d8d8d8;
+
+            &:focus {
+                background-color: #eee;
+            }
+
+            .num {
+                opacity: 0.5;
+                display: inline-block;
+                min-width: 20px;
+            }
+        }
+    }
+}

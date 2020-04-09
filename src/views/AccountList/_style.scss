@@ -18,10 +18,7 @@
         max-width: 770px;
 
         > ul {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-column-gap: 32px;
-            grid-row-gap: 32px;
+            @include fluid-items(300px, 32px, 32px);
         }
     }
 }

@@ -1,19 +1,12 @@
 <template>
     <div class="restore-account-tabs">
-        <f-card class="window">
-            <div class="header">
-                <h1>Restore wallet</h1>
-            </div>
-            <div class="body">
-                <div class="tmp-tabs">
-                    <h2><button @click="onPrivateKeyTabClick">Private key</button></h2>
-                    <h2><button @click="onMnemonicTabClick">Mnemonic phrase</button></h2>
-                    <h2><button @click="onKeystoreTabClick">Keystore file</button></h2>
-                </div>
+        <div class="tmp-tabs">
+            <h2><button @click="onKeystoreTabClick">Keystore file</button></h2>
+            <h2><button @click="onMnemonicTabClick">Mnemonic phrase</button></h2>
+            <h2><button @click="onPrivateKeyTabClick">Private key</button></h2>
+        </div>
 
-                <component :is="dCurrentComponent" v-on="cCurrentComponentListeners"></component>
-            </div>
-        </f-card>
+        <component :is="dCurrentComponent" v-on="cCurrentComponentListeners"></component>
     </div>
 </template>
 
@@ -30,7 +23,7 @@ export default {
 
     data() {
         return {
-            dCurrentComponent: 'private-key-form',
+            dCurrentComponent: 'keystore-form',
         };
     },
 
@@ -82,7 +75,7 @@ export default {
                 this.$emit('change-component', {
                     detail: {
                         from: 'restore-account-tabs',
-                        to: 'create-password',
+                        to: 'create-password-form',
                         data: { pk },
                     },
                 });

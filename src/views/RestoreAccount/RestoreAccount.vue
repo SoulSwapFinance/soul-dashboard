@@ -1,20 +1,28 @@
 <template>
     <div class="restore-account-view">
-        <component
-            :is="dCurrentComponent"
-            v-bind="cCurrentComponentProperties"
-            @change-component="onChangeComponent"
-        ></component>
+        <f-card class="window">
+            <div class="header">
+                <h1>Restore wallet</h1>
+            </div>
+            <div class="body">
+                <component
+                    :is="dCurrentComponent"
+                    v-bind="cCurrentComponentProperties"
+                    @change-component="onChangeComponent"
+                ></component>
+            </div>
+        </f-card>
     </div>
 </template>
 
 <script>
 import RestoreAccountTabs from '../../components/RestoreAccountTabs/RestoreAccountTabs.vue';
-import CreatePassword from '../../components/CreatePassword/CreatePassword.vue';
 import AccountSuccessMessage from '../../components/AccountSuccessMessage/AccountSuccessMessage.vue';
+import CreatePasswordForm from '../../components/forms/CreatePasswordForm.vue';
+import FCard from '../../components/core/FCard/FCard.vue';
 
 export default {
-    components: { AccountSuccessMessage, RestoreAccountTabs, CreatePassword },
+    components: { FCard, CreatePasswordForm, AccountSuccessMessage, RestoreAccountTabs },
 
     data() {
         return {
@@ -25,7 +33,7 @@ export default {
     computed: {
         cCurrentComponentProperties() {
             switch (this.dCurrentComponent) {
-                case 'create-password':
+                case 'create-password-form':
                     return {
                         privateKey: this._pk,
                         restoreAccount: true,
@@ -65,9 +73,9 @@ export default {
         onChangeComponent(_event) {
             const data = _event.detail;
 
-            if (data.to === 'create-password') {
+            if (data.to === 'create-password-form') {
                 this._pk = data.data.pk;
-                this.dCurrentComponent = 'create-password';
+                this.dCurrentComponent = 'create-password-form';
                 this.deleteTmpProps();
             } else if (data.to === 'account-success-message') {
                 this._address = data.data.address;
@@ -79,4 +87,6 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import 'style';
+</style>

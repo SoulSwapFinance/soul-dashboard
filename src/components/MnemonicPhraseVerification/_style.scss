@@ -1,0 +1,31 @@
+@import "../../assets/scss/vars";
+
+.mnemonic-phrase-verification {
+    ul {
+        &.phrase-list {
+            > li {
+                min-height: 36px;
+                padding-bottom: 0;
+
+                button {
+                    float: right;
+                }
+            }
+        }
+
+        &.phrase-list-buttons {
+            > li {
+                padding-bottom: 0;
+                border-bottom: none;
+
+                button {
+                    width: 100%;
+
+                    &:not(.def)[disabled] {
+                        opacity: 0.3;
+                    }
+                }
+            }
+        }
+    }
+}

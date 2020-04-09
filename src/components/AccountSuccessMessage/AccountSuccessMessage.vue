@@ -1,26 +1,22 @@
 <template>
     <div class="account-success-message">
-        <f-card>
-            <h2 class="align-center">You're all set!</h2>
-            <p>{{ cMsgT }}</p>
-            <router-link
-                :to="{
-                    name: 'account',
-                    params: { address: this.address },
-                }"
-                class="btn large secondary"
-            >
-                Access your wallet
-            </router-link>
-        </f-card>
+        <h2 class="align-center">You're all set!</h2>
+        <p>{{ cMsgT }}</p>
+        <router-link
+            :to="{
+                name: 'account',
+                params: { address },
+            }"
+            class="btn large secondary"
+        >
+            Access your wallet
+        </router-link>
     </div>
 </template>
 
 <script>
-import FCard from '../../components/core/FCard/FCard.vue';
-
 export default {
-    components: { FCard },
+    components: {},
 
     props: {
         // created from restore account view
