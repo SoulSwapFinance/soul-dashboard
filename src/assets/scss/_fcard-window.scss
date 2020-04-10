@@ -5,9 +5,45 @@
 
     .header {
         padding: 24px;
+
+        h1 {
+            font-size: 24px;
+        }
     }
 
     .body {
-        padding: 40px;
+        position: relative;
+        padding: 40px 40px 96px 40px ;
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        width: 100%;
+        padding: 20px 40px 0 40px;
+        text-align: center;
+        //background-color: #f00;
+    }
+}
+
+@include media-max($bp-small) {
+    .f-card:not(.off).window {
+        .header {
+            padding: 20px;
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+        .body {
+            padding: 20px 20px 72px 20px;
+        }
+
+        .footer {
+            padding: 20px 20px 0 20px;
+            bottom: 20px;
+        }
     }
 }

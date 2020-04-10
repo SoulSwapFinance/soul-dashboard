@@ -1,8 +1,8 @@
 <template>
     <div class="keystore-form">
         <f-form ref="keystore-form" @f-form-submit="onFormSubmit">
-            <fieldset class="">
-                <legend>Keystore</legend>
+            <fieldset>
+                <legend class="not-visible">Keystore file</legend>
 
                 <div class="main">
                     <label for="keystore-file">Upload your keystore file</label>

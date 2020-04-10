@@ -9,7 +9,9 @@
         <ul v-if="dMnemonicToVerify" class="phrase-list no-markers" @click="onMnemonicToVerifyClick">
             <li v-for="(item, index) in dMnemonicToVerify" :key="`mn${index}`" :data-idx="index">
                 <span class="num">{{ index + 1 }}</span> {{ item }}
-                <button v-if="item" class="light same-size round small" :aria-label="`remove word ${item}`">x</button>
+                <button v-if="item" class="light same-size round small" :aria-label="`remove word ${item}`">
+                    <icon data="@/assets/svg/times.svg"></icon>
+                </button>
             </li>
         </ul>
 
@@ -25,7 +27,7 @@
             </li>
         </ul>
 
-        <div class="align-center">
+        <div class="footer">
             <!--            <button class="secondary large" @click="onSubmitButClick">Back</button> &nbsp;-->
             <button class="large" :disabled="dVerifyButDisabled" @click="onVerifyButClick">Verify</button>
         </div>

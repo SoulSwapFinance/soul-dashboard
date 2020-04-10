@@ -7,6 +7,28 @@
 
         <div class="view-account-main">
             <ul class="no-markers">
+                <li>
+                    <f-card class="center-v">
+                        <div class="row">
+                            <div class="col-12">
+                                <router-link
+                                    :to="{ name: 'create-account' }"
+                                    class="btn create-account-btn large w100p"
+                                >
+                                    Create a wallet
+                                </router-link>
+                            </div>
+                            <div class="col">
+                                <router-link
+                                    :to="{ name: 'restore-account' }"
+                                    class="btn restore-account-btn large w100p"
+                                >
+                                    Restore wallet
+                                </router-link>
+                            </div>
+                        </div>
+                    </f-card>
+                </li>
                 <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
@@ -25,22 +47,6 @@
                             <span class="label">Balance</span>
                             <span class="fs-big">{{ account.balanceFTM }} FTM</span>
                         </h3>
-                    </f-card>
-                </li>
-                <li>
-                    <f-card>
-                        <div class="row">
-                            <div class="col-12">
-                                <router-link :to="{ name: 'create-account' }" class="btn w100p">
-                                    Create wallet
-                                </router-link>
-                            </div>
-                            <div class="col">
-                                <router-link :to="{ name: 'restore-account' }" class="btn w100p">
-                                    Restore wallet
-                                </router-link>
-                            </div>
-                        </div>
                     </f-card>
                 </li>
             </ul>

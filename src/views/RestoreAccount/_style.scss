@@ -4,7 +4,7 @@
     .f-card:not(.off).window {
         .header {
             color: #fff;
-            background: #0ebec2;
+            background: $restore-account-color;
             //border-radius: $f-card-border-radius $f-card-border-radius 0 0;
             border-radius: 20px 20px 0 0;
 

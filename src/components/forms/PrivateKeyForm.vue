@@ -1,8 +1,8 @@
 <template>
     <div class="private-key-form">
         <f-form @f-form-submit="onFormSubmit">
-            <fieldset class="">
-                <legend>Private key</legend>
+            <fieldset>
+                <legend class="not-visible">Private key</legend>
 
                 <div class="main">
                     <label for="pk">Please type in your private key</label>

@@ -2,7 +2,7 @@
     <div class="keystore-password-form">
         <f-form @f-form-submit="onFormSubmit" @f-form-change="onFormChange" @f-form-input="onFormInput">
             <fieldset class="">
-                <legend>Create a keystore file and password</legend>
+                <legend><h2>Create a keystore file and password</h2></legend>
 
                 <div class="main">
                     <label for="primaryPwd">{{ cSetPasswordT }}</label>
@@ -48,6 +48,7 @@
 import FForm from '../core/FForm/FForm.vue';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
 import fileDownload from 'js-file-download';
+import { findFirstFocusableDescendant } from '../../utils/aria.js';
 
 export default {
     components: {
@@ -82,6 +83,13 @@ export default {
         cSetPasswordT() {
             return this.restoreAccount ? 'Set a new password' : 'Set a password';
         },
+    },
+
+    mounted() {
+        const el = findFirstFocusableDescendant(this.$el);
+        if (el) {
+            el.focus();
+        }
     },
 
     methods: {

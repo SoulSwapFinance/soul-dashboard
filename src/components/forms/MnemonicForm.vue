@@ -1,8 +1,8 @@
 <template>
     <div class="mnemonic-form">
         <f-form @f-form-submit="onFormSubmit">
-            <fieldset class="">
-                <legend>Mnemonic phrase</legend>
+            <fieldset>
+                <legend class="not-visible">Mnemonic phrase</legend>
 
                 <div class="main">
                     <label for="mnemonic">

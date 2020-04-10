@@ -20,5 +20,36 @@
         > ul {
             @include fluid-items(300px, 32px, 32px);
         }
+
+        .f-card {
+            height: 100%;
+        }
     }
+
+    @include buttons('.create-account-btn') {
+        font-weight: bold;
+        background-color: $create-account-color;
+    }
+
+    @include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+        background: darken($create-account-color, 10%);
+    }
+
+    @include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+        background: darken($create-account-color, 10%);
+    }
+
+    @include buttons('.restore-account-btn') {
+        font-weight: bold;
+        background-color: $restore-account-color;
+    }
+
+    @include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+        background: darken($restore-account-color, 10%);
+    }
+
+    @include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+        background: darken($restore-account-color, 10%);
+    }
+
 }
