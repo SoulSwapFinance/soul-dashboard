@@ -63,7 +63,7 @@ label.option input:checked:disabled + span {
 
 label.option > span.checkbox {
     border: $input-border-width solid $input-border-color;
-    border-radius: $input-border-radius;
+    border-radius: $checkbox-radius;
 }
 
 label.option > span.checkbox::before {

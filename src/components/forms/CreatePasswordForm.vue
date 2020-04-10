@@ -26,12 +26,13 @@
                         :invalid="!dSecondaryPwdOk"
                         :aria-invalid="!dSecondaryPwdOk"
                     />
-                    <br />
-                    <input id="confirmation" v-model="dConfirmation" type="checkbox" name="confirmation" />
-                    <label for="confirmation">
+                    <br /><br />
+
+                    <f-checkbox v-model="dConfirmation" name="confirmation">
                         I made a backup of the keystore file and saved the password in a safe.
-                    </label>
-                    <br />I understand that I will need the password and the keystore file to access my wallet.
+                        <br />
+                        I understand that I will need the password and the keystore file to access my wallet.
+                    </f-checkbox>
                 </div>
 
                 <div class="footer">
@@ -49,10 +50,12 @@ import FForm from '../core/FForm/FForm.vue';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
 import fileDownload from 'js-file-download';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
+import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 
 export default {
     components: {
         FForm,
+        FCheckbox,
     },
 
     props: {
