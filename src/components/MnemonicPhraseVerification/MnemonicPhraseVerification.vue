@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { shuffle } from '../../utils/array.js';
+// import { shuffle } from '../../utils/array.js';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
 
 export default {
@@ -89,7 +89,7 @@ export default {
          * @param {String} _word
          */
         pickWord(_word) {
-            const mnemonic = this.findShuffledMnemonicByWord(_word);
+            const mnemonic = this.findShuffledMnemonicByWord(_word, false);
 
             if (mnemonic) {
                 this.dMnemonicToVerify[this._pickedWordsCount] = mnemonic.word;
@@ -110,7 +110,7 @@ export default {
          */
         deleteWord(_idx) {
             const word = this.dMnemonicToVerify[_idx];
-            const mnemonic = this.findShuffledMnemonicByWord(word);
+            const mnemonic = this.findShuffledMnemonicByWord(word, true);
 
             if (mnemonic) {
                 this.dMnemonicToVerify.splice(_idx, 1);
@@ -128,10 +128,11 @@ export default {
 
         /**
          * @param {String} _word
+         * @param {Boolean} _disabled
          * @return {Array}
          */
-        findShuffledMnemonicByWord(_word) {
-            return this.dShuffledMnemonic.find((_item) => _item.word === _word);
+        findShuffledMnemonicByWord(_word, _disabled) {
+            return this.dShuffledMnemonic.find((_item) => _item.word === _word && _item.disabled === _disabled);
         },
 
         /**
@@ -141,7 +142,8 @@ export default {
         getMnemonicArrayShuffled(_mnemonic) {
             const mnemonicArray = this.$fWallet.getMnemonicArray(_mnemonic);
 
-            shuffle(mnemonicArray);
+            // shuffle(mnemonicArray);
+            mnemonicArray.sort();
 
             return mnemonicArray.map((_item) => {
                 return {
