@@ -36,3 +36,10 @@
         }
     }
 }
+
+@include media-max($bp-small) {
+    .f-header {
+        display: none;
+    }
+}
+

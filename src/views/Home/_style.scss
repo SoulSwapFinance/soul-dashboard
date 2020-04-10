@@ -23,7 +23,7 @@
 @include media-max($bp-small) {
     .view-home {
         &::before {
-            height: 424px;
+            height: 360px;
         }
     }
 }

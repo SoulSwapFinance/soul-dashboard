@@ -15,6 +15,7 @@
                     >
                         <icon data="@/assets/svg/upload.svg" width="20" height="20"></icon> &nbsp; Upload keystore file
                     </f-file-input-button>
+                    <div v-if="dKeystoreUploadMsg" class="success-msg">{{ dKeystoreUploadMsg }}</div>
                     <br />
 
                     <div v-if="dKeystoreErrorMsg" class="tmp-error">{{ dKeystoreErrorMsg }}</div>
@@ -61,6 +62,7 @@ export default {
             dPrimaryPwdOk: true,
             dSubmitDisabled: true,
             dKeystoreErrorMsg: '',
+            dKeystoreUploadMsg: '',
             dErrorMsg: '',
         };
     },
@@ -91,6 +93,7 @@ export default {
                 try {
                     this._keystore = await this._fileReader.readAsJSON(files[0]);
                     this.dKeystoreErrorMsg = '';
+                    this.dKeystoreUploadMsg = 'Keystore sucessfully loaded';
                     this.checkForm();
                 } catch (e) {
                     this._keystore = null;

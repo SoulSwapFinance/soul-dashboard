@@ -83,6 +83,8 @@ a:not(.btn):hover {
     color: $error-color;
     font-weight: bold;
     padding-bottom: 8px;
+    padding-top: 4px;
+    text-align: center;
 }
 
 @if $IS_CHROME_EXTENSION == true {

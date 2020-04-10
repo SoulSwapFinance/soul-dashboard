@@ -13,3 +13,10 @@
         --f-card-padding: 16px;
     }
 }
+
+@include media-max($bp-small) {
+    :root {
+        //--f-header-height: 52px;
+        --f-header-height: 0;
+    }
+}
