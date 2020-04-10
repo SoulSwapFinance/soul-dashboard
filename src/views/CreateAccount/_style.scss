@@ -10,6 +10,26 @@
 
             h1 {
                 margin-bottom: 0;
+
+                .steps {
+                    padding-left: 24px;
+
+                    .count {
+                        opacity: 0.6;
+                    }
+                }
+
+                .router-link {
+                    color: #fff;
+                    float: right;
+                    opacity: 0.6;
+
+                    transition: opacity $transition-length $transition-func;
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
             }
         }
 

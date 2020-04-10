@@ -53,3 +53,15 @@
     }
 
 }
+
+@include media-max($bp-small) {
+    .account-list-view {
+        .intro {
+            padding: 32px 0;
+
+            h1 {
+                font-size: 40px;
+            }
+        }
+    }
+}

@@ -2,7 +2,13 @@
     <div class="create-account-view">
         <f-card class="window">
             <div class="header">
-                <h1>Create a new wallet</h1>
+                <h1>
+                    Create a new wallet
+                    <span class="steps"> {{ dStep }} <span class="count">/ 4</span> </span>
+                    <router-link to="/" class="router-link">
+                        <icon data="@/assets/svg/times.svg" width="24" height="24"></icon>
+                    </router-link>
+                </h1>
             </div>
             <div class="body">
                 <component
@@ -28,6 +34,7 @@ export default {
     data() {
         return {
             dCurrentComponent: 'create-password-form',
+            dStep: 1,
         };
     },
 
@@ -82,12 +89,15 @@ export default {
             if (data.from === 'create-password-form') {
                 this._account = data.data.account;
                 this.dCurrentComponent = 'mnemonic-phrase';
+                this.dStep = 2;
             } else if (data.from === 'mnemonic-phrase') {
                 this._account = data.data.account;
                 this.dCurrentComponent = 'mnemonic-phrase-verification';
+                this.dStep = 3;
             } else if (data.from === 'mnemonic-phrase-verification') {
                 this._address = data.data.address;
                 this.dCurrentComponent = 'account-success-message';
+                this.dStep = 4;
             }
 
             this.deleteTmpProps();

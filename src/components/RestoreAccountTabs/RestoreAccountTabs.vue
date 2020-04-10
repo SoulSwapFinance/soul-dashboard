@@ -58,14 +58,17 @@ export default {
     methods: {
         onPrivateKeyTabClick() {
             this.dCurrentComponent = 'private-key-form';
+            this.$emit('steps-count', 3);
         },
 
         onMnemonicTabClick() {
             this.dCurrentComponent = 'mnemonic-form';
+            this.$emit('steps-count', 3);
         },
 
         onKeystoreTabClick() {
             this.dCurrentComponent = 'keystore-form';
+            this.$emit('steps-count', 2);
         },
 
         onPrivateKeyFormSubmit(_event) {

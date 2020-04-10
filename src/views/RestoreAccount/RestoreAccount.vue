@@ -2,13 +2,22 @@
     <div class="restore-account-view">
         <f-card class="window">
             <div class="header">
-                <h1>Restore wallet</h1>
+                <h1>
+                    Restore wallet
+                    <span class="steps">
+                        {{ dStep }} <span class="count">/ {{ dStepsCount }}</span>
+                    </span>
+                    <router-link to="/" class="router-link">
+                        <icon data="@/assets/svg/times.svg" width="24" height="24"></icon>
+                    </router-link>
+                </h1>
             </div>
             <div class="body">
                 <component
                     :is="dCurrentComponent"
                     v-bind="cCurrentComponentProperties"
                     @change-component="onChangeComponent"
+                    @steps-count="onStepsCount"
                 ></component>
             </div>
         </f-card>
@@ -27,6 +36,8 @@ export default {
     data() {
         return {
             dCurrentComponent: 'restore-account-tabs',
+            dStep: 1,
+            dStepsCount: 2,
         };
     },
 
@@ -77,11 +88,17 @@ export default {
                 this._pk = data.data.pk;
                 this.dCurrentComponent = 'create-password-form';
                 this.deleteTmpProps();
+                this.dStep++;
             } else if (data.to === 'account-success-message') {
                 this._address = data.data.address;
                 this.dCurrentComponent = 'account-success-message';
                 this.deleteTmpProps();
+                this.dStep++;
             }
+        },
+
+        onStepsCount(_value) {
+            this.dStepsCount = _value;
         },
     },
 };

@@ -5,6 +5,8 @@
                 <legend class="not-visible">Keystore file</legend>
 
                 <div class="main">
+                    <br />
+
                     <f-file-input-button
                         name="keystore-file"
                         accept="application/json"
