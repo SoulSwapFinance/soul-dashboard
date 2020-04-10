@@ -5,16 +5,19 @@
                 <legend class="not-visible">Keystore file</legend>
 
                 <div class="main">
-                    <label for="keystore-file">Upload your keystore file</label>
-                    <input
-                        id="keystore-file"
-                        type="file"
+                    <f-file-input-button
                         name="keystore-file"
                         accept="application/json"
+                        class="secondary large w100p"
                         @change="onKeystoreFileChange"
-                    />
+                    >
+                        <icon data="@/assets/svg/upload.svg" width="20" height="20"></icon> &nbsp; Upload keystore file
+                    </f-file-input-button>
+                    <br />
+
                     <div v-if="dKeystoreErrorMsg" class="tmp-error">{{ dKeystoreErrorMsg }}</div>
                     <br />
+
                     <label for="pwd">Enter your wallet password</label>
                     <input
                         id="pwd"
@@ -41,12 +44,14 @@
 
 <script>
 import FForm from '../core/FForm/FForm.vue';
+import FFileInputButton from '../core/FFileInputButton/FFileInputButton.vue';
 import { FileReaderP } from '../../utils/file-reader.js';
 import { mapGetters } from 'vuex';
 
 export default {
     components: {
         FForm,
+        FFileInputButton,
     },
 
     data() {

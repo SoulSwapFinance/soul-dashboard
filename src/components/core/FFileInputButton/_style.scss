@@ -1,0 +1,17 @@
+.f-file-input-btn {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer !important;
+
+    input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+        font-size: 80px;
+        cursor: pointer !important;
+        opacity: 0;
+    }
+}

@@ -82,6 +82,7 @@ a:not(.btn):hover {
 .tmp-error {
     color: $error-color;
     font-weight: bold;
+    padding-bottom: 8px;
 }
 
 @if $IS_CHROME_EXTENSION == true {
