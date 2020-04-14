@@ -8,13 +8,20 @@
                     <label for="mnemonic">
                         Please type in your 12 or 24 word mnemonic phrase, all lower-case, separate by single spaces
                     </label>
-                    <textarea id="mnemonic" v-model="dMnemonic" name="mnemonic" cols="30" rows="10"></textarea>
+                    <textarea
+                        id="mnemonic"
+                        v-model="dMnemonic"
+                        class="inp large"
+                        name="mnemonic"
+                        cols="30"
+                        rows="10"
+                    ></textarea>
                 </div>
 
                 <div class="footer">
                     <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
 
-                    <button type="submit" class="large" :disabled="dDisabled">
+                    <button type="submit" class="btn large" :disabled="dDisabled">
                         Unlock wallet
                     </button>
                 </div>

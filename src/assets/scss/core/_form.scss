@@ -1,6 +1,5 @@
-form input:not(.def):not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
-form textarea:not(.def), form select:not(.def),
-form zpe-input {
+form .inp, form textarea, form select,
+form .f-input {
     width: 100%;
     min-width: 0;
 }

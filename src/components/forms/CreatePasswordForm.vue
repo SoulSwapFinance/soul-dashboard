@@ -5,30 +5,32 @@
                 <legend><h2>Create a keystore file and password</h2></legend>
 
                 <div class="main">
-                    <label for="primaryPwd">{{ cSetPasswordT }}</label>
-                    <input
-                        id="primaryPwd"
-                        v-model="dPrimaryPwd"
+                    <f-input
+                        v-model="primaryPwd"
+                        :label="cSetPasswordT"
                         type="password"
-                        class="large"
+                        field-size="large"
                         name="primaryPwd"
-                        :invalid="!dPrimaryPwdOk"
-                        :aria-invalid="!dPrimaryPwdOk"
+                        error-message="Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a symbol and a number"
+                        info-message="Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a symbol and a number"
+                        :validator="checkPrimaryPassword"
+                        validate-on-input
+                        hide-info-on-error
                     />
                     <br />
-                    <label for="secondaryPwd">Re-enter password</label>
-                    <input
-                        id="secondaryPwd"
-                        v-model="dSecondaryPwd"
+                    <f-input
+                        v-model="secondaryPwd"
+                        label="Re-enter password"
                         type="password"
-                        class="large"
+                        field-size="large"
                         name="secondaryPwd"
-                        :invalid="!dSecondaryPwdOk"
-                        :aria-invalid="!dSecondaryPwdOk"
+                        error-message="The entered password does not match"
+                        :validator="checkSecondaryPassword"
+                        validate-on-input
                     />
                     <br /><br />
 
-                    <f-checkbox v-model="dConfirmation" name="confirmation">
+                    <f-checkbox v-model="confirmation" name="confirmation">
                         I made a backup of the keystore file and saved the password in a safe.
                         <br />
                         I understand that I will need the password and the keystore file to access my wallet.
@@ -36,7 +38,12 @@
                 </div>
 
                 <div class="footer">
-                    <button type="submit" class="large break-word" style="max-width: 100%;" :disabled="dSubmitDisabled">
+                    <button
+                        type="submit"
+                        class="btn large break-word"
+                        style="max-width: 100%;"
+                        :disabled="submitDisabled"
+                    >
                         Download keystore file and continue
                     </button>
                 </div>
@@ -51,9 +58,11 @@ import { ADD_ACCOUNT } from '../../store/actions.type.js';
 import fileDownload from 'js-file-download';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
+import FInput from '../core/FInput/FInput.vue';
 
 export default {
     components: {
+        FInput,
         FForm,
         FCheckbox,
     },
@@ -73,12 +82,10 @@ export default {
 
     data() {
         return {
-            dPrimaryPwd: '',
-            dPrimaryPwdOk: true,
-            dSecondaryPwd: '',
-            dSecondaryPwdOk: true,
-            dConfirmation: false,
-            dSubmitDisabled: true,
+            primaryPwd: '',
+            secondaryPwd: '',
+            confirmation: false,
+            submitDisabled: true,
         };
     },
 
@@ -96,22 +103,6 @@ export default {
     },
 
     methods: {
-        checkPasswords() {
-            let passwordsOk = false;
-
-            this.dPrimaryPwdOk = this.$fWallet.checkPrimaryPassword(this.dPrimaryPwd);
-
-            if (this.dPrimaryPwdOk) {
-                this.dSecondaryPwdOk = this.dPrimaryPwd === this.dSecondaryPwd;
-                passwordsOk = this.dSecondaryPwdOk;
-            } else {
-                passwordsOk = false;
-                // this.dSecondaryPwdOk = true;
-            }
-
-            return passwordsOk;
-        },
-
         getKeystoreFileName(_publicAddress) {
             return `UTC--${new Date().toISOString()} -- ${_publicAddress}`;
         },
@@ -123,12 +114,28 @@ export default {
             );
         },
 
+        checkPrimaryPassword(_value) {
+            return this.$fWallet.checkPrimaryPassword(_value);
+        },
+
+        checkSecondaryPassword(_value) {
+            return _value === this.primaryPwd;
+        },
+
+        checkPasswords() {
+            return this.checkPrimaryPassword(this.primaryPwd) && this.checkSecondaryPassword(this.secondaryPwd);
+        },
+
+        validate() {
+            return this.checkPasswords() && this.confirmation;
+        },
+
         onFormInput() {
-            this.dSubmitDisabled = !(this.checkPasswords() && this.dConfirmation);
+            this.submitDisabled = !this.validate();
         },
 
         onFormChange() {
-            this.dSubmitDisabled = !(this.checkPasswords() && this.dConfirmation);
+            this.submitDisabled = !this.validate();
         },
 
         async onFormSubmit(_event) {
@@ -137,7 +144,7 @@ export default {
             let keystore = null;
             const fWallet = this.$fWallet;
 
-            if (this.checkPasswords() && this.dConfirmation) {
+            if (this.validate()) {
                 if (pwd) {
                     if (this.privateKey) {
                         // from restore account - private key, mnemonic

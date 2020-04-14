@@ -21,11 +21,10 @@
                     <div v-if="dKeystoreErrorMsg" class="tmp-error">{{ dKeystoreErrorMsg }}</div>
                     <br />
 
-                    <label for="pwd">Enter your wallet password</label>
-                    <input
-                        id="pwd"
+                    <f-input
                         type="password"
-                        class="large"
+                        label="Enter your wallet password"
+                        field-size="large"
                         name="pwd"
                         :invalid="!dPrimaryPwdOk"
                         :aria-invalid="!dPrimaryPwdOk"
@@ -36,7 +35,7 @@
                 <div class="footer">
                     <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
 
-                    <button type="submit" class="large" :disabled="dSubmitDisabled">
+                    <button type="submit" class="btn large" :disabled="dSubmitDisabled">
                         Unlock wallet
                     </button>
                 </div>
@@ -50,9 +49,11 @@ import FForm from '../core/FForm/FForm.vue';
 import FFileInputButton from '../core/FFileInputButton/FFileInputButton.vue';
 import { FileReaderP } from '../../utils/file-reader.js';
 import { mapGetters } from 'vuex';
+import FInput from '../core/FInput/FInput.vue';
 
 export default {
     components: {
+        FInput,
         FForm,
         FFileInputButton,
     },

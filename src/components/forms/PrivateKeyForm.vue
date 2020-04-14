@@ -5,14 +5,20 @@
                 <legend class="not-visible">Private key</legend>
 
                 <div class="main">
-                    <label for="pk">Please type in your private key</label>
-                    <input id="pk" v-model="dPk" type="text" class="large" name="pk" @input="onPkInput" />
+                    <f-input
+                        v-model="dPk"
+                        type="text"
+                        label="Please type in your private key"
+                        field-size="large"
+                        name="pk"
+                        @input="onPkInput"
+                    />
                 </div>
 
                 <div class="footer">
                     <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
 
-                    <button type="submit" class="large" :disabled="dDisabled">
+                    <button type="submit" class="btn large" :disabled="dDisabled">
                         Unlock wallet
                     </button>
                 </div>
@@ -24,9 +30,11 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 import { mapGetters } from 'vuex';
+import FInput from '../core/FInput/FInput.vue';
 
 export default {
     components: {
+        FInput,
         FForm,
     },
 

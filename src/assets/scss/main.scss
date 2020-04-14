@@ -87,6 +87,14 @@ a:not(.btn):hover {
     text-align: center;
 }
 
+.f-input {
+    .error-messages-cont, .info-messages-cont {
+
+    }
+}
+
+
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;

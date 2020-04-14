@@ -1,14 +1,14 @@
 <template>
-    <span class="btn f-file-input-btn" tabindex="0" role="button">
-        <label :for="id"><slot></slot></label>
+    <span :id="id" class="btn f-file-input-btn" tabindex="0" role="button">
         <input
+            :id="cId"
             type="file"
             tabindex="-1"
             :accept="accept"
-            :multiple="multiple"
-            v-bind="cInputProps"
+            v-bind="inputProps"
             @change="onFFileInputButtonChange"
         />
+        <label :for="cId"><slot></slot></label>
     </span>
 </template>
 
@@ -19,13 +19,18 @@ export default {
     mixins: [input],
 
     props: {
+        /**
+         * SDfqwer poiuwf
+         */
         accept: {
             type: String,
             default: '',
         },
-        multiple: {
-            type: Boolean,
-            default: false,
+    },
+
+    computed: {
+        cId() {
+            return this.id + '-fi';
         },
     },
 

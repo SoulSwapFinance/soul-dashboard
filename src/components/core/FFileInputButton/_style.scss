@@ -1,7 +1,6 @@
 .f-file-input-btn {
     position: relative;
     overflow: hidden;
-    cursor: pointer !important;
 
     input[type="file"] {
         position: absolute;
@@ -11,7 +10,11 @@
         right: 0;
         z-index: 1;
         font-size: 80px;
-        cursor: pointer !important;
+        cursor: pointer;
         opacity: 0;
+
+        &::-webkit-file-upload-button {
+            cursor:pointer
+        }
     }
 }

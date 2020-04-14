@@ -1,9 +1,9 @@
 <template>
     <div class="restore-account-tabs">
         <div class="tmp-tabs">
-            <h2><button @click="onKeystoreTabClick">Keystore file</button></h2>
-            <h2><button @click="onMnemonicTabClick">Mnemonic phrase</button></h2>
-            <h2><button @click="onPrivateKeyTabClick">Private key</button></h2>
+            <h2><button class="btn" @click="onKeystoreTabClick">Keystore file</button></h2>
+            <h2><button class="btn" @click="onMnemonicTabClick">Mnemonic phrase</button></h2>
+            <h2><button class="btn" @click="onPrivateKeyTabClick">Private key</button></h2>
         </div>
 
         <component :is="dCurrentComponent" v-on="cCurrentComponentListeners"></component>

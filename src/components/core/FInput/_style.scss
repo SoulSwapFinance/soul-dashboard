@@ -1,0 +1,50 @@
+@import "variables";
+
+.f-input {
+    display: inline-block;
+    vertical-align: middle;
+
+    .inp {
+        display: flex;
+        align-items: center;
+        align-content: center;
+
+        input {
+            width: 100%;
+            font-family: inherit;
+            font-size: inherit;
+            background: none;
+            padding: 0;
+            border: none;
+
+            &:focus {
+                box-shadow: none;
+                outline: none;
+            }
+
+            &:invalid {
+                box-shadow: none;
+                outline: none;
+                border: none;
+            }
+        }
+    }
+
+    .error-messages-cont {
+        display: block;
+        color: $f-input-error-message-color;
+        padding-top: 2px;
+    }
+
+    .info-messages-cont {
+        display: block;
+        color: $f-input-info-message-color;
+        padding-top: 2px;
+    }
+
+    &.suffix-slot {
+        .inp {
+            padding-right: 0.25rem;
+        }
+    }
+}

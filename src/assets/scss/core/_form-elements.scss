@@ -57,17 +57,21 @@ textarea:not(.def), textarea:not(.def).large, textarea:not(.def).small {
     @include main-focus;
 }
 
+@include inputs('.focus') {
+    @include main-focus;
+}
+
 input[type="submit"]:not(.def):focus {
     outline: none;
 }
 
-@include inputs('[disabled]') {
+@include inputs('[disabled], .disabled') {
     border-color: $input-disabled-border-color !important;
     color: $input-disabled-color;
     background-color: $input-disabled-bg-color !important;
 }
 
-@include inputs('[readonly]') {
+@include inputs('[readonly], .readonly') {
     background: $input-readonly-bg-color;
 }
 
@@ -75,7 +79,11 @@ input[type="submit"]:not(.def):focus {
     border-color: $input-invalid-border-color;
 }
 
-@include inputs('', '.not-valid ') {
+@include inputs('.invalid') {
+    border-color: $input-invalid-border-color;
+}
+
+@include inputs('', '.invalid ') {
     border-color: $input-invalid-border-color;
 }
 
@@ -83,7 +91,11 @@ input[type="submit"]:not(.def):focus {
     box-shadow: $input-invalid-outline-shadow;
 }
 
-@include inputs(':focus', '.not-valid ') {
+@include inputs('.invalid.focus') {
+    box-shadow: $input-invalid-outline-shadow;
+}
+
+@include inputs(':focus', '.invalid ') {
     box-shadow: $input-invalid-outline-shadow;
 }
 

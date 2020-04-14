@@ -1,34 +1,24 @@
 <template>
     <label class="option">
-        <input type="checkbox" :name="name" :checked="value" :disabled="disabled" class="def" @change="onChange" />
+        <input type="checkbox" v-bind="checkboxProps" @change="onChange" />
         <span class="checkbox"></span> <slot>{{ label }}</slot>
     </label>
 </template>
 
 <script>
+import { checkbox } from '../../../mixins/checkbox.js';
+
 export default {
-    props: {
-        name: {
-            type: String,
-            default: '',
-        },
-        label: {
-            type: String,
-            default: '',
-        },
-        value: {
-            type: Boolean,
-            default: false,
-        },
-        disabled: {
-            type: Boolean,
-            default: false,
-        },
+    mixins: [checkbox],
+
+    model: {
+        prop: 'checked',
+        event: 'change',
     },
 
     methods: {
         onChange(_event) {
-            this.$emit('input', _event.target.checked);
+            this.$emit('change', _event.target.checked);
         },
     },
 };
