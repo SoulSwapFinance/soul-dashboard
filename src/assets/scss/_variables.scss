@@ -46,7 +46,9 @@ $bp-menu: 768px;
 $create-account-color: #6665dd;
 $restore-account-color: #0ebec2;
 
-$f-input-error-message-color: $error-color;
+$f-message-success-color: $restore-account-color;
+$f-message-error-color: $error-color;
+$f-message-info-color: #416ed5;
 
 // css variables
 $f-header-height: var(--f-header-height);

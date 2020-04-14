@@ -1,6 +1,6 @@
 <template>
     <span :id="id" class="f-input" :class="classes" @click="onClick">
-        <slot name="top">
+        <slot name="top" v-bind="slotProps">
             <label :for="`${id}-f-inp`">{{ label }}</label>
         </slot>
         <span class="inp" :class="inpClasses">
@@ -18,13 +18,7 @@
             />
             <slot name="suffix"></slot>
         </span>
-        <span v-if="isInvalid && errorMessage" slot="bottom" class="error-messages-cont">
-            <span class="error-message">{{ errorMessage }}</span>
-        </span>
-        <span v-if="showInfoMessage && infoMessage" slot="bottom" class="info-messages-cont">
-            <span class="info-message">{{ infoMessage }}</span>
-        </span>
-        <slot name="bottom"></slot>
+        <slot name="bottom" v-bind="slotProps"></slot>
     </span>
 </template>
 
@@ -39,15 +33,6 @@ export default {
         type: {
             type: String,
             default: 'text',
-        },
-        // error message to be displayed when input's value is invalid
-        errorMessage: {
-            type: String,
-            default: '',
-        },
-        infoMessage: {
-            type: String,
-            default: '',
         },
         // custom validator function
         validator: {
@@ -64,11 +49,6 @@ export default {
             type: Boolean,
             default: false,
         },
-        // hide info message on validation error
-        hideInfoOnError: {
-            type: Boolean,
-            default: false,
-        },
     },
 
     data() {
@@ -76,6 +56,7 @@ export default {
             val: this.value,
             isInvalid: this.invalid,
             hasFocus: false,
+            errmsgslot: 'suffix',
         };
     },
 
@@ -103,12 +84,17 @@ export default {
             return {
                 ...this.inputProps,
                 label: this.label,
-                errorMessage: this.errorMessage,
-                infoMessage: this.infoMessage,
                 validator: this.validator,
                 fieldSize: this.fieldSize,
                 validateOnInput: this.validateOnInput,
                 hideInfoOnError: this.hideInfoOnError,
+            };
+        },
+
+        slotProps() {
+            return {
+                showErrorMessage: this.isInvalid,
+                showInfoMessage: this.showInfoMessage,
             };
         },
 

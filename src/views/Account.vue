@@ -2,7 +2,7 @@
     <div class="view-account">
         <h1>Address {{ $route.params.address }}</h1>
 
-        <div v-if="!currentAccount" class="tmp-error">Bad wallet</div>
+        <f-message v-if="!currentAccount" type="error" with-icon>Bad wallet</f-message>
 
         <button @click="onRemoveAccountButClick">Remove wallet</button>
 
@@ -29,9 +29,11 @@
 
 import { REMOVE_ACTIVE_ACCOUNT, SET_ACTIVE_ACCOUNT_BY_ADDRESS } from '../store/mutations.type.js';
 import { mapGetters } from 'vuex';
+import FMessage from '../components/core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        FMessage,
         // FCard
     },
 

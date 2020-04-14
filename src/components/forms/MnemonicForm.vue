@@ -16,11 +16,11 @@
                         cols="30"
                         rows="10"
                     ></textarea>
+
+                    <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
                 </div>
 
                 <div class="footer">
-                    <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
-
                     <button type="submit" class="btn large" :disabled="dDisabled">
                         Unlock wallet
                     </button>
@@ -33,9 +33,11 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 import { mapGetters } from 'vuex';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        FMessage,
         FForm,
     },
 

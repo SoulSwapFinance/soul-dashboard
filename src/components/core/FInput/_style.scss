@@ -30,18 +30,6 @@
         }
     }
 
-    .error-messages-cont {
-        display: block;
-        color: $f-input-error-message-color;
-        padding-top: 2px;
-    }
-
-    .info-messages-cont {
-        display: block;
-        color: $f-input-info-message-color;
-        padding-top: 2px;
-    }
-
     &.suffix-slot {
         .inp {
             padding-right: 0.25rem;

@@ -79,17 +79,32 @@ a:not(.btn):hover {
     font-size: $fs-huge;
 }
 
-.tmp-error {
-    color: $error-color;
+form {
+    .f-input {
+        margin-bottom: 16px;
+
+        label {
+            display: block;
+            font-weight: bold;
+            padding-bottom: 4px;
+        }
+    }
+}
+
+.f-message {
+    width: fit-content;
+    margin: 0 auto;
+    padding-top: 8px;
     font-weight: bold;
-    padding-bottom: 8px;
-    padding-top: 4px;
-    text-align: center;
+    line-height: 1;
+    align-items: start;
 }
 
 .f-input {
-    .error-messages-cont, .info-messages-cont {
-
+    .f-message {
+        font-size: 14px;
+        width: auto;
+        margin: 0;
     }
 }
 

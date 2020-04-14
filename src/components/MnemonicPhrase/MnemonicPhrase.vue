@@ -2,9 +2,9 @@
     <div class="mnemonic-phrase" tabindex="-1">
         <h2>Your mnemonic phrase</h2>
 
-        <div class="tmp-error">
+        <f-message type="info" with-icon>
             Please backup the text below on paper and keep it somewhere secret and safe.
-        </div>
+        </f-message>
 
         <ul v-if="dMnemonicArray.length" class="phrase-list no-markers" aria-label="mnemonic phrase - list of words">
             <li v-for="(item, index) in dMnemonicArray" :key="`mn${index}`" tabindex="0" :aria-label="item">
@@ -20,8 +20,9 @@
 </template>
 
 <script>
+import FMessage from '../core/FMessage/FMessage.vue';
 export default {
-    components: {},
+    components: { FMessage },
 
     props: {
         // {privateKey: string, mnemonic: string, keystore: EncryptedKeystoreV3Json}

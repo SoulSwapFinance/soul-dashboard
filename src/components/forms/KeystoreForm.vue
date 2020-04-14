@@ -15,26 +15,30 @@
                     >
                         <icon data="@/assets/svg/upload.svg" width="20" height="20"></icon> &nbsp; Upload keystore file
                     </f-file-input-button>
-                    <div v-if="dKeystoreUploadMsg" class="success-msg">{{ dKeystoreUploadMsg }}</div>
+                    <f-message v-if="dKeystoreUploadMsg && !dKeystoreErrorMsg" type="success" with-icon>{{
+                        dKeystoreUploadMsg
+                    }}</f-message>
                     <br />
 
-                    <div v-if="dKeystoreErrorMsg" class="tmp-error">{{ dKeystoreErrorMsg }}</div>
+                    <f-message v-if="dKeystoreErrorMsg" type="error" with-icon>
+                        {{ dKeystoreErrorMsg }}
+                    </f-message>
                     <br />
 
                     <f-input
+                        v-model="pwd"
                         type="password"
                         label="Enter your wallet password"
                         field-size="large"
                         name="pwd"
-                        :invalid="!dPrimaryPwdOk"
-                        :aria-invalid="!dPrimaryPwdOk"
-                        @input="onPwdInput"
+                        validate-on-input
+                        :validator="checkPassword"
                     />
+
+                    <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
                 </div>
 
                 <div class="footer">
-                    <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
-
                     <button type="submit" class="btn large" :disabled="dSubmitDisabled">
                         Unlock wallet
                     </button>
@@ -50,9 +54,11 @@ import FFileInputButton from '../core/FFileInputButton/FFileInputButton.vue';
 import { FileReaderP } from '../../utils/file-reader.js';
 import { mapGetters } from 'vuex';
 import FInput from '../core/FInput/FInput.vue';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        FMessage,
         FInput,
         FForm,
         FFileInputButton,
@@ -65,6 +71,7 @@ export default {
             dKeystoreErrorMsg: '',
             dKeystoreUploadMsg: '',
             dErrorMsg: '',
+            pwd: '',
         };
     },
 
@@ -74,7 +81,6 @@ export default {
 
     created() {
         this._fileReader = new FileReaderP();
-        this._pwd = '';
         this._keystore = null;
     },
 
@@ -84,7 +90,15 @@ export default {
 
     methods: {
         checkForm() {
-            this.dSubmitDisabled = !this._pwd || this._keystore === null;
+            this.dSubmitDisabled = !this.pwd || this._keystore === null;
+        },
+
+        checkPassword(_value) {
+            const ok = _value.length > 0;
+
+            this.checkForm();
+
+            return ok;
         },
 
         async onKeystoreFileChange(_event) {
@@ -104,24 +118,9 @@ export default {
             }
         },
 
-        onPwdInput(_event) {
-            this._pwd = _event.target.value;
-
-            this.dPrimaryPwdOk = this._pwd.length > 0;
-
-            /*
-            this.dPrimaryPwdOk = this.$fWallet.checkPrimaryPassword(this._pwd);
-            if (!this.dPrimaryPwdOk) {
-                this._pwd = '';
-            }
-            */
-
-            this.checkForm();
-        },
-
         onFormSubmit(_event) {
             try {
-                const account = this.$fWallet.decryptFromKeystore(this._keystore, this._pwd);
+                const account = this.$fWallet.decryptFromKeystore(this._keystore, this.pwd);
 
                 if (account) {
                     if (this.getAccountByAddress(account.address)) {
@@ -133,7 +132,7 @@ export default {
                 }
 
                 this._keystore = null;
-                this._pwd = '';
+                this.pwd = '';
             } catch (_error) {
                 this.dErrorMsg = 'Bad keystore file or password.';
             }

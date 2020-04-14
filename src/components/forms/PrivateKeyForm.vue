@@ -13,11 +13,11 @@
                         name="pk"
                         @input="onPkInput"
                     />
+
+                    <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
                 </div>
 
                 <div class="footer">
-                    <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
-
                     <button type="submit" class="btn large" :disabled="dDisabled">
                         Unlock wallet
                     </button>
@@ -31,9 +31,11 @@
 import FForm from '../core/FForm/FForm.vue';
 import { mapGetters } from 'vuex';
 import FInput from '../core/FInput/FInput.vue';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        FMessage,
         FInput,
         FForm,
     },

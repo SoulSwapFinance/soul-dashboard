@@ -15,7 +15,7 @@
             </li>
         </ul>
 
-        <div v-if="dErrorMsg" class="tmp-error">{{ dErrorMsg }}</div>
+        <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
 
         <ul
             v-if="dShuffledMnemonic.length"
@@ -37,9 +37,10 @@
 <script>
 // import { shuffle } from '../../utils/array.js';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
-    components: {},
+    components: { FMessage },
 
     props: {
         // {privateKey: string, mnemonic: string, keystore: EncryptedKeystoreV3Json}
