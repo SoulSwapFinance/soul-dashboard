@@ -1,6 +1,15 @@
+import shortid from 'shortid';
+
 const uppercaseCharsRE = /([A-Z])/;
 const camelSplitRE = /[ _-]+/;
 const kebabSplitRE = /([A-Z]|[ _-]+)/;
+
+/**
+ * @return {string}
+ */
+export function getUniqueId() {
+    return shortid.generate();
+}
 
 /**
  * Stringify object, skip cyclic objects.

@@ -1,4 +1,4 @@
-import shortid from 'shortid';
+import { getUniqueId } from '../utils';
 
 // common props for custom inputs
 export const inputCommon = {
@@ -6,7 +6,7 @@ export const inputCommon = {
         id: {
             type: String,
             default() {
-                return shortid.generate();
+                return getUniqueId();
             },
         },
         type: {

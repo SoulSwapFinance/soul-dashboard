@@ -5,7 +5,7 @@
                 <legend><h2>Create a keystore file and password</h2></legend>
 
                 <div class="main">
-                    <f-input
+                    <f-password-field
                         v-model="primaryPwd"
                         :label="cSetPasswordT"
                         type="password"
@@ -24,9 +24,9 @@
                                 symbol and a number
                             </f-message>
                         </template>
-                    </f-input>
+                    </f-password-field>
 
-                    <f-input
+                    <f-password-field
                         v-model="secondaryPwd"
                         label="Re-enter password"
                         type="password"
@@ -40,7 +40,7 @@
                                 The entered password does not match
                             </f-message>
                         </template>
-                    </f-input>
+                    </f-password-field>
 
                     <f-checkbox v-model="confirmation" name="confirmation">
                         I made a backup of the keystore file and saved the password in a safe.
@@ -70,13 +70,13 @@ import { ADD_ACCOUNT } from '../../store/actions.type.js';
 import fileDownload from 'js-file-download';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
-import FInput from '../core/FInput/FInput.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 
 export default {
     components: {
+        FPasswordField,
         FMessage,
-        FInput,
         FForm,
         FCheckbox,
     },

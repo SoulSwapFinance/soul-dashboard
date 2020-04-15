@@ -30,9 +30,23 @@
         }
     }
 
+    &.prefix-slot {
+        .inp {
+            padding-left: 0.25rem;
+
+            input {
+                padding-left: 0.5rem;
+            }
+        }
+    }
+
     &.suffix-slot {
         .inp {
             padding-right: 0.25rem;
+
+            input {
+                padding-right: 0.5rem;
+            }
         }
     }
 }

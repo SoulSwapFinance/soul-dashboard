@@ -1,7 +1,8 @@
-form .inp, form textarea, form select,
-form .f-input {
-    width: 100%;
-    min-width: 0;
+form {
+    .inp, textarea, select, .f-input, .f-password-field {
+        width: 100%;
+        min-width: 0;
+    }
 }
 
 @include flexbox-cols('form:not(.normal-cols-padding) ') {

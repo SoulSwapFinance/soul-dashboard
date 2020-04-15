@@ -1,5 +1,4 @@
-import { isArray, inArray } from './index.js';
-import shortid from 'shortid';
+import { isArray, inArray, getUniqueId } from './index.js';
 
 export class Tree {
     constructor(_data, _options) {
@@ -147,7 +146,7 @@ export class Tree {
      * @private
      */
     _getId() {
-        return shortid.generate();
+        return getUniqueId();
     }
 
     /**

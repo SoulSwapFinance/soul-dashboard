@@ -11,6 +11,7 @@
                 v-bind="inputProps"
                 :value="val"
                 :aria-invalid="isInvalid"
+                :aria-describedby="ariaDescribedBy"
                 @input="onInput"
                 @change="onChange"
                 @focus="onFocus"
@@ -24,9 +25,11 @@
 
 <script>
 import { input } from '../../../mixins/input.js';
+import helpers from '../../../mixins/helpers.js';
+import { getUniqueId } from '../../../utils';
 
 export default {
-    mixins: [input],
+    mixins: [input, helpers],
 
     props: {
         // input type
@@ -57,6 +60,7 @@ export default {
             isInvalid: this.invalid,
             hasFocus: false,
             errmsgslot: 'suffix',
+            ariaDescribedBy: null,
         };
     },
 
@@ -109,11 +113,36 @@ export default {
         },
     },
 
+    mounted() {
+        const fMessage = this.getFMessage('info');
+
+        if (fMessage) {
+            const id = getUniqueId();
+            fMessage.$el.id = id;
+            this.ariaDescribedBy = id;
+        }
+    },
+
     methods: {
         validate() {
             if (this.validator) {
                 this.isInvalid = !this.validator(this.val);
             }
+        },
+
+        /**
+         * Get FMessage child component by type.
+         *
+         * @param {string} _type
+         */
+        getFMessage(_type) {
+            const fMessage = this.findChildByName('f-message');
+
+            if (fMessage && fMessage.$props.type === _type) {
+                return fMessage;
+            }
+
+            return null;
         },
 
         /**
