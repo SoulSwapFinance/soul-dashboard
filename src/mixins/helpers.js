@@ -1,6 +1,6 @@
 import { getUniqueId } from '../utils';
 
-export default {
+export const helpersMixin = {
     methods: {
         /**
          * Generate unique id if there is no 'id' property in object.

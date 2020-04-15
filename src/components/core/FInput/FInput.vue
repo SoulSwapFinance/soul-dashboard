@@ -24,12 +24,12 @@
 </template>
 
 <script>
-import { input } from '../../../mixins/input.js';
-import helpers from '../../../mixins/helpers.js';
+import { inputMixin } from '../../../mixins/input.js';
+import { helpersMixin } from '../../../mixins/helpers.js';
 import { getUniqueId } from '../../../utils';
 
 export default {
-    mixins: [input, helpers],
+    mixins: [inputMixin, helpersMixin],
 
     props: {
         // input type

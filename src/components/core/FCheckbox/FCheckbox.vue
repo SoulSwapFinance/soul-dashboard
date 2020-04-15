@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import { checkbox } from '../../../mixins/checkbox.js';
+import { checkboxMixin } from '../../../mixins/checkbox.js';
 
 export default {
-    mixins: [checkbox],
+    mixins: [checkboxMixin],
 
     model: {
         prop: 'checked',

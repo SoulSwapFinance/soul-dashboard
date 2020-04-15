@@ -1,9 +1,9 @@
-import { inputCommon } from './input-common.js';
+import { inputCommonMixin } from './input-common.js';
 
 // props for custom inputs
-export const input = {
+export const inputMixin = {
     props: {
-        ...inputCommon.props,
+        ...inputCommonMixin.props,
 
         autocomplete: {
             type: String,
@@ -32,7 +32,7 @@ export const input = {
     computed: {
         inputProps() {
             return {
-                ...inputCommon.computed.inputCommonProps.call(this),
+                ...inputCommonMixin.computed.inputCommonProps.call(this),
                 autocomplete: this.autocomplete,
                 readonly: this.readonly,
                 multiple: this.multiple,

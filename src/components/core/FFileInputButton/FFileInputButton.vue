@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import { input } from '../../../mixins/input.js';
+import { inputMixin } from '../../../mixins/input.js';
 
 export default {
-    mixins: [input],
+    mixins: [inputMixin],
 
     props: {
         /**

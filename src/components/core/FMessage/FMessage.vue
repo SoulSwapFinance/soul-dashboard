@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import helpers from '../../../mixins/helpers.js';
+import { helpersMixin } from '../../../mixins/helpers.js';
 
 export default {
-    mixins: [helpers],
+    mixins: [helpersMixin],
 
     props: {
         type: {

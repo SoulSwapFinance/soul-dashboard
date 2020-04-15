@@ -1,7 +1,7 @@
 import { getUniqueId } from '../utils';
 
 // common props for custom inputs
-export const inputCommon = {
+export const inputCommonMixin = {
     props: {
         id: {
             type: String,

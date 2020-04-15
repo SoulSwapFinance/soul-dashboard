@@ -35,13 +35,13 @@
 </template>
 
 <script>
-import { input } from '../../../mixins/input.js';
+import { inputMixin } from '../../../mixins/input.js';
 import FInput from '../FInput/FInput.vue';
 
 export default {
     components: { FInput },
 
-    mixins: [input],
+    mixins: [inputMixin],
 
     props: {
         ...FInput.props,

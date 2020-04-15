@@ -1,9 +1,9 @@
-import { inputCommon } from './input-common.js';
+import { inputCommonMixin } from './input-common.js';
 
 // props for custom inputs
-export const checkbox = {
+export const checkboxMixin = {
     props: {
-        ...inputCommon.props,
+        ...inputCommonMixin.props,
 
         checked: {
             type: Boolean,
@@ -14,7 +14,7 @@ export const checkbox = {
     computed: {
         checkboxProps() {
             return {
-                ...inputCommon.computed.inputCommonProps.call(this),
+                ...inputCommonMixin.computed.inputCommonProps.call(this),
                 checked: this.checked,
             };
         },
