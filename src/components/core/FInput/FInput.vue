@@ -43,9 +43,10 @@
 import { inputMixin } from '../../../mixins/input.js';
 import { helpersMixin } from '../../../mixins/helpers.js';
 import { getUniqueId } from '../../../utils';
+import { eventBusMixin } from '../../../mixins/event-bus.js';
 
 export default {
-    mixins: [inputMixin, helpersMixin],
+    mixins: [inputMixin, helpersMixin, eventBusMixin],
 
     props: {
         // use textarea instead of input element
@@ -134,19 +135,40 @@ export default {
         value(_val) {
             this.val = _val;
         },
+
+        isInvalid() {
+            setTimeout(() => {
+                this.setAriaDescribedBy();
+            }, 10);
+        },
     },
 
     mounted() {
-        const fMessage = this.getFMessage('info');
-
-        if (fMessage) {
-            const id = getUniqueId();
-            fMessage.$el.id = id;
-            this.ariaDescribedBy = id;
-        }
+        this.setAriaDescribedBy();
     },
 
     methods: {
+        /**
+         * Set aria-describedby attribute according to `isInvalid` property if FMessage child component exists.
+         */
+        setAriaDescribedBy() {
+            let fMessage;
+
+            if (this.isInvalid) {
+                fMessage = this.getFMessage('error');
+            } else {
+                fMessage = this.getFMessage('info');
+            }
+
+            if (fMessage) {
+                const id = getUniqueId();
+                fMessage.$el.id = id;
+                this.ariaDescribedBy = id;
+            } else {
+                this.ariaDescribedBy = null;
+            }
+        },
+
         validate() {
             if (this.validator) {
                 this.isInvalid = !this.validator(this.val);

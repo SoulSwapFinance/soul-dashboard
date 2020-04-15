@@ -9,22 +9,24 @@
             </template>
             <template #suffix="sProps">
                 <slot name="suffix" v-bind="sProps">
-                    <button
-                        v-if="dType === 'password'"
-                        class="btn same-size round small light"
-                        aria-hidden="true"
-                        @click="onSuffixClick"
-                    >
-                        <icon data="@/assets/svg/eye-slash.svg" width="16" height="16" aria-hidden="true" />
-                    </button>
-                    <button
-                        v-if="dType === 'text'"
-                        class="btn same-size round small light"
-                        aria-hidden="true"
-                        @click="onSuffixClick"
-                    >
-                        <icon data="@/assets/svg/eye.svg" width="16" height="16" aria-hidden="true" />
-                    </button>
+                    <span @click="onEyeButtonClick">
+                        <span
+                            v-if="dType === 'password'"
+                            class="btn same-size round small light"
+                            aria-hidden="true"
+                            tabindex="0"
+                        >
+                            <icon data="@/assets/svg/eye-slash.svg" width="16" height="16" aria-hidden="true" />
+                        </span>
+                        <span
+                            v-if="dType === 'text'"
+                            class="btn same-size round small light"
+                            aria-hidden="true"
+                            tabindex="0"
+                        >
+                            <icon data="@/assets/svg/eye.svg" width="16" height="16" aria-hidden="true" />
+                        </span>
+                    </span>
                 </slot>
             </template>
             <template #bottom="sProps">
@@ -62,7 +64,7 @@ export default {
     },
 
     methods: {
-        onSuffixClick() {
+        onEyeButtonClick() {
             if (this.dType === 'password') {
                 this.dType = 'text';
             } else {

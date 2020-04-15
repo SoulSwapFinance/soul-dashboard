@@ -15,7 +15,7 @@
                         validate-on-input
                     >
                         <template #bottom="sProps">
-                            <f-message v-if="sProps.showErrorMessage" type="error" with-icon>
+                            <f-message v-if="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                 Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a
                                 symbol and a number
                             </f-message>
@@ -36,7 +36,7 @@
                         validate-on-input
                     >
                         <template #bottom="sProps">
-                            <f-message v-if="sProps.showErrorMessage" type="error" with-icon>
+                            <f-message v-if="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                 The entered password does not match
                             </f-message>
                         </template>
