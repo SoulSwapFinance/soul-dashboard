@@ -146,16 +146,6 @@ export default {
         },
 
         /**
-         * Check non-empty slot existence.
-         *
-         * @param {string} _name
-         * @return {boolean}
-         */
-        hasSlot(_name = 'default') {
-            return !!this.$slots[_name] || !!this.$scopedSlots[_name];
-        },
-
-        /**
          * @param {Event} _event
          */
         onClick(_event) {

@@ -35,5 +35,15 @@ export default {
 
             return null;
         },
+
+        /**
+         * Check non-empty slot existence.
+         *
+         * @param {string} _name
+         * @return {boolean}
+         */
+        hasSlot(_name = 'default') {
+            return !!this.$slots[_name] || !!this.$scopedSlots[_name];
+        },
     },
 };

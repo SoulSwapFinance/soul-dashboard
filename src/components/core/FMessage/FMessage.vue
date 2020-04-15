@@ -31,7 +31,11 @@
 </template>
 
 <script>
+import helpers from '../../../mixins/helpers.js';
+
 export default {
+    mixins: [helpers],
+
     props: {
         type: {
             type: String,
@@ -51,18 +55,6 @@ export default {
                 'prefix-slot': this.hasSlot('prefix'),
                 'suffix-slot': this.hasSlot('suffix'),
             };
-        },
-    },
-
-    methods: {
-        /**
-         * Check non-empty slot existence.
-         *
-         * @param {string} _name
-         * @return {boolean}
-         */
-        hasSlot(_name = 'default') {
-            return !!this.$slots[_name] || !!this.$scopedSlots[_name];
         },
     },
 };
