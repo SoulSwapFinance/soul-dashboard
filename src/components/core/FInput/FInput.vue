@@ -5,18 +5,34 @@
         </slot>
         <span class="inp" :class="inpClasses">
             <slot name="prefix"></slot>
-            <input
-                :id="`${id}-f-inp`"
-                ref="input"
-                v-bind="inputProps"
-                :value="val"
-                :aria-invalid="isInvalid"
-                :aria-describedby="ariaDescribedBy"
-                @input="onInput"
-                @change="onChange"
-                @focus="onFocus"
-                @blur="onBlur"
-            />
+            <template v-if="isTextarea">
+                <textarea
+                    :id="`${id}-f-inp`"
+                    ref="input"
+                    v-bind="inputProps"
+                    :value="val"
+                    :aria-invalid="isInvalid"
+                    :aria-describedby="ariaDescribedBy"
+                    @input="onInput"
+                    @change="onChange"
+                    @focus="onFocus"
+                    @blur="onBlur"
+                ></textarea>
+            </template>
+            <template v-else>
+                <input
+                    :id="`${id}-f-inp`"
+                    ref="input"
+                    v-bind="inputProps"
+                    :value="val"
+                    :aria-invalid="isInvalid"
+                    :aria-describedby="ariaDescribedBy"
+                    @input="onInput"
+                    @change="onChange"
+                    @focus="onFocus"
+                    @blur="onBlur"
+                />
+            </template>
             <slot name="suffix"></slot>
         </span>
         <slot name="bottom" v-bind="slotProps"></slot>
@@ -32,6 +48,11 @@ export default {
     mixins: [inputMixin, helpersMixin],
 
     props: {
+        // use textarea instead of input element
+        isTextarea: {
+            type: Boolean,
+            default: false,
+        },
         // input type
         type: {
             type: String,
@@ -70,6 +91,7 @@ export default {
                 'prefix-slot': this.hasSlot('prefix'),
                 'suffix-slot': this.hasSlot('suffix'),
                 'bottom-slot': this.hasSlot('bottom'),
+                'is-textarea': this.isTextarea,
             };
         },
 
@@ -88,6 +110,7 @@ export default {
             return {
                 ...this.inputProps,
                 label: this.label,
+                isTextarea: this.isTextarea,
                 validator: this.validator,
                 fieldSize: this.fieldSize,
                 validateOnInput: this.validateOnInput,

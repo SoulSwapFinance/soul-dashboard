@@ -5,17 +5,15 @@
                 <legend class="not-visible">Mnemonic phrase</legend>
 
                 <div class="main">
-                    <label for="mnemonic">
-                        Please type in your 12 or 24 word mnemonic phrase, all lower-case, separate by single spaces
-                    </label>
-                    <textarea
-                        id="mnemonic"
+                    <f-input
                         v-model="dMnemonic"
-                        class="inp large"
+                        is-textarea
+                        label="Please type in your 12 or 24 word mnemonic phrase, all lower-case, separate by single spaces"
                         name="mnemonic"
+                        field-size="large"
                         cols="30"
                         rows="10"
-                    ></textarea>
+                    />
 
                     <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
                 </div>
@@ -34,9 +32,11 @@
 import FForm from '../core/FForm/FForm.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
+import FInput from '../core/FInput/FInput.vue';
 
 export default {
     components: {
+        FInput,
         FMessage,
         FForm,
     },

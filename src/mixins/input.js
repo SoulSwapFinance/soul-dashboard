@@ -7,22 +7,38 @@ export const inputMixin = {
 
         autocomplete: {
             type: String,
-            default: '',
-        },
-        // password, search, tel, text, url
-        placeholder: {
-            type: String,
-            default: '',
+            default: null,
         },
         readonly: {
             type: Boolean,
             default: false,
         },
+
         // email, file
         multiple: {
             type: Boolean,
             default: false,
         },
+
+        // password, search, tel, text, url
+        placeholder: {
+            default: null,
+        },
+        minlength: {
+            default: null,
+        },
+        maxlength: {
+            default: null,
+        },
+
+        // textarea
+        rows: {
+            default: null,
+        },
+        cols: {
+            default: null,
+        },
+
         invalid: {
             type: Boolean,
             default: false,
@@ -34,8 +50,13 @@ export const inputMixin = {
             return {
                 ...inputCommonMixin.computed.inputCommonProps.call(this),
                 autocomplete: this.autocomplete,
+                placeholder: this.placeholder,
                 readonly: this.readonly,
                 multiple: this.multiple,
+                minlength: this.minlength,
+                maxlength: this.maxlength,
+                rows: this.rows,
+                cols: this.cols,
             };
         },
     },

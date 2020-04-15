@@ -9,7 +9,7 @@
         align-items: center;
         align-content: center;
 
-        input {
+        input, textarea {
             width: 100%;
             font-family: inherit;
             font-size: inherit;
@@ -27,6 +27,12 @@
                 outline: none;
                 border: none;
             }
+        }
+    }
+
+    &.is-textarea {
+        .inp {
+            height: auto;
         }
     }
 
