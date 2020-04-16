@@ -2,33 +2,12 @@
     <div class="view-account vertical-layout">
         <main class="main">
             <div class="narrow-container">
-                <div class="row">
-                    <div class="col-8">
-                        <strong>{{ currentAccountAddress }}</strong>
-                    </div>
-                    <div class="col">
-                        tlacitka
-                    </div>
-                </div>
-
+                <address-info-box />
                 <account-header />
 
                 <!--
                 <f-message v-if="!currentAccount" type="error" with-icon>Bad wallet</f-message>
-
                 <button @click="onRemoveAccountButClick">Remove wallet</button>
-
-                <ul>
-                    <li>
-                        <router-link :to="{ name: 'account-send' }">Send</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'account-recieve' }">Recieve</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'account-stake' }">Stake</router-link>
-                    </li>
-                </ul>
                 -->
 
                 <router-view></router-view>
@@ -47,10 +26,12 @@ import {
 } from '../../store/mutations.type.js';
 import { mapGetters } from 'vuex';
 import AccountHeader from '../../components/AccountHeader/AccountHeader.vue';
+import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
 // import FMessage from '../../components/core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        AddressInfoBox,
         AccountHeader,
         // FMessage,
         // FCard

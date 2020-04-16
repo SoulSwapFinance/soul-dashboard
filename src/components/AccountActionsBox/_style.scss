@@ -1,0 +1,25 @@
+@import "../../assets/scss/vars";
+
+.account-actions-box {
+    ul {
+        li {
+            display: inline-block;
+            padding-left: 8px;
+
+            a {
+                display: inline-block;
+                text-align: center;
+                min-width: 60px;
+
+                &:hover {
+                    text-decoration: none;
+                }
+
+                .link-label {
+                    display: block;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 <template>
     <div class="view-account-stake">
-        <h2>Account stake</h2>
+        <h1>Stake</h1>
     </div>
 </template>
 

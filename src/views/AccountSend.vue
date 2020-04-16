@@ -1,6 +1,6 @@
 <template>
     <div class="view-account-send">
-        <h2>Account send</h2>
+        <h1>Send</h1>
     </div>
 </template>
 

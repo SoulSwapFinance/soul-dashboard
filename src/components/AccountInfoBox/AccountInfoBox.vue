@@ -1,26 +1,27 @@
 <template>
     <f-card class="account-info-box">
-        <div class="row no-vert-col-padding no-collapse align-items-center">
+        <div class="row no-vert-col-padding align-items-center align-center-sm">
             <div class="col">
                 <div class="balance">
-                    <h3 class="h1">{{ toFTM(accountBalance) }} FTM</h3>
+                    <h3 class="h1 align-center-sm">{{ toFTM(accountBalance) }} FTM</h3>
                     <div class="usd">${{ toUSD(accountBalance) }}</div>
                 </div>
             </div>
-            <div class="col">Account actions</div>
+            <div class="col align-right align-center-sm"><account-actions-box /></div>
         </div>
     </f-card>
 </template>
 
 <script>
 import FCard from '../core/FCard/FCard.vue';
+import AccountActionsBox from '../AccountActionsBox/AccountActionsBox.vue';
 import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
 import { formatNumberByLocale, numToFixed } from '../../filters.js';
 import { FTMToUSD, WEIToFTM } from '../../utils/transactions.js';
 
 export default {
-    components: { FCard },
+    components: { FCard, AccountActionsBox },
 
     apollo: {
         account: {

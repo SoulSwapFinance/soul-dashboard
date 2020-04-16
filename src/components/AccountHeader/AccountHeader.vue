@@ -1,5 +1,5 @@
 <template>
-    <header class="f-account-header">
+    <header class="account-header">
         <account-info-box />
     </header>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <div class="view-account-revieve">
-        <h2>Account revieve</h2>
+        <h1>Recieve</h1>
     </div>
 </template>
 

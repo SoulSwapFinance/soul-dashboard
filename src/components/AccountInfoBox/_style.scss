@@ -3,12 +3,28 @@
 .account-info-box {
     .balance {
         h3 {
+            margin-top: 0;
             margin-bottom: 0;
         }
 
         .usd {
             color: $light-gray-color;
             font-size: 26px;
+            line-height: 1.1;
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .account-info-box {
+        .balance {
+            .usd {
+                line-height: 1;
+            }
+        }
+
+        .account-actions-box {
+            margin-top: 20px;
         }
     }
 }
