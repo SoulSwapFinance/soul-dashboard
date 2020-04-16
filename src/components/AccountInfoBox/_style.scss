@@ -1,0 +1,14 @@
+@import "../../assets/scss/vars";
+
+.account-info-box {
+    .balance {
+        h3 {
+            margin-bottom: 0;
+        }
+
+        .usd {
+            color: $light-gray-color;
+            font-size: 26px;
+        }
+    }
+}

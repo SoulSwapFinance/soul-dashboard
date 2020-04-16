@@ -1,0 +1,10 @@
+@import "../../assets/scss/vars";
+
+.view-account {
+    .main {
+        padding-top: 0;
+    }
+}
+
+@include media-max($bp-small) {
+}

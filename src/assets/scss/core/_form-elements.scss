@@ -66,13 +66,23 @@ input[type="submit"]:not(.def):focus {
     outline: none;
 }
 
-@include inputs('[disabled], .disabled') {
+@include inputs('[disabled]') {
     border-color: $input-disabled-border-color !important;
     color: $input-disabled-color;
     background-color: $input-disabled-bg-color !important;
 }
 
-@include inputs('[readonly], .readonly') {
+@include inputs('.disabled') {
+    border-color: $input-disabled-border-color !important;
+    color: $input-disabled-color;
+    background-color: $input-disabled-bg-color !important;
+}
+
+@include inputs('[readonly]') {
+    background: $input-readonly-bg-color;
+}
+
+@include inputs('.readonly') {
     background: $input-readonly-bg-color;
 }
 

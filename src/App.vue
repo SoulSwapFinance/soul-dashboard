@@ -23,8 +23,9 @@
 <script>
 import FBreakpoint from './components/core/FBreakpoints/FBreakpoint.vue';
 import FBreakpoints from './components/core/FBreakpoints/FBreakpoints.vue';
-import { SET_BREAKPOINT } from './store/mutations.type.js';
+import { SET_BREAKPOINT, SET_TOKEN_PRICE } from './store/mutations.type.js';
 import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
+import gql from 'graphql-tag';
 
 export default {
     name: 'App',
@@ -33,6 +34,36 @@ export default {
         FAriaAlert,
         FBreakpoint,
         FBreakpoints,
+    },
+
+    apollo: {
+        price: {
+            query: gql`
+                query Price($to: String!) {
+                    price(to: $to) {
+                        price
+                    }
+                }
+            `,
+
+            result(_data) {
+                if (!_data.data.price) {
+                    return;
+                }
+
+                let tokenPrice = parseFloat(_data.data.price.price);
+
+                tokenPrice = parseInt(tokenPrice * 100000) / 100000;
+
+                this.$store.commit(SET_TOKEN_PRICE, tokenPrice);
+            },
+
+            variables() {
+                return {
+                    to: 'USD',
+                };
+            },
+        },
     },
 
     methods: {

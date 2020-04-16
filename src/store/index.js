@@ -6,6 +6,7 @@ import {
     APPEND_ACCOUNT,
     DEACTIVATE_ACTIVE_ACCOUNT,
     REMOVE_ACTIVE_ACCOUNT,
+    SET_ACTIVE_ACCOUNT_ADDRESS,
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
     SET_BREAKPOINT,
     SET_TOKEN_PRICE,
@@ -39,7 +40,9 @@ export const store = new Vuex.Store({
         tokenPrice: 0,
         /** @type {[{address: String, balance: string, keystore: object, balanceFTM: (String|BN)}]} */
         accounts: [],
+        // index of active stored account
         activeAccountIndex: -1,
+        activeAccountAddress: '',
     },
 
     getters: {
@@ -49,6 +52,10 @@ export const store = new Vuex.Store({
 
         currentAccount(_state) {
             return _state.activeAccountIndex > -1 ? _state.accounts[_state.activeAccountIndex] : null;
+        },
+
+        currentAccountAddress(_state) {
+            return _state.activeAccountAddress;
         },
 
         getAccountByAddress(_state) {
@@ -98,9 +105,18 @@ export const store = new Vuex.Store({
 
         /**
          * @param {Object} _state
+         * @param {String} _address
+         */
+        [SET_ACTIVE_ACCOUNT_ADDRESS](_state, _address) {
+            _state.activeAccountAddress = fWallet.toChecksumAddress(_address);
+        },
+
+        /**
+         * @param {Object} _state
          */
         [DEACTIVATE_ACTIVE_ACCOUNT](_state) {
             _state.activeAccountIndex = -1;
+            _state.activeAccountAddress = '';
         },
 
         /**

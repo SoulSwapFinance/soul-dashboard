@@ -3,7 +3,7 @@ import Home from './views/Home/Home.vue';
 import AccountList from './views/AccountList/AccountList.vue';
 import CreateAccount from './views/CreateAccount/CreateAccount.vue';
 import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
-import Account from './views/Account.vue';
+import Account from './views/Account/Account.vue';
 import AccountDashboard from './views/AccountDashboard.vue';
 import AccountSend from './views/AccountSend.vue';
 import AccountRecieve from './views/AccountRecieve.vue';
@@ -39,7 +39,7 @@ export const routes = [
         component: Account,
         children: [
             {
-                name: 'acount-dashboard',
+                name: 'account-dashboard',
                 path: '',
                 component: AccountDashboard,
             },

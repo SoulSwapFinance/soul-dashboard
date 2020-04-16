@@ -35,7 +35,7 @@
                             <span class="label">Address</span>
                             <router-link
                                 :to="{
-                                    name: 'account',
+                                    name: 'account-dashboard',
                                     params: { address: account.address },
                                 }"
                                 class="break-word fs-big"
