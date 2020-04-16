@@ -64,6 +64,10 @@ export default {
     },
 
     methods: {
+        validate() {
+            this.$refs.input.validate();
+        },
+
         onEyeButtonClick() {
             if (this.dType === 'password') {
                 this.dType = 'text';

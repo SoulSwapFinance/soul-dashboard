@@ -37,6 +37,26 @@ export const helpersMixin = {
         },
 
         /**
+         * Find child components by name.
+         *
+         * @param {string} _name
+         * @param {array} [_children]
+         * @return {[Vue]}
+         */
+        findChildrenByName(_name, _children) {
+            const children = _children || this.$children;
+            const components = [];
+
+            for (let i = 0, len1 = children.length; i < len1; i++) {
+                if (children[i].$options._componentTag === _name) {
+                    components.push(children[i]);
+                }
+            }
+
+            return components;
+        },
+
+        /**
          * Check non-empty slot existence.
          *
          * @param {string} _name

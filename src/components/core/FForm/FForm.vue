@@ -1,5 +1,5 @@
 <template>
-    <form ref="form" method="post" class="f-form" @submit="onSubmit" @change="onChange" @input="onInput">
+    <form ref="form" method="post" class="f-form" novalidate @submit="onSubmit" @change="onChange" @input="onInput">
         <slot></slot>
     </form>
 </template>
@@ -7,9 +7,10 @@
 <script>
 import events from '../../../mixins/events.js';
 import { isArray } from '../../../utils';
+import { eventBusMixin } from '../../../mixins/event-bus.js';
 
 export default {
-    mixins: [events],
+    mixins: [events, eventBusMixin],
 
     props: {
         // Submit form when an element is changed
@@ -147,18 +148,50 @@ export default {
             eSubmitBtn.click();
         },
 
+        getErrorMessages() {
+            const errorMessages = [];
+            const elements = this.$refs.form.elements;
+            let elem;
+
+            if (elements) {
+                for (let i = 0, len1 = elements.length; i < len1; i++) {
+                    elem = elements[i];
+                    if (elem.name && elem.willValidate && !elem.checkValidity()) {
+                        // console.log(elem.name, elem.validity, elem.validationMessage);
+                        errorMessages.push(elem.validationMessage);
+                    }
+                }
+            }
+
+            return errorMessages;
+        },
+
         /**
          * Check form validity.
          *
          * @return {Boolean}
          */
         checkValidity() {
+            const children = this.$children;
             let valid = true;
+            let child;
 
             if (this.$refs.form) {
-                valid = this.$refs.form.checkValidity();
+                for (let i = 0, len1 = children.length; i < len1; i++) {
+                    child = children[i];
+                    if (typeof child.validate === 'function') {
+                        child.validate();
+                    }
+                }
 
+                valid = this.$refs.form.checkValidity();
                 if (!valid) {
+                    const errorMessages = this.getErrorMessages();
+
+                    if (errorMessages.length > 0) {
+                        this._eventBus.emit('aria-alert-replace', errorMessages.join(''));
+                    }
+
                     this.emitCustomEvent('f-form-not-valid');
                 }
 

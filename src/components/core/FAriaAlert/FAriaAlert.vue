@@ -1,11 +1,12 @@
 <template>
     <div role="alert" aria-atomic="true" class="not-visible">
-        <span v-for="(msg, index) in messages" :key="`faa-${index}`">{{ msg }}</span>
+        <span v-for="msg in cMessages" :key="msg.id">{{ msg.text }}</span>
     </div>
 </template>
 
 <script>
 import { eventBusMixin } from '../../../mixins/event-bus.js';
+import { helpersMixin } from '../../../mixins/helpers.js';
 
 /**
  * Notifies assistive technologies about important messages - input errors etc.
@@ -13,13 +14,21 @@ import { eventBusMixin } from '../../../mixins/event-bus.js';
  * 'aria-alert-append', 'aria-alert-replace' and 'aria-alert-clear'
  */
 export default {
-    mixins: [eventBusMixin],
+    mixins: [eventBusMixin, helpersMixin],
 
     data() {
         return {
             // alert messages
             messages: [],
         };
+    },
+
+    computed: {
+        cMessages() {
+            this.setIds(this.messages);
+
+            return this.messages;
+        },
     },
 
     created() {
@@ -29,16 +38,19 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {string} _msg
+         */
         append(_msg) {
-            // console.log('append', _msg);
-            this.messages.push(_msg);
+            this.messages.push({ text: _msg });
         },
+        /**
+         * @param {string} _msg
+         */
         replace(_msg) {
-            // console.log('replace', _msg);
-            this.messages = [_msg];
+            this.messages = [{ text: _msg }];
         },
         clear() {
-            // console.log('clear');
             this.messages = [];
         },
     },

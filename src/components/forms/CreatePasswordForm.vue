@@ -15,11 +15,11 @@
                         validate-on-input
                     >
                         <template #bottom="sProps">
-                            <f-message v-if="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                 Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a
                                 symbol and a number
                             </f-message>
-                            <f-message v-if="!sProps.showErrorMessage" type="info" with-icon>
+                            <f-message v-show="!sProps.showErrorMessage" type="info" with-icon>
                                 Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a
                                 symbol and a number
                             </f-message>
@@ -36,7 +36,7 @@
                         validate-on-input
                     >
                         <template #bottom="sProps">
-                            <f-message v-if="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                 The entered password does not match
                             </f-message>
                         </template>
@@ -54,7 +54,7 @@
                         type="submit"
                         class="btn large break-word"
                         style="max-width: 100%;"
-                        :disabled="submitDisabled"
+                        :class="{ disabled: submitDisabled }"
                     >
                         Download keystore file and continue
                     </button>
@@ -133,7 +133,7 @@ export default {
         },
 
         checkSecondaryPassword(_value) {
-            return _value === this.primaryPwd;
+            return _value === this.primaryPwd && _value.length > 0;
         },
 
         checkPasswords() {

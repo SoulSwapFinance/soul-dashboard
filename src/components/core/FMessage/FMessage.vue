@@ -57,6 +57,12 @@ export default {
             };
         },
     },
+
+    methods: {
+        getMessage() {
+            return this.$slots.default ? this.$slots.default[0].text : '';
+        },
+    },
 };
 </script>
 

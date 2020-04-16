@@ -152,6 +152,7 @@ export default {
          * Set aria-describedby attribute according to `isInvalid` property if FMessage child component exists.
          */
         setAriaDescribedBy() {
+            const eInput = this.$refs.input;
             let fMessage;
 
             if (this.isInvalid) {
@@ -161,6 +162,13 @@ export default {
             }
 
             if (fMessage) {
+                // set custom error message
+                if (this.isInvalid) {
+                    eInput.setCustomValidity(fMessage.getMessage());
+                } else {
+                    eInput.setCustomValidity('');
+                }
+
                 const id = getUniqueId();
                 fMessage.$el.id = id;
                 this.ariaDescribedBy = id;
@@ -179,15 +187,20 @@ export default {
          * Get FMessage child component by type.
          *
          * @param {string} _type
+         * @return {null|*|Vue}
          */
         getFMessage(_type) {
-            const fMessage = this.findChildByName('f-message');
+            const fMessages = this.findChildrenByName('f-message');
+            let fMessage = null;
 
-            if (fMessage && fMessage.$props.type === _type) {
-                return fMessage;
+            for (let i = 0, len1 = fMessages.length; i < len1; i++) {
+                fMessage = fMessages[i];
+                if (fMessage && fMessage.$props.type === _type) {
+                    break;
+                }
             }
 
-            return null;
+            return fMessage;
         },
 
         /**
