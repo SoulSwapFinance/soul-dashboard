@@ -10,7 +10,7 @@ import {
     SET_BREAKPOINT,
     SET_TOKEN_PRICE,
 } from './mutations.type.js';
-import { ADD_ACCOUNT } from './actions.type.js';
+import { ADD_ACCOUNT, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
 Vue.use(Vuex);
@@ -37,6 +37,7 @@ export const store = new Vuex.Store({
     state: {
         breakpoints: {},
         tokenPrice: 0,
+        /** @type {[{address: String, balance: string, keystore: object, balanceFTM: (String|BN)}]} */
         accounts: [],
         activeAccountIndex: -1,
     },
@@ -140,6 +141,24 @@ export const store = new Vuex.Store({
             };
 
             _context.commit(APPEND_ACCOUNT, account);
+        },
+
+        /**
+         * @param {Object} _context
+         */
+        async [UPDATE_ACCOUNTS_BALANCES](_context) {
+            const accounts = _context.getters.accounts;
+            let balance = 0;
+            // const balances = await Promise.all(accounts.map((_address) => fWallet.getBalance(_address.address)));
+
+            for (let i = 0, len1 = accounts.length; i < len1; i++) {
+                balance = await fWallet.getBalance(accounts[i].address);
+                accounts[i] = {
+                    ...accounts[i],
+                    balance,
+                    balanceFTM: fWallet.WEIToFTM(balance),
+                };
+            }
         },
     },
 });

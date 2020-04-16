@@ -57,6 +57,7 @@
 <script>
 import FCard from '../../components/core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
+import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
@@ -64,21 +65,12 @@ export default {
         FCard,
     },
 
-    data() {
-        return {
-            dAccounts: [
-                {
-                    address: '0x1994e627454649c95ea55885c285343092c1473d',
-                },
-                {
-                    address: '0xc1d2dd56b59b5900d0b16a2a2794ca63ac904500',
-                },
-            ],
-        };
-    },
-
     computed: {
         ...mapGetters(['accounts']),
+    },
+
+    mounted() {
+        this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
     },
 };
 </script>
