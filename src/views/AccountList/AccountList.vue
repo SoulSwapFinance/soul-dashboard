@@ -45,7 +45,7 @@
                             </router-link>
                             <br /><br />
                             <span class="label">Balance</span>
-                            <span class="fs-big">{{ account.balanceFTM }} FTM</span>
+                            <span class="fs-big">{{ toFTM(account.balance) }} FTM</span>
                         </h3>
                     </f-card>
                 </li>
@@ -58,6 +58,8 @@
 import FCard from '../../components/core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
+import { formatNumberByLocale, numToFixed } from '../../filters.js';
+import { WEIToFTM } from '../../utils/transactions.js';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
@@ -71,6 +73,18 @@ export default {
 
     mounted() {
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
+    },
+
+    methods: {
+        /**
+         * Convert value to FTM.
+         *
+         * @param {string|number} _value
+         * @return {string}
+         */
+        toFTM(_value) {
+            return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
+        },
     },
 };
 </script>

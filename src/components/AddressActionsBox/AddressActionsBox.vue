@@ -1,5 +1,5 @@
 <template>
-    <div class="account-actions-box">
+    <div class="address-actions-box">
         <ul class="no-markers">
             <li>
                 <button class="btn large light same-size round" title="copy address" @click="onButtonClick">

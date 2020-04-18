@@ -18,6 +18,10 @@
         transform: scale(1.04);
     }
 
+    &.f-card-double-padding {
+        padding: $f-card-padding-2x;
+    }
+
     .title {
         a {
             color: inherit;

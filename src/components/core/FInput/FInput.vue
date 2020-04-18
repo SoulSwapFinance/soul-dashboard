@@ -137,9 +137,7 @@ export default {
         },
 
         isInvalid() {
-            setTimeout(() => {
-                this.setAriaDescribedBy();
-            }, 10);
+            this.setAriaDescribedBy();
         },
     },
 
@@ -159,6 +157,8 @@ export default {
                 fMessage = this.getFMessage('error');
             } else {
                 fMessage = this.getFMessage('info');
+                // eInput.setCustomValidity('');
+                // this.ariaDescribedBy = null;
             }
 
             if (fMessage) {
@@ -177,9 +177,13 @@ export default {
             }
         },
 
-        validate() {
+        validate(_setError) {
             if (this.validator) {
                 this.isInvalid = !this.validator(this.val);
+
+                if (_setError) {
+                    this.setAriaDescribedBy();
+                }
             }
         },
 

@@ -108,6 +108,9 @@ form {
     }
 }
 
+.account-main-content-mt {
+    margin-top: 32px;
+}
 
 
 @if $IS_CHROME_EXTENSION == true {

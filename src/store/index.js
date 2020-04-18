@@ -11,7 +11,7 @@ import {
     SET_BREAKPOINT,
     SET_TOKEN_PRICE,
 } from './mutations.type.js';
-import { ADD_ACCOUNT, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
+import { ADD_ACCOUNT, UPDATE_ACCOUNT_BALANCE, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
 Vue.use(Vuex);
@@ -31,6 +31,24 @@ const vuexLocalStorage = new VuexPersist({
 });
 
 vuexPlugins.push(vuexLocalStorage.plugin);
+
+/**
+ * @param {array} _accounts
+ * @param {string} _address
+ * @return {number}
+ */
+function getAccountIdxByAddress(_accounts, _address) {
+    let idx = -1;
+
+    for (let i = 0, len1 = _accounts.length; i < len1; i++) {
+        if (_accounts[i].address === _address) {
+            idx = i;
+            break;
+        }
+    }
+
+    return idx;
+}
 
 export const store = new Vuex.Store({
     plugins: vuexPlugins,
@@ -174,6 +192,28 @@ export const store = new Vuex.Store({
                     balance,
                     balanceFTM: fWallet.WEIToFTM(balance),
                 };
+            }
+        },
+
+        /**
+         * @param {Object} _context
+         * @param {Object} [_account]
+         */
+        async [UPDATE_ACCOUNT_BALANCE](_context, _account) {
+            const account = _account || _context.getters.currentAccount;
+
+            if (account) {
+                const accounts = _context.getters.accounts;
+                const idx = getAccountIdxByAddress(accounts, account.address);
+                const balance = await fWallet.getBalance(account.address);
+
+                if (idx > -1) {
+                    accounts[idx] = {
+                        ...account,
+                        balance,
+                        balanceFTM: fWallet.WEIToFTM(balance),
+                    };
+                }
             }
         },
     },

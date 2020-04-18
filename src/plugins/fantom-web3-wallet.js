@@ -2,7 +2,6 @@
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
 const ethUtil = require('ethereumjs-util');
-
 // const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
 const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})/;
 const mnemonicRE = /^[ a-z]+$/;
@@ -152,6 +151,39 @@ export class FantomWeb3Wallet {
         return { privateKey, mnemonic, keystore };
     }
 
+    async signTransaction({ from, to, value, memo = '', gasLimit = '44000', keystore, password }) {
+        const nonce = await this.web3.eth.getTransactionCount(from);
+        const gasPrice = await this.web3.eth.getGasPrice();
+        const tx = {
+            value: value,
+            // from,
+            to: to,
+            gas: gasLimit,
+            gasPrice,
+            nonce,
+            memo,
+        };
+
+        const account = fWallet.decryptFromKeystore(keystore, password);
+        if (account) {
+            const transaction = await account.signTransaction(tx);
+
+            return transaction.rawTransaction;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get instance of BN.
+     *
+     * @param {*} _number
+     * @return {BN}
+     */
+    toBN(_number) {
+        return this.web3.utils.toBN(_number);
+    }
+
     /**
      * Split mnemonic phrase.
      *
@@ -160,6 +192,33 @@ export class FantomWeb3Wallet {
      */
     getMnemonicArray(_mnemonic) {
         return _mnemonic ? _mnemonic.split(/\s+/g) : [];
+    }
+
+    /**
+     * Get transaction fee in WEI.
+     *
+     * @param {*} _gasPrice
+     * @param _gasLimit
+     * @return {BN}
+     */
+    getTransactionFee(_gasPrice, _gasLimit = 44000) {
+        // const gasPrice = _gasPrice || await this.web3.eth.getGasPrice();
+        return this.toBN(_gasPrice).mul(this.toBN(_gasLimit));
+    }
+
+    /**
+     * Get the remaining balance (in FTM) after deducting transaction fee.
+     *
+     * @param {*} _balance
+     * @param {*} _gasPrice
+     * @param _gasLimit
+     * @return {number}
+     */
+    getRemainingBalance(_balance, _gasPrice, _gasLimit) {
+        const fee = this.getTransactionFee(_gasPrice, _gasLimit);
+        const balance = this.toBN(_balance);
+
+        return this.WEIToFTM(balance.sub(fee.mul(this.toBN(2))));
     }
 
     /**
@@ -178,5 +237,13 @@ export class FantomWeb3Wallet {
         }
 
         return pk;
+    }
+
+    /**
+     * @param _address
+     * @return {boolean}
+     */
+    isValidAddress(_address) {
+        return this.web3.utils.isHexStrict(_address) && this.web3.utils.isAddress(_address);
     }
 }

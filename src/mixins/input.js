@@ -13,6 +13,14 @@ export const inputMixin = {
             type: Boolean,
             default: false,
         },
+        min: {
+            type: Number,
+            default: null,
+        },
+        max: {
+            type: Number,
+            default: null,
+        },
 
         // email, file
         multiple: {
@@ -52,6 +60,8 @@ export const inputMixin = {
                 autocomplete: this.autocomplete,
                 placeholder: this.placeholder,
                 readonly: this.readonly,
+                min: this.min,
+                max: this.max,
                 multiple: this.multiple,
                 minlength: this.minlength,
                 maxlength: this.maxlength,

@@ -1,6 +1,6 @@
 <template>
-    <div class="view-account-dashboard">
-        <h1>Dashboard</h1>
+    <div class="view-account-dashboard account-main-content-mt">
+        <h1 class="not-visible">Dashboard</h1>
 
         <div>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, commodi consectetur cumque error eveniet ex

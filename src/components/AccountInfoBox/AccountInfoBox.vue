@@ -1,5 +1,5 @@
 <template>
-    <f-card class="account-info-box">
+    <f-card class="account-info-box f-card-double-padding">
         <div class="row no-vert-col-padding align-items-center align-center-sm">
             <div class="col">
                 <div class="balance">
@@ -19,9 +19,12 @@ import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
 import { formatNumberByLocale, numToFixed } from '../../filters.js';
 import { FTMToUSD, WEIToFTM } from '../../utils/transactions.js';
+import { pollingMixin } from '../../mixins/polling.js';
 
 export default {
     components: { FCard, AccountActionsBox },
+
+    mixins: [pollingMixin],
 
     apollo: {
         account: {
@@ -31,22 +34,6 @@ export default {
                         address
                         balance
                         totalValue
-                        staker {
-                            id
-                            createdTime
-                            isActive
-                        }
-                        delegation {
-                            toStakerId
-                            createdTime
-                            amount
-                            claimedReward
-                            pendingRewards {
-                                amount
-                                fromEpoch
-                                toEpoch
-                            }
-                        }
                     }
                 }
             `,
@@ -55,11 +42,23 @@ export default {
                     address: this.currentAccountAddress,
                 };
             },
+            result(_data) {
+                if (_data.data.account) {
+                    this.dAccount = _data.data.account;
+                    console.log('daccount', this.dAccount);
+                }
+            },
             error(_error) {
                 console.log(_error);
                 // this.dAccountByAddressError = _error.message;
             },
         },
+    },
+
+    data() {
+        return {
+            dAccount: {},
+        };
     },
 
     computed: {
@@ -68,6 +67,14 @@ export default {
         accountBalance() {
             return this.account ? this.account.balance : this.currentAccount ? this.currentAccount.balance : 0;
         },
+    },
+
+    mounted() {
+        this._polling.start('acount-query', () => {
+            if (!this.$apollo.queries.account.loading) {
+                this.$apollo.queries.account.refresh();
+            }
+        });
     },
 
     methods: {

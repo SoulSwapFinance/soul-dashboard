@@ -180,7 +180,7 @@ export default {
                 for (let i = 0, len1 = children.length; i < len1; i++) {
                     child = children[i];
                     if (typeof child.validate === 'function') {
-                        child.validate();
+                        child.validate(true);
                     }
                 }
 
