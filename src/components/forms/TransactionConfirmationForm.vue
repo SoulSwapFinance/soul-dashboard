@@ -26,6 +26,16 @@
                         <br />
                     </div>
 
+                    <a
+                        href=""
+                        class="btn secondary large break-word"
+                        style="max-width: 100%;"
+                        aria-label="Go to previous form"
+                        @click.prevent="onPreviousBtnClick"
+                    >
+                        Previous
+                    </a>
+                    &nbsp;
                     <button type="submit" class="btn large break-word" style="max-width: 100%;">
                         Send
                     </button>
@@ -60,6 +70,10 @@ export default {
     methods: {
         checkPassword(_value) {
             return _value && _value.length > 0;
+        },
+
+        onPreviousBtnClick() {
+            this.$emit('go-back');
         },
     },
 };

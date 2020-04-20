@@ -32,7 +32,12 @@
                 -->
             </div>
 
-            <check-password-form :error-message="errorMsg" show-password-field @f-form-submit="onFFormSubmit" />
+            <check-password-form
+                :error-message="errorMsg"
+                show-password-field
+                @f-form-submit="onFFormSubmit"
+                @go-back="onGoBack"
+            />
         </f-card>
     </div>
 </template>
@@ -43,6 +48,7 @@ import gql from 'graphql-tag';
 import CheckPasswordForm from '../forms/TransactionConfirmationForm.vue';
 import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
+import { findFirstFocusableDescendant } from '../../utils/aria.js';
 
 export default {
     components: { CheckPasswordForm, FCard },
@@ -65,6 +71,13 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+    },
+
+    mounted() {
+        const el = findFirstFocusableDescendant(this.$el);
+        if (el) {
+            el.focus();
+        }
     },
 
     methods: {
@@ -127,6 +140,13 @@ export default {
                     }
                 }
             }
+        },
+
+        onGoBack() {
+            this.$emit('change-component', {
+                from: 'transaction-confirmation',
+                to: 'send-transaction-form',
+            });
         },
     },
 };
