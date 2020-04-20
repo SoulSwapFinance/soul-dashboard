@@ -9,6 +9,7 @@ import AccountSend from './views/AccountSend.vue';
 import AccountRecieve from './views/AccountRecieve.vue';
 import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
+import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 
 export const routes = [
     {
@@ -30,6 +31,11 @@ export const routes = [
                 name: 'restore-account',
                 path: '/account/restore',
                 component: RestoreAccount,
+            },
+            {
+                name: 'ledger-accounts',
+                path: '/ledger-accounts',
+                component: LedgerAccounts,
             },
         ],
     },

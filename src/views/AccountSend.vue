@@ -2,11 +2,13 @@
     <div class="view-account-send account-main-content-mt">
         <h1 class="not-visible">Send</h1>
 
-        <component
-            :is="currentComponent"
-            v-bind="currentComponentProperties"
-            @change-component="onChangeComponent"
-        ></component>
+        <keep-alive>
+            <component
+                :is="currentComponent"
+                v-bind="currentComponentProperties"
+                @change-component="onChangeComponent"
+            ></component>
+        </keep-alive>
     </div>
 </template>
 

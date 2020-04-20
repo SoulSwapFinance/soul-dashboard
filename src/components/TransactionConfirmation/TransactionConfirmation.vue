@@ -34,7 +34,7 @@
 
             <check-password-form
                 :error-message="errorMsg"
-                show-password-field
+                :show-password-field="!currentAccount.isLedgerAccount"
                 @f-form-submit="onFFormSubmit"
                 @go-back="onGoBack"
             />
@@ -74,9 +74,11 @@ export default {
     },
 
     mounted() {
-        const el = findFirstFocusableDescendant(this.$el);
-        if (el) {
-            el.focus();
+        if (!this.currentAccount.isLedgerAccount) {
+            const el = findFirstFocusableDescendant(this.$el);
+            if (el) {
+                el.focus();
+            }
         }
     },
 
@@ -138,6 +140,8 @@ export default {
                     } catch (_error) {
                         this.errorMsg = 'Invalid password';
                     }
+                } else {
+                    alert('Not implemented yet');
                 }
             }
         },

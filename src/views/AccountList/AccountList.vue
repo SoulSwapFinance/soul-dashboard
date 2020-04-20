@@ -12,10 +12,18 @@
                         <div class="row">
                             <div class="col-12">
                                 <router-link
+                                    :to="{ name: 'ledger-accounts' }"
+                                    class="btn ledger-accounts-btn large w100p"
+                                >
+                                    Connect to Ledger
+                                </router-link>
+                            </div>
+                            <div class="col-12">
+                                <router-link
                                     :to="{ name: 'create-account' }"
                                     class="btn create-account-btn large w100p"
                                 >
-                                    Create a wallet
+                                    Create a Wallet
                                 </router-link>
                             </div>
                             <div class="col">
@@ -23,7 +31,7 @@
                                     :to="{ name: 'restore-account' }"
                                     class="btn restore-account-btn large w100p"
                                 >
-                                    Restore wallet
+                                    Restore Wallet
                                 </router-link>
                             </div>
                         </div>
@@ -32,7 +40,9 @@
                 <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
-                            <span class="label">Address</span>
+                            <span class="label">
+                                Address <span v-if="account.isLedgerAccount">( LEDGER ACCOUNT )</span>
+                            </span>
                             <router-link
                                 :to="{
                                     name: 'account-dashboard',

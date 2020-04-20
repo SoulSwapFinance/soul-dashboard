@@ -2,15 +2,17 @@
     <div class="view-account vertical-layout">
         <main class="main">
             <div class="narrow-container">
-                <address-info-box />
-                <account-header />
+                <template v-if="!currentAccount">
+                    <f-message type="error" with-icon>Bad wallet</f-message>
+                </template>
+                <template v-else>
+                    <address-info-box />
+                    <account-header />
 
-                <!--
-                <f-message v-if="!currentAccount" type="error" with-icon>Bad wallet</f-message>
-                <button @click="onRemoveAccountButClick">Remove wallet</button>
-                -->
+                    <!--                <button @click="onRemoveAccountButClick">Remove wallet</button>-->
 
-                <router-view></router-view>
+                    <router-view></router-view>
+                </template>
             </div>
         </main>
     </div>
@@ -20,6 +22,7 @@
 // import FCard from "../components/FCard.vue";
 
 import {
+    DEACTIVATE_ACTIVE_ACCOUNT,
     REMOVE_ACTIVE_ACCOUNT,
     SET_ACTIVE_ACCOUNT_ADDRESS,
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
@@ -27,10 +30,11 @@ import {
 import { mapGetters } from 'vuex';
 import AccountHeader from '../../components/AccountHeader/AccountHeader.vue';
 import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
-// import FMessage from '../../components/core/FMessage/FMessage.vue';
+import FMessage from '../../components/core/FMessage/FMessage.vue';
 
 export default {
     components: {
+        FMessage,
         AddressInfoBox,
         AccountHeader,
         // FMessage,
@@ -38,10 +42,11 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccountAddress']),
+        ...mapGetters(['currentAccount']),
     },
 
     created() {
+        this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
         this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, this.$route.params.address);
         this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, this.$route.params.address);
     },

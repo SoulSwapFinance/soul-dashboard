@@ -52,6 +52,19 @@
         background: darken($restore-account-color, 10%);
     }
 
+    @include buttons('.ledger-accounts-btn') {
+        font-weight: bold;
+        background-color: $ledger-accounts-color;
+    }
+
+    @include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+        background: darken($ledger-accounts-color, 10%);
+    }
+
+    @include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+        background: darken($ledger-accounts-color, 10%);
+    }
+
 }
 
 @include media-max($bp-small) {

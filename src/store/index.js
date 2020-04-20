@@ -11,7 +11,7 @@ import {
     SET_BREAKPOINT,
     SET_TOKEN_PRICE,
 } from './mutations.type.js';
-import { ADD_ACCOUNT, UPDATE_ACCOUNT_BALANCE, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
+import { ADD_ACCOUNT, ADD_LEDGER_ACCOUNT, UPDATE_ACCOUNT_BALANCE, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
 Vue.use(Vuex);
@@ -113,6 +113,8 @@ export const store = new Vuex.Store({
             const { accounts } = _state;
             const address = fWallet.toChecksumAddress(_address);
 
+            _state.activeAccountIndex = -1;
+
             for (let i = 0, len1 = accounts.length; i < len1; i++) {
                 if (accounts[i].address === address) {
                     _state.activeAccountIndex = i;
@@ -175,6 +177,26 @@ export const store = new Vuex.Store({
             };
 
             _context.commit(APPEND_ACCOUNT, account);
+        },
+
+        /**
+         * @param {Object} _context
+         * @param {String} _address
+         */
+        async [ADD_LEDGER_ACCOUNT](_context, _address) {
+            const address = fWallet.toChecksumAddress(_address);
+
+            if (!_context.getters.getAccountByAddress(address)) {
+                const balance = await fWallet.getBalance(address);
+                const account = {
+                    address,
+                    balance: balance,
+                    balanceFTM: fWallet.WEIToFTM(balance),
+                    isLedgerAccount: true,
+                };
+
+                _context.commit(APPEND_ACCOUNT, account);
+            }
         },
 
         /**
