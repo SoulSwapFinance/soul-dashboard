@@ -149,8 +149,11 @@ export default {
             if (this.currentAccount && data.amount) {
                 this.$emit('change-component', {
                     from: 'send-transaction-form',
-                    to: 'set-password-form',
-                    data,
+                    to: 'transaction-confirmation',
+                    data: {
+                        ...data,
+                        fee: this.$fWallet.WEIToFTM(this.$fWallet.getTransactionFee(this.gasPrice)),
+                    },
                 });
             }
         },

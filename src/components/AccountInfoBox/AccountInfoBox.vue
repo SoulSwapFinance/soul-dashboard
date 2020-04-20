@@ -45,7 +45,6 @@ export default {
             result(_data) {
                 if (_data.data.account) {
                     this.dAccount = _data.data.account;
-                    console.log('daccount', this.dAccount);
                 }
             },
             error(_error) {

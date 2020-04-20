@@ -146,7 +146,7 @@ export class FantomWeb3Wallet {
     async createMnemonic(_pwd) {
         const mnemonic = bip39.generateMnemonic(256);
         const { privateKey } = await this.mnemonicToKeys(mnemonic);
-        const keystore = fWallet.encryptToKeystore(privateKey, _pwd);
+        const keystore = this.encryptToKeystore(privateKey, _pwd);
 
         return { privateKey, mnemonic, keystore };
     }
@@ -161,10 +161,10 @@ export class FantomWeb3Wallet {
             gas: gasLimit,
             gasPrice,
             nonce,
-            memo,
+            data: memo ? this.web3.utils.asciiToHex(memo) : '',
         };
 
-        const account = fWallet.decryptFromKeystore(keystore, password);
+        const account = this.decryptFromKeystore(keystore, password);
         if (account) {
             const transaction = await account.signTransaction(tx);
 
@@ -173,6 +173,23 @@ export class FantomWeb3Wallet {
 
         return null;
     }
+
+    /*
+    async estimateFee({ from, to, value, memo }) {
+        const { web3 } = this;
+        const gasPrice = await web3.eth.getGasPrice();
+        const gasUsed = await web3.eth.estimateGas({
+            from,
+            to,
+            value: web3.utils.toHex(web3.utils.toWei(value, 'ether')),
+            data: web3.utils.asciiToHex(memo),
+        });
+
+        return this.getTransactionFee(gasPrice, gasUsed);
+
+    }
+
+    */
 
     /**
      * Get instance of BN.

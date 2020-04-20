@@ -1,5 +1,5 @@
 <template>
-    <div class="account-actions-box">
+    <nav class="account-actions-box">
         <ul class="no-markers">
             <li>
                 <router-link :to="{ name: 'account-send' }" title="Send">
@@ -34,7 +34,7 @@
                 </router-link>
             </li>
         </ul>
-    </div>
+    </nav>
 </template>
 
 <script>
