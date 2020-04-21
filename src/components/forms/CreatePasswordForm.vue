@@ -67,7 +67,6 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
-import fileDownload from 'js-file-download';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
@@ -117,17 +116,6 @@ export default {
     },
 
     methods: {
-        getKeystoreFileName(_publicAddress) {
-            return `UTC--${new Date().toISOString()} -- ${_publicAddress}`;
-        },
-
-        downloadKeystore(_keystore) {
-            fileDownload(
-                JSON.stringify(_keystore),
-                `${this.getKeystoreFileName(this.$fWallet.toChecksumAddress(_keystore.address))}.json`
-            );
-        },
-
         checkPrimaryPassword(_value) {
             return this.$fWallet.checkPrimaryPassword(_value);
         },
@@ -172,7 +160,7 @@ export default {
                     }
 
                     if (keystore) {
-                        this.downloadKeystore(keystore);
+                        fWallet.downloadKeystore(keystore);
 
                         if (this.restoreAccount) {
                             // save account
@@ -191,7 +179,7 @@ export default {
                     } else if (!this.restoreAccount) {
                         // create new account
                         account = await this.$fWallet.createMnemonic(pwd);
-                        this.downloadKeystore(account.keystore);
+                        fWallet.downloadKeystore(account.keystore);
                         this.$emit('change-component', {
                             detail: {
                                 from: 'create-password-form',

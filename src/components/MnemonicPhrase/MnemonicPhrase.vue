@@ -13,8 +13,8 @@
         </ul>
 
         <div class="footer">
-            <button class="large" @click="onSubmitButClick">I wrote down my recovery key</button> &nbsp;
-            <button class="secondary large" @click="onPrivateKeyButClick">View your private key</button>
+            <button class="btn large" @click="onSubmitButClick">I wrote down my recovery key</button> &nbsp;
+            <button class="btn secondary large" @click="onPrivateKeyButClick">View your private key</button>
         </div>
     </div>
 </template>

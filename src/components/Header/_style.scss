@@ -1,11 +1,10 @@
 @import "../../assets/scss/vars";
 
 .f-header {
-    /*position: -webkit-sticky;*/
-    /*position: sticky;*/
-    position: fixed;
-    top: 0;
-    z-index: 10;
+    //position: fixed;
+    //top: 0;
+    //z-index: 10;
+    position: relative;
     width: 100%;
     height: $f-header-height;
     color: #fff;

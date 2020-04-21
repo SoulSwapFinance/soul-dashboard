@@ -1,4 +1,6 @@
 // import Bip39 from 'bip39';
+import fileDownload from 'js-file-download';
+
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
 const ethUtil = require('ethereumjs-util');
@@ -9,7 +11,7 @@ const mnemonicRE = /^[ a-z]+$/;
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
 
-// Fantom web3 wallet plugin for VUE, based on https://github.com/Fantom-foundation/fantom-web3-wallet
+// Fantom web3 wallet plugin for VUE, based on https://git`hub.com/Fantom-foundation/fantom-web3-wallet
 export class FantomWeb3Wallet {
     static install(_Vue, _options) {
         fWallet = new FantomWeb3Wallet(_options);
@@ -73,6 +75,24 @@ export class FantomWeb3Wallet {
      */
     decryptFromKeystore(_keystoreJsonV3, _password) {
         return this.web3.eth.accounts.decrypt(_keystoreJsonV3, _password);
+    }
+
+    /**
+     * @param {String} _publicAddress
+     * @return {String}
+     */
+    getKeystoreFileName(_publicAddress) {
+        return `UTC--${new Date().toISOString()} -- ${_publicAddress}`;
+    }
+
+    /**
+     * @param {Object} _keystoreJsonV3
+     */
+    downloadKeystore(_keystoreJsonV3) {
+        fileDownload(
+            JSON.stringify(_keystoreJsonV3),
+            `${this.getKeystoreFileName(this.toChecksumAddress(_keystoreJsonV3.address))}.json`
+        );
     }
 
     /**
