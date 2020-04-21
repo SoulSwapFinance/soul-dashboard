@@ -2,9 +2,7 @@
     <div class="address-actions-box">
         <ul class="no-markers">
             <li>
-                <button class="btn large light same-size round" title="copy address" @click="onButtonClick">
-                    <icon data="@/assets/svg/copy.svg" width="20" height="20" aria-hidden="true" />
-                </button>
+                <f-copy-button :text="currentAccount.address" class="btn large light same-size round" />
             </li>
             <li>
                 <button class="btn large light same-size round" title="qr code of address" @click="onButtonClick">
@@ -26,8 +24,10 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 
 export default {
+    components: { FCopyButton },
     computed: {
         ...mapGetters(['currentAccount']),
     },

@@ -41,7 +41,7 @@
                     </div>
                     <template v-else>
                         <a :href="`${eplorerUrl}address/${value}`" target="_blank" class="break-word">
-                            {{ value }}
+                            {{ value | formatHash }}
                         </a>
                     </template>
                 </template>
@@ -114,7 +114,7 @@ export default {
         /** Number of items per page. */
         itemsPerPage: {
             type: Number,
-            default: 20,
+            default: 40,
         },
     },
 

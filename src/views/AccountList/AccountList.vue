@@ -40,9 +40,7 @@
                 <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
-                            <span class="label">
-                                Address <span v-if="account.isLedgerAccount">( LEDGER ACCOUNT )</span>
-                            </span>
+                            <span class="label"> Address <span v-if="account.isLedgerAccount">( LEDGER )</span> </span>
                             <router-link
                                 :to="{
                                     name: 'account-dashboard',
