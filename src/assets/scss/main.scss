@@ -109,6 +109,19 @@ form {
     }
 }
 
+.f-records-count {
+    color: $light-gray-color;
+    font-weight: normal;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.dt-heading {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
 .account-main-content-mt {
     margin-top: 32px;
 }
@@ -121,7 +134,11 @@ form {
 }
 
 
-@include media-max($bp-medium) {
+@include media-max($bp-small) {
+    .dt-heading {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 @include media-max($bp-menu) {

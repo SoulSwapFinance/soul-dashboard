@@ -53,9 +53,10 @@ export function timestampToDate(_value) {
 /**
  * @param {string|Date} _value
  * @param {boolean} [_notWeekday]
+ * @param {boolean} [_withTime]
  * @return {string}
  */
-export function formatDate(_value, _notWeekday) {
+export function formatDate(_value, _notWeekday, _withTime) {
     if (!_value) {
         return '';
     }
@@ -69,6 +70,11 @@ export function formatDate(_value, _notWeekday) {
 
     if (!_notWeekday) {
         options.weekday = 'short';
+    }
+
+    if (_withTime) {
+        options.hour = 'numeric';
+        options.minute = 'numeric';
     }
 
     // TODO: use i18n current locale

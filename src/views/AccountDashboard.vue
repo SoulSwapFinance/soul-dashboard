@@ -1,11 +1,20 @@
 <template>
     <div class="view-account-dashboard account-main-content-mt">
-        <h1>Dashboard</h1>
+        <account-transaction-list :address="currentAccount.address" />
     </div>
 </template>
 
 <script>
-export default {};
+import AccountTransactionList from '../components/data-tables/AccountTransactionList.vue';
+import { mapGetters } from 'vuex';
+
+export default {
+    components: { AccountTransactionList },
+
+    computed: {
+        ...mapGetters(['currentAccount']),
+    },
+};
 </script>
 
 <style lang="scss"></style>

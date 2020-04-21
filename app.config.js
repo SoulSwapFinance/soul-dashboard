@@ -27,6 +27,8 @@ const appConfig = {
     web3: {
         httpProvider: 'https://rpc.fantom.network/',
     },
+    // used in links pointing to fantom explorer
+    explorerUrl: 'https://explorer.fantom.network/',
     // progressive web application
     usePWA: true,
     // pwa settings

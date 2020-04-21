@@ -37,6 +37,7 @@ export default {
                     }
                 }
             `,
+            // pollInterval: 3000,
             variables() {
                 return {
                     address: this.currentAccountAddress,
@@ -69,11 +70,15 @@ export default {
     },
 
     mounted() {
-        this._polling.start('acount-query', () => {
-            if (!this.$apollo.queries.account.loading) {
-                this.$apollo.queries.account.refresh();
-            }
-        });
+        this._polling.start(
+            'acount-query',
+            () => {
+                if (!this.$apollo.queries.account.loading) {
+                    this.$apollo.queries.account.refresh();
+                }
+            },
+            3000
+        );
     },
 
     methods: {

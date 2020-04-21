@@ -21,11 +21,12 @@ class Polling {
      *
      * @param {string} _code
      * @param {function} _callback
+     * @param {int} [_timeout]
      */
-    start(_code, _callback) {
+    start(_code, _callback, _timeout) {
         this.stop(_code);
 
-        this._intervalIds[_code] = setInterval(_callback, this._timeout);
+        this._intervalIds[_code] = setInterval(_callback, _timeout || this._timeout);
     }
 
     /**
