@@ -49,6 +49,7 @@ import CheckPasswordForm from '../forms/TransactionConfirmationForm.vue';
 import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
+import web3utils from 'web3-utils';
 
 export default {
     components: { CheckPasswordForm, FCard },
@@ -124,7 +125,7 @@ export default {
                 if (pwd && currentAccount.keystore) {
                     try {
                         const rawTx = await fWallet.signTransaction({
-                            value: fWallet.web3.utils.toWei(txData.amount),
+                            value: web3utils.toWei(txData.amount),
                             from,
                             to: fWallet.toChecksumAddress(txData.opera_address),
                             keystore: currentAccount.keystore,

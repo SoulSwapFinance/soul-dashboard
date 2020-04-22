@@ -1,5 +1,6 @@
 // import Bip39 from 'bip39';
 import fileDownload from 'js-file-download';
+import gql from 'graphql-tag';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -7,6 +8,8 @@ const ethUtil = require('ethereumjs-util');
 // const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
 const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})/;
 const mnemonicRE = /^[ a-z]+$/;
+
+const FANTOM_CHAIN_ID = 0xfa;
 
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
@@ -31,14 +34,101 @@ export class FantomWeb3Wallet {
         }
 
         this.web3 = new Web3(httpProvider);
+        this.apolloClient = _options.apolloClient;
     }
 
     /**
+     * @param {String} [_to]
+     * @return {Promise<Number>}
+     */
+    async getTokenPrice(_to = 'USD') {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query Price($to: String!) {
+                    price(to: $to) {
+                        price
+                    }
+                }
+            `,
+            variables: {
+                to: _to,
+            },
+        });
+
+        if (!data.data.price) {
+            return;
+        }
+
+        let tokenPrice = parseFloat(data.data.price.price);
+
+        tokenPrice = parseInt(tokenPrice * 100000) / 100000;
+
+        return tokenPrice;
+    }
+
+    /**
+     * Get balance of account by address.
+     *
      * @param {String} _address
      * @return {Promise<string>}
      */
     async getBalance(_address) {
-        return await this.web3.eth.getBalance(_address);
+        const data = await this.apolloClient.query({
+            query: gql`
+                query AccountByAddress($address: Address!) {
+                    account(address: $address) {
+                        address
+                        balance
+                        totalValue
+                    }
+                }
+            `,
+            variables: {
+                address: _address,
+            },
+        });
+
+        return data.data.account.balance;
+    }
+
+    /**
+     * @param {Boolean} [_inHexFormat]
+     * @return {Promise<*>}
+     */
+    async getGasPrice(_inHexFormat) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GasPrice {
+                    gasPrice
+                }
+            `,
+        });
+
+        return _inHexFormat ? data.data.gasPrice : parseInt(data.data.gasPrice);
+    }
+
+    /**
+     * Get account transaction count by address.
+     *
+     * @param {String} _address
+     * @param {Boolean} [_inHexFormat]
+     * @return {Promise<string>}
+     */
+    async getTransactionCount(_address, _inHexFormat) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query AccountByAddress($address: Address!) {
+                    account(address: $address) {
+                        txCount
+                    }
+                }
+            `,
+            variables: {
+                address: _address,
+            },
+        });
+
+        return _inHexFormat ? data.data.account.txCount : parseInt(data.data.account.txCount);
     }
 
     /**
@@ -172,13 +262,14 @@ export class FantomWeb3Wallet {
     }
 
     async signTransaction({ from, to, value, memo = '', gasLimit = '44000', keystore, password }) {
-        const nonce = await this.web3.eth.getTransactionCount(from);
-        const gasPrice = await this.web3.eth.getGasPrice();
+        const nonce = await this.getTransactionCount(from);
+        const gasPrice = await this.getGasPrice(true);
         const tx = {
             value: value,
             // from,
             to: to,
             gas: gasLimit,
+            chainId: FANTOM_CHAIN_ID,
             gasPrice,
             nonce,
             data: memo ? this.web3.utils.asciiToHex(memo) : '',
@@ -197,7 +288,7 @@ export class FantomWeb3Wallet {
     /*
     async estimateFee({ from, to, value, memo }) {
         const { web3 } = this;
-        const gasPrice = await web3.eth.getGasPrice();
+        const gasPrice = await this.getGasPrice(true);
         const gasUsed = await web3.eth.estimateGas({
             from,
             to,
@@ -239,7 +330,7 @@ export class FantomWeb3Wallet {
      * @return {BN}
      */
     getTransactionFee(_gasPrice, _gasLimit = 44000) {
-        // const gasPrice = _gasPrice || await this.web3.eth.getGasPrice();
+        // const gasPrice = _gasPrice || await this.getGasPrice(true);
         return this.toBN(_gasPrice).mul(this.toBN(_gasLimit));
     }
 

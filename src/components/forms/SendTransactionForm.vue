@@ -55,7 +55,6 @@ import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FInput from '../core/FInput/FInput.vue';
 import FCard from '../core/FCard/FCard.vue';
-import gql from 'graphql-tag';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -66,22 +65,10 @@ export default {
         FForm,
     },
 
-    apollo: {
-        gasPrice: {
-            query: gql`
-                query GasPrice {
-                    gasPrice
-                }
-            `,
-            error(_error) {
-                console.log(_error);
-            },
-        },
-    },
-
     data() {
         return {
             amountErrMsg: 'Invalid amount',
+            gasPrice: '',
         };
     },
 
@@ -101,6 +88,12 @@ export default {
 
             return price;
         },
+    },
+
+    created() {
+        this.$fWallet.getGasPrice().then((_gasPrice) => {
+            this.gasPrice = _gasPrice;
+        });
     },
 
     mounted() {

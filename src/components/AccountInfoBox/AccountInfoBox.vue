@@ -34,6 +34,7 @@ export default {
                         address
                         balance
                         totalValue
+                        txCount
                     }
                 }
             `,

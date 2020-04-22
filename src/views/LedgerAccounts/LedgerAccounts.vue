@@ -4,6 +4,9 @@
             <div class="header">
                 <h1>
                     Pick ledger account
+                    <router-link to="/" class="router-link">
+                        <icon data="@/assets/svg/times.svg" width="24" height="24"></icon>
+                    </router-link>
                 </h1>
             </div>
             <div class="body">
