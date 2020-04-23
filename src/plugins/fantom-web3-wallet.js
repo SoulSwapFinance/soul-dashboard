@@ -14,6 +14,14 @@ const FANTOM_CHAIN_ID = 0xfa;
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
 
+import web3utils from 'web3-utils';
+import Accounts from 'web3-eth-accounts';
+
+export const Web3 = {
+    utils: web3utils,
+    accounts: new Accounts(),
+};
+
 // Fantom web3 wallet plugin for VUE, based on https://git`hub.com/Fantom-foundation/fantom-web3-wallet
 export class FantomWeb3Wallet {
     static install(_Vue, _options) {
@@ -22,18 +30,6 @@ export class FantomWeb3Wallet {
     }
 
     constructor(_options) {
-        const Web3 = _options.Web3;
-        const httpProvider = _options.httpProvider;
-
-        if (!Web3) {
-            throw new Error('No Web3 library');
-        }
-
-        if (!httpProvider) {
-            throw new Error('No http provider set for Web3');
-        }
-
-        this.web3 = new Web3(httpProvider);
         this.apolloClient = _options.apolloClient;
     }
 
@@ -138,7 +134,7 @@ export class FantomWeb3Wallet {
      * @return {String|BN}
      */
     WEIToFTM(_value) {
-        return this.web3.utils.fromWei(_value, 'ether');
+        return Web3.utils.fromWei(_value, 'ether');
     }
 
     /**
@@ -146,7 +142,7 @@ export class FantomWeb3Wallet {
      * @return {Account}
      */
     restoreAccountByPrivateKey(_privateKey) {
-        return this.web3.eth.accounts.privateKeyToAccount(_privateKey);
+        return Web3.accounts.privateKeyToAccount(_privateKey);
     }
 
     /**
@@ -155,7 +151,7 @@ export class FantomWeb3Wallet {
      * @return {EncryptedKeystoreV3Json}
      */
     encryptToKeystore(_privateKey, _password) {
-        return this.web3.eth.accounts.encrypt(_privateKey, _password);
+        return Web3.accounts.encrypt(_privateKey, _password);
     }
 
     /**
@@ -164,7 +160,7 @@ export class FantomWeb3Wallet {
      * @return {Account}
      */
     decryptFromKeystore(_keystoreJsonV3, _password) {
-        return this.web3.eth.accounts.decrypt(_keystoreJsonV3, _password);
+        return Web3.accounts.decrypt(_keystoreJsonV3, _password);
     }
 
     /**
@@ -189,7 +185,7 @@ export class FantomWeb3Wallet {
      * @return {Account}
      */
     createAccount() {
-        return this.web3.eth.accounts.create();
+        return Web3.accounts.create();
     }
 
     /**
@@ -197,7 +193,7 @@ export class FantomWeb3Wallet {
      * @return {String}
      */
     toChecksumAddress(_address) {
-        return this.web3.utils.toChecksumAddress(_address);
+        return Web3.utils.toChecksumAddress(_address);
     }
 
     /**
@@ -272,7 +268,7 @@ export class FantomWeb3Wallet {
             chainId: FANTOM_CHAIN_ID,
             gasPrice,
             nonce,
-            data: memo ? this.web3.utils.asciiToHex(memo) : '',
+            data: memo ? Web3.utils.asciiToHex(memo) : '',
         };
 
         const account = this.decryptFromKeystore(keystore, password);
@@ -309,7 +305,7 @@ export class FantomWeb3Wallet {
      * @return {BN}
      */
     toBN(_number) {
-        return this.web3.utils.toBN(_number);
+        return Web3.utils.toBN(_number);
     }
 
     /**
@@ -360,7 +356,7 @@ export class FantomWeb3Wallet {
             pk = `0x${pk}`;
         }
 
-        if (pk.length !== 66 || !this.web3.utils.isHexStrict(pk)) {
+        if (pk.length !== 66 || !Web3.utils.isHexStrict(pk)) {
             pk = '';
         }
 
@@ -372,6 +368,6 @@ export class FantomWeb3Wallet {
      * @return {boolean}
      */
     isValidAddress(_address) {
-        return this.web3.utils.isHexStrict(_address) && this.web3.utils.isAddress(_address);
+        return Web3.utils.isHexStrict(_address) && Web3.utils.isAddress(_address);
     }
 }

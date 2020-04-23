@@ -4,7 +4,7 @@
         <p>{{ cMsgT }}</p>
         <router-link
             :to="{
-                name: 'account',
+                name: 'account-dashboard',
                 params: { address },
             }"
             class="btn large secondary"
