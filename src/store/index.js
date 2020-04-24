@@ -209,11 +209,11 @@ export const store = new Vuex.Store({
 
             for (let i = 0, len1 = accounts.length; i < len1; i++) {
                 balance = await fWallet.getBalance(accounts[i].address);
-                accounts[i] = {
+                accounts.splice(i, 1, {
                     ...accounts[i],
                     balance,
                     balanceFTM: fWallet.WEIToFTM(balance),
-                };
+                });
             }
         },
 
@@ -230,11 +230,11 @@ export const store = new Vuex.Store({
                 const balance = await fWallet.getBalance(account.address);
 
                 if (idx > -1) {
-                    accounts[idx] = {
+                    accounts.splice(idx, 1, {
                         ...account,
                         balance,
                         balanceFTM: fWallet.WEIToFTM(balance),
-                    };
+                    });
                 }
             }
         },

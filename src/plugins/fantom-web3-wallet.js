@@ -82,6 +82,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
+            fetchPolicy: 'no-cache',
         });
 
         return data.data.account.balance;
@@ -122,6 +123,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
+            fetchPolicy: 'no-cache',
         });
 
         return _inHexFormat ? data.data.account.txCount : parseInt(data.data.account.txCount);

@@ -109,7 +109,7 @@ export default {
         },
 
         checkAmount(_value) {
-            const { remainingBalance } = this;
+            const remainingBalance = parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
             let ok = false;
 
@@ -118,6 +118,8 @@ export default {
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
                     ok = true;
+                } else if (remainingBalance < 0) {
+                    this.amountErrMsg = `You have no balance left`;
                 } else if (value > 0) {
                     this.amountErrMsg = `You can transfer max ${remainingBalance} (Value + gas * price)`;
                 }
