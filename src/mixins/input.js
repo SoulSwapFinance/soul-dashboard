@@ -14,11 +14,15 @@ export const inputMixin = {
             default: false,
         },
         min: {
-            type: Number,
+            type: String,
             default: null,
         },
         max: {
-            type: Number,
+            type: String,
+            default: null,
+        },
+        step: {
+            type: String,
             default: null,
         },
 
@@ -62,6 +66,7 @@ export const inputMixin = {
                 readonly: this.readonly,
                 min: this.min,
                 max: this.max,
+                step: this.step,
                 multiple: this.multiple,
                 minlength: this.minlength,
                 maxlength: this.maxlength,

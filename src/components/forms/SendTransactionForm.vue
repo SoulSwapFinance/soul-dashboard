@@ -10,7 +10,8 @@
                         field-size="large"
                         type="number"
                         autocomplete="off"
-                        :min="0"
+                        min="0"
+                        step="any"
                         name="amount"
                         :validator="checkAmount"
                         validate-on-input
