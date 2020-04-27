@@ -1,4 +1,5 @@
 @import "../../assets/scss/vars";
+@import "../../components/core/FCard/variables";
 
 .account-list-view {
     .intro {
@@ -47,6 +48,9 @@
     @include buttons('.create-account-btn') {
         font-weight: bold;
         background-color: $create-account-color;
+        height: 80px;
+        font-size: 20px;
+        border-radius: $f-card-padding;
     }
 
     @include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
@@ -60,6 +64,9 @@
     @include buttons('.restore-account-btn') {
         font-weight: bold;
         background-color: $restore-account-color;
+        height: 80px;
+        font-size: 20px;
+        border-radius: $f-card-padding;
     }
 
     @include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
@@ -73,6 +80,9 @@
     @include buttons('.ledger-accounts-btn') {
         font-weight: bold;
         background-color: $ledger-accounts-color;
+        height: 80px;
+        font-size: 20px;
+        border-radius: $f-card-padding;
     }
 
     @include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {

@@ -6,7 +6,7 @@
         </div>
 
         <div class="view-account-main">
-            <f-card class="main-buttons center-v">
+            <div class="main-buttons center-v">
                 <div class="row">
                     <div class="col">
                         <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
@@ -24,14 +24,14 @@
                         </router-link>
                     </div>
                 </div>
-            </f-card>
+            </div>
 
             <ul class="no-markers">
                 <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
-                            <div class="row">
-                                <div class="col-10">
+                            <span class="row">
+                                <span class="col-10">
                                     <span class="label">
                                         Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
                                     </span>
@@ -45,12 +45,12 @@
                                     >
                                         {{ account.address }}
                                     </router-link>
-                                </div>
-                                <div class="col">
+                                </span>
+                                <span class="col">
                                     <span class="label">Balance</span>
                                     <span class="fs-big">{{ toFTM(account.balance) }} FTM</span>
-                                </div>
-                            </div>
+                                </span>
+                            </span>
                         </h3>
                     </f-card>
                 </li>
