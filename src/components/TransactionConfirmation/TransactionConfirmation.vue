@@ -5,12 +5,12 @@
 
             <div class="transaction-info">
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">To</div>
+                    <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">{{ txData.opera_address }}</div>
                 </div>
 
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">From</div>
+                    <div class="col-3 f-row-label">Send From</div>
                     <div class="col break-word">{{ currentAccount.address }}</div>
                 </div>
 
@@ -120,29 +120,47 @@ export default {
             const fWallet = this.$fWallet;
             const { txData } = this;
             const pwd = _event.detail.data.pwd;
+            let rawTx = null;
 
             if (currentAccount) {
+                // transaction to sign
+                const tx = await fWallet.getTransactionToSign({
+                    value: Web3.utils.toHex(Web3.utils.toWei(txData.amount)),
+                    from,
+                    to: fWallet.toChecksumAddress(txData.opera_address),
+                    memo: txData.memo,
+                });
+
+                console.log('tx', tx);
+
                 if (pwd && currentAccount.keystore) {
+                    delete tx.gasLimit;
+
                     try {
-                        const rawTx = await fWallet.signTransaction({
-                            value: Web3.utils.toWei(txData.amount),
-                            from,
-                            to: fWallet.toChecksumAddress(txData.opera_address),
-                            keystore: currentAccount.keystore,
-                            password: pwd,
-                            memo: txData.memo || '',
-                        });
-
-                        if (rawTx) {
-                            this.sendTransaction(rawTx);
-
-                            this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
-                        }
+                        rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
                     } catch (_error) {
-                        this.errorMsg = 'Invalid password';
+                        this.errorMsg = _error.toString();
+                        // this.errorMsg = 'Invalid password';
                     }
                 } else {
-                    alert('Not implemented yet');
+                    delete tx.gas;
+
+                    try {
+                        console.log(currentAccount);
+                        rawTx = await this.$fNano.signTransaction(
+                            tx,
+                            currentAccount.accountId,
+                            currentAccount.addressId
+                        );
+                    } catch (_error) {
+                        this.errorMsg = _error.toString();
+                    }
+                }
+
+                if (rawTx) {
+                    console.log('rawTx', rawTx);
+                    this.sendTransaction(rawTx);
+                    this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
                 }
             }
         },

@@ -6,8 +6,12 @@ console.log('--- app config ---');
 console.log(appConfig);
 
 module.exports = {
+    // lintOnSave: false,
+
     publicPath: '',
     outputDir: appConfig.build.outputDir,
+
+    transpileDependencies: ['fantom-ledgerjs'],
 
     css: {
         loaderOptions: {

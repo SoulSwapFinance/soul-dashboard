@@ -27,7 +27,7 @@ export default {
     async beforeRouteLeave(_to, _from, _next) {
         if (_from.name === 'ledger-accounts' && _to.name === 'account-dashboard') {
             if (_to.params && _to.params.address) {
-                await this.$store.dispatch(ADD_LEDGER_ACCOUNT, _to.params.address);
+                await this.$store.dispatch(ADD_LEDGER_ACCOUNT, _to.params);
             }
         }
 

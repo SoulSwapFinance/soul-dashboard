@@ -259,6 +259,36 @@ export class FantomWeb3Wallet {
         return { privateKey, mnemonic, keystore };
     }
 
+    async getTransactionToSign({ from, to, value, memo = '', gasLimit = '0xabe0' }) {
+        const nonce = await this.getTransactionCount(from);
+        const gasPrice = await this.getGasPrice(true);
+
+        return {
+            value: value,
+            // from,
+            to: to,
+            gas: gasLimit,
+            gasLimit: gasLimit,
+            chainId: FANTOM_CHAIN_ID,
+            gasPrice,
+            nonce,
+            data: memo ? Web3.utils.asciiToHex(memo) : '0x',
+        };
+    }
+
+    async signTransaction(_tx, _keystore, _password) {
+        const account = this.decryptFromKeystore(_keystore, _password);
+
+        if (account) {
+            const transaction = await account.signTransaction(_tx);
+
+            return transaction.rawTransaction;
+        }
+
+        return null;
+    }
+
+    /*
     async signTransaction({ from, to, value, memo = '', gasLimit = '44000', keystore, password }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
@@ -282,6 +312,7 @@ export class FantomWeb3Wallet {
 
         return null;
     }
+    */
 
     /*
     async estimateFee({ from, to, value, memo }) {

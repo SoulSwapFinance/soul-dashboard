@@ -1,21 +1,32 @@
 <template>
     <div class="ledger-account-picker">
-        <ul v-if="accounts" class="no-markers ledger-accounts-list">
-            <li v-for="address in accounts" :key="address">
-                <router-link
-                    :to="{
-                        name: 'account-dashboard',
-                        params: { address },
-                    }"
-                    class="break-word fs-big"
-                    aria-label="Address"
-                >
-                    {{ address }}
-                </router-link>
-            </li>
-        </ul>
-        <div v-if="$asyncComputed.accounts.updating">
-            Loading...
+        <div v-if="$asyncComputed.accounts.updating" class="loader">
+            <pulse-loader color="#1969ff"></pulse-loader>
+        </div>
+        <div v-if="accounts && accounts.length > 0">
+            <ul class="no-markers ledger-accounts-list">
+                <li v-for="account in accounts" :key="account.address">
+                    <div class="row no-collapse">
+                        <h3 class="col-10 break-word">
+                            <router-link
+                                :to="{
+                                    name: 'account-dashboard',
+                                    params: account,
+                                }"
+                                class="break-word"
+                                aria-label="Address"
+                            >
+                                {{ account.address }}
+                            </router-link>
+                        </h3>
+                        <div class="col">{{ toFTM(account.balance) }} FTM</div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="button-footer">
+                <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next</button>
+            </div>
         </div>
         <f-message v-if="$asyncComputed.accounts.error" type="error" with-icon>
             An error
@@ -28,11 +39,12 @@
 
 <script>
 import FMessage from '../core/FMessage/FMessage.vue';
-
-const tmpAddr = ['0x76AE07E6D236c1aE3F5C3112F387ad82c69A2471', '0x1994e627454649c95ea55885c285343092c1473d'];
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import { formatNumberByLocale, numToFixed } from '../../filters.js';
+import { WEIToFTM } from '../../utils/transactions.js';
 
 export default {
-    components: { FMessage },
+    components: { FMessage, PulseLoader },
 
     data() {
         return {
@@ -45,13 +57,13 @@ export default {
             let accounts = [];
 
             try {
-                // accounts = await this.getTestAccounts2();
                 accounts = await this.$fNano.getLedgerAccounts();
             } catch (e) {
-                this.tmpError = e;
+                this.tmpError = e.toString();
+                throw e;
             }
 
-            return accounts;
+            return accounts || [];
         },
     },
 
@@ -60,30 +72,18 @@ export default {
     },
 
     methods: {
-        async getTestAccounts() {
-            return new Promise((_resolve) => {
-                setTimeout(() => {
-                    _resolve(['0x76AE07E6D236c1aE3F5C3112F387ad82c69A2471']);
-                }, 1000);
-            });
+        /**
+         * Convert value to FTM.
+         *
+         * @param {string|number} _value
+         * @return {string}
+         */
+        toFTM(_value) {
+            return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
         },
 
-        async getTestAccounts2() {
-            let accounts = [];
-
-            //
-            accounts = await Promise.all(
-                [...Array(2)].map(
-                    (_val, _idx) =>
-                        new Promise((_resolve) => {
-                            setTimeout(() => {
-                                _resolve(tmpAddr[_idx]);
-                            }, (_idx + 1) * 1000);
-                        })
-                )
-            );
-
-            return accounts;
+        onLoadNextBtnClick() {
+            alert('not implemented yet');
         },
     },
 };

@@ -1,9 +1,19 @@
+.ledger-account-picker {
+    .loader {
+        text-align: center;
+    }
+}
+
 .ledger-accounts-list {
     li {
-        padding-bottom: 16px;
+        //padding-bottom: 16px;
 
         a {
             line-height: 1;
+        }
+
+        h3 {
+            margin-bottom: 0 !important;
         }
     }
 }

@@ -11,10 +11,13 @@ import { store } from './store';
 import './filters.js';
 import './registerServiceWorker';
 import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
+import { FNano } from './plugins/fantom-nano.js';
 
 Vue.use(FantomWeb3Wallet, {
     apolloClient,
 });
+
+Vue.use(FNano);
 
 Vue.config.productionTip = false;
 

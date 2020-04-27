@@ -181,14 +181,15 @@ export const store = new Vuex.Store({
 
         /**
          * @param {Object} _context
-         * @param {String} _address
+         * @param {Object} _account
          */
-        async [ADD_LEDGER_ACCOUNT](_context, _address) {
-            const address = fWallet.toChecksumAddress(_address);
+        async [ADD_LEDGER_ACCOUNT](_context, _account) {
+            const address = fWallet.toChecksumAddress(_account.address);
 
             if (!_context.getters.getAccountByAddress(address)) {
                 const balance = await fWallet.getBalance(address);
                 const account = {
+                    ..._account,
                     address,
                     balance: balance,
                     balanceFTM: fWallet.WEIToFTM(balance),

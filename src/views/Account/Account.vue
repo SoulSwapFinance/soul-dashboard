@@ -9,7 +9,7 @@
                     <address-info-box />
                     <account-header />
 
-                    <!--                <button @click="onRemoveAccountButClick">Remove wallet</button>-->
+                    <!--                    <button @click="onRemoveAccountButClick">Remove wallet</button>-->
 
                     <router-view></router-view>
                 </template>

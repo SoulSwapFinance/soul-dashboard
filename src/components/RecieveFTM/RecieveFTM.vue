@@ -9,14 +9,16 @@
 
             <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
 
-            <button
-                v-show="currentAccount.isLedgerAccount"
-                class="btn large"
-                :disabled="btnDisabled"
-                @click="onVerifyBtnClick"
-            >
-                Verify Address on Ledger
-            </button>
+            <div class="button-footer">
+                <button
+                    v-show="currentAccount.isLedgerAccount"
+                    class="btn large"
+                    :disabled="btnDisabled"
+                    @click="onVerifyBtnClick"
+                >
+                    Verify Address on Ledger
+                </button>
+            </div>
         </f-card>
     </div>
 </template>
