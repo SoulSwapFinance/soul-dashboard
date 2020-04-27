@@ -24,7 +24,7 @@
                     </f-input>
 
                     <f-input
-                        label="To address"
+                        label="Send To"
                         field-size="large"
                         name="opera_address"
                         :validator="checkAddress"

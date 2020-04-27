@@ -10,6 +10,7 @@
         "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
     },
     "dependencies": {
+        "@ledgerhq/hw-transport-u2f": "^5.13.1",
         "@yzfe/vue-svgicon-loader": "^1.0.0-alpha.0",
         "apollo-cache-inmemory": "^1.6.5",
         "apollo-client": "^2.6.8",
@@ -35,6 +36,7 @@
         "vue-async-computed": "^3.8.2",
         "vue-i18n": "^8.16.0",
         "vue-observe-visibility": "^0.4.6",
+        "vue-qrcode-component": "^2.1.1",
         "vue-router": "^3.1.5",
         "vue-spinner": "^1.0.3",
         "vue-svgicon": "^4.0.0-alpha.3",

@@ -1,8 +1,13 @@
 .f-data-layout {
     //color: #000;
 
+    .row > * {
+        font-weight: bold;
+    }
+
     .f-row-label {
         opacity: 0.85;
+        font-weight: normal;
     }
 
     @include flexbox-rows() {
