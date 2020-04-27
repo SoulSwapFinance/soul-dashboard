@@ -16,6 +16,21 @@ export class FNano {
         }
     }
 
+    async getVersion() {
+        const transport = await TransportU2F.create();
+        let version = {};
+
+        if (transport) {
+            transport.setExchangeTimeout(300000);
+
+            const bridge = new FantomNano(transport);
+
+            version = await bridge.getVersion();
+        }
+
+        return version;
+    }
+
     // constructor() {
     //
     // }

@@ -6,54 +6,51 @@
         </div>
 
         <div class="view-account-main">
+            <f-card class="main-buttons center-v">
+                <div class="row">
+                    <div class="col">
+                        <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
+                            Connect to Ledger
+                        </router-link>
+                    </div>
+                    <div class="col">
+                        <router-link :to="{ name: 'create-account' }" class="btn create-account-btn large w100p">
+                            Create a Wallet
+                        </router-link>
+                    </div>
+                    <div class="col">
+                        <router-link :to="{ name: 'restore-account' }" class="btn restore-account-btn large w100p">
+                            Restore Wallet
+                        </router-link>
+                    </div>
+                </div>
+            </f-card>
+
             <ul class="no-markers">
-                <li>
-                    <f-card class="center-v">
-                        <div class="row">
-                            <div class="col-12">
-                                <router-link
-                                    :to="{ name: 'ledger-accounts' }"
-                                    class="btn ledger-accounts-btn large w100p"
-                                >
-                                    Connect to Ledger
-                                </router-link>
-                            </div>
-                            <div class="col-12">
-                                <router-link
-                                    :to="{ name: 'create-account' }"
-                                    class="btn create-account-btn large w100p"
-                                >
-                                    Create a Wallet
-                                </router-link>
-                            </div>
-                            <div class="col">
-                                <router-link
-                                    :to="{ name: 'restore-account' }"
-                                    class="btn restore-account-btn large w100p"
-                                >
-                                    Restore Wallet
-                                </router-link>
-                            </div>
-                        </div>
-                    </f-card>
-                </li>
                 <li v-for="account in accounts" :key="account.address">
                     <f-card>
                         <h3 slot="title" class="title">
-                            <span class="label"> Address <span v-if="account.isLedgerAccount">( LEDGER )</span> </span>
-                            <router-link
-                                :to="{
-                                    name: 'account-dashboard',
-                                    params: { address: account.address },
-                                }"
-                                class="break-word fs-big"
-                                aria-label="Address"
-                            >
-                                {{ account.address }}
-                            </router-link>
-                            <br /><br />
-                            <span class="label">Balance</span>
-                            <span class="fs-big">{{ toFTM(account.balance) }} FTM</span>
+                            <div class="row">
+                                <div class="col-10">
+                                    <span class="label">
+                                        Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
+                                    </span>
+                                    <router-link
+                                        :to="{
+                                            name: 'account-dashboard',
+                                            params: { address: account.address },
+                                        }"
+                                        class="break-word fs-big"
+                                        aria-label="Address"
+                                    >
+                                        {{ account.address }}
+                                    </router-link>
+                                </div>
+                                <div class="col">
+                                    <span class="label">Balance</span>
+                                    <span class="fs-big">{{ toFTM(account.balance) }} FTM</span>
+                                </div>
+                            </div>
                         </h3>
                     </f-card>
                 </li>

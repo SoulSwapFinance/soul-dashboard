@@ -6,7 +6,7 @@
     //z-index: 10;
     position: relative;
     width: 100%;
-    height: $f-header-height;
+    //height: $f-header-height;
     color: #fff;
     background-color: $theme-color;
     transition: height $transition-length ease;
@@ -22,8 +22,15 @@
 
 @include media-max($bp-menu) {
     .f-header {
+        top: 8px;
+
+        .narrow-container {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
         .logo {
-            position: fixed;
+            //position: fixed;
             /*top: 10px;*/
             top: 14px;
             left: 16px;
@@ -33,12 +40,6 @@
                 max-height: 30px;
             }
         }
-    }
-}
-
-@include media-max($bp-small) {
-    .f-header {
-        display: none;
     }
 }
 

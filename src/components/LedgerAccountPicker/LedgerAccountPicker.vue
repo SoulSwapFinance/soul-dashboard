@@ -3,6 +3,9 @@
         <div v-if="$asyncComputed.accounts.updating" class="loader">
             <pulse-loader color="#1969ff"></pulse-loader>
         </div>
+        <div v-if="showLedgerConnectMessage" class="ledger-connect-message">
+            Please connect your ledger device and select Fantom FTM app.
+        </div>
         <div v-if="accounts && accounts.length > 0">
             <ul class="no-markers ledger-accounts-list">
                 <li v-for="account in accounts" :key="account.address">
@@ -28,9 +31,11 @@
                 <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next</button>
             </div>
         </div>
+        <!--
         <f-message v-if="$asyncComputed.accounts.error" type="error" with-icon>
             An error
         </f-message>
+        -->
         <f-message v-if="tmpError" type="error" with-icon>
             {{ tmpError }}
         </f-message>
@@ -49,11 +54,33 @@ export default {
     data() {
         return {
             tmpError: '',
+            showLedgerConnectMessage: false,
         };
     },
 
     asyncComputed: {
         async accounts() {
+            let accounts = [];
+
+            try {
+                await this.$fNano.getVersion();
+            } catch (e) {
+                this.showLedgerConnectMessage = true;
+                throw e;
+            }
+
+            accounts = this.getLedgerAccounts();
+
+            return accounts || [];
+        },
+    },
+
+    mounted() {
+        // this.tmpTest();
+    },
+
+    methods: {
+        async getLedgerAccounts() {
             let accounts = [];
 
             try {
@@ -65,13 +92,7 @@ export default {
 
             return accounts || [];
         },
-    },
 
-    mounted() {
-        // this.tmpTest();
-    },
-
-    methods: {
         /**
          * Convert value to FTM.
          *
