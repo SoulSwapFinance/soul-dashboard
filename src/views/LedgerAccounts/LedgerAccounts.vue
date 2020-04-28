@@ -10,7 +10,7 @@
                 </h1>
             </div>
             <div class="body">
-                <ledger-account-picker />
+                <ledger-account-picker show-try-again-button />
             </div>
         </f-card>
     </div>

@@ -1,10 +1,13 @@
 <template>
     <div class="ledger-account-picker">
-        <div v-if="$asyncComputed.accounts.updating" class="loader">
+        <div v-if="updating" class="loader">
             <pulse-loader color="#1969ff"></pulse-loader>
         </div>
         <div v-if="showLedgerConnectMessage" class="ledger-connect-message">
             Please connect your ledger device and select Fantom FTM app.
+            <div v-if="showTryAgainButton" class="button-footer">
+                <button class="btn large" @click="onTryAgainBtnClick">Try again</button>
+            </div>
         </div>
         <div v-if="accounts && accounts.length > 0">
             <ul class="no-markers ledger-accounts-list">
@@ -51,42 +54,65 @@ import { WEIToFTM } from '../../utils/transactions.js';
 export default {
     components: { FMessage, PulseLoader },
 
+    props: {
+        showTryAgainButton: {
+            type: Boolean,
+            default: false,
+        },
+    },
+
     data() {
         return {
             tmpError: '',
             showLedgerConnectMessage: false,
+            accounts: [],
+            updating: false,
         };
     },
 
-    asyncComputed: {
-        async accounts() {
-            let accounts = [];
-
-            try {
-                await this.$fNano.getVersion();
-            } catch (e) {
-                this.showLedgerConnectMessage = true;
-                throw e;
-            }
-
-            accounts = this.getLedgerAccounts();
-
-            return accounts || [];
-        },
-    },
-
     mounted() {
-        // this.tmpTest();
+        this.setAccounts();
     },
 
     methods: {
+        async setAccounts(_waitForDevice = true) {
+            if (_waitForDevice) {
+                try {
+                    await this.waitForDevice();
+                    this.accounts = await this.getLedgerAccounts();
+                } catch (e) {
+                    this.accounts = [];
+                }
+            }
+        },
+
+        async waitForDevice() {
+            try {
+                await this.$fNano.getVersion();
+            } catch (_error) {
+                console.error(_error);
+                this.showLedgerConnectMessage = true;
+
+                if (_error.id !== 'U2FNotSupported' && !this.showTryAgainButton) {
+                    await this.waitForDevice();
+                }
+
+                throw _error;
+            }
+        },
+
         async getLedgerAccounts() {
             let accounts = [];
 
+            this.updating = true;
+            this.showLedgerConnectMessage = false;
+
             try {
                 accounts = await this.$fNano.getLedgerAccounts();
+                this.updating = false;
             } catch (e) {
                 this.tmpError = e.toString();
+                this.updating = false;
                 throw e;
             }
 
@@ -105,6 +131,10 @@ export default {
 
         onLoadNextBtnClick() {
             alert('not implemented yet');
+        },
+
+        onTryAgainBtnClick() {
+            this.setAccounts();
         },
     },
 };
