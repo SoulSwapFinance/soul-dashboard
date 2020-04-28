@@ -67,7 +67,7 @@ export class FNano {
      */
     async getLedgerAccount(_accountId = 0, _addressId = 0, _confirmAddress = true) {
         const transport = await TransportU2F.create();
-        let address = '';
+        let account = {};
 
         if (transport) {
             transport.setExchangeTimeout(300000);
@@ -75,14 +75,16 @@ export class FNano {
             const bridge = new FantomNano(transport);
 
             try {
-                address = await bridge.getAddress(_accountId, _addressId, _confirmAddress);
+                const address = await bridge.getAddress(_accountId, _addressId, _confirmAddress);
+
+                account = { address, accountId: _accountId, addressId: _addressId, balance: 0, totalBalance: 0 };
             } catch (e) {
                 console.log(e);
                 throw e;
             }
         }
 
-        return address;
+        return account;
     }
 
     /**

@@ -30,7 +30,10 @@
                 </li>
             </ul>
 
-            <div class="button-footer">
+            <div v-if="loadingAccounts" class="loader">
+                <pulse-loader color="#1969ff"></pulse-loader>
+            </div>
+            <div v-else class="button-footer">
                 <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next</button>
             </div>
         </div>
@@ -55,6 +58,12 @@ export default {
     components: { FMessage, PulseLoader },
 
     props: {
+        /**  */
+        maxAddressCount: {
+            type: Number,
+            default: 4,
+        },
+        /**  */
         showTryAgainButton: {
             type: Boolean,
             default: false,
@@ -67,22 +76,32 @@ export default {
             showLedgerConnectMessage: false,
             accounts: [],
             updating: false,
+            loadingAccounts: false,
+            lastAddressIdx: 0,
         };
     },
 
     mounted() {
-        this.setAccounts();
+        this.loadAccounts();
     },
 
     methods: {
-        async setAccounts(_waitForDevice = true) {
-            if (_waitForDevice) {
-                try {
-                    await this.waitForDevice();
-                    this.accounts = await this.getLedgerAccounts();
-                } catch (e) {
-                    this.accounts = [];
+        async loadAccounts(_accountId = 0, _addressId = 0, _length = this.maxAddressCount) {
+            try {
+                await this.waitForDevice();
+
+                // this.accounts = await this.getLedgerAccounts();
+
+                this.loadingAccounts = true;
+
+                for (let i = _addressId; i < _addressId + _length; i++) {
+                    await this.appendLedgerAccount(_accountId, i);
+                    this.lastAddressIdx += 1;
                 }
+
+                this.loadingAccounts = false;
+            } catch (e) {
+                this.accounts = [];
             }
         },
 
@@ -99,6 +118,16 @@ export default {
 
                 throw _error;
             }
+        },
+
+        async appendLedgerAccount(_accountId = 0, _addressId = 0) {
+            const account = await this.$fNano.getLedgerAccount(_accountId, _addressId, false);
+            const balance = await this.$fWallet.getBalance(account.address);
+
+            account.balance = balance.balance;
+            account.totalBalance = balance.totalBalance;
+
+            this.accounts.push(account);
         },
 
         async getLedgerAccounts() {
@@ -130,11 +159,11 @@ export default {
         },
 
         onLoadNextBtnClick() {
-            alert('not implemented yet');
+            this.loadAccounts(0, this.lastAddressIdx);
         },
 
         onTryAgainBtnClick() {
-            this.setAccounts();
+            this.loadAccounts();
         },
     },
 };
