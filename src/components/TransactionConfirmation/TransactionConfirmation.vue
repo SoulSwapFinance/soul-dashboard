@@ -32,6 +32,8 @@
                 -->
             </div>
 
+            <ledger-message :error="error" />
+
             <check-password-form
                 :error-message="errorMsg"
                 :show-password-field="!currentAccount.isLedgerAccount"
@@ -50,9 +52,10 @@ import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import { Web3 } from '../../plugins/fantom-web3-wallet.js';
+import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 
 export default {
-    components: { CheckPasswordForm, FCard },
+    components: { LedgerMessage, CheckPasswordForm, FCard },
 
     props: {
         // transaction data from SendTransactionForm
@@ -67,6 +70,7 @@ export default {
     data() {
         return {
             errorMsg: '',
+            error: null,
         };
     },
 
@@ -139,6 +143,7 @@ export default {
                     try {
                         rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
                     } catch (_error) {
+                        console.error(_error);
                         this.errorMsg = _error.toString();
                         // this.errorMsg = 'Invalid password';
                     }
@@ -153,7 +158,8 @@ export default {
                             currentAccount.addressId
                         );
                     } catch (_error) {
-                        this.errorMsg = _error.toString();
+                        this.error = _error;
+                        // this.errorMsg = _error.toString();
                     }
                 }
 

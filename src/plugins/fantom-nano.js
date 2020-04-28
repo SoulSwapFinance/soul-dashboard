@@ -5,6 +5,11 @@ import TransportU2F from '@ledgerhq/hw-transport-u2f';
 
 const ethUtil = require('ethereumjs-util');
 
+/** U2F status codes */
+export const U2FStatus = {
+    DEVICE_LOCKED: 28169,
+};
+
 /** @type {FNano} */
 export let fNano = null;
 

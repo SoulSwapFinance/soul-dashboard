@@ -23,6 +23,7 @@
                         <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">
                             Verify Address on Ledger
                         </button>
+                        <ledger-message :error="error" />
                     </template>
                 </div>
             </div>
@@ -37,11 +38,13 @@ import FCard from '../core/FCard/FCard.vue';
 import VueQRCodeComponent from 'vue-qrcode-component';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
+import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
+import { U2FStatus } from '../../plugins/fantom-nano.js';
 
 export default {
     name: 'RecieveFTM',
 
-    components: { FCard, VueQRCodeComponent, PulseLoader },
+    components: { LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
 
     data() {
         return {
@@ -49,6 +52,7 @@ export default {
             complete: false,
             verified: false,
             notVerified: false,
+            error: null,
         };
     },
 
@@ -78,13 +82,14 @@ export default {
 
                     this.verifying = false;
                     this.verified = this.$fWallet.sameAddresses(address, currentAccount.address);
-                } catch (e) {
-                    console.error(e);
-                    this.verified = false;
-                    throw e;
-                }
+                    this.complete = true;
+                } catch (_error) {
+                    this.error = _error;
 
-                this.complete = true;
+                    this.verifying = false;
+                    this.verified = false;
+                    this.complete = _error.statusCode !== U2FStatus.DEVICE_LOCKED;
+                }
             }
         },
 
@@ -102,6 +107,7 @@ export default {
             if (!this.verifying) {
                 this.verifying = true;
                 this.complete = false;
+                this.error = null;
 
                 this.verifyLedgerAccount();
             }
