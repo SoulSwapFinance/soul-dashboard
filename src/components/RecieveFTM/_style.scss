@@ -1,13 +1,37 @@
+@import "../../assets/scss/vars";
+//@import "../core/FMessage/variables";
+
 .verify-ledger-address {
     text-align: center;
 
     .address {
         text-align: center;
-        margin-bottom: 32px;
+        //margin-bottom: 32px;
+        margin-bottom: 24px;
+
+        svg {
+            position: relative;
+            top: -2px;
+        }
+
+        &.complete {
+            &.yes {
+                color: $f-message-success-color;
+            }
+
+            &.no {
+                color: $f-message-error-color;
+            }
+        }
     }
 
     .qr-code {
         width: 256px;
-        margin: 0 auto 32px auto;
+        //margin: 0 auto 32px auto;
+        margin: 32px auto 0 auto;
+    }
+
+    .verify-cont {
+        min-height: 48px;
     }
 }

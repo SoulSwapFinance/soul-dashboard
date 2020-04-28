@@ -140,6 +140,17 @@ export class FantomWeb3Wallet {
     }
 
     /**
+     * Are addresses the same?
+     *
+     * @param {String} _address1
+     * @param {String} _address2
+     * @return {boolean}
+     */
+    sameAddresses(_address1, _address2) {
+        return _address1.toLowerCase() === _address2.toLowerCase();
+    }
+
+    /**
      * @param {String} _privateKey
      * @return {Account}
      */
