@@ -32,7 +32,7 @@
                 -->
             </div>
 
-            <ledger-message :error="error" />
+            <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
 
             <check-password-form
                 :error-message="errorMsg"
@@ -53,6 +53,7 @@ import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
+import { U2FStatus } from '../../plugins/fantom-nano.js';
 
 export default {
     components: { LedgerMessage, CheckPasswordForm, FCard },
@@ -176,6 +177,20 @@ export default {
                 from: 'transaction-confirmation',
                 to: 'send-transaction-form',
             });
+        },
+
+        /**
+         * Triggered on 'ledger-status-code' event.
+         *
+         * @param {string} _code
+         */
+        onLedgerStatusCode(_code) {
+            if (_code === U2FStatus.USER_REJECTED_REQUESTED_ACTION) {
+                this.$emit('change-component', {
+                    from: 'transaction-confirmation',
+                    to: 'transaction-reject-message',
+                });
+            }
         },
     },
 };

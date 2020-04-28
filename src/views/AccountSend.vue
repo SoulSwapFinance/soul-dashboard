@@ -16,9 +16,10 @@
 import SendTransactionForm from '../components/forms/SendTransactionForm.vue';
 import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 import TransactionConfirmation from '../components/TransactionConfirmation/TransactionConfirmation.vue';
+import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
 
 export default {
-    components: { SendTransactionForm, TransactionSuccessMessage, TransactionConfirmation },
+    components: { SendTransactionForm, TransactionSuccessMessage, TransactionConfirmation, TransactionRejectMessage },
 
     data() {
         return {

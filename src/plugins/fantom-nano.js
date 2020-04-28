@@ -8,6 +8,8 @@ const ethUtil = require('ethereumjs-util');
 /** U2F status codes */
 export const U2FStatus = {
     DEVICE_LOCKED: 28169,
+    USER_REJECTED_REQUESTED_ACTION: 28167,
+    DEVICE_INELIGIBLE: 4,
 };
 
 /** @type {FNano} */

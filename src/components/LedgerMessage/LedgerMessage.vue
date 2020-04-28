@@ -28,26 +28,41 @@ export default {
 
     data() {
         return {
+            /** FMessage type. */
             messageType: 'info',
         };
     },
 
     computed: {
+        /**
+         * Get status message.
+         *
+         * @return {string}
+         */
         message() {
             return this.getMessage(this.error);
         },
     },
 
     methods: {
+        /**
+         * Get status message by error.
+         *
+         * @return {string}
+         */
         getMessage(_error) {
             let message = '';
-
-            console.log('???', _error);
+            let statusCode = 0;
 
             if (_error) {
                 if (_error.statusCode === U2FStatus.DEVICE_LOCKED) {
                     message = 'Please unlock the device';
                     this.messageType = 'info';
+                    statusCode = _error.statusCode;
+                } else if (_error.statusCode === U2FStatus.USER_REJECTED_REQUESTED_ACTION) {
+                    message = 'User action rejected';
+                    this.messageType = 'info';
+                    statusCode = _error.statusCode;
                 } else if (
                     _error.originalError &&
                     _error.originalError.metaData &&
@@ -55,11 +70,20 @@ export default {
                 ) {
                     message = 'Device ineligible';
                     this.messageType = 'info';
+                    statusCode = U2FStatus.DEVICE_INELIGIBLE;
                 } else {
                     message = _error.toString();
                     this.messageType = 'error';
                     console.error(_error);
                 }
+            }
+
+            if (statusCode > 0) {
+                /**
+                 * Emits ledger device status code.
+                 * @type {Event}
+                 */
+                this.$emit('ledger-status-code', statusCode);
             }
 
             return message;
