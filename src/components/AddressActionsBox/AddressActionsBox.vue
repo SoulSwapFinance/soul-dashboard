@@ -18,6 +18,15 @@
                     <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </li>
+            <li v-if="currentAccount.isLedgerAccount">
+                <router-link
+                    :to="{ name: 'account-recieve' }"
+                    class="btn large light same-size round"
+                    title="Verify Address on Ledger"
+                >
+                    <icon data="@/assets/svg/check.svg" width="20" height="20" />
+                </router-link>
+            </li>
         </ul>
     </div>
 </template>

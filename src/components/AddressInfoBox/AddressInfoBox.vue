@@ -5,6 +5,7 @@
                 <router-link to="/" class="router-link">
                     <strong class="address break-word">
                         {{ cMobileView ? formatHash(currentAccountAddress) : currentAccountAddress }}
+                        <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                     </strong>
                 </router-link>
             </div>

@@ -6,6 +6,7 @@ const WEI_IN_FTM = 1000000000000000000;
  * @return {number}
  */
 export function WEIToFTM(_value) {
+    // console.log(parseFloat(web3utils.fromWei(_value, 'ether')), _value / WEI_IN_FTM);
     return _value / WEI_IN_FTM;
 }
 
