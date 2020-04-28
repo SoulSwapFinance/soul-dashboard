@@ -1,8 +1,5 @@
 <template>
     <div class="ledger-account-picker">
-        <div v-if="updating" class="loader">
-            <pulse-loader color="#1969ff"></pulse-loader>
-        </div>
         <div v-if="showLedgerConnectMessage" class="ledger-connect-message">
             Please connect your ledger device and select Fantom FTM app.
             <div v-if="showTryAgainButton" class="button-footer">
@@ -30,12 +27,12 @@
                 </li>
             </ul>
 
-            <div v-if="loadingAccounts" class="loader">
-                <pulse-loader color="#1969ff"></pulse-loader>
-            </div>
-            <div v-else class="button-footer">
+            <div v-if="!loadingAccounts" class="button-footer">
                 <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next</button>
             </div>
+        </div>
+        <div v-if="loadingAccounts" class="loader">
+            <pulse-loader color="#1969ff"></pulse-loader>
         </div>
         <!--
         <f-message v-if="$asyncComputed.accounts.error" type="error" with-icon>
@@ -88,15 +85,18 @@ export default {
     methods: {
         async loadAccounts(_accountId = 0, _addressId = 0, _length = this.maxAddressCount) {
             try {
+                this.loadingAccounts = true;
+
                 await this.waitForDevice();
 
-                // this.accounts = await this.getLedgerAccounts();
-
-                this.loadingAccounts = true;
+                // this.loadingAccounts = true;
+                this.showLedgerConnectMessage = false;
 
                 for (let i = _addressId; i < _addressId + _length; i++) {
                     await this.appendLedgerAccount(_accountId, i);
                     this.lastAddressIdx += 1;
+
+                    // this.updating = false;
                 }
 
                 this.loadingAccounts = false;
@@ -111,6 +111,8 @@ export default {
             } catch (_error) {
                 console.error(_error);
                 this.showLedgerConnectMessage = true;
+                // this.updating = false;
+                this.loadingAccounts = false;
 
                 if (_error.id !== 'U2FNotSupported' && !this.showTryAgainButton) {
                     await this.waitForDevice();
@@ -128,24 +130,6 @@ export default {
             account.totalBalance = balance.totalBalance;
 
             this.accounts.push(account);
-        },
-
-        async getLedgerAccounts() {
-            let accounts = [];
-
-            this.updating = true;
-            this.showLedgerConnectMessage = false;
-
-            try {
-                accounts = await this.$fNano.getLedgerAccounts();
-                this.updating = false;
-            } catch (e) {
-                this.tmpError = e.toString();
-                this.updating = false;
-                throw e;
-            }
-
-            return accounts || [];
         },
 
         /**

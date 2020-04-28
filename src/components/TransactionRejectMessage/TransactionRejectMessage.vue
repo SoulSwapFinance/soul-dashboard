@@ -14,14 +14,6 @@ export default {
     name: 'TransactionRejectMessage',
 
     components: { FCard },
-
-    props: {
-        // transaction hash
-        tx: {
-            type: String,
-            default: '',
-        },
-    },
 };
 </script>
 
