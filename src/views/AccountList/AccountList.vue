@@ -1,29 +1,21 @@
 <template>
     <div class="account-list-view">
         <div class="intro">
-            <h1>Welcome to FantomWallet</h1>
+            <h1>Welcome to Fantom Wallet</h1>
             <h2>Send, receive and stake your Opera FTM</h2>
         </div>
 
         <div class="view-account-main">
-            <div class="main-buttons center-v">
-                <div class="row">
-                    <div class="col">
-                        <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
-                            Connect to Ledger
-                        </router-link>
-                    </div>
-                    <div class="col">
-                        <router-link :to="{ name: 'create-account' }" class="btn create-account-btn large w100p">
-                            Create a Wallet
-                        </router-link>
-                    </div>
-                    <div class="col">
-                        <router-link :to="{ name: 'restore-account' }" class="btn restore-account-btn large w100p">
-                            Restore Wallet
-                        </router-link>
-                    </div>
-                </div>
+            <div class="main-buttons v2 collapse-md">
+                <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
+                    Connect to Ledger
+                </router-link>
+                <router-link :to="{ name: 'create-account' }" class="btn create-account-btn large w100p">
+                    Create a Wallet
+                </router-link>
+                <router-link :to="{ name: 'restore-account' }" class="btn restore-account-btn large w100p">
+                    Restore Wallet
+                </router-link>
             </div>
 
             <ul class="no-markers">
@@ -31,7 +23,7 @@
                     <f-card>
                         <h3 slot="title" class="title">
                             <span class="row">
-                                <span class="col-10">
+                                <span class="col-7 col-12-md">
                                     <span class="label">
                                         Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
                                     </span>
@@ -40,15 +32,19 @@
                                             name: 'account-dashboard',
                                             params: { address: account.address },
                                         }"
-                                        class="break-word fs-big"
+                                        class="break-word value"
                                         aria-label="Address"
                                     >
                                         {{ account.address }}
                                     </router-link>
                                 </span>
-                                <span class="col">
-                                    <span class="label">Balance</span>
-                                    <span class="fs-big">{{ toFTM(account.balance) }} FTM</span>
+                                <span class="col col-6-md align-right align-left-md">
+                                    <span class="label">Available</span>
+                                    <span class="value">{{ toFTM(account.balance) }} FTM</span>
+                                </span>
+                                <span class="col col-6-md align-right align-left-md">
+                                    <span class="label">Total Balance</span>
+                                    <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
                                 </span>
                             </span>
                         </h3>

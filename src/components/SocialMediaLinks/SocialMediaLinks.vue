@@ -36,6 +36,7 @@
                 target="_blank"
                 rel="nofollow"
                 title="Fantom on Linkedin"
+                class="linkedin"
             >
                 <icon data="@/assets/svg/social-media/linkedin.svg" width="24" height="24"></icon>
             </a>

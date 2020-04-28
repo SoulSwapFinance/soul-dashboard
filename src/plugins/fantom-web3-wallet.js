@@ -63,10 +63,10 @@ export class FantomWeb3Wallet {
     }
 
     /**
-     * Get balance of account by address.
+     * Get balance and total balance of account by address.
      *
      * @param {String} _address
-     * @return {Promise<string>}
+     * @return {Promise<{totalValue: string, address: string, balance: string}>}
      */
     async getBalance(_address) {
         const data = await this.apolloClient.query({
@@ -85,7 +85,7 @@ export class FantomWeb3Wallet {
             fetchPolicy: 'no-cache',
         });
 
-        return data.data.account.balance;
+        return data.data.account;
     }
 
     /**

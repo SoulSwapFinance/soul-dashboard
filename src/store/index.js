@@ -171,8 +171,8 @@ export const store = new Vuex.Store({
             const balance = await fWallet.getBalance(address);
             const account = {
                 address,
-                balance: balance,
-                balanceFTM: fWallet.WEIToFTM(balance),
+                balance: balance.balance,
+                totalBalance: balance.totalValue,
                 keystore: _keystore,
             };
 
@@ -191,8 +191,8 @@ export const store = new Vuex.Store({
                 const account = {
                     ..._account,
                     address,
-                    balance: balance,
-                    balanceFTM: fWallet.WEIToFTM(balance),
+                    balance: balance.balance,
+                    totalBalance: balance.totalValue,
                     isLedgerAccount: true,
                 };
 
@@ -212,8 +212,8 @@ export const store = new Vuex.Store({
                 balance = await fWallet.getBalance(accounts[i].address);
                 accounts.splice(i, 1, {
                     ...accounts[i],
-                    balance,
-                    balanceFTM: fWallet.WEIToFTM(balance),
+                    balance: balance.balance,
+                    totalBalance: balance.totalValue,
                 });
             }
         },
@@ -233,8 +233,8 @@ export const store = new Vuex.Store({
                 if (idx > -1) {
                     accounts.splice(idx, 1, {
                         ...account,
-                        balance,
-                        balanceFTM: fWallet.WEIToFTM(balance),
+                        balance: balance.balance,
+                        totalBalance: balance.totalValue,
                     });
                 }
             }
