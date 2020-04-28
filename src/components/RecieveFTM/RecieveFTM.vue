@@ -74,14 +74,14 @@ export default {
 
             if (currentAccount) {
                 try {
-                    const address = await this.$fNano.getLedgerAccount(
+                    const account = await this.$fNano.getLedgerAccount(
                         currentAccount.accountId,
                         currentAccount.addressId
                     );
                     // const address = await this.tmp();
 
                     this.verifying = false;
-                    this.verified = this.$fWallet.sameAddresses(address, currentAccount.address);
+                    this.verified = this.$fWallet.sameAddresses(account.address, currentAccount.address);
                     this.complete = true;
                 } catch (_error) {
                     this.error = _error;

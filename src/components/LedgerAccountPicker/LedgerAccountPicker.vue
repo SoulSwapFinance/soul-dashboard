@@ -72,7 +72,6 @@ export default {
             tmpError: '',
             showLedgerConnectMessage: false,
             accounts: [],
-            updating: false,
             loadingAccounts: false,
             lastAddressIdx: 0,
         };
@@ -95,8 +94,6 @@ export default {
                 for (let i = _addressId; i < _addressId + _length; i++) {
                     await this.appendLedgerAccount(_accountId, i);
                     this.lastAddressIdx += 1;
-
-                    // this.updating = false;
                 }
 
                 this.loadingAccounts = false;
@@ -111,7 +108,6 @@ export default {
             } catch (_error) {
                 console.error(_error);
                 this.showLedgerConnectMessage = true;
-                // this.updating = false;
                 this.loadingAccounts = false;
 
                 if (_error.id !== 'U2FNotSupported' && !this.showTryAgainButton) {
