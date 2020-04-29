@@ -28,7 +28,7 @@
             </ul>
 
             <div v-if="!loadingAccounts" class="button-footer">
-                <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next</button>
+                <button class="btn secondary large" @click="onLoadNextBtnClick">Load Next 5</button>
             </div>
         </div>
         <div v-if="loadingAccounts" class="loader">
@@ -58,7 +58,7 @@ export default {
         /**  */
         maxAddressCount: {
             type: Number,
-            default: 4,
+            default: 5,
         },
         /**  */
         showTryAgainButton: {
@@ -88,7 +88,6 @@ export default {
 
                 await this.waitForDevice();
 
-                // this.loadingAccounts = true;
                 this.showLedgerConnectMessage = false;
 
                 for (let i = _addressId; i < _addressId + _length; i++) {
