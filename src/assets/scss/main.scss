@@ -137,7 +137,21 @@ form {
     margin: 32px auto 16px auto;
 }
 
+.f-window {
+    h2 {
+        font-weight: normal !important;
+        text-transform: uppercase;
+    }
+}
 
+@include buttons('.light:not([disabled]):not(.disabled):hover') {
+    color: $theme-color;
+    background-color: lighten($theme-color, 35);
+}
+@include buttons('.light:not([disabled]):not(.disabled):focus') {
+    color: $theme-color;
+    background-color: lighten($theme-color, 35);
+}
 
 @if $IS_CHROME_EXTENSION == true {
     body {

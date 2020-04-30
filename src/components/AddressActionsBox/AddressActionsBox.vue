@@ -41,7 +41,7 @@
             transition-enter="scale-center-enter-active"
             transition-leave="scale-center-leave-active"
         >
-            <h3 class="break-word h2 align-center" :class="addressCssClass">{{ currentAccount.address }}</h3>
+            <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
             <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
         </f-window>
     </div>

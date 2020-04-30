@@ -40,6 +40,49 @@
                 @f-form-submit="onFFormSubmit"
                 @go-back="onGoBack"
             />
+
+            <f-window
+                ref="confirmationWindow"
+                modal
+                title="Transaction Confirmation"
+                style="max-width: 620px;"
+                transition-enter="scale-center-enter-active"
+                transition-leave="scale-center-leave-active"
+            >
+                <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
+                <div class="align-center">
+                    <img src="img/nano-s-confirm-tx.png" alt="fantom nano device" /><br /><br />
+                </div>
+
+                <p>Please confirm this transaction on your Ledger device:</p>
+
+                <ol class="f-data-layout">
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Send To</div>
+                            <div class="col break-word">{{ txData.opera_address }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Send From</div>
+                            <div class="col break-word">{{ currentAccount.address }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Amount</div>
+                            <div class="col">{{ txData.amount }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Max Fee</div>
+                            <div class="col">{{ txData.fee }}</div>
+                        </div>
+                    </li>
+                </ol>
+            </f-window>
         </f-card>
     </div>
 </template>
@@ -54,9 +97,10 @@ import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
+import FWindow from '../core/FWindow/FWindow.vue';
 
 export default {
-    components: { LedgerMessage, CheckPasswordForm, FCard },
+    components: { FWindow, LedgerMessage, CheckPasswordForm, FCard },
 
     props: {
         // transaction data from SendTransactionForm
@@ -153,13 +197,18 @@ export default {
 
                     try {
                         console.log(currentAccount);
+                        this.$refs.confirmationWindow.show();
+
                         rawTx = await this.$fNano.signTransaction(
                             tx,
                             currentAccount.accountId,
                             currentAccount.addressId
                         );
+
+                        this.$refs.confirmationWindow.hide();
                     } catch (_error) {
                         this.error = _error;
+                        this.$refs.confirmationWindow.hide();
                         // this.errorMsg = _error.toString();
                     }
                 }

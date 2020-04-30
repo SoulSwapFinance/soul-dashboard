@@ -29,6 +29,24 @@
             </div>
 
             <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
+
+            <f-window
+                ref="confirmationWindow"
+                modal
+                title="Address Verification"
+                style="max-width: 620px;"
+                transition-enter="scale-center-enter-active"
+                transition-leave="scale-center-leave-active"
+            >
+                <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
+                <div class="align-center">
+                    <img src="img/nano-s-verify-address.png" alt="fantom nano device" /><br /><br />
+                </div>
+
+                <p>Please verify following address on your Ledger device:</p>
+
+                <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
+            </f-window>
         </f-card>
     </div>
 </template>
@@ -40,11 +58,12 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
+import FWindow from '../core/FWindow/FWindow.vue';
 
 export default {
     name: 'RecieveFTM',
 
-    components: { LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
+    components: { FWindow, LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
 
     data() {
         return {
@@ -74,11 +93,15 @@ export default {
 
             if (currentAccount) {
                 try {
+                    this.$refs.confirmationWindow.show();
+
                     const account = await this.$fNano.getLedgerAccount(
                         currentAccount.accountId,
                         currentAccount.addressId
                     );
                     // const address = await this.tmp();
+
+                    this.$refs.confirmationWindow.hide();
 
                     this.verifying = false;
                     this.verified = this.$fWallet.sameAddresses(account.address, currentAccount.address);
@@ -89,6 +112,8 @@ export default {
                     this.verifying = false;
                     this.verified = false;
                     this.complete = _error.statusCode !== U2FStatus.DEVICE_LOCKED;
+
+                    this.$refs.confirmationWindow.hide();
                 }
             }
         },

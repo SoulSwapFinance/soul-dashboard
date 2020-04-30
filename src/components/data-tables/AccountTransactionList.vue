@@ -215,7 +215,7 @@ export default {
                     // itemProp: `${!this.withoutCursor ? 'transaction.' : ''}block.timestamp`,
                     itemProp: 'transaction.block.timestamp',
                     formatter: (_value) => formatDate(timestampToDate(_value), true, true),
-                    width: '240px',
+                    width: '320px',
                 },
                 {
                     name: 'address',
