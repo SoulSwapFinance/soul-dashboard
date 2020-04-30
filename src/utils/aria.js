@@ -1,5 +1,47 @@
 const RECEIVE_FOCUS_FROM_ATTR = 'data-receive-focus-from';
 
+const KEY_EVENTS = {
+    keyup: null,
+    keydown: null,
+};
+
+export function isKey(_key, _event) {
+    let isKey = false;
+
+    if (_event) {
+        switch (_event.key) {
+            case 'Esc': // IE/Edge
+            case 'Escape':
+                isKey = _key === 'Escape';
+                break;
+            case 'Up': // IE/Edge
+            case 'ArrowUp':
+                isKey = _key === 'ArrowUp';
+                break;
+            case 'Right': // IE/Edge
+            case 'ArrowRight':
+                isKey = _key === 'ArrowRight';
+                break;
+            case 'Left': // IE/Edge
+            case 'ArrowLeft':
+                isKey = _key === 'ArrowLeft';
+                break;
+            case 'Down': // IE/Edge
+            case 'ArrowDown':
+                isKey = _key === 'ArrowDown';
+                break;
+            case 'Spacebar': // IE/Edge
+            case ' ':
+                isKey = _key === ' ';
+                break;
+            default:
+                isKey = _key === _event.key;
+        }
+    }
+
+    return isKey;
+}
+
 /**
  * Is element visible? Fast method, but not accurate, if fixed element is on page.
  * (window.getComputedStyle(el) (style.display === 'none') -> much slower).
@@ -43,7 +85,7 @@ export function isFocusable(_elem) {
     }
 
     if (focusable) {
-        focusable = isVisible(_elem.offsetParent);
+        focusable = isVisible(_elem);
     }
 
     return focusable;
@@ -148,5 +190,62 @@ export function returnFocus(_id) {
 export function setReceiveFocusFromAttr(_id) {
     if (document.activeElement) {
         document.activeElement.setAttribute(RECEIVE_FOCUS_FROM_ATTR, _id);
+    }
+}
+
+/**
+ *
+ * @param {MouseEvent|KeyboardEvent} _event
+ * @param {string} _selector
+ * @return {boolean}
+ */
+export function isAriaAction(_event, _selector) {
+    if (!_event || !_selector) {
+        return false;
+    }
+
+    const elem = _event.target.closest(_selector);
+    const eventType = _event.type;
+
+    if (elem) {
+        if (eventType === 'click') {
+            return true;
+        }
+
+        if (eventType in KEY_EVENTS && (isKey('Enter', _event) || isKey(' ', _event))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Trap focus inside an element.
+ *
+ * @param {KeyboardEvent} _event
+ * @param {HTMLElement} _elem
+ * @param {{first: HTMLElement, last: HTMLElement}} _focusableElems
+ */
+export function focusTrap(_event, _elem, _focusableElems) {
+    if (isKey('Tab', _event)) {
+        if (!_focusableElems.first) {
+            _focusableElems.first = findFirstFocusableDescendant(_elem);
+        }
+        if (!_focusableElems.last) {
+            _focusableElems.last = findLastFocusableDescendant(_elem);
+        }
+
+        if (_event.target === _focusableElems.first && _event.shiftKey) {
+            if (_focusableElems.last) {
+                _event.preventDefault();
+                _focusableElems.last.focus();
+            }
+        } else if (_event.target === _focusableElems.last && !_event.shiftKey) {
+            if (_focusableElems.first) {
+                _event.preventDefault();
+                _focusableElems.first.focus();
+            }
+        }
     }
 }
