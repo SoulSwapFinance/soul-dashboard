@@ -13,6 +13,10 @@ module.exports = {
 
     transpileDependencies: ['fantom-ledgerjs'],
 
+    devServer: {
+        https: true,
+    },
+
     css: {
         loaderOptions: {
             scss: {

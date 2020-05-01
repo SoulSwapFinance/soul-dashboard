@@ -6,12 +6,18 @@
             <div class="transaction-info">
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Send To</div>
-                    <div class="col break-word">{{ txData.opera_address }}</div>
+                    <div class="col break-word">
+                        {{ txData.opera_address }}
+                        <span class="f-row-label">( {{ toFTM(sendToAddressBalance.balance) }} FTM )</span>
+                    </div>
                 </div>
 
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Send From</div>
-                    <div class="col break-word">{{ currentAccount.address }}</div>
+                    <div class="col break-word">
+                        {{ currentAccount.address }}
+                        <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                    </div>
                 </div>
 
                 <div class="row no-collapse">
@@ -42,10 +48,11 @@
             />
 
             <f-window
+                v-if="currentAccount.isLedgerAccount"
                 ref="confirmationWindow"
                 modal
                 title="Transaction Confirmation"
-                style="max-width: 620px;"
+                style="max-width: 800px;"
                 animation-in="scale-center-enter-active"
                 animation-out="scale-center-leave-active"
             >
@@ -60,13 +67,19 @@
                     <li>
                         <div class="row no-collapse">
                             <div class="col-3 f-row-label">Send To</div>
-                            <div class="col break-word">{{ txData.opera_address }}</div>
+                            <div class="col break-word">
+                                {{ txData.opera_address }}
+                                <span class="f-row-label">( {{ toFTM(sendToAddressBalance.balance) }} FTM )</span>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div class="row no-collapse">
                             <div class="col-3 f-row-label">Send From</div>
-                            <div class="col break-word">{{ currentAccount.address }}</div>
+                            <div class="col break-word">
+                                {{ currentAccount.address }}
+                                <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -98,6 +111,7 @@ import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
+import { toFTM } from '../../utils/transactions.js';
 
 export default {
     components: { FWindow, LedgerMessage, CheckPasswordForm, FCard },
@@ -121,6 +135,12 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+    },
+
+    asyncComputed: {
+        async sendToAddressBalance() {
+            return await this.$fWallet.getBalance(this.txData.opera_address);
+        },
     },
 
     mounted() {
@@ -241,6 +261,8 @@ export default {
                 });
             }
         },
+
+        toFTM,
     },
 };
 </script>

@@ -1,4 +1,5 @@
 import web3utils from 'web3-utils';
+import { formatNumberByLocale, numToFixed } from '../filters.js';
 
 const WEI_IN_FTM = 1000000000000000000;
 
@@ -22,8 +23,18 @@ export function FTMToWEI(_value) {
  * @param {number} [_tokenPrice]
  * @return {number}
  */
-export function FTMToUSD(_value, _tokenPrice = 0.002) {
+export function FTMToUSD(_value, _tokenPrice = 0) {
     return _value * _tokenPrice;
+}
+
+/**
+ * Convert value to FTM.
+ *
+ * @param {string|number} _value
+ * @return {string}
+ */
+export function toFTM(_value) {
+    return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
 }
 
 /**

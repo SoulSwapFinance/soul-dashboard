@@ -48,8 +48,7 @@
 <script>
 import FMessage from '../core/FMessage/FMessage.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import { formatNumberByLocale, numToFixed } from '../../filters.js';
-import { WEIToFTM } from '../../utils/transactions.js';
+import { toFTM } from '../../utils/transactions.js';
 
 export default {
     components: { FMessage, PulseLoader },
@@ -127,16 +126,6 @@ export default {
             this.accounts.push(account);
         },
 
-        /**
-         * Convert value to FTM.
-         *
-         * @param {string|number} _value
-         * @return {string}
-         */
-        toFTM(_value) {
-            return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
-        },
-
         onLoadNextBtnClick() {
             this.loadAccounts(0, this.lastAddressIdx);
         },
@@ -144,6 +133,8 @@ export default {
         onTryAgainBtnClick() {
             this.loadAccounts();
         },
+
+        toFTM,
     },
 };
 </script>

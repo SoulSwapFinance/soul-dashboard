@@ -59,8 +59,7 @@
 import FCard from '../../components/core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
-import { formatNumberByLocale, numToFixed } from '../../filters.js';
-import { WEIToFTM } from '../../utils/transactions.js';
+import { toFTM } from '../../utils/transactions.js';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
@@ -77,15 +76,7 @@ export default {
     },
 
     methods: {
-        /**
-         * Convert value to FTM.
-         *
-         * @param {string|number} _value
-         * @return {string}
-         */
-        toFTM(_value) {
-            return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
-        },
+        toFTM,
     },
 };
 </script>

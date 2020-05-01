@@ -30,7 +30,7 @@ import AccountActionsBox from '../AccountActionsBox/AccountActionsBox.vue';
 import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
 import { formatNumberByLocale, numToFixed } from '../../filters.js';
-import { FTMToUSD, WEIToFTM } from '../../utils/transactions.js';
+import { FTMToUSD, toFTM, WEIToFTM } from '../../utils/transactions.js';
 import { pollingMixin } from '../../mixins/polling.js';
 
 export default {
@@ -100,16 +100,6 @@ export default {
 
     methods: {
         /**
-         * Convert value to FTM.
-         *
-         * @param {string|number} _value
-         * @return {string}
-         */
-        toFTM(_value) {
-            return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
-        },
-
-        /**
          * Convert value to USD.
          *
          * @param {string|number} _value
@@ -118,6 +108,8 @@ export default {
         toUSD(_value) {
             return formatNumberByLocale(numToFixed(FTMToUSD(WEIToFTM(_value), this.$store.state.tokenPrice), 2), 2);
         },
+
+        toFTM,
     },
 };
 </script>
