@@ -1,5 +1,5 @@
 <template>
-    <div class="verify-ledger-address">
+    <div class="recieve-ftm">
         <f-card class="f-card-double-padding">
             <h2>Receive Opera FTM</h2>
 

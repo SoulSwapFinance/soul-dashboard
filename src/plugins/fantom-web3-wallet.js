@@ -66,19 +66,50 @@ export class FantomWeb3Wallet {
      * Get balance and total balance of account by address.
      *
      * @param {String} _address
+     * @param {Boolean} [_withDelegations] Include delegations and staker info.
      * @return {Promise<{totalValue: string, address: string, balance: string}>}
      */
-    async getBalance(_address) {
-        const data = await this.apolloClient.query({
-            query: gql`
+    async getBalance(_address, _withDelegations) {
+        let query = gql`
+            query AccountByAddress($address: Address!) {
+                account(address: $address) {
+                    address
+                    balance
+                    totalValue
+                }
+            }
+        `;
+
+        if (_withDelegations) {
+            query = gql`
                 query AccountByAddress($address: Address!) {
                     account(address: $address) {
                         address
                         balance
                         totalValue
+                        staker {
+                            id
+                            createdTime
+                            isActive
+                        }
+                        delegation {
+                            toStakerId
+                            createdTime
+                            amount
+                            claimedReward
+                            pendingRewards {
+                                amount
+                                fromEpoch
+                                toEpoch
+                            }
+                        }
                     }
                 }
-            `,
+            `;
+        }
+
+        const data = await this.apolloClient.query({
+            query,
             variables: {
                 address: _address,
             },
@@ -127,6 +158,47 @@ export class FantomWeb3Wallet {
         });
 
         return _inHexFormat ? data.data.account.txCount : parseInt(data.data.account.txCount);
+    }
+
+    /**
+     * Get balance and total balance of account by address.
+     *
+     * @param {String} _address
+     * @param {Boolean} [_withDelegations] Include delegations and staker info.
+     * @return {Promise<{totalValue: string, address: string, balance: string}>}
+     */
+    async getStakerById(_id) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query StakerById($id: Long!) {
+                    staker(id: $id) {
+                        id
+                        stakerAddress
+                        totalStake
+                        stake
+                        delegatedMe
+                        createdEpoch
+                        createdTime
+                        validationScore
+                        downtime
+                        isActive
+                        isOffline
+                        stakerInfo {
+                            name
+                            website
+                            contact
+                            logoUrl
+                        }
+                    }
+                }
+            `,
+            variables: {
+                id: _id,
+            },
+            fetchPolicy: 'no-cache',
+        });
+
+        return data.data.staker;
     }
 
     /**

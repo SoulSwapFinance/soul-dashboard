@@ -1,11 +1,15 @@
 <template>
-    <div class="view-account-stake">
-        <h1>Stake</h1>
+    <div class="view-account-stake account-main-content-mt">
+        <stake-f-t-m />
     </div>
 </template>
 
 <script>
-export default {};
+import StakeFTM from '../components/StakeFTM/StakeFTM.vue';
+
+export default {
+    components: { StakeFTM },
+};
 </script>
 
 <style lang="scss"></style>

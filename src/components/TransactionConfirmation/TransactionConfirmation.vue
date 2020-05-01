@@ -8,7 +8,11 @@
                     <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">
                         {{ txData.opera_address }}
-                        <span class="f-row-label">( {{ toFTM(sendToAddressBalance.balance) }} FTM )</span>
+                        <span v-show="sendToAddressBalance" class="f-row-label">
+                            <template v-if="sendToAddressBalance">
+                                ( {{ toFTM(sendToAddressBalance.balance) }} FTM )
+                            </template>
+                        </span>
                     </div>
                 </div>
 
@@ -69,7 +73,11 @@
                             <div class="col-3 f-row-label">Send To</div>
                             <div class="col break-word">
                                 {{ txData.opera_address }}
-                                <span class="f-row-label">( {{ toFTM(sendToAddressBalance.balance) }} FTM )</span>
+                                <span v-show="sendToAddressBalance" class="f-row-label">
+                                    <template v-if="sendToAddressBalance">
+                                        ( {{ toFTM(sendToAddressBalance.balance) }} FTM )
+                                    </template>
+                                </span>
                             </div>
                         </div>
                     </li>
@@ -202,15 +210,17 @@ export default {
 
                 console.log('tx', tx);
 
-                if (pwd && currentAccount.keystore) {
+                if (currentAccount.keystore) {
                     delete tx.gasLimit;
 
-                    try {
-                        rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
-                    } catch (_error) {
-                        console.error(_error);
-                        this.errorMsg = _error.toString();
-                        // this.errorMsg = 'Invalid password';
+                    if (pwd) {
+                        try {
+                            rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
+                        } catch (_error) {
+                            console.error(_error);
+                            this.errorMsg = _error.toString();
+                            // this.errorMsg = 'Invalid password';
+                        }
                     }
                 } else {
                     delete tx.gas;
