@@ -225,7 +225,7 @@ export default {
                             currentAccount.addressId
                         );
 
-                        this.$refs.confirmationWindow.hide();
+                        this.$refs.confirmationWindow.hide('scale-center-forward-leave-active');
                     } catch (_error) {
                         this.error = _error;
                         this.$refs.confirmationWindow.hide();

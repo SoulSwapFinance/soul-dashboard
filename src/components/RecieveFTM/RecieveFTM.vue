@@ -101,11 +101,11 @@ export default {
                     );
                     // const address = await this.tmp();
 
-                    this.$refs.confirmationWindow.hide('scale-center-forward-leave-active');
-
                     this.verifying = false;
                     this.verified = this.$fWallet.sameAddresses(account.address, currentAccount.address);
                     this.complete = true;
+
+                    this.$refs.confirmationWindow.hide(this.verified ? 'scale-center-forward-leave-active' : '');
                 } catch (_error) {
                     this.error = _error;
 
