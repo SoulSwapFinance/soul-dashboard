@@ -35,8 +35,8 @@
                 modal
                 title="Address Verification"
                 style="max-width: 620px;"
-                transition-enter="scale-center-enter-active"
-                transition-leave="scale-center-leave-active"
+                animation-in="scale-center-enter-active"
+                animation-out="scale-center-leave-active"
             >
                 <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
                 <div class="align-center">
@@ -101,7 +101,7 @@ export default {
                     );
                     // const address = await this.tmp();
 
-                    this.$refs.confirmationWindow.hide();
+                    this.$refs.confirmationWindow.hide('scale-center-forward-leave-active');
 
                     this.verifying = false;
                     this.verified = this.$fWallet.sameAddresses(account.address, currentAccount.address);

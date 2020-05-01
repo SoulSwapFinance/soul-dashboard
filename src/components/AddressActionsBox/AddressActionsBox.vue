@@ -38,8 +38,8 @@
             modal
             title="Address"
             style="max-width: 620px;"
-            transition-enter="scale-center-enter-active"
-            transition-leave="scale-center-leave-active"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
         >
             <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
             <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />

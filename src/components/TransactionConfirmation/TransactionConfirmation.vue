@@ -46,8 +46,8 @@
                 modal
                 title="Transaction Confirmation"
                 style="max-width: 620px;"
-                transition-enter="scale-center-enter-active"
-                transition-leave="scale-center-leave-active"
+                animation-in="scale-center-enter-active"
+                animation-out="scale-center-leave-active"
             >
                 <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
                 <div class="align-center">

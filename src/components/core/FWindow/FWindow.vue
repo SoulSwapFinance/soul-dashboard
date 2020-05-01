@@ -1,5 +1,5 @@
 <template>
-    <transition :enter-active-class="transitionEnter" :leave-active-class="transitionLeave">
+    <transition :enter-active-class="dAnimationIn" :leave-active-class="dAnimationOut">
         <div
             v-if="isVisible"
             class="f-window"
@@ -15,14 +15,16 @@
             <div ref="doc" role="document" tabindex="-1" class="doc">
                 <header v-if="withHeader">
                     <div :id="_ids.title" class="title">
+                        <!-- @slot Default to `title` prop -->
                         <slot name="title">
                             <h2>{{ title }}</h2>
                         </slot>
                     </div>
                     <div class="controls" @click="onControlsClick">
+                        <!-- @slot Default to `close-btn` button -->
                         <slot name="controls">
                             <button class="btn close-btn same-size round light" title="Close window">
-                                <icon data="@/assets/svg/times.svg" width="16" height="16" />
+                                <icon data="@/assets/svg/times.svg" width="20" height="20" />
                             </button>
                         </slot>
                     </div>
@@ -53,40 +55,51 @@ import { throttle } from '../../../utils/index.js';
 import FOverlay from '../FOverlay/FOverlay.vue';
 import { focusTrap, isKey, returnFocus, setReceiveFocusFromAttr } from '../../../utils/aria.js';
 
+/**
+ * Basic modal window following WAI-ARIA practices.
+ */
 export default {
     name: 'FWindow',
 
     components: { FOverlay },
 
     props: {
+        /** Is window visible on initialization? */
         visible: {
             type: Boolean,
             default: false,
         },
+        /** Title of window rendered in header. */
         title: {
             type: String,
             default: '',
         },
-        transitionEnter: {
+        /** Animation that starts when the window is just about to show. */
+        animationIn: {
             type: String,
             default: 'fade-enter-active',
         },
-        transitionLeave: {
+        /** Animation that starts when the window is just about to hide. */
+        animationOut: {
             type: String,
             default: 'fade-leave-active',
         },
+        /** Is window a modal? */
         modal: {
             type: Boolean,
             default: false,
         },
+        /** `<header>` will be rendered. */
         withHeader: {
             type: Boolean,
             default: true,
         },
+        /** `<footer>` will be rendered. */
         withFooter: {
             type: Boolean,
             default: false,
         },
+        /** `FOverlay` shows. */
         withOverlay: {
             type: Boolean,
             default: true,
@@ -96,22 +109,27 @@ export default {
             type: String,
             default: 'fixed',
         },
+        /** `z-index` of window, if overlay is used, it has `z-index` `zIndex -1`. */
         zIndex: {
             type: Number,
             default: 10,
         },
+        /** Center window horizontally. */
         centerHorizontally: {
             type: Boolean,
             default: true,
         },
+        /** Center window vertically. */
         centerVertically: {
             type: Boolean,
             default: true,
         },
+        /** Hide window when browser window is resized. */
         hideOnWindowResize: {
             type: Boolean,
             default: false,
         },
+        /** Hide window when escape key is pressed. */
         hideOnEscapeKey: {
             type: Boolean,
             default: true,
@@ -121,6 +139,8 @@ export default {
     data() {
         return {
             isVisible: false,
+            dAnimationIn: this.animationIn,
+            dAnimationOut: this.animationOut,
             style: {
                 zIndex: this.zIndex,
             },
@@ -202,8 +222,14 @@ export default {
     },
 
     methods: {
-        show() {
+        show(_animationIn) {
             if (!this.isVisible) {
+                if (_animationIn) {
+                    this.dAnimationIn = _animationIn;
+                } else {
+                    this.dAnimationIn = this.animationIn;
+                }
+
                 setReceiveFocusFromAttr(this._ids.comp);
 
                 this._firstLastFocusables.first = null;
@@ -221,9 +247,17 @@ export default {
             }
         },
 
-        hide(_byOverlayClick) {
+        hide(_animationOut, _byOverlay) {
             if (this.isVisible) {
-                if (this.withOverlay && !_byOverlayClick) {
+                if (!_byOverlay) {
+                    if (_animationOut) {
+                        this.dAnimationOut = _animationOut;
+                    } else {
+                        this.dAnimationOut = this.animationOut;
+                    }
+                }
+
+                if (this.withOverlay && !_byOverlay) {
                     this.$refs.overlay.hide();
                 } else {
                     this.isVisible = false;
@@ -400,11 +434,7 @@ export default {
         },
 
         onOverlayHide(_hiddenByClick) {
-            if (_hiddenByClick) {
-                this.hide(true);
-            } else {
-                this.hide(true);
-            }
+            this.hide('', true, _hiddenByClick);
         },
 
         onControlsClick(_event) {
