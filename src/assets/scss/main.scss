@@ -146,6 +146,15 @@ form {
     background-color: lighten($theme-color, 35);
 }
 
+@include buttons('.secondary:not([disabled]):not(.disabled):hover') {
+    color: $theme-color;
+    background-color: lighten($theme-color, 35);
+}
+@include buttons('.secondary:not([disabled]):not(.disabled):focus') {
+    color: $theme-color;
+    background-color: lighten($theme-color, 35);
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;

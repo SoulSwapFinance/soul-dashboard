@@ -16,19 +16,29 @@
                 f-card-off
                 @fetch-more="fetchMore"
             >
-                <!--
-                <template v-slot:column-timestamp="{ value, column }">
+                <template v-slot:column-timestamp="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col">
-                            {{ value }}
+                            <a
+                                :href="`${eplorerUrl}transactions/${item.transaction.hash}`"
+                                target="_blank"
+                                class="break-word"
+                            >
+                                {{ value }}
+                            </a>
                         </div>
                     </div>
                     <template v-else>
-                        {{ value }}
+                        <a
+                            :href="`${eplorerUrl}transactions/${item.transaction.hash}`"
+                            target="_blank"
+                            class="break-word"
+                        >
+                            {{ value }}
+                        </a>
                     </template>
                 </template>
-                -->
 
                 <template v-slot:column-address="{ value, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">

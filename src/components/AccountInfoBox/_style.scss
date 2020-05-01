@@ -3,19 +3,25 @@
 .account-info-box {
     .balance {
         h3 {
+            font-size: 28px;
             margin-top: 0;
             margin-bottom: 0;
+
+            .label {
+                font-size: 18px;
+                padding-bottom: 0 !important;
+            }
         }
 
         .usd {
             color: $light-gray-color;
-            font-size: 26px;
+            font-size: 24px;
             line-height: 1.1;
         }
     }
 }
 
-@include media-max($bp-small) {
+@include media-max($bp-medium) {
     .account-info-box {
         .balance {
             .usd {

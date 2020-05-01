@@ -2,6 +2,8 @@
 
 .account-actions-box {
     ul {
+        white-space: nowrap;
+
         li {
             display: inline-block;
             //padding-left: 8px;
@@ -26,6 +28,11 @@
                         color: $theme-color;
                         border-color: $theme-color;
                         background-color: #fff;
+
+                        &:hover {
+                            color: $theme-color !important;
+                            background-color: lighten($theme-color, 35) !important;
+                        }
                     }
                 }
             }

@@ -1,13 +1,25 @@
 <template>
     <f-card class="account-info-box f-card-double-padding">
-        <div class="row no-vert-col-padding align-items-center align-center-sm">
-            <div class="col">
+        <div class="row no-vert-col-padding align-items-center align-center-sm no-collapse">
+            <div class="col col-6-md">
                 <div class="balance">
-                    <h3 class="h1 align-center-sm">{{ toFTM(accountBalance) }} FTM</h3>
+                    <h3 class="align-center-sm">
+                        <span class="label">Available</span>
+                        <span>{{ toFTM(accountBalance) }} FTM</span>
+                    </h3>
                     <div class="usd">${{ toUSD(accountBalance) }}</div>
                 </div>
             </div>
-            <div class="col align-right align-center-sm"><account-actions-box /></div>
+            <div class="col col-6-md">
+                <div class="balance">
+                    <h3 class="align-center-sm">
+                        <span class="label">Total Balance</span>
+                        <span>{{ toFTM(accountTotalBalance) }} FTM</span>
+                    </h3>
+                    <div class="usd">${{ toUSD(accountTotalBalance) }}</div>
+                </div>
+            </div>
+            <div class="col-5 col-12-md align-right align-center-md"><account-actions-box /></div>
         </div>
     </f-card>
 </template>
@@ -67,6 +79,10 @@ export default {
 
         accountBalance() {
             return this.account ? this.account.balance : this.currentAccount ? this.currentAccount.balance : 0;
+        },
+
+        accountTotalBalance() {
+            return this.account ? this.account.totalValue : this.currentAccount ? this.currentAccount.totalBalance : 0;
         },
     },
 

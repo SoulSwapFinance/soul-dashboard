@@ -3,7 +3,7 @@
         <h2>Transaction sent!</h2>
 
         <h3 class="break-word">
-            <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">{{ tx }}</a>
+            <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">{{ tx | formatHash }}</a>
         </h3>
 
         <div class="success-icon">
@@ -14,6 +14,7 @@
 
 <script>
 import FCard from '../core/FCard/FCard.vue';
+
 export default {
     components: { FCard },
 
