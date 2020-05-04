@@ -54,9 +54,11 @@ import { getLengthAndUnit, getComputedStyle } from '../../../utils/css.js';
 import { throttle } from '../../../utils/index.js';
 import FOverlay from '../FOverlay/FOverlay.vue';
 import { focusTrap, isKey, returnFocus, setReceiveFocusFromAttr } from '../../../utils/aria.js';
+import ResizeObserver from 'resize-observer-polyfill';
 
 /**
  * Basic modal window following WAI-ARIA practices.
+ * Needs `resize-observer-polyfill` plugin.
  */
 export default {
     name: 'FWindow',
@@ -190,6 +192,8 @@ export default {
         };
         /** Debounce function used as window resize callback. */
         this._resizeCallback = throttle((_event) => this.onWindowResize(_event), 300, true);
+        /** Instance of ResizeObserver. */
+        this._resizeObserver = null;
         /** Stores first and last focusable elements in window. */
         this._firstLastFocusables = {
             first: null,
@@ -210,11 +214,14 @@ export default {
     },
 
     beforeDestroy() {
+        console.log('beforeDestroy', this._resizeObserver);
         this._firstLastFocusables = null;
 
         if (this._resizeCallback) {
             window.removeEventListener('resize', this._resizeCallback);
         }
+
+        this.destroyResizeObserver();
     },
 
     destroyed() {
@@ -239,10 +246,9 @@ export default {
 
                 this.$nextTick(() => {
                     getComputedStyle(this.$el, this._windowStyle);
-
                     this.setPosition();
-
                     this.focus();
+                    this.createResizeObserver();
                 });
             }
         },
@@ -260,6 +266,7 @@ export default {
                 if (this.withOverlay && !_byOverlay) {
                     this.$refs.overlay.hide();
                 } else {
+                    this.destroyResizeObserver();
                     this.isVisible = false;
                 }
 
@@ -328,18 +335,12 @@ export default {
             const css = {};
             const windowStyle = this._windowStyle;
 
-            console.log('wtf?');
-
             if (!this.isVisible) {
                 return;
             }
 
             if (this.position === 'fixed') {
                 rect = this.$el.getBoundingClientRect();
-
-                console.log(JSON.stringify(windowStyle));
-                console.log(JSON.stringify(rect));
-                console.log(JSON.stringify(document.documentElement.clientWidth));
 
                 if (this.centerHorizontally) {
                     if (windowStyle._horHalfMarginSet && rect.left < 0) {
@@ -370,6 +371,20 @@ export default {
                 }
 
                 this._updateStyle(css);
+            }
+        },
+
+        createResizeObserver() {
+            if (!this._resizeObserver) {
+                this._resizeObserver = new ResizeObserver(throttle((_entries) => this.onResize(_entries), 300, true));
+                this._resizeObserver.observe(this.$el);
+            }
+        },
+
+        destroyResizeObserver() {
+            if (this._resizeObserver) {
+                this._resizeObserver.disconnect();
+                this._resizeObserver = null;
             }
         },
 
@@ -427,9 +442,18 @@ export default {
             if (this.isVisible) {
                 if (this.hideOnWindowResize) {
                     this.hide();
-                } else {
+                } /* else {
                     this.correctPositionAndSize();
-                }
+                }*/
+            }
+        },
+
+        /**
+         * Called by ResizeObserver when FWindow is resized.
+         */
+        onResize() {
+            if (this.isVisible) {
+                this.correctPositionAndSize();
             }
         },
 
