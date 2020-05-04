@@ -1,6 +1,6 @@
 <template>
-    <f-card class="account-transaction-list-dt">
-        <h2 class="dt-heading">
+    <f-card class="account-transaction-list-dt" :off="windowMode">
+        <h2 v-if="!windowMode" class="dt-heading">
             Transactions <span class="f-records-count">({{ totalCount | formatHexToInt }})</span>
         </h2>
 
@@ -21,7 +21,7 @@
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col">
                             <a
-                                :href="`${eplorerUrl}transactions/${item.transaction.hash}`"
+                                :href="`${explorerUrl}transactions/${item.transaction.hash}`"
                                 target="_blank"
                                 class="break-word"
                             >
@@ -31,7 +31,7 @@
                     </div>
                     <template v-else>
                         <a
-                            :href="`${eplorerUrl}transactions/${item.transaction.hash}`"
+                            :href="`${explorerUrl}transactions/${item.transaction.hash}`"
                             target="_blank"
                             class="break-word"
                         >
@@ -44,13 +44,13 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col">
-                            <a :href="`${eplorerUrl}address/${value}`" target="_blank" class="break-word">
+                            <a :href="`${explorerUrl}address/${value}`" target="_blank" class="break-word">
                                 {{ value | formatHash }}
                             </a>
                         </div>
                     </div>
                     <template v-else>
-                        <a :href="`${eplorerUrl}address/${value}`" target="_blank" class="break-word">
+                        <a :href="`${explorerUrl}address/${value}`" target="_blank" class="break-word">
                             {{ value | formatHash }}
                         </a>
                     </template>
@@ -126,6 +126,11 @@ export default {
             type: Number,
             default: 40,
         },
+        /** Component is used in FWindow. */
+        windowMode: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     apollo: {
@@ -193,7 +198,7 @@ export default {
                     }
 
                     this.totalCount = data.txList.totalCount;
-                    this.$emit('records-count', formatHexToInt(data.txList.totalCount));
+                    this.$emit('records-count', formatHexToInt(this.totalCount));
                 }
             },
             error(_error) {
@@ -205,7 +210,7 @@ export default {
     data() {
         return {
             totalCount: 0,
-            eplorerUrl: appConfig.explorerUrl,
+            explorerUrl: appConfig.explorerUrl,
             dItems: [],
             dHasNext: false,
             dAccountByAddressError: '',

@@ -155,6 +155,44 @@ form {
     background-color: lighten($theme-color, 35);
 }
 
+.f-window {
+    .f-data-table {
+        --f-data-table-header-sticky-top: 0;
+
+        td, th {
+            &.f-col {
+                padding-left: 0;
+            }
+
+            &.l-col {
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+.validator-website {
+    svg {
+        //opacity: 0.65;
+        margin-left: 4px;
+        margin-top: -2px;
+    }
+}
+
+.validator-img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img {
+        width: auto;
+        max-height: 100%;
+    }
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;

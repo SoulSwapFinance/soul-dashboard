@@ -1,0 +1,53 @@
+<template>
+    <div class="validator-picker-window">
+        <f-window
+            ref="win"
+            modal
+            style="max-width: 1168px; height: 100%;"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
+        >
+            <template #title>
+                <h2>
+                    Validators <span class="f-records-count">({{ validatorListRecordsCount }})</span>
+                </h2>
+            </template>
+            <validator-list
+                @records-count="onValidatorListRecordsCount"
+                @validator-selected="onValidatorSelected"
+            ></validator-list>
+        </f-window>
+    </div>
+</template>
+
+<script>
+import FWindow from '../core/FWindow/FWindow.vue';
+import ValidatorList from '../data-tables/ValidatorList/ValidatorList.vue';
+
+export default {
+    name: 'ValidatorPickerWindow',
+
+    components: { ValidatorList, FWindow },
+
+    data() {
+        return {
+            validatorListRecordsCount: 0,
+        };
+    },
+
+    methods: {
+        show() {
+            this.$refs.win.show();
+        },
+
+        onValidatorListRecordsCount(_recordsCount) {
+            this.validatorListRecordsCount = _recordsCount;
+        },
+
+        onValidatorSelected(_validatorId) {
+            this.$refs.win.hide('scale-center-forward-leave-active');
+            this.$emit('validator-selected', _validatorId);
+        },
+    },
+};
+</script>

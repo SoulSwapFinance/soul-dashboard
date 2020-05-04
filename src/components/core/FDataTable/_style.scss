@@ -21,8 +21,7 @@
         table-layout: fixed;
     }
 
-    td,
-    th {
+    td, th {
         padding: 12px 16px;
         word-break: break-word;
         line-height: 1.2;
@@ -67,7 +66,7 @@
             position: sticky;
             //top: $f-header-height;
             //top: 128px;
-            top: 156px;
+            top: var(--f-data-table-header-sticky-top);
             z-index: 2;
         }
 
