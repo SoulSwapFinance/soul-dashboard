@@ -2,6 +2,7 @@
 
 import FantomNano from 'fantom-ledgerjs/src/fantom-nano.js';
 import TransportU2F from '@ledgerhq/hw-transport-u2f';
+// import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 
 const ethUtil = require('ethereumjs-util');
 
@@ -16,6 +17,10 @@ export const U2FStatus = {
 export let fNano = null;
 
 export class FNano {
+    constructor() {
+        this._transport = null;
+    }
+
     static install(_Vue, _options) {
         if (!fNano) {
             fNano = new FNano(_options);
@@ -24,7 +29,7 @@ export class FNano {
     }
 
     async getVersion() {
-        const transport = await TransportU2F.create();
+        const transport = await this._getTransport();
         let version = {};
 
         if (transport) {
@@ -38,14 +43,10 @@ export class FNano {
         return version;
     }
 
-    // constructor() {
-    //
-    // }
-
     async signTransaction(_tx, _accountId, _addressId) {
         console.log('signTransaction', _accountId, _accountId);
 
-        const transport = await TransportU2F.create();
+        const transport = await this._getTransport();
 
         if (transport) {
             transport.setExchangeTimeout(300000);
@@ -66,7 +67,7 @@ export class FNano {
      * @returns {Promise<string>}
      */
     async getLedgerAccount(_accountId = 0, _addressId = 0, _confirmAddress = true) {
-        const transport = await TransportU2F.create();
+        const transport = await this._getTransport();
         let account = {};
 
         if (transport) {
@@ -94,7 +95,7 @@ export class FNano {
      * @returns {Promise<[]>}
      */
     async getLedgerAccounts(_accountId = 0, _firstAddressId = 0, _length = 4) {
-        const transport = await TransportU2F.create();
+        const transport = await this._getTransport();
         let accounts = [];
 
         if (transport) {
@@ -105,7 +106,6 @@ export class FNano {
 
             try {
                 const addresses = await bridge.listAddresses(_accountId, _firstAddressId, _length);
-                console.log('listAddresses', addresses);
 
                 accounts = addresses.map((_address, index) => {
                     return { address: _address, accountId: _accountId, addressId: _firstAddressId + index, balance: 0 };
@@ -118,6 +118,23 @@ export class FNano {
 
         return accounts;
     }
+
+    async _getTransport() {
+        return await TransportU2F.create();
+    }
+
+    /*
+    async _getTransport() {
+        let transport = this._transport;
+
+        if (!transport) {
+            transport = await TransportU2F.create();
+            // transport = await TransportWebUSB.create();
+        }
+
+        return transport;
+    }
+    */
 
     /*
     async getLedgerAccounts() {

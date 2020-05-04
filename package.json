@@ -48,6 +48,7 @@
         "web3": "^1.2.6"
     },
     "devDependencies": {
+        "@ledgerhq/hw-transport-webusb": "^5.13.1",
         "@vue/cli-plugin-babel": "~4.3.1",
         "@vue/cli-plugin-eslint": "~4.3.1",
         "@vue/cli-plugin-pwa": "^4.3.1",
