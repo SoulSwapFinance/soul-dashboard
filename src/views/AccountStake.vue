@@ -11,15 +11,15 @@
 </template>
 
 <script>
-import StakeFTM from '../components/StakeFTM/StakeFTM.vue';
+import StakingInfo from '../components/StakingInfo/StakingInfo.vue';
 import StakeForm from '../components/forms/StakeForm.vue';
 
 export default {
-    components: { StakeForm, StakeFTM },
+    components: { StakeForm, StakingInfo },
 
     data() {
         return {
-            currentComponent: 'stake-f-t-m',
+            currentComponent: 'staking-info',
         };
     },
 

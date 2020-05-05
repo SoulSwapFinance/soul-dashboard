@@ -79,7 +79,7 @@ import { formatHexToInt } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 
 export default {
-    name: 'StakeFTM',
+    name: 'StakingInfo',
 
     components: { FCard },
 
@@ -125,7 +125,7 @@ export default {
         stake() {
             this.$emit('change-component', {
                 to: 'stake-form',
-                from: 'stake-f-t-m',
+                from: 'staking-info',
             });
         },
 
