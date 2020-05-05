@@ -37,7 +37,7 @@
                     </a>
                     &nbsp;
                     <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                        Send
+                        {{ sendButtonLabel }}
                     </button>
                 </div>
             </fieldset>
@@ -54,16 +54,17 @@ export default {
     components: { FMessage, FPasswordField, FForm },
 
     props: {
-        // transaction data from SendTransactionForm
         showPasswordField: {
             type: Boolean,
             default: false,
         },
-
-        // transaction data from SendTransactionForm
         errorMessage: {
             type: String,
             default: '',
+        },
+        sendButtonLabel: {
+            type: String,
+            default: 'Send',
         },
     },
 

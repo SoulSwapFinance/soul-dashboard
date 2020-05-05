@@ -13,9 +13,12 @@
 <script>
 import StakingInfo from '../components/StakingInfo/StakingInfo.vue';
 import StakeForm from '../components/forms/StakeForm.vue';
+import StakeConfirmation from '../components/StakeConfirmation/StakeConfirmation.vue';
+import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
 
 export default {
-    components: { StakeForm, StakingInfo },
+    components: { TransactionSuccessMessage, TransactionRejectMessage, StakeConfirmation, StakeForm, StakingInfo },
 
     data() {
         return {
@@ -26,13 +29,13 @@ export default {
     computed: {
         currentComponentProperties() {
             switch (this.currentComponent) {
-                case 'transaction-confirmation':
+                case 'stake-confirmation':
                     return {
-                        txData: this._data_,
+                        stakeData: this._data_,
                     };
                 case 'transaction-success-message':
                     return {
-                        tx: this._data_,
+                        tx: this._data_.tx,
                     };
                 default:
                     return null;
@@ -50,10 +53,7 @@ export default {
          * @param {Object} _data
          */
         onChangeComponent(_data) {
-            if (_data.to === 'stake-form') {
-                this._data_ = _data.data;
-            }
-
+            this._data_ = _data.data;
             this.currentComponent = _data.to;
 
             this.$nextTick(() => {

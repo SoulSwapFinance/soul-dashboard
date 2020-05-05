@@ -62,7 +62,7 @@
                         </a>
                         &nbsp;
                         <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                            Stake
+                            Continue to the next step
                         </button>
                     </div>
                 </fieldset>
@@ -131,6 +131,12 @@ export default {
     },
 
     methods: {
+        /**
+         * Validator for `amount` input field.
+         *
+         * @param {String} _value
+         * @return {Boolean}
+         */
         checkAmount(_value) {
             const remainingBalance = parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
@@ -154,7 +160,8 @@ export default {
                 const delegatedLimit = parseFloat(this.$fWallet.WEIToFTM(this.validatorInfo.delegatedLimit));
 
                 if (value > delegatedLimit) {
-                    this.amountErrMsg = `Staking limit reached. You can stake max ${delegatedLimit} FTM`;
+                    this.amountErrMsg =
+                        `Staking limit reached. You can stake max ${delegatedLimit} FTM on validator ` + this.validator;
                     ok = false;
                 }
             }
@@ -162,6 +169,11 @@ export default {
             return ok;
         },
 
+        /**
+         * Validator for `validator` input field.
+         *
+         * @return {Boolean}
+         */
         checkValidator() {
             return !!this.validatorInfo.address;
         },
@@ -176,8 +188,33 @@ export default {
 
             this.validatorInfo = {
                 ...this.validatorInfo,
-                validatorInfo,
+                ...validatorInfo,
             };
+        },
+
+        /**
+         * Get transaction object for staking and change view to `StakeConfirmation`.
+         *
+         * @param {Number} _amount Amount of FTM to stake.
+         * @return {Promise<void>}
+         */
+        async stakeCofirmation(_amount) {
+            const amount = parseFloat(_amount);
+            const tx = await this.$fWallet.getSFCTransactionToSign(
+                sfcUtils.createDelegationTx(amount, parseInt(this.validatorInfo.id, 16)),
+                this.currentAccount.address,
+                '0x30D40'
+            );
+
+            this.$emit('change-component', {
+                to: 'stake-confirmation',
+                from: 'stake-form',
+                data: {
+                    amount: amount,
+                    ...this.validatorInfo,
+                    tx,
+                },
+            });
         },
 
         onValidatorSelected(_validatorInfo) {
@@ -200,7 +237,7 @@ export default {
 
         onPreviousBtnClick() {
             this.$emit('change-component', {
-                to: 'stake-f-t-m',
+                to: 'staking-info',
                 from: 'stake-form',
             });
         },
@@ -210,7 +247,7 @@ export default {
 
             this.updateValidatorInfo().then(() => {
                 if (this.$refs.stakeForm.checkValidity()) {
-                    console.log('not implemented yet', data);
+                    this.stakeCofirmation(parseFloat(data.amount));
                 }
             });
         },

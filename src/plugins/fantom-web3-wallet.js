@@ -364,15 +364,18 @@ export class FantomWeb3Wallet {
     /**
      * @param {Object} _tx SFC transaction object.
      * @param {String} _from Address.
+     * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getSFCTransactionToSign(_tx, _from) {
+    async getSFCTransactionToSign(_tx, _from, _gasLimit = '0xabe0') {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
 
         return {
             ..._tx,
             gasPrice,
+            gas: _gasLimit,
+            gasLimit: _gasLimit,
             nonce,
         };
     }
