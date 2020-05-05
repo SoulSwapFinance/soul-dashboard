@@ -177,6 +177,8 @@ export class FantomWeb3Wallet {
                         totalStake
                         stake
                         delegatedMe
+                        totalDelegatedLimit
+                        delegatedLimit
                         createdEpoch
                         createdTime
                         validationScore
@@ -356,6 +358,22 @@ export class FantomWeb3Wallet {
             gasPrice,
             nonce,
             data: memo ? Web3.utils.asciiToHex(memo) : '0x',
+        };
+    }
+
+    /**
+     * @param {Object} _tx SFC transaction object.
+     * @param {String} _from Address.
+     * @return {Promise<{nonce: string, gasPrice: *}>}
+     */
+    async getSFCTransactionToSign(_tx, _from) {
+        const nonce = await this.getTransactionCount(_from);
+        const gasPrice = await this.getGasPrice(true);
+
+        return {
+            ..._tx,
+            gasPrice,
+            nonce,
         };
     }
 

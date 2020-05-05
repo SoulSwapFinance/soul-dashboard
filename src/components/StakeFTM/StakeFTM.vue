@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-ftm">
+    <div ref="doc" class="stake-ftm" tabindex="0">
         <f-card class="f-card-double-padding f-data-layout">
             <h2>Staking</h2>
 
@@ -55,6 +55,18 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col align-center">
+                    <template v-if="stakerInfo">
+                        <button class="btn large" @click="claimRewards()">Claim Rewards</button> &nbsp;
+                        <button class="btn large" @click="unstake()">Unstake</button>
+                    </template>
+                    <template v-else>
+                        <button class="btn large" @click="stake()">Stake</button>
+                    </template>
+                </div>
+            </div>
         </f-card>
     </div>
 </template>
@@ -105,7 +117,26 @@ export default {
         },
     },
 
+    mounted() {
+        this.$refs.doc.focus();
+    },
+
     methods: {
+        stake() {
+            this.$emit('change-component', {
+                to: 'stake-form',
+                from: 'stake-f-t-m',
+            });
+        },
+
+        unstake() {
+            alert('not implemented yet');
+        },
+
+        claimRewards() {
+            alert('not implemented yet');
+        },
+
         toFTM,
     },
 };

@@ -196,28 +196,20 @@ export function setReceiveFocusFromAttr(_id) {
 /**
  *
  * @param {MouseEvent|KeyboardEvent} _event
- * @param {string} _selector
  * @return {boolean}
  */
-export function isAriaAction(_event, _selector) {
-    if (!_event || !_selector) {
+export function isAriaAction(_event) {
+    if (!_event) {
         return false;
     }
 
-    const elem = _event.target.closest(_selector);
     const eventType = _event.type;
 
-    if (elem) {
-        if (eventType === 'click') {
-            return true;
-        }
-
-        if (eventType in KEY_EVENTS && (isKey('Enter', _event) || isKey(' ', _event))) {
-            return true;
-        }
+    if (eventType === 'click') {
+        return true;
     }
 
-    return false;
+    return eventType in KEY_EVENTS && (isKey('Enter', _event) || isKey(' ', _event));
 }
 
 /**

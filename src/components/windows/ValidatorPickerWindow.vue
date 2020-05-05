@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 1168px; height: 100%;"
+            style="max-width: 1000px; height: 100%;"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
@@ -44,9 +44,9 @@ export default {
             this.validatorListRecordsCount = _recordsCount;
         },
 
-        onValidatorSelected(_validatorId) {
+        onValidatorSelected(_validatorInfo) {
             this.$refs.win.hide('scale-center-forward-leave-active');
-            this.$emit('validator-selected', _validatorId);
+            this.$emit('validator-selected', _validatorInfo);
         },
     },
 };

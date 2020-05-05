@@ -214,7 +214,6 @@ export default {
     },
 
     beforeDestroy() {
-        console.log('beforeDestroy', this._resizeObserver);
         this._firstLastFocusables = null;
 
         if (this._resizeCallback) {

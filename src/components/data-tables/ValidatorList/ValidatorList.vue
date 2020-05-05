@@ -16,14 +16,14 @@
                         <div class="col break-word">
                             <div class="validator-img">
                                 <img v-if="value" :src="value" :alt="item.stakerInfo.name" class="not-fluid" />
-                                <img v-else src="/img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
+                                <img v-else src="img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
                             </div>
                         </div>
                     </div>
                     <template v-else>
                         <div class="validator-img">
                             <img v-if="value" :src="value" :alt="item.stakerInfo.name" class="not-fluid" />
-                            <img v-else src="/img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
+                            <img v-else src="img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
                         </div>
                     </template>
                 </template>
@@ -69,13 +69,13 @@
                 <template v-slot:column-select="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col break-word align-center select-validator-mv">
-                            <button class="btn secondary select-btn" :data-validator-id="value | formatHexToInt">
+                            <button class="btn select-btn" :data-validator-id="value">
                                 Select
                             </button>
                         </div>
                     </div>
                     <template v-else>
-                        <button class="btn secondary select-btn" :data-validator-id="value | formatHexToInt">
+                        <button class="btn select-btn" :data-validator-id="value">
                             Select
                         </button>
                     </template>
@@ -321,10 +321,15 @@ export default {
             const eSelectBtn = _event.target.closest('.select-btn');
 
             if (eSelectBtn) {
-                const id = parseInt(eSelectBtn.getAttribute('data-validator-id'));
+                const id = eSelectBtn.getAttribute('data-validator-id');
+                const validator = id ? this.dItems.find((_item) => _item.id === id) : null;
 
-                if (id > 0) {
-                    this.$emit('validator-selected', id);
+                if (validator) {
+                    this.$emit('validator-selected', {
+                        id: validator.id,
+                        address: validator.stakerAddress,
+                        name: validator.stakerInfo.name,
+                    });
                 }
             }
         },

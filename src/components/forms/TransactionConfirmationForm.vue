@@ -27,7 +27,7 @@
                     </div>
 
                     <a
-                        href=""
+                        href="#"
                         class="btn light large break-word"
                         style="max-width: 100%;"
                         aria-label="Go to previous form"
