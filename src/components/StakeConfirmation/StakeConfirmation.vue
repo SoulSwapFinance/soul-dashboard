@@ -2,7 +2,7 @@
     <div class="stake-confirmation">
         <f-card class="f-card-double-padding f-data-layout">
             <h2>
-                Stake FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
             </h2>
 
             <div class="transaction-info">
@@ -30,7 +30,7 @@
             <transaction-confirmation-form
                 :error-message="errorMsg"
                 :show-password-field="!currentAccount.isLedgerAccount"
-                send-button-label="Stake"
+                send-button-label="Delegate"
                 @f-form-submit="onFFormSubmit"
                 @go-back="onGoBack"
             />
@@ -205,7 +205,10 @@ export default {
                 if (rawTx) {
                     console.log('rawTx', rawTx);
                     this.sendTransaction(rawTx);
-                    this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
+
+                    setTimeout(() => {
+                        this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
+                    }, 3000);
                 }
             }
         },

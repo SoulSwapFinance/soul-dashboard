@@ -1,6 +1,6 @@
 <template>
     <f-card class="transaction-success-message f-card-double-padding">
-        <h2>Transaction sent!</h2>
+        <h2>{{ title }}</h2>
 
         <h3 class="break-word">
             <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">{{ tx | formatHash }}</a>
@@ -19,10 +19,14 @@ export default {
     components: { FCard },
 
     props: {
-        // transaction hash
+        /** Transaction hash */
         tx: {
             type: String,
             default: '',
+        },
+        title: {
+            type: String,
+            default: 'Transaction sent!',
         },
     },
 };

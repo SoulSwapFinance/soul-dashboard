@@ -246,7 +246,10 @@ export default {
                 if (rawTx) {
                     console.log('rawTx', rawTx);
                     this.sendTransaction(rawTx);
-                    this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
+
+                    setTimeout(() => {
+                        this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
+                    }, 3000);
                 }
             }
         },

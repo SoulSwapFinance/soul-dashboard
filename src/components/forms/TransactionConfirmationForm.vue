@@ -20,7 +20,7 @@
                     </template>
                 </f-password-field>
 
-                <div class="align-center">
+                <div class="align-center form-buttons">
                     <div v-if="errorMessage">
                         <f-message type="error" with-icon>{{ errorMessage }}</f-message>
                         <br />
@@ -35,7 +35,6 @@
                     >
                         Previous
                     </a>
-                    &nbsp;
                     <button type="submit" class="btn large break-word" style="max-width: 100%;">
                         {{ sendButtonLabel }}
                     </button>

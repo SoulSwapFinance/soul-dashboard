@@ -22,7 +22,7 @@
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/stake.svg" width="20" height="20" aria-hidden="true" />
                     </span>
-                    <span class="link-label">Stake</span>
+                    <span class="link-label">Staking</span>
                 </router-link>
             </li>
             <li>

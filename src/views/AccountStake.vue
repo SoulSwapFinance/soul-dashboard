@@ -36,6 +36,7 @@ export default {
                 case 'transaction-success-message':
                     return {
                         tx: this._data_.tx,
+                        title: 'Delegation Successful',
                     };
                 default:
                     return null;

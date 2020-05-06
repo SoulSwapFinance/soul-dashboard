@@ -32,24 +32,40 @@
                 </div>
 
                 <div class="col">
-                    <div v-show="stakerInfo" class="row no-collapse">
-                        <div class="col f-row-label">Staker Name</div>
+                    <div class="row no-collapse">
+                        <div class="col f-row-label">Validator</div>
                         <div class="col">
-                            <div v-show="stakerInfo">
+                            <div v-if="stakerInfo">
                                 <a
                                     v-if="stakerInfo"
                                     :href="`${eplorerUrl}validator/${stakerInfo.stakerAddress}`"
                                     target="_blank"
-                                    >{{ stakerInfo.stakerInfo.name }}</a
                                 >
+                                    {{ stakerInfo.stakerInfo.name }}
+                                </a>
+                            </div>
+                            <template v-else>-</template>
+                        </div>
+                    </div>
+                    <div class="row no-collapse">
+                        <div class="col f-row-label">Validator Id</div>
+                        <div class="col">
+                            <div v-show="accountInfo">
+                                <template v-if="accountInfo">{{ accountInfo.stakerId || '-' }}</template>
                             </div>
                         </div>
                     </div>
-                    <div v-show="accountInfo && accountInfo.stakerId" class="row no-collapse">
-                        <div class="col f-row-label">Staker Id</div>
+                    <div class="row no-collapse">
+                        <div class="col f-row-label">Delegation Time</div>
                         <div class="col">
                             <div v-show="accountInfo">
-                                <template v-if="accountInfo">{{ accountInfo.stakerId }}</template>
+                                <template v-if="accountInfo">
+                                    {{
+                                        accountInfo.createdTime
+                                            ? formatDate(timestampToDate(accountInfo.createdTime), false, true)
+                                            : '-'
+                                    }}
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -57,13 +73,13 @@
             </div>
 
             <div class="row">
-                <div class="col align-center">
+                <div class="col align-center form-buttons">
                     <template v-if="stakerInfo">
-                        <button class="btn large" @click="claimRewards()">Claim Rewards</button> &nbsp;
-                        <button class="btn large" @click="unstake()">Unstake</button>
+                        <button class="btn large" @click="claimRewards()" disabled>Claim Rewards</button> &nbsp;
+                        <button class="btn large" @click="unstake()">Undelegate</button>
                     </template>
                     <template v-else>
-                        <button class="btn large" @click="stake()">Stake</button>
+                        <button class="btn large" @click="stake()">Delegate</button>
                     </template>
                 </div>
             </div>
@@ -75,7 +91,7 @@
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
-import { formatHexToInt } from '../../filters.js';
+import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 
 export default {
@@ -104,6 +120,7 @@ export default {
 
             accountInfo.stakerId = delegation ? formatHexToInt(delegation.toStakerId) : 0;
             accountInfo.stakerIdHex = delegation ? delegation.toStakerId : '0x0';
+            accountInfo.createdTime = delegation ? delegation.createdTime : '';
 
             return accountInfo;
         },
@@ -138,6 +155,8 @@ export default {
         },
 
         toFTM,
+        timestampToDate,
+        formatDate,
     },
 };
 </script>

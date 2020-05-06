@@ -163,6 +163,12 @@ form {
     background-color: lighten($theme-color, 35);
 }
 
+/*
+.btn[disabled], .btn.disabled {
+    background-color: #666;
+}
+*/
+
 .f-window {
     .f-data-table {
         --f-data-table-header-sticky-top: 0;
@@ -198,6 +204,18 @@ form {
     img {
         width: auto;
         max-height: 100%;
+    }
+}
+
+.form-buttons {
+    padding-top: 16px;
+
+    .btn {
+        margin-right: 16px;
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 }
 

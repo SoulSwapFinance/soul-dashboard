@@ -39,7 +39,7 @@
 
                     <f-input label="Memo (optional)" field-size="large" name="memo" />
 
-                    <div class="align-center">
+                    <div class="align-center form-buttons">
                         <button type="submit" class="btn large break-word" style="max-width: 100%;">
                             Send
                         </button>

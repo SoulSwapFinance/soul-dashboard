@@ -4,7 +4,7 @@
             <f-form ref="stakeForm" @f-form-submit="onFormSubmit">
                 <fieldset class="">
                     <legend class="h2">
-                        Stake FTM <span class="f-steps"><b>1</b> / 2</span>
+                        Delegate FTM <span class="f-steps"><b>1</b> / 2</span>
                     </legend>
 
                     <f-input
@@ -50,7 +50,7 @@
                         </template>
                     </f-input>
 
-                    <div class="align-center">
+                    <div class="align-center form-buttons">
                         <a
                             href="#"
                             class="btn light large break-word"
@@ -60,9 +60,8 @@
                         >
                             Previous
                         </a>
-                        &nbsp;
                         <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                            Continue to the next step
+                            Continue
                         </button>
                     </div>
                 </fieldset>
