@@ -43,7 +43,7 @@
                     <img src="img/nano-s-verify-address.png" alt="fantom nano device" /><br /><br />
                 </div>
 
-                <p>Please verify following address on your Ledger device:</p>
+                <p class="align-center">Please verify following address on your Ledger device:</p>
 
                 <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
             </f-window>

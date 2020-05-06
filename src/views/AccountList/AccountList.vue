@@ -29,7 +29,7 @@
                                     </span>
                                     <router-link
                                         :to="{
-                                            name: 'account-dashboard',
+                                            name: 'account-history',
                                             params: { address: account.address },
                                         }"
                                         class="break-word value"

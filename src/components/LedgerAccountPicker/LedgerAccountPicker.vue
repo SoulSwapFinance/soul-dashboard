@@ -13,7 +13,7 @@
                         <h3 class="col-10 break-word">
                             <router-link
                                 :to="{
-                                    name: 'account-dashboard',
+                                    name: 'account-history',
                                     params: account,
                                 }"
                                 class="break-word"

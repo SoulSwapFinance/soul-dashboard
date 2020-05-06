@@ -26,11 +26,11 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-dashboard' }" title="Home">
+                <router-link :to="{ name: 'account-history' }" title="Home">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
                     </span>
-                    <span class="link-label">Dashboard</span>
+                    <span class="link-label">History</span>
                 </router-link>
             </li>
         </ul>

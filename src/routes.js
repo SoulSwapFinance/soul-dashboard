@@ -4,12 +4,13 @@ import AccountList from './views/AccountList/AccountList.vue';
 import CreateAccount from './views/CreateAccount/CreateAccount.vue';
 import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
 import Account from './views/Account/Account.vue';
-import AccountDashboard from './views/AccountDashboard.vue';
+// import AccountDashboard from './views/AccountDashboard.vue';
 import AccountSend from './views/AccountSend.vue';
 import AccountRecieve from './views/AccountRecieve.vue';
 import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
+import AccountHistory from './views/AccountHistory.vue';
 
 export const routes = [
     {
@@ -45,10 +46,17 @@ export const routes = [
         component: Account,
         children: [
             {
+                name: 'account-history',
+                path: '',
+                component: AccountHistory,
+            },
+            /*
+            {
                 name: 'account-dashboard',
                 path: '',
                 component: AccountDashboard,
             },
+            */
             {
                 name: 'account-send',
                 path: 'send',

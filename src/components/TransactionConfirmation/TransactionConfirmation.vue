@@ -67,7 +67,7 @@
                     <img src="img/nano-s-confirm-tx.png" alt="fantom nano device" /><br /><br />
                 </div>
 
-                <p>Please confirm this transaction on your Ledger device:</p>
+                <p class="align-center">Please confirm this transaction on your Ledger device:</p>
 
                 <ol class="f-data-layout">
                     <li>
