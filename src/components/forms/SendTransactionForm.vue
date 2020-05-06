@@ -3,7 +3,9 @@
         <f-card class="f-card-double-padding">
             <f-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
-                    <legend class="h2">Send Opera FTM</legend>
+                    <legend class="h2">
+                        Send Opera FTM <span class="f-steps"><b>1</b> / 2</span>
+                    </legend>
 
                     <f-input
                         label="Amount"
@@ -41,7 +43,7 @@
 
                     <div class="align-center form-buttons">
                         <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                            Send
+                            Continue
                         </button>
                     </div>
                 </fieldset>

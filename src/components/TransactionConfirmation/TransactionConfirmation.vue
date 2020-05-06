@@ -1,7 +1,9 @@
 <template>
     <div class="transaction-confirmation">
         <f-card class="f-card-double-padding f-data-layout">
-            <h2>Confirm Transaction</h2>
+            <h2>
+                Send Opera FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            </h2>
 
             <div class="transaction-info">
                 <div class="row no-collapse">
