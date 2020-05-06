@@ -140,10 +140,16 @@ export default {
 
         async stakerInfo() {
             const { accountInfo } = this;
+            const stakerInfo =
+                accountInfo && accountInfo.stakerId ? await this.$fWallet.getStakerById(accountInfo.stakerIdHex) : null;
 
-            return accountInfo && accountInfo.stakerId
-                ? await this.$fWallet.getStakerById(accountInfo.stakerIdHex)
-                : null;
+            if (stakerInfo && !stakerInfo.stakerInfo) {
+                stakerInfo.stakerInfo = {
+                    name: 'Unknown',
+                };
+            }
+
+            return stakerInfo;
         },
     },
 
