@@ -1,18 +1,20 @@
 <template>
-    <div class="stake-confirmation">
+    <div class="unstake-confirmation">
         <f-card class="f-card-double-padding f-data-layout">
             <h2>
-                Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
             </h2>
 
             <div class="transaction-info">
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Validator</div>
-                    <div class="col break-word">{{ stakeData.name }}, {{ parseInt(stakeData.id) }}</div>
+                    <div class="col break-word">
+                        {{ accountInfo.stakerInfo.stakerInfo.name }}, {{ parseInt(accountInfo.stakerInfo.id) }}
+                    </div>
                 </div>
 
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">Send From</div>
+                    <div class="col-3 f-row-label">From</div>
                     <div class="col break-word">
                         {{ currentAccount.address }}
                         <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
@@ -20,8 +22,8 @@
                 </div>
 
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">Amount</div>
-                    <div class="col break-word">{{ stakeData.amount }}</div>
+                    <div class="col-3 f-row-label">Undelegate Amount</div>
+                    <div class="col break-word">{{ toFTM(accountInfo.delegation.amount) }}</div>
                 </div>
             </div>
 
@@ -30,8 +32,8 @@
             <transaction-confirmation-form
                 :error-message="errorMsg"
                 :show-password-field="!currentAccount.isLedgerAccount"
-                password-label="Please enter your wallet password to delegate your FTM"
-                send-button-label="Delegate"
+                password-label="Please enter your wallet password to undelegate your FTM"
+                send-button-label="Undelegate"
                 @f-form-submit="onFFormSubmit"
                 @go-back="onGoBack"
             />
@@ -56,13 +58,13 @@
                     <div class="row no-collapse">
                         <div class="col-3 f-row-label">Send To</div>
                         <div class="col break-word">
-                            {{ stakeData.tx.to }}
+                            {{ tx.to }}
                         </div>
                     </div>
                 </li>
                 <li>
                     <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Send From</div>
+                        <div class="col-3 f-row-label">From</div>
                         <div class="col break-word">
                             {{ currentAccount.address }}
                             <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
@@ -72,17 +74,11 @@
                 <li>
                     <div class="row no-collapse">
                         <div class="col-3 f-row-label">Amount</div>
-                        <div class="col">{{ stakeData.amount }}</div>
+                        <div class="col">
+                            0
+                        </div>
                     </div>
                 </li>
-                <!--
-                <li>
-                    <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Max Fee</div>
-                        <div class="col">{{ stakeData.tx.fee }}</div>
-                    </div>
-                </li>
-                -->
             </ol>
         </f-window>
     </div>
@@ -93,21 +89,21 @@ import FCard from '../core/FCard/FCard.vue';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import TransactionConfirmationForm from '../forms/TransactionConfirmationForm.vue';
 import gql from 'graphql-tag';
-// import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import FWindow from '../core/FWindow/FWindow.vue';
+import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 
 export default {
-    name: 'StakeConfirmation',
+    name: 'UnstakeConfirmation',
 
     components: { FWindow, TransactionConfirmationForm, LedgerMessage, FCard },
 
     props: {
-        /** Data sent from StakeForm component. Info about transaction, validator and amount of FTM. */
-        stakeData: {
+        /** `accountInfo` object from `UnstakeFTM` component. */
+        accountInfo: {
             type: Object,
             default() {
                 return {};
@@ -119,6 +115,9 @@ export default {
         return {
             errorMsg: '',
             error: null,
+            tx: {},
+            // tmp
+            stakeData: {},
         };
     },
 
@@ -146,10 +145,10 @@ export default {
                 .then((_data) => {
                     this.$emit('change-component', {
                         to: 'transaction-success-message',
-                        from: 'stake-confirmation',
+                        from: 'unstake-confirmation',
                         data: {
                             tx: _data.data.sendTransaction.hash,
-                            successMessage: 'Delegation Successful',
+                            successMessage: 'Undelegation Successful',
                         },
                     });
                 })
@@ -161,9 +160,16 @@ export default {
         async onFFormSubmit(_event) {
             const { currentAccount } = this;
             const fWallet = this.$fWallet;
-            const tx = this.stakeData.tx;
             const pwd = _event.detail.data.pwd;
             let rawTx = null;
+
+            const tx = await this.$fWallet.getSFCTransactionToSign(
+                sfcUtils.prepareToWithdrawDelegationTx(),
+                this.currentAccount.address,
+                '0x30D40'
+            );
+
+            this.tx = tx;
 
             if (currentAccount && tx) {
                 console.log('tx', tx);
@@ -213,8 +219,11 @@ export default {
 
         onGoBack() {
             this.$emit('change-component', {
-                to: 'stake-form',
-                from: 'stake-confirmation',
+                to: 'unstake-f-t-m',
+                from: 'unstake-confirmation',
+                data: {
+                    accountInfo: this.accountInfo,
+                },
             });
         },
 
@@ -227,7 +236,7 @@ export default {
             if (_code === U2FStatus.USER_REJECTED_REQUESTED_ACTION) {
                 this.$emit('change-component', {
                     to: 'transaction-reject-message',
-                    from: 'stake-confirmation',
+                    from: 'unstake-confirmation',
                 });
             }
         },

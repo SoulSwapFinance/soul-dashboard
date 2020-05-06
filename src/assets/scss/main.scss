@@ -163,11 +163,21 @@ form {
     background-color: lighten($theme-color, 35);
 }
 
-/*
 .btn[disabled], .btn.disabled {
-    background-color: #666;
+    background-color: #777;
 }
-*/
+
+.form-buttons {
+    padding-top: 16px;
+
+    .btn {
+        margin-right: 16px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
 
 .f-window {
     .f-data-table {
@@ -207,18 +217,6 @@ form {
     }
 }
 
-.form-buttons {
-    padding-top: 16px;
-
-    .btn {
-        margin-right: 16px;
-
-        &:last-child {
-            margin-right: 0;
-        }
-    }
-}
-
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
@@ -230,6 +228,17 @@ form {
     .dt-heading {
         padding-left: 0;
         padding-right: 0;
+    }
+
+    .form-buttons {
+        .btn {
+            margin-right: 8px;
+            margin-bottom: 8px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
     }
 }
 

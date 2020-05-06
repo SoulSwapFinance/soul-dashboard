@@ -94,7 +94,10 @@ export class FantomWeb3Wallet {
                         }
                         delegation {
                             toStakerId
+                            createdEpoch
                             createdTime
+                            deactivatedEpoch
+                            deactivatedTime
                             amount
                             claimedReward
                             pendingRewards {

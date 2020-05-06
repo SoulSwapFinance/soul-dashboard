@@ -61,7 +61,7 @@
                             <div v-show="accountInfo">
                                 <template v-if="accountInfo">
                                     {{
-                                        accountInfo.createdTime
+                                        accountInfo.createdTime && accountInfo.createdTime !== '0x0'
                                             ? formatDate(timestampToDate(accountInfo.createdTime), false, true)
                                             : '-'
                                     }}
@@ -75,8 +75,15 @@
             <div class="row">
                 <div class="col align-center form-buttons">
                     <template v-if="stakerInfo">
-                        <button class="btn large" @click="claimRewards()" disabled>Claim Rewards</button> &nbsp;
-                        <button class="btn large" @click="unstake()">Undelegate</button>
+                        <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
+                            <h3 class="align-center">
+                                Your {{ toFTM(accountInfo.delegated) }} Opera FTM is available for withdraw in 7 days.
+                            </h3>
+                        </template>
+                        <template v-else>
+                            <button class="btn large" disabled @click="claimRewards()">Claim Rewards</button>
+                            <button class="btn large" @click="unstake()">Undelegate</button>
+                        </template>
                     </template>
                     <template v-else>
                         <button class="btn large" @click="stake()">Delegate</button>
@@ -122,6 +129,12 @@ export default {
             accountInfo.stakerIdHex = delegation ? delegation.toStakerId : '0x0';
             accountInfo.createdTime = delegation ? delegation.createdTime : '';
 
+            accountInfo.preparedForWithdrawal =
+                delegation &&
+                delegation.pendingRewards.amount === '0x0' &&
+                delegation.pendingRewards.fromEpoch === '0x0' &&
+                delegation.pendingRewards.toEpoch === '0x0';
+
             return accountInfo;
         },
 
@@ -146,8 +159,20 @@ export default {
             });
         },
 
-        unstake() {
-            alert('not implemented yet');
+        async unstake() {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            this.$emit('change-component', {
+                to: 'unstake-f-t-m',
+                from: 'stake-f-t-m',
+                data: {
+                    accountInfo: {
+                        ...accountInfo,
+                        stakerInfo,
+                    },
+                },
+            });
         },
 
         claimRewards() {

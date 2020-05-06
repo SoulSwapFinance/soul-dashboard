@@ -6,7 +6,7 @@
 
                 <f-password-field
                     v-if="showPasswordField"
-                    label="Please enter your wallet password to send the transaction"
+                    :label="passwordLabel"
                     field-size="large"
                     autocomplete="off"
                     name="pwd"
@@ -60,6 +60,10 @@ export default {
         errorMessage: {
             type: String,
             default: '',
+        },
+        passwordLabel: {
+            type: String,
+            default: 'Please enter your wallet password to send the transaction',
         },
         sendButtonLabel: {
             type: String,
