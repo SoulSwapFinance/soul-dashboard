@@ -36,6 +36,9 @@ import dashboardIcon from '../../assets/svg/dashboard.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
+/**
+ * Main menu.
+ */
 export default {
     name: 'WalletMenu',
 
@@ -61,7 +64,6 @@ export default {
                 {
                     url: {
                         name: ACCOUNT_DEFAULT_VIEW,
-                        // params: { address: this.currentAccount.address },
                     },
                     title: 'Wallet',
                     icon: dashboardIcon,
@@ -79,19 +81,6 @@ export default {
 
     computed: {
         /**
-         * Get navigation by current language.
-         *
-         * @return {array}
-         */
-        /*
-        cNavigation() {
-            const messages = this.$i18n.messages[this.$i18n.locale];
-
-            return messages.navigation || [];
-        },
-*/
-
-        /**
          * Container's css classes.
          *
          * @retun {object}
@@ -102,17 +91,6 @@ export default {
                 'animate-menu': this.menuTransitionOn,
             };
         },
-
-        /**
-         * Is current route home view?
-         *
-         * @retun {boolean}
-         */
-        /*
-        cHomeView() {
-            return this.$route.name === 'home';
-        },
-*/
 
         ...mapState(['breakpoints']),
 
@@ -137,6 +115,8 @@ export default {
          * @param {object} _breakpoints
          */
         breakpoints(_breakpoints) {
+            this.onMenuBreakpoint(_breakpoints);
+            /*
             const menuMobileBreakpoint = _breakpoints['menu-mobile'];
 
             if (menuMobileBreakpoint) {
@@ -149,11 +129,13 @@ export default {
                     }, 20);
                 }
             }
+*/
         },
     },
 
     mounted() {
         this.setWalletUrl();
+        this.onMenuBreakpoint(this.breakpoints);
     },
 
     methods: {
@@ -162,6 +144,21 @@ export default {
 
             if (fHamburgerSwitch) {
                 fHamburgerSwitch.dOn = false;
+            }
+        },
+
+        onMenuBreakpoint(_breakpoints) {
+            const menuMobileBreakpoint = _breakpoints['menu-mobile'];
+
+            if (menuMobileBreakpoint) {
+                if (!menuMobileBreakpoint.matches) {
+                    this.hamburgerSwitchOff();
+                    this.menuTransitionOn = false;
+                } else {
+                    setTimeout(() => {
+                        this.menuTransitionOn = true;
+                    }, 20);
+                }
             }
         },
 

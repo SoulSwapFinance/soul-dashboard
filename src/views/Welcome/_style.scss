@@ -2,7 +2,7 @@
 
 $btns-border-radius: 48px;
 
-.account-list-view {
+.welcome-view {
     .intro {
         color: rgba(255, 255, 255, 0.75);
         /*color: $secondary-color-lighter;*/
@@ -110,7 +110,7 @@ $btns-border-radius: 48px;
 }
 
 @include media-max($bp-small) {
-    .account-list-view {
+    .welcome-view {
         .intro {
             padding: 0 0 24px 0;
 
@@ -122,7 +122,7 @@ $btns-border-radius: 48px;
 }
 
 @include media-max(800px) {
-    .account-list-view {
+    .welcome-view {
         .view-account-main {
             .main-buttons {
                 display: block;

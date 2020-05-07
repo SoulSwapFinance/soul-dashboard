@@ -1,6 +1,6 @@
 import NotFound from './views/NotFound/NotFound.vue';
 import Home from './views/Home/Home.vue';
-import AccountList from './views/AccountList/AccountList.vue';
+import Welcome from './views/Welcome/Welcome.vue';
 import CreateAccount from './views/CreateAccount/CreateAccount.vue';
 import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
 import Account from './views/Account/Account.vue';
@@ -21,9 +21,9 @@ export const routes = [
         component: Home,
         children: [
             {
-                name: 'acount-list',
+                name: 'welcome',
                 path: '',
-                component: AccountList,
+                component: Welcome,
             },
             {
                 name: 'create-account',

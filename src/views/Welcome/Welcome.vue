@@ -1,5 +1,5 @@
 <template>
-    <div class="account-list-view">
+    <div class="welcome-view">
         <div class="intro">
             <h1>Welcome to Fantom Wallet</h1>
             <h2>Send, receive and stake your Opera FTM</h2>
@@ -63,6 +63,8 @@ import { toFTM } from '../../utils/transactions.js';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
+    name: 'Welcome',
+
     components: {
         FCard,
     },
