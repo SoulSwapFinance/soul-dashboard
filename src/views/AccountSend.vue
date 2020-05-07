@@ -76,9 +76,15 @@ export default {
         },
 
         onAccountPicked() {
-            // this.keepAliveExclude = 'SendTransactionForm';
-            this.currentComponent = DEFAULT_COMPONENT;
-            // this.keepAliveExclude = '';
+            if (this.currentComponent !== DEFAULT_COMPONENT) {
+                this.currentComponent = DEFAULT_COMPONENT;
+            } else {
+                // to reset send-transaction-form properly
+                this.currentComponent = '';
+                this.$nextTick(() => {
+                    this.currentComponent = DEFAULT_COMPONENT;
+                });
+            }
         },
     },
 };
