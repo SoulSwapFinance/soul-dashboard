@@ -18,67 +18,25 @@
                 </router-link>
             </div>
 
-            <ul class="no-markers">
-                <li v-for="account in accounts" :key="account.address">
-                    <f-card>
-                        <h3 slot="title" class="title">
-                            <span class="row">
-                                <span class="col-7 col-12-md">
-                                    <span class="label">
-                                        Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
-                                    </span>
-                                    <router-link
-                                        :to="{
-                                            name: 'account-history',
-                                            params: { address: account.address },
-                                        }"
-                                        class="break-word value"
-                                        aria-label="Address"
-                                    >
-                                        {{ account.address }}
-                                    </router-link>
-                                </span>
-                                <span class="col col-6-md align-right align-left-md">
-                                    <span class="label">Available</span>
-                                    <span class="value">{{ toFTM(account.balance) }} FTM</span>
-                                </span>
-                                <span class="col col-6-md align-right align-left-md">
-                                    <span class="label">Total Balance</span>
-                                    <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
-                                </span>
-                            </span>
-                        </h3>
-                    </f-card>
-                </li>
-            </ul>
+            <account-list />
         </div>
     </div>
 </template>
 
 <script>
-import FCard from '../../components/core/FCard/FCard.vue';
-import { mapGetters } from 'vuex';
 import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
-import { toFTM } from '../../utils/transactions.js';
+import AccountList from '../../components/AccountList/AccountList.vue';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
     name: 'Welcome',
 
     components: {
-        FCard,
-    },
-
-    computed: {
-        ...mapGetters(['accounts']),
+        AccountList,
     },
 
     mounted() {
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
-    },
-
-    methods: {
-        toFTM,
     },
 };
 </script>
