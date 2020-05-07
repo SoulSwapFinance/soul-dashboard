@@ -148,6 +148,13 @@ export default {
             eSubmitBtn.click();
         },
 
+        /**
+         * Reset form.
+         */
+        reset() {
+            this.$refs.form.reset();
+        },
+
         getErrorMessages() {
             const errorMessages = [];
             const elements = this.$refs.form.elements;

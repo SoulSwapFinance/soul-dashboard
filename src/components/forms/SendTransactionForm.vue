@@ -1,7 +1,7 @@
 <template>
     <div class="send-transaction-form">
         <f-card class="f-card-double-padding">
-            <f-form @f-form-submit="onFormSubmit">
+            <f-form ref="form" @f-form-submit="onFormSubmit">
                 <fieldset class="">
                     <legend class="h2">
                         Send Opera FTM <span class="f-steps"><b>1</b> / 2</span>
@@ -59,14 +59,19 @@ import FMessage from '../core/FMessage/FMessage.vue';
 import FInput from '../core/FInput/FInput.vue';
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
+    name: 'SendTransactionForm',
+
     components: {
         FCard,
         FInput,
         FMessage,
         FForm,
     },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -97,6 +102,8 @@ export default {
         this.$fWallet.getGasPrice().then((_gasPrice) => {
             this.gasPrice = _gasPrice;
         });
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     mounted() {
@@ -154,6 +161,11 @@ export default {
                     },
                 });
             }
+        },
+
+        onAccountPicked() {
+            // this.$refs.form.reset();
+            // this.$refs.form.checkValidity();
         },
     },
 };

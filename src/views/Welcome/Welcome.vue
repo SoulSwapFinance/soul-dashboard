@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
 import AccountList from '../../components/AccountList/AccountList.vue';
 
 // import {WEIToFTM} from "../utils/transactions.js";
@@ -33,10 +32,6 @@ export default {
 
     components: {
         AccountList,
-    },
-
-    mounted() {
-        this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
     },
 };
 </script>

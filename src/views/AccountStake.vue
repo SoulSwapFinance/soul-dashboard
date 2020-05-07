@@ -18,6 +18,9 @@ import TransactionSuccessMessage from '../components/TransactionSuccessMessage/T
 import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
 import UnstakeFTM from '../components/UnstakeFTM/UnstakeFTM.vue';
 import UnstakeConfirmation from '../components/UnstakeConfirmation/UnstakeConfirmation.vue';
+import { eventBusMixin } from '../mixins/event-bus.js';
+
+const DEFAULT_COMPONENT = 'staking-info';
 
 export default {
     components: {
@@ -30,9 +33,11 @@ export default {
         UnstakeConfirmation,
     },
 
+    mixins: [eventBusMixin],
+
     data() {
         return {
-            currentComponent: 'staking-info',
+            currentComponent: DEFAULT_COMPONENT,
         };
     },
 
@@ -62,6 +67,8 @@ export default {
     created() {
         // temporary data
         this._data_ = null;
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -75,6 +82,10 @@ export default {
             this.$nextTick(() => {
                 this._data_ = null;
             });
+        },
+
+        onAccountPicked() {
+            this.currentComponent = DEFAULT_COMPONENT;
         },
     },
 };

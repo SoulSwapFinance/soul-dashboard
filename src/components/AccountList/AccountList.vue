@@ -11,7 +11,7 @@
                                 </span>
                                 <router-link
                                     :to="{
-                                        name: 'account-history',
+                                        name: routeName,
                                         params: { address: account.address },
                                     }"
                                     class="break-word value"
@@ -40,17 +40,67 @@
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
+import {
+    DEACTIVATE_ACTIVE_ACCOUNT,
+    SET_ACTIVE_ACCOUNT_ADDRESS,
+    SET_ACTIVE_ACCOUNT_BY_ADDRESS,
+} from '../../store/mutations.type.js';
+import { eventBusMixin } from '../../mixins/event-bus.js';
+import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
 
 export default {
     name: 'AccountList',
 
     components: { FCard },
 
+    mixins: [eventBusMixin],
+
+    data() {
+        return {
+            routeName: 'account-history',
+        };
+    },
+
     computed: {
         ...mapGetters(['accounts']),
     },
 
+    watch: {
+        $route(_route) {
+            if (_route.params && _route.params.address) {
+                this.$emit('account-picked', _route.params.address);
+                this._eventBus.emit('account-picked', _route.params.address);
+            }
+        },
+    },
+
+    created() {
+        const routeName = this.$route.name;
+
+        if (routeName.indexOf('account-') > -1) {
+            this.routeName = routeName;
+        }
+    },
+
+    mounted() {
+        this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
+    },
+
+    beforeDestroy() {
+        const route = this.$route;
+
+        if (route.params && route.params.address) {
+            this.pickAccount(route.params.address);
+        }
+    },
+
     methods: {
+        pickAccount(_address) {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, _address);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, _address);
+        },
+
         toFTM,
     },
 };
