@@ -45,7 +45,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+    name: 'SocialMediaLinks',
+};
 </script>
 
 <style lang="scss">

@@ -27,6 +27,7 @@ const vuexLocalStorage = new VuexPersist({
     reducer: (_state) => ({
         tokenPrice: _state.tokenPrice,
         accounts: _state.accounts,
+        activeAccountIndex: _state.activeAccountIndex,
     }),
 });
 

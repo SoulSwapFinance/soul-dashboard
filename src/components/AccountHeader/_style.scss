@@ -1,4 +1,4 @@
-@import "../../assets/scss/vars";
+@import '../../assets/scss/vars';
 
 .account-header {
     position: -webkit-sticky;
@@ -13,7 +13,8 @@
     //transition: height $transition-length ease;
 }
 
-/*
-@include media-max($bp-small) {
+@include media-max($bp-large) {
+    .account-header {
+        position: initial;
+    }
 }
-*/

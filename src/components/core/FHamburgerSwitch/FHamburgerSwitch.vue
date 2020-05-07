@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import events from '../mixins/events.js';
+// import events from '../mixins/events.js';
 
 export default {
-    mixins: [events],
+    // mixins: [events],
 
     props: {
         /** Is switch on? */

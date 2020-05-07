@@ -1,7 +1,7 @@
 <template>
     <div class="address-info-box">
-        <div class="row align-items-center">
-            <div class="col-9 align-center-sm">
+        <div class="row align-items-center collapse-md">
+            <div class="col-9 align-center-md">
                 <router-link to="/" class="router-link">
                     <strong class="address break-word">
                         {{ cMobileView ? formatHash(currentAccountAddress) : currentAccountAddress }}
@@ -9,7 +9,7 @@
                     </strong>
                 </router-link>
             </div>
-            <div class="col align-right align-center-sm">
+            <div class="col align-right align-center-md">
                 <address-actions-box />
             </div>
         </div>

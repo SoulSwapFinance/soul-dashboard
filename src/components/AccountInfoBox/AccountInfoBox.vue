@@ -1,25 +1,25 @@
 <template>
     <f-card class="account-info-box f-card-double-padding">
-        <div class="row no-vert-col-padding align-items-center align-center-sm no-collapse">
-            <div class="col col-6-md">
+        <div class="row no-vert-col-padding align-items-center align-center-lg no-collapse">
+            <div class="col col-6-lg">
                 <div class="balance">
-                    <h3 class="align-center-sm">
-                        <span class="label">Available</span>
+                    <h3 class="align-center-lg">
                         <span>{{ toFTM(accountBalance) }} FTM</span>
                     </h3>
                     <div class="usd">${{ toUSD(accountBalance) }}</div>
+                    <div class="label h3">Available</div>
                 </div>
             </div>
-            <div class="col col-6-md">
+            <div class="col col-6-lg">
                 <div class="balance">
-                    <h3 class="align-center-sm">
-                        <span class="label">Total Balance</span>
+                    <h3 class="align-center-lg">
                         <span>{{ toFTM(accountTotalBalance) }} FTM</span>
                     </h3>
                     <div class="usd">${{ toUSD(accountTotalBalance) }}</div>
+                    <div class="label h3">Total Balance</div>
                 </div>
             </div>
-            <div class="col-5 col-12-md align-right align-center-md"><account-actions-box /></div>
+            <div class="col-5 col-12-lg align-right align-center-lg"><account-actions-box /></div>
         </div>
     </f-card>
 </template>

@@ -1,0 +1,19 @@
+@import "../../assets/scss/vars";
+
+.view-wallet {
+    padding-left: var(--f-left-menu-width);
+
+    .main {
+        padding-top: 0;
+    }
+
+    .address-info-box {
+        margin-bottom: 16px;
+    }
+}
+
+@include media-max($bp-menu) {
+    .view-wallet {
+        padding-left: 0;
+    }
+}

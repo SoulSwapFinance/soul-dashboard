@@ -247,3 +247,9 @@ form {
         padding-top: 0;
     }
 }
+
+@include media-max($bp-large) {
+    .f-data-table {
+        --f-data-table-header-sticky-top: 0;
+    }
+}
