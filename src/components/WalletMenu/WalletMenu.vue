@@ -8,6 +8,13 @@
         ></f-hamburger-switch>
 
         <div class="f-drawer" @click="onDrawerClick">
+            <div class="header">
+                <div class="header-logo">
+                    <router-link to="/">
+                        <img src="fantom-logo.svg" alt="" class="not-fluid" />
+                    </router-link>
+                </div>
+            </div>
             <div class="body">
                 <div class="logo">
                     <router-link to="/">

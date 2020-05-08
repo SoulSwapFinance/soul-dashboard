@@ -25,6 +25,7 @@ export default {
         text: {
             type: String,
             default: '',
+            required: true,
         },
         /**
          * Position of three dots.
