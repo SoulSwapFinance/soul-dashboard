@@ -17,6 +17,13 @@
 
     .f-card {
         height: 100%;
+
+        &:not(.off) {
+            .label {
+                padding-top: 4px;
+                padding-bottom: 0;
+            }
+        }
     }
 
     .value {

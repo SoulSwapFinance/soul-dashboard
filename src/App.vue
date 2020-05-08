@@ -16,6 +16,7 @@
         <f-breakpoints @f-breakpoint-change="onFBreakpointChange">
             <f-breakpoint value="600px" code="data-table-mobile-view"></f-breakpoint>
             <f-breakpoint value="768px" code="menu-mobile"></f-breakpoint>
+            <f-breakpoint value="870px" code="account-transaction-list-dt-mobile-view"></f-breakpoint>
             <f-breakpoint value="1100px" code="validator-list-dt-mobile-view"></f-breakpoint>
         </f-breakpoints>
         <f-aria-alert></f-aria-alert>
@@ -52,9 +53,4 @@ export default {
 
 <style lang="scss">
 @import './assets/scss/main';
-
-.narrow-container {
-    padding-top: 16px;
-    padding-bottom: 16px;
-}
 </style>

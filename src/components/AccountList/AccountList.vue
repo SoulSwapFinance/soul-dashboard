@@ -4,29 +4,29 @@
             <li v-for="account in accounts" :key="account.address">
                 <f-card>
                     <h3 slot="title" class="title">
-                        <span class="row">
+                        <span class="row no-collapse">
                             <span class="col-7 col-12-md">
-                                <span class="label">
-                                    Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
-                                </span>
                                 <router-link
                                     :to="{
                                         name: routeName,
                                         params: { address: account.address },
                                     }"
-                                    class="break-word value"
+                                    class="value"
                                     aria-label="Address"
                                 >
-                                    {{ account.address }}
+                                    <f-ellipsis :text="account.address" overflow="middle" />
                                 </router-link>
+                                <span class="label">
+                                    Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
+                                </span>
                             </span>
                             <span class="col col-6-md align-right align-left-md">
-                                <span class="label">Available</span>
                                 <span class="value">{{ toFTM(account.balance) }} FTM</span>
+                                <span class="label">Available</span>
                             </span>
                             <span class="col col-6-md align-right align-left-md">
-                                <span class="label">Total Balance</span>
                                 <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
+                                <span class="label">Total Balance</span>
                             </span>
                         </span>
                     </h3>
@@ -47,11 +47,12 @@ import {
 } from '../../store/mutations.type.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
+import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
 
 export default {
     name: 'AccountList',
 
-    components: { FCard },
+    components: { FEllipsis, FCard },
 
     mixins: [eventBusMixin],
 

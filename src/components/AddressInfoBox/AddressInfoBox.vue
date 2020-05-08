@@ -2,11 +2,12 @@
     <div class="address-info-box">
         <div class="row align-items-center collapse-md">
             <div class="col-9 align-center-md">
-                <button class="no-style" title="Pick an Account" @click="onPickAccountBtn">
-                    <strong class="address break-word">
-                        {{ cMobileView ? formatHash(currentAccountAddress) : currentAccountAddress }}
-                        <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
-                    </strong>
+                <button class="no-style pick-account-btn" title="Pick an Account" @click="onPickAccountBtn">
+                    <f-ellipsis :text="currentAccountAddress" overflow="middle" class="address">
+                        <template #suffix>
+                            <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
+                        </template>
+                    </f-ellipsis>
                 </button>
             </div>
             <div class="col align-right align-center-md">
@@ -22,24 +23,14 @@
 import AddressActionsBox from '../AddressActionsBox/AddressActionsBox.vue';
 import { mapGetters } from 'vuex';
 import { formatHash } from '../../filters.js';
-import AccountPickerWindow from '../windows/AccountPickerWindow.vue';
+import AccountPickerWindow from '../windows/AccountPickerWindow/AccountPickerWindow.vue';
+import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
 
 export default {
-    components: { AccountPickerWindow, AddressActionsBox },
+    components: { FEllipsis, AccountPickerWindow, AddressActionsBox },
 
     computed: {
         ...mapGetters(['currentAccountAddress']),
-
-        /**
-         * Property is set to `true`, if 'menu-mobile' breakpoint is reached.
-         *
-         * @return {Boolean}
-         */
-        cMobileView() {
-            const menuBreakpoint = this.$store.state.breakpoints['menu-mobile'];
-
-            return menuBreakpoint && menuBreakpoint.matches;
-        },
     },
 
     methods: {

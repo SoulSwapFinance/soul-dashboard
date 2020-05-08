@@ -9,6 +9,7 @@
                 :columns="dColumns"
                 :items="dItems"
                 :disable-infinite-scroll="!dHasNext"
+                :mobile-view="cMobileView"
                 :loading="cLoading"
                 first-m-v-column-width="5"
                 infinite-scroll
@@ -19,7 +20,7 @@
                 <template v-slot:column-timestamp="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
-                        <div class="col">
+                        <div class="col-7">
                             <a
                                 :href="`${explorerUrl}transactions/${item.transaction.hash}`"
                                 target="_blank"
@@ -43,15 +44,15 @@
                 <template v-slot:column-address="{ value, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
-                        <div class="col">
-                            <a :href="`${explorerUrl}address/${value}`" target="_blank" class="break-word">
-                                {{ value | formatHash }}
+                        <div class="col-7">
+                            <a :href="`${explorerUrl}address/${value}`" target="_blank">
+                                <f-ellipsis :text="value" overflow="middle" />
                             </a>
                         </div>
                     </div>
                     <template v-else>
-                        <a :href="`${explorerUrl}address/${value}`" target="_blank" class="break-word">
-                            {{ value | formatHash }}
+                        <a :href="`${explorerUrl}address/${value}`" target="_blank">
+                            <f-ellipsis :text="value" overflow="middle" />
                         </a>
                     </template>
                 </template>
@@ -59,7 +60,7 @@
                 <template v-slot:column-amount="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
-                        <div class="col">
+                        <div class="col-7">
                             <template v-if="address">
                                 <f-account-transaction-amount
                                     :address="address"
@@ -105,9 +106,11 @@ import FAccountTransactionAmount from '../core/FAccountTransactionAmount/FAccoun
 import { getNestedProp } from '../../utils';
 import FCard from '../core/FCard/FCard.vue';
 import appConfig from '../../../app.config.js';
+import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
 
 export default {
     components: {
+        FEllipsis,
         FCard,
         FAccountTransactionAmount,
         FDataTable,
@@ -269,6 +272,17 @@ export default {
     },
 
     computed: {
+        /**
+         * Property is set to `true`, if 'account-transaction-list-dt-mobile-view' breakpoint is reached.
+         *
+         * @return {Boolean}
+         */
+        cMobileView() {
+            const dataTableBreakpoint = this.$store.state.breakpoints['account-transaction-list-dt-mobile-view'];
+
+            return dataTableBreakpoint && dataTableBreakpoint.matches;
+        },
+
         cLoading() {
             return this.$apollo.queries.account.loading;
         },

@@ -1,10 +1,11 @@
 <template>
-    <div class="account-picker window">
+    <div class="account-picker-window">
         <f-window
             ref="win"
             modal
-            style="max-width: 1050px; height: 100%;"
+            style="max-width: 1050px;"
             title="Pick an Account"
+            class="account-picker-f-window"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
@@ -14,8 +15,8 @@
 </template>
 
 <script>
-import FWindow from '../core/FWindow/FWindow.vue';
-import AccountList from '../AccountList/AccountList.vue';
+import FWindow from '../../core/FWindow/FWindow.vue';
+import AccountList from '../../AccountList/AccountList.vue';
 
 export default {
     name: 'AccountPickerWindow',
@@ -33,3 +34,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>

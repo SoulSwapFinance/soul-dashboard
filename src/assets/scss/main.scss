@@ -52,6 +52,11 @@ a:not(.btn):hover {
     letter-spacing: normal;
 }
 
+.narrow-container {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
 .three-dots {
     @include zpe-three-dots;
 }
