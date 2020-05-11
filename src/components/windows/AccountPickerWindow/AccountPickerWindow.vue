@@ -29,7 +29,7 @@ export default {
         },
 
         onAccountPicked() {
-            this.$refs.win.hide('scale-center-forward-leave-active');
+            this.$refs.win.hide('fade-leave-active');
         },
     },
 };

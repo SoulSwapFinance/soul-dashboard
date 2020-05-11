@@ -106,7 +106,7 @@
         &.f-data-layout {
             @include flexbox-cols() {
                 //padding: 0 $grid-layout-gutter-width-2x $grid-layout-gutter-width-4x;
-                padding: 2px 8px;
+                padding: 2px 16px;
             }
         }
     }
@@ -225,6 +225,19 @@
     &.height-set {
         .table-container {
             overflow: auto;
+        }
+    }
+}
+
+@include media-max($bp-menu) {
+    .f-data-table {
+        .mobile-view {
+            &.f-data-layout {
+                @include flexbox-cols() {
+                    padding-left: 8px;
+                    padding-right: 8px;
+                }
+            }
         }
     }
 }

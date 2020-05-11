@@ -45,7 +45,7 @@ export default {
         },
 
         onValidatorSelected(_validatorInfo) {
-            this.$refs.win.hide('scale-center-forward-leave-active');
+            this.$refs.win.hide('fade-leave-active');
             this.$emit('validator-selected', _validatorInfo);
         },
     },

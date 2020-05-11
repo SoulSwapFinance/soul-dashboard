@@ -192,7 +192,7 @@ export default {
                             currentAccount.addressId
                         );
 
-                        this.$refs.confirmationWindow.hide('scale-center-forward-leave-active');
+                        this.$refs.confirmationWindow.hide('fade-leave-active');
                     } catch (_error) {
                         this.error = _error;
                         this.$refs.confirmationWindow.hide();

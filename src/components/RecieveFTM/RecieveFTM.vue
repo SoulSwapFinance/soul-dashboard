@@ -105,7 +105,7 @@ export default {
                     this.verified = this.$fWallet.sameAddresses(account.address, currentAccount.address);
                     this.complete = true;
 
-                    this.$refs.confirmationWindow.hide(this.verified ? 'scale-center-forward-leave-active' : '');
+                    this.$refs.confirmationWindow.hide(this.verified ? 'fade-leave-active' : '');
                 } catch (_error) {
                     this.error = _error;
 

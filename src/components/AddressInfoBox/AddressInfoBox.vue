@@ -10,7 +10,7 @@
                     </f-ellipsis>
                 </button>
             </div>
-            <div class="col align-right align-center-md">
+            <div class="col-3 align-right align-center-md">
                 <address-actions-box />
             </div>
         </div>

@@ -1,20 +1,18 @@
 <template>
     <div class="view-account">
-        <div class="narrow-container">
-            <template v-if="!currentAccount">
-                <f-message type="error" with-icon>Bad wallet</f-message>
-            </template>
-            <template v-else>
-                <address-info-box />
-                <account-header />
+        <template v-if="!currentAccount">
+            <f-message type="error" with-icon>Bad wallet</f-message>
+        </template>
+        <template v-else>
+            <address-info-box />
+            <account-header />
 
-                <!--                    <button @click="onRemoveAccountButClick">Remove wallet</button>-->
+            <!--                    <button @click="onRemoveAccountButClick">Remove wallet</button>-->
 
-                <main class="main">
-                    <router-view></router-view>
-                </main>
-            </template>
-        </div>
+            <main class="main">
+                <router-view></router-view>
+            </main>
+        </template>
     </div>
 </template>
 
