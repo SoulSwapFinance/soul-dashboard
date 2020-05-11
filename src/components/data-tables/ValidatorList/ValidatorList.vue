@@ -262,14 +262,14 @@ export default {
                 {
                     name: 'stake',
                     label: this.$t('view_validator_list.self_staked'),
-                    formatter: (_value) => formatNumberByLocale(numToFixed(WEIToFTM(_value), 0), 0),
+                    formatter: (_value) => formatNumberByLocale(WEIToFTM(_value), 0),
                     sortFunc: sortByHex,
                     css: { textAlign: 'right' },
                 },
                 {
                     name: 'delegatedMe',
                     label: this.$t('view_validator_list.delegated'),
-                    formatter: (_value) => formatNumberByLocale(numToFixed(WEIToFTM(_value), 0), 0),
+                    formatter: (_value) => formatNumberByLocale(WEIToFTM(_value), 0),
                     sortFunc: sortByHex,
                     css: { textAlign: 'right' },
                 },
@@ -277,7 +277,7 @@ export default {
                 {
                     name: 'totalStake',
                     label: this.$t('view_validator_list.total_staked'),
-                    formatter: (_value) => formatNumberByLocale(numToFixed(WEIToFTM(_value), 0), 0),
+                    formatter: (_value) => formatNumberByLocale(WEIToFTM(_value), 0),
                     sortFunc: sortByHex,
                     sortDir: 'desc',
                     css: { textAlign: 'right' },

@@ -101,7 +101,7 @@
 import FDataTable from '../core/FDataTable/FDataTable.vue';
 import gql from 'graphql-tag';
 import { WEIToFTM } from '../../utils/transactions.js';
-import { timestampToDate, formatNumberByLocale, numToFixed, formatHexToInt, formatDate } from '../../filters.js';
+import { timestampToDate, formatNumberByLocale, formatHexToInt, formatDate } from '../../filters.js';
 import FAccountTransactionAmount from '../core/FAccountTransactionAmount/FAccountTransactionAmount.vue';
 import { getNestedProp } from '../../utils';
 import FCard from '../core/FCard/FCard.vue';
@@ -260,7 +260,7 @@ export default {
                     label: 'Amount (FTM)',
                     itemProp: 'transaction.value',
                     formatter: (_value) => {
-                        return formatNumberByLocale(numToFixed(WEIToFTM(_value), 2), 2);
+                        return formatNumberByLocale(WEIToFTM(_value));
                     },
                     width: '150px',
                     css: {

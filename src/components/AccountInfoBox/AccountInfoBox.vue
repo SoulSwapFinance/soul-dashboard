@@ -6,7 +6,7 @@
                     <h3 class="align-center-lg">
                         <span>{{ toFTM(accountBalance) }} FTM</span>
                     </h3>
-                    <div class="usd">${{ toUSD(accountBalance) }}</div>
+                    <div class="usd">{{ formatCurrencyByLocale(accountBalance, this.$store.state.tokenPrice) }}</div>
                     <div class="label h3">Available</div>
                 </div>
             </div>
@@ -15,7 +15,9 @@
                     <h3 class="align-center-lg">
                         <span>{{ toFTM(accountTotalBalance) }} FTM</span>
                     </h3>
-                    <div class="usd">${{ toUSD(accountTotalBalance) }}</div>
+                    <div class="usd">
+                        {{ formatCurrencyByLocale(accountTotalBalance, this.$store.state.tokenPrice) }}
+                    </div>
                     <div class="label h3">Total Balance</div>
                 </div>
             </div>
@@ -29,8 +31,8 @@ import FCard from '../core/FCard/FCard.vue';
 import AccountActionsBox from '../AccountActionsBox/AccountActionsBox.vue';
 import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
-import { formatNumberByLocale, numToFixed } from '../../filters.js';
-import { FTMToUSD, toFTM, WEIToFTM } from '../../utils/transactions.js';
+import { formatCurrencyByLocale } from '../../filters.js';
+import { toFTM } from '../../utils/transactions.js';
 import { pollingMixin } from '../../mixins/polling.js';
 
 export default {
@@ -99,16 +101,7 @@ export default {
     },
 
     methods: {
-        /**
-         * Convert value to USD.
-         *
-         * @param {string|number} _value
-         * @return {string}
-         */
-        toUSD(_value) {
-            return formatNumberByLocale(numToFixed(FTMToUSD(WEIToFTM(_value), this.$store.state.tokenPrice), 2), 2);
-        },
-
+        formatCurrencyByLocale,
         toFTM,
     },
 };

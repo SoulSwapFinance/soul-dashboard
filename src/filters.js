@@ -1,32 +1,13 @@
 import Vue from 'vue';
 import web3utils from 'web3-utils';
+import { WEIToFTM } from './utils/transactions.js';
 
-const zeroString = '00000000';
-
-/**
- * @param {string|number} _number
- * @param {int} _digits
- * @return {string}
- */
-export function addZeros(_number, _digits) {
-    // TODO: use i18n current locale
-    const parts = new Intl.NumberFormat('en-GB').formatToParts(_number);
-    let number = _number;
-
-    if (parts.length < 2) {
-        // number = `${number}.${zeroString.slice(0, _digits)}`;
-        number = `${parts[0].value}.${zeroString.slice(0, _digits)}`;
-    } else if (parts[parts.length - 2].type !== 'decimal') {
-        number = `${parts.map((_item) => _item.value).join('')}.${zeroString.slice(0, _digits)}`;
-    } else {
-        const len = parts[parts.length - 1].value.length;
-        number = `${parts.map((_item) => _item.value).join('')}${
-            len < _digits ? `${zeroString.slice(0, _digits - len)}` : ''
-        }`;
-    }
-
-    return number;
-}
+export const filtersOptions = {
+    currLocale: 'en-US',
+    currency: 'USD',
+    fractionDigits: 2,
+    tokenPrice: 0,
+};
 
 /**
  * @param {string|number} _value
@@ -85,8 +66,8 @@ export function formatDate(_value, _notWeekday, _withTime) {
         options.minute = 'numeric';
     }
 
-    // TODO: use i18n current locale
-    return date.toLocaleDateString('en-GB', options);
+    return date.toLocaleDateString(filtersOptions.currLocale, options);
+    // return date.toLocaleDateString('en-GB', options);
 }
 
 /**
@@ -113,18 +94,42 @@ export function formatDuration(_value) {
 
 /**
  * @param {number} _number
- * @param {number} [_digits]
+ * @param {number} [_fractionDigits]
+ * @param {string} [_currency]
  * @return {*}
  */
-export function formatNumberByLocale(_number, _digits) {
-    // TODO: use i18n current locale
-    let number = new Intl.NumberFormat('en-GB').format(_number);
+export function formatNumberByLocale(_number, _fractionDigits = filtersOptions.fractionDigits, _currency) {
+    let options = {
+        minimumFractionDigits: _fractionDigits,
+        maximumFractionDigits: _fractionDigits,
+    };
 
-    if (_digits) {
-        number = addZeros(_number, _digits);
+    if (_currency) {
+        options.style = 'currency';
+        options.currency = _currency;
     }
 
-    return number;
+    return new Intl.NumberFormat(filtersOptions.currLocale, options).format(_number);
+}
+
+/**
+ * @param {number} _value
+ * @param {number} _tokenPrice
+ * @param {string} [_currency]
+ * @param {boolean} [_fromWEI]
+ * @param {int} [_fractionDigits]
+ * @return {*}
+ */
+export function formatCurrencyByLocale(
+    _value,
+    _tokenPrice,
+    _currency = filtersOptions.currency,
+    _fromWEI = true,
+    _fractionDigits = filtersOptions.fractionDigits
+) {
+    const value = _fromWEI ? WEIToFTM(_value) : _value;
+
+    return formatNumberByLocale(value * _tokenPrice, _fractionDigits, _currency);
 }
 
 /**
