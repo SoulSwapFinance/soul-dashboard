@@ -115,17 +115,17 @@ export function formatNumberByLocale(_number, _fractionDigits = filtersOptions.f
 /**
  * @param {number} _value
  * @param {number} _tokenPrice
- * @param {string} [_currency]
  * @param {boolean} [_fromWEI]
  * @param {int} [_fractionDigits]
+ * @param {string} [_currency]
  * @return {*}
  */
 export function formatCurrencyByLocale(
     _value,
     _tokenPrice,
-    _currency = filtersOptions.currency,
     _fromWEI = true,
-    _fractionDigits = filtersOptions.fractionDigits
+    _fractionDigits = filtersOptions.fractionDigits,
+    _currency = filtersOptions.currency
 ) {
     const value = _fromWEI ? WEIToFTM(_value) : _value;
 

@@ -15,5 +15,9 @@
 @include media-max($bp-menu) {
     .view-wallet {
         padding-left: 0;
+
+        > .narrow-container {
+            margin-top: 24px;
+        }
     }
 }

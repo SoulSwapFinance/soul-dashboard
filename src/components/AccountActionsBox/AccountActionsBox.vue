@@ -1,8 +1,8 @@
 <template>
-    <nav class="account-actions-box">
+    <nav class="account-actions-box actions-box">
         <ul class="no-markers">
             <li>
-                <router-link :to="{ name: 'account-send' }" title="Send">
+                <router-link :to="{ name: 'account-send' }" class="action" title="Send">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/send.svg" width="20" height="20" aria-hidden="true" />
                     </span>
@@ -10,7 +10,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-recieve' }" title="Recieve">
+                <router-link :to="{ name: 'account-recieve' }" class="action" title="Recieve">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/recieve.svg" width="20" height="20" aria-hidden="true" />
                     </span>
@@ -18,7 +18,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-stake' }" title="Stake">
+                <router-link :to="{ name: 'account-stake' }" class="action" title="Stake">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/stake.svg" width="20" height="20" aria-hidden="true" />
                     </span>
@@ -26,7 +26,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-history' }" title="Home">
+                <router-link :to="{ name: 'account-history' }" class="action" title="Home">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
                     </span>

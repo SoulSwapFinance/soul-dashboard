@@ -4,7 +4,7 @@
             <li v-for="account in accounts" :key="account.address">
                 <f-card>
                     <h3 slot="title" class="title">
-                        <span class="row no-collapse">
+                        <span class="row no-collapse align-items-center">
                             <span class="col-7 col-12-md">
                                 <router-link
                                     :to="{
@@ -27,6 +27,38 @@
                             <span class="col col-6-md align-right align-left-md">
                                 <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
                                 <span class="label">Total Balance</span>
+                            </span>
+                            <span v-if="editMode" class="col-1 col-12-md align-right align-center-md">
+                                <ul class="account-edit-actions">
+                                    <li>
+                                        <button
+                                            class="btn large_ light same-size round"
+                                            title="Edit Account"
+                                            @click="onEditAccountClick"
+                                        >
+                                            <icon
+                                                data="@/assets/svg/pen.svg"
+                                                width="16"
+                                                height="16"
+                                                aria-hidden="true"
+                                            />
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="btn large_ light same-size round"
+                                            title="Remove Account"
+                                            @click="onRemoveAccountClick"
+                                        >
+                                            <icon
+                                                data="@/assets/svg/times.svg"
+                                                width="16"
+                                                height="16"
+                                                aria-hidden="true"
+                                            />
+                                        </button>
+                                    </li>
+                                </ul>
                             </span>
                         </span>
                     </h3>
@@ -55,6 +87,14 @@ export default {
     components: { FEllipsis, FCard },
 
     mixins: [eventBusMixin],
+
+    props: {
+        /** Show action icons on the right side. */
+        editMode: {
+            type: Boolean,
+            default: false,
+        },
+    },
 
     data() {
         return {
@@ -85,6 +125,11 @@ export default {
 
     mounted() {
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
+        /*
+        this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES).then(() => {
+            this.$emit('accounts-updated');
+        });
+        */
     },
 
     beforeDestroy() {
@@ -100,6 +145,14 @@ export default {
             this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
             this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, _address);
             this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, _address);
+        },
+
+        onEditAccountClick() {
+            alert('not implemented yet');
+        },
+
+        onRemoveAccountClick() {
+            alert('not implemented yet');
         },
 
         toFTM,

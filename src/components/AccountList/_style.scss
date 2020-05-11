@@ -1,3 +1,5 @@
+@import "../../assets/scss/vars";
+
 .account-list {
     /*
     > ul {
@@ -28,5 +30,24 @@
 
     .value {
         font-size: 21px;
+    }
+
+    .account-edit-actions {
+        position: relative;
+        z-index: 1;
+
+        li {
+            padding-top: 0;
+        }
+    }
+}
+
+@include media-max($bp-menu) {
+    .account-list {
+        .account-edit-actions {
+            li {
+                display: inline-block;
+            }
+        }
     }
 }

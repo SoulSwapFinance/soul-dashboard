@@ -1,0 +1,32 @@
+@import '../../assets/scss/vars';
+
+.dashboard-header {
+    h1 {
+        font-family: $font-family-proxima;
+        font-size: 28px;
+        font-weight: normal;
+        margin-top: 8px;
+        margin-bottom: 24px;
+    }
+
+    header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        //top: 40px;
+        z-index: 5;
+        width: 100%;
+        //height: $f-header-height;
+        //color: #fff;
+        //background-color: $theme-color;
+        //transition: height $transition-length ease;
+    }
+}
+
+@include media-max($bp-large) {
+    .account-header {
+        header {
+            position: initial;
+        }
+    }
+}
