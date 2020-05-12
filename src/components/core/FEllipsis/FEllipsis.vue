@@ -59,6 +59,13 @@ export default {
                 return ['start', 'end'].indexOf(_value) !== -1;
             },
         },
+        /**
+         * Align text to the right.
+         */
+        alignRight: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     computed: {
@@ -97,6 +104,7 @@ export default {
                 `overflow-${this.overflow}`,
                 {
                     'fixed-char-pos-start': this.fixedCharsPos === 'start',
+                    'f-ellipsis-align-right': this.alignRight,
                 },
             ];
         },

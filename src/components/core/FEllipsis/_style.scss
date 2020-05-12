@@ -28,5 +28,9 @@
             direction: rtl;
             text-align: left;
         }
+
+        &.f-ellipsis-align-right {
+            justify-content: flex-end;
+        }
     }
 }

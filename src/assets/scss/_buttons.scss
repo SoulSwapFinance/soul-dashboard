@@ -1,0 +1,48 @@
+@include buttons('.create-account-btn') {
+    background-color: $create-account-color;
+}
+
+@include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+    background: darken($create-account-color, 10%);
+}
+
+@include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+    background: darken($create-account-color, 10%);
+}
+
+@include buttons('.restore-account-btn') {
+    background-color: $restore-account-color;
+}
+
+@include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+    background: darken($restore-account-color, 10%);
+}
+
+@include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+    background: darken($restore-account-color, 10%);
+}
+
+@include buttons('.ledger-accounts-btn') {
+    background-color: $ledger-accounts-color;
+}
+
+@include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+    background: darken($ledger-accounts-color, 10%);
+}
+
+@include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+    background: darken($ledger-accounts-color, 10%);
+}
+
+@include buttons('.white-btn.light') {
+    color: #fff;
+}
+
+@include buttons('.white-btn.light:not([disabled]):not(.disabled):hover') {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.25);
+}
+@include buttons('.white-btn.light:not([disabled]):not(.disabled):focus') {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.25);
+}

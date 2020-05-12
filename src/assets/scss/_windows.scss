@@ -1,0 +1,56 @@
+.f-window {
+    &.colored-header {
+        header {
+            color: #fff;
+        }
+
+        .body {
+            padding-top: 24px;
+        }
+    }
+
+    &.ledger-accounts-color {
+        header {
+            background-color: $ledger-accounts-color;
+        }
+    }
+
+    &.create-account-color {
+        header {
+            background-color: $create-account-color;
+        }
+    }
+
+    &.restore-account-color {
+        header {
+            background-color: $restore-account-color;
+        }
+    }
+
+    &.c-footer {
+        .footer {
+            padding-top: 32px;
+            text-align: center;
+        }
+    }
+
+    &.c-main {
+        .main {
+            min-height: 274px;
+        }
+    }
+
+    &.double-body-padding {
+        .body {
+            padding: 40px;
+        }
+    }
+
+    .steps {
+        padding-left: 24px;
+
+        .count {
+            opacity: 0.6;
+        }
+    }
+}

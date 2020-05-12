@@ -11,7 +11,7 @@
                     Connect to Ledger
                 </router-link>
                 <router-link :to="{ name: 'create-account' }" class="btn create-account-btn large w100p">
-                    Create a Wallet
+                    Create Wallet
                 </router-link>
                 <router-link :to="{ name: 'restore-account' }" class="btn restore-account-btn large w100p">
                     Restore Wallet

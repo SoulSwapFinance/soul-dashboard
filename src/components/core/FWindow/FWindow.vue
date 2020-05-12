@@ -267,6 +267,8 @@ export default {
                 } else {
                     this.destroyResizeObserver();
                     this.isVisible = false;
+
+                    this.$emit('window-hide');
                 }
 
                 returnFocus(this._ids.comp);

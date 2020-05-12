@@ -3,48 +3,62 @@
         <ul class="no-markers">
             <li>
                 <span class="action" title="Connect to Ledger" @click="onConnectToLedgerClick">
-                    <button class="btn large same-size round">
+                    <button class="btn ledger-accounts-btn large same-size round">
                         <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
                     </button>
-                    <span class="link-label">Connect to Ledger</span>
+                    <span class="link-label ledger-accounts-color">Connect to Ledger</span>
                 </span>
             </li>
             <li>
-                <span class="action" title="Create a Wallet" @click="onCreateAWalletClick">
-                    <button class="btn large same-size round">
+                <span class="action" title="Create Wallet" @click="onCreateAWalletClick">
+                    <button class="btn create-account-btn large same-size round">
                         <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
                     </button>
-                    <span class="link-label">Create a Wallet</span>
+                    <span class="link-label create-account-color">Create Wallet</span>
                 </span>
             </li>
             <li>
                 <span class="action" title="Restore Wallet" @click="onRestoreWalletClick">
-                    <button class="btn large same-size round">
+                    <button class="btn restore-account-btn large same-size round">
                         <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
                     </button>
-                    <span class="link-label">Restore Wallet</span>
+                    <span class="link-label restore-account-color">Restore Wallet</span>
                 </span>
             </li>
         </ul>
+
+        <ledger-accounts-window ref="ledgerAccountsWindow" />
+        <create-account-window ref="createAccountWindow" />
+        <restore-account-window ref="restoreAccountWindow" />
     </nav>
 </template>
 
 <script>
+import LedgerAccountsWindow from '../windows/LedgerAccountsWindow/LedgerAccountsWindow.vue';
+import CreateAccountWindow from '../windows/CreateAccountWindow/CreateAccountWindow.vue';
+import RestoreAccountWindow from '../windows/RestoreAccountWindow/RestoreAccountWindow.vue';
+
 export default {
     name: 'DashboardActionsBox',
 
+    components: { RestoreAccountWindow, CreateAccountWindow, LedgerAccountsWindow },
+
     methods: {
         onConnectToLedgerClick() {
-            alert('not implemented yet');
+            this.$refs.ledgerAccountsWindow.show();
         },
 
         onCreateAWalletClick() {
-            alert('not implemented yet');
+            this.$refs.createAccountWindow.show();
         },
 
         onRestoreWalletClick() {
-            alert('not implemented yet');
+            this.$refs.restoreAccountWindow.show();
         },
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>

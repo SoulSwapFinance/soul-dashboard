@@ -19,10 +19,12 @@
 @import "core/_positioning.scss";
 @import "vertical-layout";
 
+@import "buttons";
 @import "fcard-window";
 @import "f-data-layout";
 @import "info-box";
 @import "actions-box";
+@import "windows";
 //@include flexbox-layout(24);
 
 //@include media-max($bp-menu) {
@@ -170,9 +172,12 @@ form {
     background-color: lighten($theme-color, 35);
 }
 
+/*
 .btn[disabled], .btn.disabled {
+    color: #f4f4f4;
     background-color: #777;
 }
+*/
 
 .form-buttons {
     padding-top: 16px;

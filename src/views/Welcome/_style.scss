@@ -37,52 +37,24 @@ $btns-border-radius: 48px;
 
     @include buttons('.create-account-btn') {
         font-weight: bold;
-        background-color: $create-account-color;
         height: 80px;
         font-size: 20px;
         border-radius: $btns-border-radius;
-    }
-
-    @include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
-        background: darken($create-account-color, 10%);
-    }
-
-    @include buttons('.create-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
-        background: darken($create-account-color, 10%);
     }
 
     @include buttons('.restore-account-btn') {
         font-weight: bold;
-        background-color: $restore-account-color;
         height: 80px;
         font-size: 20px;
         border-radius: $btns-border-radius;
-    }
-
-    @include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
-        background: darken($restore-account-color, 10%);
-    }
-
-    @include buttons('.restore-account-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
-        background: darken($restore-account-color, 10%);
     }
 
     @include buttons('.ledger-accounts-btn') {
         font-weight: bold;
-        background-color: $ledger-accounts-color;
         height: 80px;
         font-size: 20px;
         border-radius: $btns-border-radius;
     }
-
-    @include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
-        background: darken($ledger-accounts-color, 10%);
-    }
-
-    @include buttons('.ledger-accounts-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
-        background: darken($ledger-accounts-color, 10%);
-    }
-
 }
 
 @include media-max($bp-small) {

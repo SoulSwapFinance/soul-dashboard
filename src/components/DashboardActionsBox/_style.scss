@@ -1,0 +1,15 @@
+@import "../../assets/scss/vars";
+
+.dashboard-actions-box {
+    .link-label.ledger-accounts-color {
+        color: $ledger-accounts-color;
+    }
+
+    .link-label.create-account-color {
+        color: $create-account-color;
+    }
+
+    .link-label.restore-account-color {
+        color: $restore-account-color;
+    }
+}

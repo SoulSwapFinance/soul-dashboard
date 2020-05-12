@@ -30,12 +30,14 @@ import AccountSuccessMessage from '../../components/AccountSuccessMessage/Accoun
 import CreatePasswordForm from '../../components/forms/CreatePasswordForm.vue';
 import FCard from '../../components/core/FCard/FCard.vue';
 
+const DEFAULT_COMPONENT = 'restore-account-tabs';
+
 export default {
     components: { FCard, CreatePasswordForm, AccountSuccessMessage, RestoreAccountTabs },
 
     data() {
         return {
-            dCurrentComponent: 'restore-account-tabs',
+            dCurrentComponent: DEFAULT_COMPONENT,
             dStep: 1,
             dStepsCount: 2,
         };
@@ -76,6 +78,11 @@ export default {
                 this._pk = '';
                 this._address = '';
             });
+        },
+
+        setDefaultComponent() {
+            this.dCurrentComponent = DEFAULT_COMPONENT;
+            this.dStep = 1;
         },
 
         /**

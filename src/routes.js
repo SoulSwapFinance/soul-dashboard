@@ -4,7 +4,7 @@ import Welcome from './views/Welcome/Welcome.vue';
 import CreateAccount from './views/CreateAccount/CreateAccount.vue';
 import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
 import Account from './views/Account/Account.vue';
-import Dashboard from './views/Dashboard.vue';
+import Dashboard from './views/Dashboard/Dashboard.vue';
 import AccountSend from './views/AccountSend.vue';
 import AccountRecieve from './views/AccountRecieve.vue';
 import AccountStake from './views/AccountStake.vue';

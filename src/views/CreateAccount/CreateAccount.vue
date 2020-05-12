@@ -28,12 +28,14 @@ import MnemonicPhrase from '../../components/MnemonicPhrase/MnemonicPhrase.vue';
 import MnemonicPhraseVerification from '../../components/MnemonicPhraseVerification/MnemonicPhraseVerification.vue';
 import AccountSuccessMessage from '../../components/AccountSuccessMessage/AccountSuccessMessage.vue';
 
+const DEFAULT_COMPONENT = 'create-password-form';
+
 export default {
     components: { AccountSuccessMessage, MnemonicPhraseVerification, MnemonicPhrase, FCard, CreatePasswordForm },
 
     data() {
         return {
-            dCurrentComponent: 'create-password-form',
+            dCurrentComponent: DEFAULT_COMPONENT,
             dStep: 1,
         };
     },
@@ -78,6 +80,11 @@ export default {
                 };
                 this._address = '';
             });
+        },
+
+        setDefaultComponent() {
+            this.dCurrentComponent = DEFAULT_COMPONENT;
+            this.dStep = 1;
         },
 
         /**

@@ -7,20 +7,13 @@
             </div>
         </div>
         <div v-if="accounts && accounts.length > 0">
-            <ul class="no-markers ledger-accounts-list">
+            <ul class="no-markers ledger-accounts-list" @click="onLedgerAccountListClick">
                 <li v-for="account in accounts" :key="account.address">
                     <div class="row no-collapse">
                         <h3 class="col-10 break-word">
-                            <router-link
-                                :to="{
-                                    name: 'account-history',
-                                    params: account,
-                                }"
-                                class="break-word"
-                                aria-label="Address"
-                            >
+                            <a href="#" class="break-word" aria-label="Address" :data-address="account.address">
                                 {{ account.address }}
-                            </router-link>
+                            </a>
                         </h3>
                         <div class="col">{{ toFTM(account.balance) }} FTM</div>
                     </div>
@@ -49,6 +42,7 @@
 import FMessage from '../core/FMessage/FMessage.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { toFTM } from '../../utils/transactions.js';
+import { ADD_LEDGER_ACCOUNT } from '../../store/actions.type.js';
 
 export default {
     components: { FMessage, PulseLoader },
@@ -126,12 +120,32 @@ export default {
             this.accounts.push(account);
         },
 
+        getLedgerAccountByAddress(_address) {
+            const address = _address.toLowerCase();
+
+            return this.accounts.find((_item) => _item.address.toLowerCase() === address);
+        },
+
         onLoadNextBtnClick() {
             this.loadAccounts(0, this.lastAddressIdx);
         },
 
         onTryAgainBtnClick() {
             this.loadAccounts();
+        },
+
+        async onLedgerAccountListClick(_event) {
+            const elem = _event.target.closest('[data-address]');
+            const address = elem ? elem.getAttribute('data-address') : '';
+            const account = address ? this.getLedgerAccountByAddress(address) : null;
+
+            if (account) {
+                _event.preventDefault();
+
+                await this.$store.dispatch(ADD_LEDGER_ACCOUNT, account);
+
+                this.$router.push({ name: 'account-history', params: account });
+            }
         },
 
         toFTM,

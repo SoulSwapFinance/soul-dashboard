@@ -177,8 +177,8 @@ $grid-rows-selector: '.row, [class^="row-"], [class*=" row-"]';
     }
 }
 
-@mixin buttons($_suffix: '') {
-    .btn#{$_suffix}, a.btn:visited#{$_suffix} {
+@mixin buttons($_suffix: '', $_prefix: '') {
+    #{$_prefix}.btn#{$_suffix}, #{$_prefix}a.btn:visited#{$_suffix} {
         @content
     }
 }

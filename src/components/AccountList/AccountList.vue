@@ -5,7 +5,15 @@
                 <f-card>
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-center">
-                            <span class="col-7 col-12-md">
+                            <span class="col col-6-md">
+                                <span class="value">{{ toFTM(account.balance) }} FTM</span>
+                                <span class="label">Available</span>
+                            </span>
+                            <span class="col col-6-md">
+                                <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
+                                <span class="label">Total Balance</span>
+                            </span>
+                            <span class="col-7 col-10-md align-right align-left-md">
                                 <router-link
                                     :to="{
                                         name: routeName,
@@ -14,21 +22,19 @@
                                     class="value"
                                     aria-label="Address"
                                 >
-                                    <f-ellipsis :text="account.address" overflow="middle" />
+                                    <f-ellipsis :text="account.address" overflow="middle" align-right />
                                 </router-link>
                                 <span class="label">
-                                    Address <span v-if="account.isLedgerAccount">( LEDGER )</span>
+                                    <template v-if="account.isLedgerAccount">
+                                        Ledger
+                                    </template>
+                                    <template v-else>
+                                        Keystore file
+                                    </template>
                                 </span>
                             </span>
-                            <span class="col col-6-md align-right align-left-md">
-                                <span class="value">{{ toFTM(account.balance) }} FTM</span>
-                                <span class="label">Available</span>
-                            </span>
-                            <span class="col col-6-md align-right align-left-md">
-                                <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
-                                <span class="label">Total Balance</span>
-                            </span>
-                            <span v-if="editMode" class="col-1 col-12-md align-right align-center-md">
+
+                            <span v-if="editMode" class="col-1 col-2-md align-right">
                                 <ul class="account-edit-actions">
                                     <li>
                                         <button
@@ -38,20 +44,6 @@
                                         >
                                             <icon
                                                 data="@/assets/svg/pen.svg"
-                                                width="16"
-                                                height="16"
-                                                aria-hidden="true"
-                                            />
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn large_ light same-size round"
-                                            title="Remove Account"
-                                            @click="onRemoveAccountClick"
-                                        >
-                                            <icon
-                                                data="@/assets/svg/times.svg"
                                                 width="16"
                                                 height="16"
                                                 aria-hidden="true"
@@ -148,10 +140,6 @@ export default {
         },
 
         onEditAccountClick() {
-            alert('not implemented yet');
-        },
-
-        onRemoveAccountClick() {
             alert('not implemented yet');
         },
 
