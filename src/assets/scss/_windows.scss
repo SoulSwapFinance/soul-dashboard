@@ -42,7 +42,13 @@
 
     &.double-body-padding {
         .body {
-            padding: 40px;
+            padding: 0 40px 40px 40px;
+        }
+
+        &.colored-header {
+            .body {
+                padding-top: 40px;
+            }
         }
     }
 

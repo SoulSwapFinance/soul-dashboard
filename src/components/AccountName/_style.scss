@@ -1,0 +1,52 @@
+@import "../../assets/scss/vars";
+
+.account-name {
+    display: block;
+    word-break: break-word;
+    //max-width: 100%;
+    //overflow: hidden;
+
+    /*
+    > * {
+        flex: 1 0 100%;
+    }
+    */
+
+    text-align: left;
+
+    &.an-align-right {
+        text-align: right;
+    }
+
+    .an-name {
+        //min-width: 100%;
+        padding-right: 16px;
+        //white-space: nowrap;
+        //@include zpe-three-dots;
+    }
+
+    .an-address {
+        white-space: nowrap;
+    }
+
+    &.has-name {
+        .an-address {
+            color: $light-gray-color;
+            font-weight: normal;
+        }
+    }
+}
+
+@include media-max($bp-medium) {
+    .account-name {
+        &.an-align-right {
+            text-align: left;
+        }
+
+        &.has-name {
+            .an-address {
+                display: none;
+            }
+        }
+    }
+}

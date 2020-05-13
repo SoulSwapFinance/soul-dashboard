@@ -22,7 +22,10 @@
                     <div class="col-3 f-row-label">Send From</div>
                     <div class="col break-word">
                         {{ currentAccount.address }}
-                        <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                        <span class="f-row-label">
+                            ( {{ toFTM(currentAccount.balance) }} FTM
+                            <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
+                        </span>
                     </div>
                 </div>
 
@@ -88,7 +91,10 @@
                             <div class="col-3 f-row-label">Send From</div>
                             <div class="col break-word">
                                 {{ currentAccount.address }}
-                                <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                                <span class="f-row-label">
+                                    ( {{ toFTM(currentAccount.balance) }} FTM
+                                    <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
+                                </span>
                             </div>
                         </div>
                     </li>

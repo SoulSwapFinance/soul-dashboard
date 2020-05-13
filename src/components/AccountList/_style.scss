@@ -1,4 +1,5 @@
 @import "../../assets/scss/vars";
+//@import "../core/FCard/variables";
 
 .account-list {
     /*
@@ -19,6 +20,8 @@
 
     .f-card {
         height: 100%;
+        //padding-left: $f-card-padding-2x;
+        //padding-right: $f-card-padding-2x;
 
         &:not(.off) {
             .label {
@@ -30,6 +33,21 @@
 
     .value {
         font-size: 21px;
+    }
+
+    &.edit-mode {
+        .address-col {
+            //position: relative;
+            display: block;
+
+            padding-right: 32px;
+
+            button {
+                position: absolute;
+                top: 20px;
+                right: 12px;
+            }
+        }
     }
 
     .account-edit-actions {
@@ -47,6 +65,15 @@
         .account-edit-actions {
             li {
                 display: inline-block;
+            }
+        }
+
+        &.edit-mode {
+            .address-col {
+                button {
+                    top: initial;
+                    bottom: 44px;
+                }
             }
         }
     }

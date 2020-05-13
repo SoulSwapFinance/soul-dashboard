@@ -7,7 +7,7 @@
             <address-info-box />
             <account-header />
 
-            <!--                    <button @click="onRemoveAccountButClick">Remove wallet</button>-->
+            <!--            <button @click="onRemoveAccountButClick">Remove wallet</button>-->
 
             <main class="main">
                 <router-view></router-view>

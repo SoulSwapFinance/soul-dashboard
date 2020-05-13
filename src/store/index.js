@@ -10,8 +10,16 @@ import {
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
     SET_BREAKPOINT,
     SET_TOKEN_PRICE,
+    SET_ACCOUNT,
+    MOVE_ACCOUNT,
 } from './mutations.type.js';
-import { ADD_ACCOUNT, ADD_LEDGER_ACCOUNT, UPDATE_ACCOUNT_BALANCE, UPDATE_ACCOUNTS_BALANCES } from './actions.type.js';
+import {
+    ADD_ACCOUNT,
+    ADD_LEDGER_ACCOUNT,
+    UPDATE_ACCOUNT,
+    UPDATE_ACCOUNT_BALANCE,
+    UPDATE_ACCOUNTS_BALANCES,
+} from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
 Vue.use(Vuex);
@@ -32,24 +40,6 @@ const vuexLocalStorage = new VuexPersist({
 });
 
 vuexPlugins.push(vuexLocalStorage.plugin);
-
-/**
- * @param {array} _accounts
- * @param {string} _address
- * @return {number}
- */
-function getAccountIdxByAddress(_accounts, _address) {
-    let idx = -1;
-
-    for (let i = 0, len1 = _accounts.length; i < len1; i++) {
-        if (_accounts[i].address === _address) {
-            idx = i;
-            break;
-        }
-    }
-
-    return idx;
-}
 
 export const store = new Vuex.Store({
     plugins: vuexPlugins,
@@ -82,6 +72,33 @@ export const store = new Vuex.Store({
                 const address = fWallet.toChecksumAddress(_address);
 
                 return _state.accounts.find((_item) => _item.address === address);
+            };
+        },
+
+        /**
+         * Get account and index into `state.accounts` array by account address.
+         *
+         * @param _state
+         * @return {function(*=): {index: number, account: null}}
+         */
+        getAccountAndIndexByAddress(_state) {
+            return (_address) => {
+                const { accounts } = _state;
+                const address = fWallet.toChecksumAddress(_address);
+                const ret = {
+                    account: null,
+                    index: -1,
+                };
+
+                for (let i = 0, len1 = accounts.length; i < len1; i++) {
+                    if (accounts[i].address === address) {
+                        ret.account = accounts[i];
+                        ret.index = i;
+                        break;
+                    }
+                }
+
+                return ret;
             };
         },
     },
@@ -160,6 +177,37 @@ export const store = new Vuex.Store({
                 _state.activeAccountIndex = -1;
             }
         },
+
+        /**
+         * Update account by `_accountData` object. `_accountData` must contain `index` property.
+         *
+         * @param {Object} _state
+         * @param {{index: number, ...}} _accountData
+         */
+        [SET_ACCOUNT](_state, _accountData) {
+            const { index } = _accountData;
+
+            if (index !== undefined && index > -1) {
+                delete _accountData.index;
+
+                Vue.set(_state.accounts, index, _accountData);
+            }
+        },
+
+        /**
+         * Update account by `_accountData` object. `_accountData` must contain `index` property.
+         *
+         * @param {Object} _state
+         * @param {{from: number, to: number}} _params
+         */
+        [MOVE_ACCOUNT](_state, _params) {
+            const { from, to } = _params;
+            const accountsLen = _state.accounts.length;
+
+            if (from !== to && from >= 0 && to >= 0 && from < accountsLen && to < accountsLen) {
+                _state.accounts.splice(to, 0, _state.accounts.splice(from, 1)[0]);
+            }
+        },
     },
 
     actions: {
@@ -211,10 +259,11 @@ export const store = new Vuex.Store({
 
             for (let i = 0, len1 = accounts.length; i < len1; i++) {
                 balance = await fWallet.getBalance(accounts[i].address);
-                accounts.splice(i, 1, {
+                _context.commit(SET_ACCOUNT, {
                     ...accounts[i],
                     balance: balance.balance,
                     totalBalance: balance.totalValue,
+                    index: i,
                 });
             }
         },
@@ -227,15 +276,40 @@ export const store = new Vuex.Store({
             const account = _account || _context.getters.currentAccount;
 
             if (account) {
-                const accounts = _context.getters.accounts;
-                const idx = getAccountIdxByAddress(accounts, account.address);
+                const { index } = _context.getters.getAccountAndIndexByAddress(account.address);
                 const balance = await fWallet.getBalance(account.address);
 
-                if (idx > -1) {
-                    accounts.splice(idx, 1, {
+                if (index > -1) {
+                    _context.commit(SET_ACCOUNT, {
                         ...account,
                         balance: balance.balance,
                         totalBalance: balance.totalValue,
+                        index,
+                    });
+                }
+            }
+        },
+
+        /**
+         * @param {Object} _context
+         * @param {Object} _accountData
+         */
+        [UPDATE_ACCOUNT](_context, _accountData) {
+            const { account, index } = _context.getters.getAccountAndIndexByAddress(_accountData.address);
+
+            if (account) {
+                const name = _accountData.name !== account.address ? _accountData.name : '';
+
+                _context.commit(SET_ACCOUNT, {
+                    ...account,
+                    name,
+                    index,
+                });
+
+                if (_accountData.order - 1 !== index) {
+                    _context.commit(MOVE_ACCOUNT, {
+                        from: index,
+                        to: _accountData.order - 1,
                     });
                 }
             }
