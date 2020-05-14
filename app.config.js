@@ -48,6 +48,11 @@ const appConfig = {
         // output dir for production build
         outputDir: 'dist',
     },
+    // app settings
+    settings: {
+        // list of available currencies displayed in settings view ( https://en.wikipedia.org/wiki/ISO_4217 )
+        currencies: ['USD', 'EUR', 'CZK'],
+    },
 };
 
 //

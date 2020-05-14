@@ -9,7 +9,7 @@
                             name="currency"
                             label="Currency"
                             select-size="large"
-                            :data="currency"
+                            :data="currencies"
                             :value="$store.state.currency"
                         />
 
@@ -37,6 +37,7 @@ import FCard from '../core/FCard/FCard.vue';
 import FForm from '../core/FForm/FForm.vue';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'SettingsForm',
@@ -45,10 +46,6 @@ export default {
 
     data() {
         return {
-            currency: [
-                { value: 'USD', label: 'USD' },
-                { value: 'EUR', label: 'EUR' },
-            ],
             language: [{ value: 'en-US', label: 'English' }],
             fractionDigits: [
                 { value: '1', label: '1' },
@@ -59,6 +56,27 @@ export default {
                 { value: '6', label: '6' },
             ],
         };
+    },
+
+    computed: {
+        /**
+         * Data for currency select.
+         *
+         * @return {[]}
+         */
+        currencies() {
+            const selectData = [];
+            const { currencies } = appConfig.settings;
+
+            currencies.forEach((_currency) => {
+                selectData.push({
+                    value: _currency,
+                    label: _currency,
+                });
+            });
+
+            return selectData;
+        },
     },
 
     methods: {
