@@ -1,68 +1,70 @@
 <template>
     <div class="stake-form account-main-content-mt">
         <f-card class="f-card-double-padding">
-            <f-form ref="stakeForm" @f-form-submit="onFormSubmit">
+            <f-form ref="stakeForm" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
                     <legend class="h2">
                         Delegate FTM <span class="f-steps"><b>1</b> / 2</span>
                     </legend>
 
-                    <f-input
-                        label="Amount"
-                        field-size="large"
-                        type="number"
-                        autocomplete="off"
-                        min="0"
-                        step="any"
-                        name="amount"
-                        :validator="checkAmount"
-                        validate-on-input
-                    >
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                {{ amountErrMsg }}
-                            </f-message>
-                        </template>
-                    </f-input>
-
-                    <f-input
-                        v-model="validator"
-                        label="Validator"
-                        field-size="large"
-                        autocomplete="off"
-                        name="validator"
-                        readonly
-                        class="validator-select"
-                        :validator="checkValidator"
-                        validate-on-input
-                        @click.native="onSelectValidatorClick"
-                        @keydown.native="onSelectValidatorKeyup"
-                    >
-                        <template #suffix>
-                            <span class="btn same-size round small light">
-                                <icon data="@/assets/svg/chevron-down.svg" />
-                            </span>
-                        </template>
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                {{ validatorErrMsg }}
-                            </f-message>
-                        </template>
-                    </f-input>
-
-                    <div class="align-center form-buttons">
-                        <a
-                            href="#"
-                            class="btn light large break-word"
-                            style="max-width: 100%;"
-                            aria-label="Go to previous form"
-                            @click.prevent="onPreviousBtnClick"
+                    <div class="form-body">
+                        <f-input
+                            label="Amount"
+                            field-size="large"
+                            type="number"
+                            autocomplete="off"
+                            min="0"
+                            step="any"
+                            name="amount"
+                            :validator="checkAmount"
+                            validate-on-input
                         >
-                            Previous
-                        </a>
-                        <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                            Continue
-                        </button>
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    {{ amountErrMsg }}
+                                </f-message>
+                            </template>
+                        </f-input>
+
+                        <f-input
+                            v-model="validator"
+                            label="Validator"
+                            field-size="large"
+                            autocomplete="off"
+                            name="validator"
+                            readonly
+                            class="validator-select"
+                            :validator="checkValidator"
+                            validate-on-input
+                            @click.native="onSelectValidatorClick"
+                            @keydown.native="onSelectValidatorKeyup"
+                        >
+                            <template #suffix>
+                                <span class="btn same-size round small light">
+                                    <icon data="@/assets/svg/chevron-down.svg" />
+                                </span>
+                            </template>
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    {{ validatorErrMsg }}
+                                </f-message>
+                            </template>
+                        </f-input>
+
+                        <div class="align-center form-buttons">
+                            <a
+                                href="#"
+                                class="btn light large break-word"
+                                style="max-width: 100%;"
+                                aria-label="Go to previous form"
+                                @click.prevent="onPreviousBtnClick"
+                            >
+                                Previous
+                            </a>
+                            <button type="submit" class="btn large break-word" style="max-width: 100%;">
+                                Continue
+                            </button>
+                        </div>
                     </div>
                 </fieldset>
             </f-form>

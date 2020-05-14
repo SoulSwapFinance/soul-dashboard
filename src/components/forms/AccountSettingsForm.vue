@@ -1,47 +1,53 @@
 <template>
     <div class="account-settings-form">
-        <f-form ref="keystore-form" @f-form-submit="onFormSubmit">
+        <f-form ref="keystore-form" center-form @f-form-submit="onFormSubmit">
             <fieldset>
                 <legend class="not-visible">Settings for wallet {{ accountName }}</legend>
 
-                <f-input
-                    :value="accountName"
-                    type="text"
-                    label="Name"
-                    field-size="large"
-                    name="name"
-                    validate-on-input
-                    :validator="checkName"
-                >
-                    <template #bottom="sProps">
-                        <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                            This field cannot be blank
-                        </f-message>
-                    </template>
-                </f-input>
+                <div class="form-body">
+                    <span class="form-label">Address</span>
+                    {{ account.address }}
+                    <br /><br />
 
-                <f-input
-                    :value="accountOrder"
-                    type="number"
-                    autocomplete="off"
-                    min="1"
-                    :max="accounts.length.toString(10)"
-                    step="1"
-                    label="Order"
-                    field-size="large"
-                    name="order"
-                    validate-on-input
-                    :validator="checkOrder"
-                >
-                    <template #bottom="sProps">
-                        <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                            Value must be between 1 and {{ accounts.length }}
-                        </f-message>
-                    </template>
-                </f-input>
+                    <f-input
+                        :value="accountName"
+                        type="text"
+                        label="Name"
+                        field-size="large"
+                        name="name"
+                        validate-on-input
+                        :validator="checkName"
+                    >
+                        <template #bottom="sProps">
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                This field cannot be blank
+                            </f-message>
+                        </template>
+                    </f-input>
 
-                <div class="align-center form-buttons">
-                    <button type="submit" class="btn large">Save</button>
+                    <f-input
+                        :value="accountOrder"
+                        type="number"
+                        autocomplete="off"
+                        min="1"
+                        :max="accounts.length.toString(10)"
+                        step="1"
+                        label="Order"
+                        field-size="large"
+                        name="order"
+                        validate-on-input
+                        :validator="checkOrder"
+                    >
+                        <template #bottom="sProps">
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                Value must be between 1 and {{ accounts.length }}
+                            </f-message>
+                        </template>
+                    </f-input>
+
+                    <div class="align-center form-buttons">
+                        <button type="submit" class="btn large">Save</button>
+                    </div>
                 </div>
             </fieldset>
         </f-form>
@@ -81,14 +87,27 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['getAccountByAddress', 'accounts']),
+        ...mapGetters(['getAccountByAddress', 'accounts', 'getAccountAndIndexByAddress']),
 
+        /**
+         * @return {string}
+         */
         accountName() {
             return this.account.name || this.account.address;
         },
 
+        /**
+         * @return {string}
+         */
         accountOrder() {
-            return this.accountData.order.toString(10);
+            let order = this.accountData.order;
+
+            if (order === -1) {
+                const { index } = this.getAccountAndIndexByAddress(this.accountData.address);
+                order = index + 1;
+            }
+
+            return order.toString(10);
         },
     },
 
@@ -133,7 +152,7 @@ export default {
             if (this.checkName(name) && this.checkOrder(order)) {
                 const adName = this.account.name || accountData.address;
 
-                changed = adName !== name || accountData.order !== order;
+                changed = adName !== name || parseInt(this.accountOrder) !== order;
 
                 if (changed) {
                     this.$store.dispatch(UPDATE_ACCOUNT, { address: accountData.address, name, order });

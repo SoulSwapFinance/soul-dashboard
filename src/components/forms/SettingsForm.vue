@@ -1,24 +1,32 @@
 <template>
     <div class="settings-form">
         <f-card class="f-card-double-padding">
-            <f-form ref="form" @f-form-change="onFormChange">
-                <f-select
-                    name="currency"
-                    label="Currency"
-                    select-size="large"
-                    :data="currency"
-                    :value="$store.state.currency"
-                />
+            <f-form ref="form" center-form @f-form-change="onFormChange">
+                <fieldset>
+                    <legend class="not-visible">Settings form</legend>
+                    <div class="form-body">
+                        <f-select
+                            name="currency"
+                            label="Currency"
+                            select-size="large"
+                            :data="currency"
+                            :value="$store.state.currency"
+                        />
 
-                <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
-                <f-select
-                    name="fraction_digits"
-                    label="Fraction Digits"
-                    select-size="large"
-                    :data="fractionDigits"
-                    :value="$store.state.fractionDigits"
-                />
-                <f-checkbox name="night_mode" label="Night Mode" />
+                        <f-select
+                            name="fraction_digits"
+                            label="Fraction Digits"
+                            select-size="large"
+                            :data="fractionDigits"
+                            :value="$store.state.fractionDigits.toString()"
+                        />
+
+                        <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
+
+                        <br />
+                        <f-checkbox name="night_mode" label="Night Mode" />
+                    </div>
+                </fieldset>
             </f-form>
         </f-card>
     </div>

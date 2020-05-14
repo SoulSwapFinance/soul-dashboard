@@ -4,24 +4,26 @@
             <fieldset>
                 <legend class="not-visible">Mnemonic phrase</legend>
 
-                <div class="main">
-                    <f-input
-                        v-model="dMnemonic"
-                        is-textarea
-                        label="Please type in your 12 or 24 word mnemonic phrase, all lower-case, separate by single spaces"
-                        name="mnemonic"
-                        field-size="large"
-                        cols="30"
-                        rows="10"
-                    />
+                <div class="form-body">
+                    <div class="main">
+                        <f-input
+                            v-model="dMnemonic"
+                            is-textarea
+                            label="Please type in your 12 or 24 word mnemonic phrase, all lower-case, separate by single spaces"
+                            name="mnemonic"
+                            field-size="large"
+                            cols="30"
+                            rows="10"
+                        />
 
-                    <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
-                </div>
+                        <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
+                    </div>
 
-                <div class="footer">
-                    <button type="submit" class="btn large" :disabled="dDisabled">
-                        Unlock wallet
-                    </button>
+                    <div class="footer">
+                        <button type="submit" class="btn large" :disabled="dDisabled">
+                            Unlock wallet
+                        </button>
+                    </div>
                 </div>
             </fieldset>
         </f-form>

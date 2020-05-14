@@ -4,60 +4,62 @@
             <fieldset class="">
                 <legend><h2>Create a keystore file and password</h2></legend>
 
-                <div class="main">
-                    <f-password-field
-                        v-model="primaryPwd"
-                        :label="cSetPasswordT"
-                        type="password"
-                        field-size="large"
-                        name="primaryPwd"
-                        :validator="checkPrimaryPassword"
-                        validate-on-input
-                    >
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a
-                                symbol and a number
-                            </f-message>
-                            <f-message v-show="!sProps.showErrorMessage" type="info" with-icon>
-                                Make sure to enter at least 8 and max 200 characters, including one upper-case letter, a
-                                symbol and a number
-                            </f-message>
-                        </template>
-                    </f-password-field>
+                <div class="form-body">
+                    <div class="main">
+                        <f-password-field
+                            v-model="primaryPwd"
+                            :label="cSetPasswordT"
+                            type="password"
+                            field-size="large"
+                            name="primaryPwd"
+                            :validator="checkPrimaryPassword"
+                            validate-on-input
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Make sure to enter at least 8 and max 200 characters, including one upper-case
+                                    letter, a symbol and a number
+                                </f-message>
+                                <f-message v-show="!sProps.showErrorMessage" type="info" with-icon>
+                                    Make sure to enter at least 8 and max 200 characters, including one upper-case
+                                    letter, a symbol and a number
+                                </f-message>
+                            </template>
+                        </f-password-field>
 
-                    <f-password-field
-                        v-model="secondaryPwd"
-                        label="Re-enter password"
-                        type="password"
-                        field-size="large"
-                        name="secondaryPwd"
-                        :validator="checkSecondaryPassword"
-                        validate-on-input
-                    >
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                The entered password does not match
-                            </f-message>
-                        </template>
-                    </f-password-field>
+                        <f-password-field
+                            v-model="secondaryPwd"
+                            label="Re-enter password"
+                            type="password"
+                            field-size="large"
+                            name="secondaryPwd"
+                            :validator="checkSecondaryPassword"
+                            validate-on-input
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    The entered password does not match
+                                </f-message>
+                            </template>
+                        </f-password-field>
 
-                    <f-checkbox v-model="confirmation" name="confirmation">
-                        I made a backup of the keystore file and saved the password in a safe.
-                        <br />
-                        I understand that I will need the password and the keystore file to access my wallet.
-                    </f-checkbox>
-                </div>
+                        <f-checkbox v-model="confirmation" name="confirmation">
+                            I made a backup of the keystore file and saved the password in a safe.
+                            <br />
+                            I understand that I will need the password and the keystore file to access my wallet.
+                        </f-checkbox>
+                    </div>
 
-                <div class="footer">
-                    <button
-                        type="submit"
-                        class="btn large break-word"
-                        style="max-width: 100%;"
-                        :class="{ disabled: submitDisabled }"
-                    >
-                        Download keystore file and continue
-                    </button>
+                    <div class="footer">
+                        <button
+                            type="submit"
+                            class="btn large break-word"
+                            style="max-width: 100%;"
+                            :class="{ disabled: submitDisabled }"
+                        >
+                            Download keystore file and continue
+                        </button>
+                    </div>
                 </div>
             </fieldset>
         </f-form>
@@ -160,7 +162,7 @@ export default {
                     }
 
                     if (keystore) {
-                        fWallet.downloadKeystore(keystore);
+                        // fWallet.downloadKeystore(keystore);
 
                         if (this.restoreAccount) {
                             // save account
@@ -179,7 +181,7 @@ export default {
                     } else if (!this.restoreAccount) {
                         // create new account
                         account = await this.$fWallet.createMnemonic(pwd);
-                        fWallet.downloadKeystore(account.keystore);
+                        // fWallet.downloadKeystore(account.keystore);
                         this.$emit('change-component', {
                             detail: {
                                 from: 'create-password-form',

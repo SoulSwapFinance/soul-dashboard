@@ -1,50 +1,52 @@
 <template>
     <div class="send-transaction-form">
         <f-card class="f-card-double-padding">
-            <f-form ref="form" @f-form-submit="onFormSubmit">
+            <f-form ref="form" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
                     <legend class="h2">
                         Send Opera FTM <span class="f-steps"><b>1</b> / 2</span>
                     </legend>
 
-                    <f-input
-                        label="Amount"
-                        field-size="large"
-                        type="number"
-                        autocomplete="off"
-                        min="0"
-                        step="any"
-                        name="amount"
-                        :validator="checkAmount"
-                        validate-on-input
-                    >
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                {{ amountErrMsg }}
-                            </f-message>
-                        </template>
-                    </f-input>
+                    <div class="form-body">
+                        <f-input
+                            label="Amount"
+                            field-size="large"
+                            type="number"
+                            autocomplete="off"
+                            min="0"
+                            step="any"
+                            name="amount"
+                            :validator="checkAmount"
+                            validate-on-input
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    {{ amountErrMsg }}
+                                </f-message>
+                            </template>
+                        </f-input>
 
-                    <f-input
-                        label="Send To"
-                        field-size="large"
-                        name="opera_address"
-                        :validator="checkAddress"
-                        validate-on-input
-                    >
-                        <template #bottom="sProps">
-                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                Enter a valid Opera FTM address
-                            </f-message>
-                        </template>
-                    </f-input>
+                        <f-input
+                            label="Send To"
+                            field-size="large"
+                            name="opera_address"
+                            :validator="checkAddress"
+                            validate-on-input
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Enter a valid Opera FTM address
+                                </f-message>
+                            </template>
+                        </f-input>
 
-                    <f-input label="Memo (optional)" field-size="large" name="memo" />
+                        <f-input label="Memo (optional)" field-size="large" name="memo" />
 
-                    <div class="align-center form-buttons">
-                        <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                            Continue
-                        </button>
+                        <div class="align-center form-buttons">
+                            <button type="submit" class="btn large break-word" style="max-width: 100%;">
+                                Continue
+                            </button>
+                        </div>
                     </div>
                 </fieldset>
             </f-form>

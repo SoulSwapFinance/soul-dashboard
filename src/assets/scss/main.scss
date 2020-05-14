@@ -97,7 +97,15 @@ form {
             display: block;
             font-weight: bold;
             padding-bottom: 4px;
+            text-align: left;
         }
+    }
+
+    .form-label {
+        display: block;
+        font-weight: bold;
+        padding-bottom: 4px;
+        text-align: left;
     }
 }
 

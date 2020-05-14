@@ -321,6 +321,7 @@ export const store = new Vuex.Store({
 
             if (account) {
                 const name = _accountData.name !== account.address ? _accountData.name : '';
+                const { activeAccountAddress } = _context.state; // store active account address
 
                 _context.commit(SET_ACCOUNT, {
                     ...account,
@@ -334,6 +335,9 @@ export const store = new Vuex.Store({
                         to: _accountData.order - 1,
                     });
                 }
+
+                // order of accounts can change so set stored active account again
+                _context.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, activeAccountAddress);
             }
         },
     },

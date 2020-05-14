@@ -1,6 +1,6 @@
 <template>
     <f-card class="dashboard-info-box info-box f-card-double-padding">
-        <div class="row no-vert-col-padding align-items-center align-center-lg no-collapse">
+        <div class="row no-vert-col-padding align-center-lg no-collapse">
             <div class="col col-6-lg">
                 <div class="balance">
                     <h3 class="align-center-lg">

@@ -4,44 +4,47 @@
             <fieldset>
                 <legend class="not-visible">Keystore file</legend>
 
-                <div class="main">
-                    <br />
+                <div class="form-body">
+                    <div class="main">
+                        <br />
 
-                    <f-file-input-button
-                        name="keystore-file"
-                        accept="application/json"
-                        class="secondary large w100p"
-                        @change="onKeystoreFileChange"
-                    >
-                        <icon data="@/assets/svg/upload.svg" width="20" height="20"></icon> &nbsp; Upload keystore file
-                    </f-file-input-button>
-                    <f-message v-if="dKeystoreUploadMsg && !dKeystoreErrorMsg" type="success" with-icon>{{
-                        dKeystoreUploadMsg
-                    }}</f-message>
-                    <br />
+                        <f-file-input-button
+                            name="keystore-file"
+                            accept="application/json"
+                            class="secondary large w100p"
+                            @change="onKeystoreFileChange"
+                        >
+                            <icon data="@/assets/svg/upload.svg" width="20" height="20"></icon> &nbsp; Upload keystore
+                            file
+                        </f-file-input-button>
+                        <f-message v-if="dKeystoreUploadMsg && !dKeystoreErrorMsg" type="success" with-icon>
+                            {{ dKeystoreUploadMsg }}
+                        </f-message>
+                        <br />
 
-                    <f-message v-if="dKeystoreErrorMsg" type="error" with-icon>
-                        {{ dKeystoreErrorMsg }}
-                    </f-message>
-                    <br />
+                        <f-message v-if="dKeystoreErrorMsg" type="error" with-icon>
+                            {{ dKeystoreErrorMsg }}
+                        </f-message>
+                        <br />
 
-                    <f-input
-                        v-model="pwd"
-                        type="password"
-                        label="Enter your wallet password"
-                        field-size="large"
-                        name="pwd"
-                        validate-on-input
-                        :validator="checkPassword"
-                    />
+                        <f-input
+                            v-model="pwd"
+                            type="password"
+                            label="Enter your wallet password"
+                            field-size="large"
+                            name="pwd"
+                            validate-on-input
+                            :validator="checkPassword"
+                        />
 
-                    <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
-                </div>
+                        <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
+                    </div>
 
-                <div class="footer">
-                    <button type="submit" class="btn large" :disabled="dSubmitDisabled">
-                        Unlock wallet
-                    </button>
+                    <div class="footer">
+                        <button type="submit" class="btn large" :disabled="dSubmitDisabled">
+                            Unlock wallet
+                        </button>
+                    </div>
                 </div>
             </fieldset>
         </f-form>

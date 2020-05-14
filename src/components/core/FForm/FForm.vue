@@ -1,5 +1,14 @@
 <template>
-    <form ref="form" method="post" class="f-form" novalidate @submit="onSubmit" @change="onChange" @input="onInput">
+    <form
+        ref="form"
+        method="post"
+        class="f-form"
+        :class="{ 'center-form': centerForm }"
+        novalidate
+        @submit="onSubmit"
+        @change="onChange"
+        @input="onInput"
+    >
         <slot></slot>
     </form>
 </template>
@@ -13,15 +22,20 @@ export default {
     mixins: [events, eventBusMixin],
 
     props: {
-        // Submit form when an element is changed
+        /** Submit form when an element is changed */
         submitOnChange: {
             type: Boolean,
             default: false,
         },
-        // Call preventDefault() on form submit event.
+        /** Call preventDefault() on form submit event. */
         cancelSubmit: {
             type: Boolean,
             default: true,
+        },
+        /** Center form body. */
+        centerForm: {
+            type: Boolean,
+            default: false,
         },
     },
 
@@ -271,4 +285,6 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import 'style';
+</style>
