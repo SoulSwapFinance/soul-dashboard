@@ -90,7 +90,7 @@ a:not(.btn):hover {
 }
 
 form {
-    .f-input {
+    .f-input, .f-select {
         margin-bottom: 16px;
 
         label {
@@ -110,7 +110,7 @@ form {
     align-items: start;
 }
 
-.f-input {
+.f-input, .f-select {
     .f-message {
         font-size: 14px;
         width: auto;

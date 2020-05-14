@@ -12,6 +12,8 @@ import {
     SET_TOKEN_PRICE,
     SET_ACCOUNT,
     MOVE_ACCOUNT,
+    SET_CURRENCY,
+    SET_FRACTION_DIGITS,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -34,6 +36,8 @@ const vuexLocalStorage = new VuexPersist({
     // Function that passes the state and returns the state with only the Objects you want to store.
     reducer: (_state) => ({
         tokenPrice: _state.tokenPrice,
+        currency: _state.currency,
+        fractionDigits: _state.fractionDigits,
         accounts: _state.accounts,
         activeAccountIndex: _state.activeAccountIndex,
     }),
@@ -47,6 +51,8 @@ export const store = new Vuex.Store({
     state: {
         breakpoints: {},
         tokenPrice: 0,
+        currency: 'USD',
+        fractionDigits: 2,
         /** @type {[{address: String, balance: string, keystore: object, balanceFTM: (String|BN)}]} */
         accounts: [],
         // index of active stored account
@@ -121,6 +127,22 @@ export const store = new Vuex.Store({
          */
         [SET_TOKEN_PRICE](_state, _tokenPrice) {
             _state.tokenPrice = _tokenPrice;
+        },
+
+        /**
+         * @param {Object} _state
+         * @param {number} _currency
+         */
+        [SET_CURRENCY](_state, _currency) {
+            _state.currency = _currency;
+        },
+
+        /**
+         * @param {Object} _state
+         * @param {number} _fractionDigits
+         */
+        [SET_FRACTION_DIGITS](_state, _fractionDigits) {
+            _state.fractionDigits = _fractionDigits;
         },
 
         /**

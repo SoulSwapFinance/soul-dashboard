@@ -1,5 +1,7 @@
 export const SET_BREAKPOINT = 'setBreakpoint';
 export const SET_TOKEN_PRICE = 'setTokenPrice';
+export const SET_CURRENCY = 'setCurrency';
+export const SET_FRACTION_DIGITS = 'setFractionDigits';
 export const SET_ACTIVE_ACCOUNT_BY_ADDRESS = 'setActiveAccountByAddress';
 export const SET_ACTIVE_ACCOUNT_ADDRESS = 'setActiveAccountAddress';
 export const DEACTIVATE_ACTIVE_ACCOUNT = 'deactiveActiveAccount';

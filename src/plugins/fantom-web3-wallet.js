@@ -49,6 +49,7 @@ export class FantomWeb3Wallet {
             variables: {
                 to: _to,
             },
+            fetchPolicy: 'no-cache',
         });
 
         if (!data.data.price) {

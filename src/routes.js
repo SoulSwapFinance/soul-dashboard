@@ -11,7 +11,7 @@ import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 import AccountHistory from './views/AccountHistory.vue';
-import Settings from './views/Settings.vue';
+import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
 
 export const routes = [
