@@ -41,7 +41,7 @@
                 <f-overlay
                     v-if="withOverlay && isVisible"
                     ref="overlay"
-                    :z-index="zIndex - 1"
+                    :z-index="dZIndex - 1"
                     @overlay-hide="onOverlayHide"
                 />
             </div>
@@ -55,6 +55,7 @@ import { throttle } from '../../../utils/index.js';
 import FOverlay from '../FOverlay/FOverlay.vue';
 import { focusTrap, isKey, returnFocus, setReceiveFocusFromAttr } from '../../../utils/aria.js';
 import ResizeObserver from 'resize-observer-polyfill';
+import { helpersMixin } from '../../../mixins/helpers.js';
 
 /**
  * Basic modal window following WAI-ARIA practices.
@@ -64,6 +65,8 @@ export default {
     name: 'FWindow',
 
     components: { FOverlay },
+
+    mixins: [helpersMixin],
 
     props: {
         /** Is window visible on initialization? */
@@ -143,6 +146,7 @@ export default {
             isVisible: false,
             dAnimationIn: this.animationIn,
             dAnimationOut: this.animationOut,
+            dZIndex: this.zIndex,
             style: {
                 zIndex: this.zIndex,
             },
@@ -230,6 +234,13 @@ export default {
     methods: {
         show(_animationIn) {
             if (!this.isVisible) {
+                const parentWindow = this.findParentByName('f-window');
+
+                if (parentWindow) {
+                    this.dZIndex = parentWindow.dZIndex + 2;
+                    this._updateStyle({ zIndex: this.dZIndex });
+                }
+
                 if (_animationIn) {
                     this.dAnimationIn = _animationIn;
                 } else {

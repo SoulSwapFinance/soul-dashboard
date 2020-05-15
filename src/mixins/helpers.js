@@ -57,6 +57,27 @@ export const helpersMixin = {
         },
 
         /**
+         * Find parent component by name.
+         *
+         * @param {string} _name
+         * @return {null|*|Vue}
+         */
+        findParentByName(_name) {
+            let parent = this.$parent;
+
+            while (parent) {
+                // console.log(parent.$options._componentTag, _name);
+                if (parent.$options._componentTag === _name) {
+                    return parent;
+                }
+
+                parent = parent.$parent;
+            }
+
+            return null;
+        },
+
+        /**
          * Check non-empty slot existence.
          *
          * @param {string} _name
