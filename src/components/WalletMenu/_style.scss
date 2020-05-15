@@ -61,7 +61,7 @@
             transition: color $transition-length ease;
         }
 
-        a:not(.btn):hover {
+        a:not(.btn):not(.disabled):hover {
             color: #fff;
             text-decoration: none;
         }

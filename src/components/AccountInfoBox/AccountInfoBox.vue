@@ -20,7 +20,7 @@
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountTotalBalance, this.$store.state.tokenPrice) }}
                     </div>
-                    <div class="label h3">Total Balance</div>
+                    <div class="label h3">Total</div>
                 </div>
             </div>
             <div class="col-5 col-12-lg align-right align-center-lg"><account-actions-box /></div>

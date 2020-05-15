@@ -20,9 +20,16 @@
                     transition: all $transition-length ease;
                     border-radius: $border-radius;
 
-                    &.router-link-active, &:hover {
-                        color: #fff;
-                        text-decoration: none;
+                    &:not(.disabled) {
+                        &.router-link-active, &:hover {
+                            color: #fff;
+                            text-decoration: none;
+                        }
+                    }
+
+                    &.disabled {
+                        cursor: initial;
+                        opacity: 0.5;
                     }
                 }
             }

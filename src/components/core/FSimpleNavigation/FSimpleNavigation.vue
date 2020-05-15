@@ -4,7 +4,7 @@
             <slot>
                 <ul v-if="cItems" class="no-markers">
                     <li v-for="item in cItems" :key="item.id">
-                        <router-link :to="item.url">
+                        <router-link :to="item.url" :class="{ disabled: item.disabled }" :title="item.linkTitle">
                             <icon
                                 v-if="item.icon"
                                 :data="item.icon"

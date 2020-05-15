@@ -37,7 +37,7 @@
                     title="Edit Account"
                     @click="$refs.accountSettingsWindow.show()"
                 >
-                    <icon data="@/assets/svg/pen.svg" width="20" height="20" aria-hidden="true" />
+                    <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                 </button>
             </li>
         </ul>

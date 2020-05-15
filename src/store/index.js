@@ -21,6 +21,7 @@ import {
     UPDATE_ACCOUNT,
     UPDATE_ACCOUNT_BALANCE,
     UPDATE_ACCOUNTS_BALANCES,
+    REMOVE_ACCOUNT_BY_ADDRESS,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
@@ -339,6 +340,28 @@ export const store = new Vuex.Store({
                 // order of accounts can change so set stored active account again
                 _context.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, activeAccountAddress);
             }
+        },
+
+        /**
+         * @param {Object} _context
+         * @param {String} _address
+         * @return Promise<boolean> Current account removed?
+         */
+        [REMOVE_ACCOUNT_BY_ADDRESS](_context, _address) {
+            const { account, index } = _context.getters.getAccountAndIndexByAddress(_address);
+            const accounts = _context.getters.accounts;
+            let activeAccountRemoved = false;
+
+            if (account) {
+                accounts.splice(index, 1);
+
+                if (index === _context.state.activeAccountIndex) {
+                    _context.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+                    activeAccountRemoved = true;
+                }
+            }
+
+            return activeAccountRemoved;
         },
     },
 });

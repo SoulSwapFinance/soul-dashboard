@@ -74,6 +74,7 @@ export default {
                     },
                     title: 'Wallet',
                     icon: dashboardIcon,
+                    walletLink: true,
                 },
                 {
                     url: {
@@ -178,7 +179,7 @@ export default {
             let walletNavItemIdx = -1;
 
             navigation.find((_item, _idx) => {
-                if (_item.url && _item.url.name === ACCOUNT_DEFAULT_VIEW) {
+                if (_item.walletLink) {
                     walletNavItemIdx = _idx;
                     return true;
                 }
@@ -186,14 +187,25 @@ export default {
                 return false;
             });
 
-            if (walletNavItemIdx > -1 && account) {
-                this.$set(navigation, walletNavItemIdx, {
-                    ...navigation[walletNavItemIdx],
-                    url: {
-                        name: ACCOUNT_DEFAULT_VIEW,
-                        params: { address: account.address },
-                    },
-                });
+            if (walletNavItemIdx > -1) {
+                if (account) {
+                    this.$set(navigation, walletNavItemIdx, {
+                        ...navigation[walletNavItemIdx],
+                        url: {
+                            name: ACCOUNT_DEFAULT_VIEW,
+                            params: { address: account.address },
+                        },
+                        linkTitle: account.name || account.address,
+                        disabled: false,
+                    });
+                } else {
+                    this.$set(navigation, walletNavItemIdx, {
+                        ...navigation[walletNavItemIdx],
+                        url: { path: '#' },
+                        linkTitle: '',
+                        disabled: true,
+                    });
+                }
             }
         },
 

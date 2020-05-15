@@ -20,7 +20,7 @@
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountsTotalBalance, this.$store.state.tokenPrice, false) }}
                     </div>
-                    <div class="label h3">Total Balance (Sum)</div>
+                    <div class="label h3">Total (Sum)</div>
                 </div>
             </div>
             <div class="col-5 col-12-lg align-right align-center-lg"><dashboard-actions-box /></div>

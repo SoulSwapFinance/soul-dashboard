@@ -1,13 +1,15 @@
 <template>
     <div class="account-settings-form">
-        <f-form ref="keystore-form" center-form @f-form-submit="onFormSubmit">
+        <f-form center-form @f-form-submit="onFormSubmit">
             <fieldset>
                 <legend class="not-visible">Settings for wallet {{ accountName }}</legend>
 
                 <div class="form-body">
                     <span class="form-label">Address</span>
-                    {{ account.address }}
-                    <br /><br />
+                    <div class="break-word">
+                        {{ account.address }}
+                    </div>
+                    <br />
 
                     <f-input
                         :value="accountName"
@@ -46,11 +48,32 @@
                     </f-input>
 
                     <div class="align-center form-buttons">
+                        <a href="#" class="btn large secondary" @click.prevent="onRemoveAccountBtnClick">
+                            Remove Wallet...
+                        </a>
                         <button type="submit" class="btn large">Save</button>
                     </div>
                 </div>
             </fieldset>
         </f-form>
+
+        <f-window
+            ref="confirmationWindow"
+            modal
+            title="Remove Wallet"
+            style="max-width: 500px;"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
+        >
+            <div class="align-center">
+                Are you sure you want to remove wallet <span class="break-word">{{ account.address }}</span> ?
+            </div>
+            <br />
+            <div class="align-center form-buttons">
+                <button class="btn large secondary" @click="$refs.confirmationWindow.hide()">Cancel</button>
+                <button class="btn large" @click="onConfirmationWindowOkBtnClick">Remove</button>
+            </div>
+        </f-window>
     </div>
 </template>
 
@@ -59,12 +82,19 @@ import FForm from '../core/FForm/FForm.vue';
 import FInput from '../core/FInput/FInput.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
-import { UPDATE_ACCOUNT } from '../../store/actions.type.js';
+import { REMOVE_ACCOUNT_BY_ADDRESS, UPDATE_ACCOUNT } from '../../store/actions.type.js';
+import FWindow from '../core/FWindow/FWindow.vue';
+import { helpersMixin } from '../../mixins/helpers.js';
 
+/**
+ * @mixes helpersMixin
+ */
 export default {
     name: 'AccountSettingsForm',
 
-    components: { FMessage, FInput, FForm },
+    components: { FWindow, FMessage, FInput, FForm },
+
+    mixins: [helpersMixin],
 
     props: {
         /** Account data */
@@ -140,6 +170,21 @@ export default {
         },
 
         /**
+         * Remove account by address.
+         *
+         * @param {string} _address
+         */
+        async removeAccount(_address) {
+            const activeAccountRemoved = await this.$store.dispatch(REMOVE_ACCOUNT_BY_ADDRESS, _address);
+
+            if (activeAccountRemoved) {
+                if (this.$route.name !== 'dashboard') {
+                    this.$router.replace({ name: 'dashboard' });
+                }
+            }
+        },
+
+        /**
          * @param {{detail: {data: {}}}} _event
          */
         onFormSubmit(_event) {
@@ -160,6 +205,22 @@ export default {
 
                 this.$emit('account-settings-form-data', { name, order, changed });
             }
+        },
+
+        onRemoveAccountBtnClick() {
+            this.$refs.confirmationWindow.show();
+        },
+
+        onConfirmationWindowOkBtnClick() {
+            const parentWindow = this.findParentByName('f-window');
+
+            this.$refs.confirmationWindow.hide('fade-leave-active');
+
+            if (parentWindow) {
+                parentWindow.hide();
+            }
+
+            this.removeAccount(this.account.address);
         },
     },
 };
