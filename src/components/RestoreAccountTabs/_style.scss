@@ -1,10 +1,43 @@
 @import "../../assets/scss/vars";
 
 .restore-account-tabs {
-    .tmp-tabs {
-        > * {
-            display: inline-block;
-            margin-right: 16px;
+    .f-tabs {
+        ul {
+            justify-content: center;
+
+            li {
+                &.btn {
+                    flex-direction: column;
+                    margin-right: 8px;
+                    min-width: 128px;
+                    padding-top: 16px;
+                    padding-bottom: 16px;
+
+                    > *:first-child {
+                        height: 100%;
+                    }
+
+                    span {
+                        display: block;
+                        text-align: center;
+                        padding-top: 8px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .restore-account-tabs {
+        .f-tabs {
+            ul {
+                li {
+                    &.btn {
+                        min-width: auto;
+                    }
+                }
+            }
         }
     }
 }

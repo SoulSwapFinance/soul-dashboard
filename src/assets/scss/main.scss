@@ -179,6 +179,11 @@ form {
     color: $theme-color;
     background-color: lighten($theme-color, 35);
 }
+@include buttons('.secondary:not([disabled]):not(.disabled)[aria-selected="true"]') {
+    color: $theme-color;
+    background-color: lighten($theme-color, 35);
+    border-color: transparent;
+}
 
 /*
 .btn[disabled], .btn.disabled {

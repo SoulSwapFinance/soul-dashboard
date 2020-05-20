@@ -5,26 +5,38 @@
 </template>
 
 <script>
-// Tab panel
 import { getUniqueId } from '../../../utils';
 
+/**
+ * Tab panel
+ */
 export default {
     name: 'FTab',
 
     props: {
-        // Tab panel id.
+        /** Tab panel id */
         id: {
             type: String,
             default() {
                 return getUniqueId();
             },
         },
-        // Title of tab panel shown in tab list.
+        /** Title of tab panel shown in tab list */
         title: {
             type: String,
             default: '',
         },
-        // Is tab panel active?
+        /** Slot name in FTabs to be used as a title */
+        titleSlot: {
+            type: String,
+            default: '',
+        },
+        /** Css class used on tab shown in tab list. */
+        titleClass: {
+            type: String,
+            default: '',
+        },
+        /** Is tab panel active? */
         active: {
             type: Boolean,
             default: false,
@@ -33,9 +45,9 @@ export default {
 
     data() {
         return {
-            // Id of tab panel label (tab). This property is set by FTabs component.
+            /** Id of tab panel label (tab). This property is set by FTabs component */
             labelledBy: '',
-            // Is tab panel active?
+            /** Is tab panel active? */
             dActive: this.active,
         };
     },

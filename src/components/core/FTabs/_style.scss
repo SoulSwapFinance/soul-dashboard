@@ -1,3 +1,5 @@
+@import "variables";
+
 .f-tabs {
     ul {
         display: flex;
@@ -6,17 +8,32 @@
         li {
             padding: 8px 16px;
             cursor: pointer;
-            border-radius: 8px 8px 0 0;
-            background-color: #f4f4f4;
-            margin-right: 1px;
+        }
+    }
 
-            &:hover, &:focus, &[aria-selected="true"] {
-                background-color: #ddd;
+    &:not(.no-style) {
+        ul {
+            li {
+                //border-radius: 8px 8px 0 0;
+                //background-color: #f4f4f4;
+                //margin-right: 1px;
+                border-bottom: 1px solid #eee;
+
+                &:hover, &:focus {
+                    //background-color: #ddd;
+                    border-bottom-color: #666;
+                }
+
+                &[aria-selected="true"] {
+                    color: $theme-color;
+                    border-bottom-color: $theme-color;
+                }
             }
         }
     }
 
     .f-tabs-panels {
-        padding: 16px;
+        padding-top: 16px;
+        //padding: 16px;
     }
 }

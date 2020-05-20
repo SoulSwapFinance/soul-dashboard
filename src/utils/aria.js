@@ -241,3 +241,50 @@ export function focusTrap(_event, _elem, _focusableElems) {
         }
     }
 }
+
+/**
+ *
+ * @param {KeyboardEvent} _event
+ * @param {string} _selector
+ * @param {boolean} [_circular] Circular keyboard navigation
+ * @return {HTMLElement|null} Next or previous element or null.
+ */
+export function keyboardNavigation(_event, _selector, _circular) {
+    if (!_event || !(_event.type in KEY_EVENTS) || !_selector) {
+        return null;
+    }
+
+    let elem = null;
+    // const { keyCode } = _event;
+    const eTarget = _event.target.closest(_selector);
+
+    // console.log(_event.code);
+
+    if (eTarget) {
+        if (isKey('ArrowRight', _event) || isKey('ArrowUp', _event)) {
+            elem = eTarget.nextElementSibling;
+            while (elem && !elem.matches(_selector)) {
+                elem = elem.nextElementSibling;
+            }
+
+            if (_circular && elem === null) {
+                elem = eTarget.parentElement.firstElementChild;
+            }
+        } else if (isKey('ArrowLeft', _event) || isKey('ArrowDown', _event)) {
+            elem = eTarget.previousElementSibling;
+            while (elem && !elem.matches(_selector)) {
+                elem = elem.previousElementSibling;
+            }
+
+            if (_circular && elem === null) {
+                elem = eTarget.parentElement.lastElementChild;
+            }
+        }
+    }
+
+    if (elem) {
+        elem.focus();
+    }
+
+    return elem;
+}

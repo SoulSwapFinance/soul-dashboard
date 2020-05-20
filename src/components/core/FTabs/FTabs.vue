@@ -1,5 +1,5 @@
 <template>
-    <div class="f-tabs">
+    <div class="f-tabs" :class="{ 'no-style': noStyle }">
         <ul role="tablist" class="no-markers" @click="onTabListClick" @keyup="onTabListKeyup">
             <li
                 v-for="(tabPanel, idx) in dTabPanels"
@@ -10,8 +10,10 @@
                 :aria-selected="tabPanel.dActive"
                 role="tab"
                 :data-index="idx"
+                :class="tabPanel.titleClass"
             >
-                {{ tabPanel.title }}
+                <template v-if="tabPanel.titleSlot"><slot :name="tabPanel.titleSlot"></slot></template>
+                <template v-else>{{ tabPanel.title }}</template>
             </li>
         </ul>
         <div class="f-tabs-panels">
@@ -23,17 +25,29 @@
 <script>
 import { helpersMixin } from '../../../mixins/helpers.js';
 import { getUniqueId } from '../../../utils';
+import { keyboardNavigation } from '../../../utils/aria.js';
 
+/**
+ * Simple tabs following WAI-ARIA practices.
+ */
 export default {
     name: 'FTabs',
 
     mixins: [helpersMixin],
 
+    props: {
+        /** No tablist style */
+        noStyle: {
+            type: Boolean,
+            default: false,
+        },
+    },
+
     data() {
         return {
-            // Tab ids
+            /** Tab ids */
             ids: [],
-            // Array of FTab instances
+            /** Array of FTab instances */
             dTabPanels: [],
         };
     },
@@ -93,22 +107,37 @@ export default {
             this.deactivateActivePanel();
 
             tabPanel.dActive = true;
+
+            this.$emit('tab-set', { tabId: tabPanel.id });
+        },
+
+        getTabIndexByElem(_elem) {
+            const eLi = _elem.closest('li');
+
+            return eLi ? parseInt(eLi.getAttribute('data-index')) : -1;
         },
 
         /**
          * @param {MouseEvent} _event
          */
         onTabListClick(_event) {
-            const eLi = _event.target.closest('li');
-            const tabIndex = eLi ? parseInt(eLi.getAttribute('data-index')) : -1;
+            const tabIndex = this.getTabIndexByElem(_event.target);
 
             if (tabIndex > -1) {
                 this.setActiveTabByIndex(tabIndex);
             }
         },
 
-        onTabListKeyup() {
-            console.log('onTabListKeyup');
+        onTabListKeyup(_event) {
+            const elem = keyboardNavigation(_event, '[role="tab"]', true);
+
+            if (elem) {
+                const tabIndex = this.getTabIndexByElem(elem);
+
+                if (tabIndex > -1) {
+                    this.setActiveTabByIndex(tabIndex);
+                }
+            }
         },
     },
 };
