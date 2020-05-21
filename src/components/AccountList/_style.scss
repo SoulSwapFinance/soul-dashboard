@@ -27,7 +27,6 @@
             .label {
                 padding-top: 4px;
                 padding-bottom: 0;
-                padding-right: 32px;
             }
         }
     }
@@ -47,6 +46,14 @@
                 position: absolute;
                 top: 20px;
                 right: 12px;
+            }
+        }
+
+        .f-card {
+            &:not(.off) {
+                .label {
+                    padding-right: 32px;
+                }
             }
         }
     }

@@ -40,6 +40,8 @@ import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 import { mapGetters, mapState } from 'vuex';
 import { helpersMixin } from '../../mixins/helpers.js';
 import dashboardIcon from '../../assets/svg/dashboard.svg';
+import settingsIcon from '../../assets/svg/settings.svg';
+import walletIcon from '../../assets/svg/wallet.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
@@ -73,7 +75,7 @@ export default {
                         name: ACCOUNT_DEFAULT_VIEW,
                     },
                     title: 'Wallet',
-                    icon: dashboardIcon,
+                    icon: walletIcon,
                     walletLink: true,
                 },
                 {
@@ -81,7 +83,7 @@ export default {
                         name: 'settings',
                     },
                     title: 'Settings',
-                    icon: dashboardIcon,
+                    icon: settingsIcon,
                 },
             ],
         };

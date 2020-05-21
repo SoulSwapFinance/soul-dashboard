@@ -1,6 +1,6 @@
 <template>
     <span class="f-account-t-amount" :class="cClass">
-        <template v-if="!cIsZero"><template v-if="cRecieved">+</template><template v-else>-</template></template
+        <template v-if="!cIsZero"><template v-if="cReceived">+</template><template v-else>-</template></template
         >{{ amount }}
     </span>
 </template>
@@ -37,7 +37,7 @@ export default {
     },
 
     computed: {
-        cRecieved() {
+        cReceived() {
             return this.address.toLocaleLowerCase() === this.to.toLocaleLowerCase();
         },
 
@@ -49,7 +49,7 @@ export default {
             let clas = '';
 
             if (!this.cIsZero) {
-                clas = this.cRecieved ? 'recieved' : 'sent';
+                clas = this.cReceived ? 'received' : 'sent';
             }
 
             return clas;

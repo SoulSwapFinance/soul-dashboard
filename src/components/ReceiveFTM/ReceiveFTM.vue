@@ -1,5 +1,5 @@
 <template>
-    <div class="recieve-ftm">
+    <div class="receive-ftm">
         <f-card class="f-card-double-padding">
             <h2>Receive Opera FTM</h2>
 
@@ -61,7 +61,7 @@ import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
 
 export default {
-    name: 'RecieveFTM',
+    name: 'ReceiveFTM',
 
     components: { FWindow, LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
 

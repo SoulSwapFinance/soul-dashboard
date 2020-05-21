@@ -10,11 +10,11 @@
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'account-recieve' }" class="action" title="Recieve">
+                <router-link :to="{ name: 'account-receive' }" class="action" title="Receive">
                     <span class="btn large same-size round">
-                        <icon data="@/assets/svg/recieve.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/receive.svg" width="20" height="20" aria-hidden="true" />
                     </span>
-                    <span class="link-label">Recieve</span>
+                    <span class="link-label">Receive</span>
                 </router-link>
             </li>
             <li>

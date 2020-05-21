@@ -1,14 +1,14 @@
 <template>
     <div class="view-account-revieve account-main-content-mt">
-        <recieve-f-t-m />
+        <receive-f-t-m />
     </div>
 </template>
 
 <script>
-import RecieveFTM from '../components/RecieveFTM/RecieveFTM.vue';
+import ReceiveFTM from '../components/ReceiveFTM/ReceiveFTM.vue';
 
 export default {
-    components: { RecieveFTM },
+    components: { ReceiveFTM },
 };
 </script>
 

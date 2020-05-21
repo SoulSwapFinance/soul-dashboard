@@ -6,7 +6,7 @@ import RestoreAccount from './views/RestoreAccount/RestoreAccount.vue';
 import Account from './views/Account/Account.vue';
 import Dashboard from './views/Dashboard/Dashboard.vue';
 import AccountSend from './views/AccountSend.vue';
-import AccountRecieve from './views/AccountRecieve.vue';
+import AccountReceive from './views/AccountReceive.vue';
 import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
@@ -63,9 +63,9 @@ export const routes = [
                         component: AccountSend,
                     },
                     {
-                        name: 'account-recieve',
-                        path: 'recieve',
-                        component: AccountRecieve,
+                        name: 'account-receive',
+                        path: 'receive',
+                        component: AccountReceive,
                     },
                     {
                         name: 'account-stake',
