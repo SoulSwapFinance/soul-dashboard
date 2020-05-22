@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
+import appConfig from '../app.config.js';
 import { router } from '@/plugins/router.js';
 import { apolloProvider, apolloClient } from '@/plugins/apollo-provider.js';
 import i18n from '@/plugins/i18n';
@@ -11,11 +12,17 @@ import { store } from './store';
 import './filters.js';
 import './registerServiceWorker';
 import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
+import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.js';
 import { FNano } from './plugins/fantom-nano.js';
 import 'focus-visible';
 
 Vue.use(FantomWeb3Wallet, {
     apolloClient,
+});
+
+Vue.use(BNBridgeExchange, {
+    apiUrl: appConfig.bnbridgeApi.url,
+    apiToken: appConfig.bnbridgeApi.token,
 });
 
 Vue.use(FNano);

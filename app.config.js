@@ -25,6 +25,13 @@ const appConfig = {
     },
     // used in links pointing to fantom explorer
     explorerUrl: 'https://explorer.fantom.network/',
+    // BNBridge api config
+    bnbridgeApi: {
+        // url of api point
+        url: 'https://api.bnbridge.exchange/api/v1',
+        // auth token
+        token: '',
+    },
     // progressive web application
     usePWA: true,
     // pwa settings
