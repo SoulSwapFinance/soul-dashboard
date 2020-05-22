@@ -39,7 +39,7 @@ import FHamburgerSwitch from '../core/FHamburgerSwitch/FHamburgerSwitch.vue';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 import { mapGetters, mapState } from 'vuex';
 import { helpersMixin } from '../../mixins/helpers.js';
-import dashboardIcon from '../../assets/svg/dashboard.svg';
+import homeIcon from '../../assets/svg/home.svg';
 import settingsIcon from '../../assets/svg/settings.svg';
 import walletIcon from '../../assets/svg/wallet.svg';
 
@@ -67,8 +67,8 @@ export default {
                     url: {
                         name: 'dashboard',
                     },
-                    title: 'Dashboard',
-                    icon: dashboardIcon,
+                    title: 'Home',
+                    icon: homeIcon,
                 },
                 {
                     url: {
