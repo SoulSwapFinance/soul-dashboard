@@ -29,7 +29,7 @@
             </li>
             <li v-if="currentAccount.isLedgerAccount">
                 <router-link
-                    :to="{ name: 'account-receive' }"
+                    :to="{ name: 'account-receive', params: { verify: true } }"
                     class="btn large light same-size round"
                     title="Verify Address on Ledger"
                 >

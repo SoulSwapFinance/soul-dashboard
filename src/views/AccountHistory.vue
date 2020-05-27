@@ -1,6 +1,6 @@
 <template>
     <div class="view-account-history account-main-content-mt">
-        <account-transaction-list :address="currentAccount.address" />
+        <account-transaction-list :key="currentAccount.address" :address="currentAccount.address" />
     </div>
 </template>
 

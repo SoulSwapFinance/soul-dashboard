@@ -65,6 +65,14 @@ export default {
 
     components: { FWindow, LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
 
+    props: {
+        /** Start verifying process */
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+    },
+
     data() {
         return {
             verifying: false,
@@ -85,6 +93,12 @@ export default {
                 no: !this.verified,
             };
         },
+    },
+
+    mounted() {
+        if (this.verify) {
+            this.onVerifyBtnClick();
+        }
     },
 
     methods: {

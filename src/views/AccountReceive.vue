@@ -1,6 +1,6 @@
 <template>
     <div class="view-account-revieve account-main-content-mt">
-        <receive-f-t-m />
+        <receive-f-t-m :verify="!!this.$route.params.verify" />
     </div>
 </template>
 

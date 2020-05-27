@@ -137,7 +137,6 @@ export default {
             default: '',
             required: true,
         },
-
         /** Number of items per page. */
         itemsPerPage: {
             type: Number,
