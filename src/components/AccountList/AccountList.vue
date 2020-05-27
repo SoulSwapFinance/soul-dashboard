@@ -92,13 +92,14 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
 import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSettingsWindow.vue';
 import AccountName from '../AccountName/AccountName.vue';
+import { pollingMixin } from '../../mixins/polling.js';
 
 export default {
     name: 'AccountList',
 
     components: { AccountName, AccountSettingsWindow, FCard },
 
-    mixins: [eventBusMixin],
+    mixins: [eventBusMixin, pollingMixin],
 
     props: {
         /** Show action icons on the right side. */
@@ -146,6 +147,14 @@ export default {
             this.$emit('accounts-updated');
         });
         */
+
+        this._polling.start(
+            'account-list',
+            () => {
+                this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
+            },
+            3000
+        );
     },
 
     beforeDestroy() {
