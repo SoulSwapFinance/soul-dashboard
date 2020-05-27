@@ -69,13 +69,21 @@
                 <template v-slot:column-select="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col break-word align-center select-validator-mv">
-                            <button class="btn select-btn" :data-validator-id="value">
+                            <button
+                                :disabled="item.isOffline || item.isCheater"
+                                class="btn select-btn"
+                                :data-validator-id="value"
+                            >
                                 Select
                             </button>
                         </div>
                     </div>
                     <template v-else>
-                        <button class="btn select-btn" :data-validator-id="value">
+                        <button
+                            :disabled="item.isOffline || item.isCheater"
+                            class="btn select-btn"
+                            :data-validator-id="value"
+                        >
                             Select
                         </button>
                     </template>
@@ -160,6 +168,8 @@ export default {
                         totalStake
                         delegatedMe
                         poi
+                        isOffline
+                        isCheater
                         stakerInfo {
                             name
                             website

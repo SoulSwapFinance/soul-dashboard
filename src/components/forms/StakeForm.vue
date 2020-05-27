@@ -13,7 +13,7 @@
                             field-size="large"
                             type="number"
                             autocomplete="off"
-                            min="0"
+                            min="1"
                             step="any"
                             name="amount"
                             :validator="checkAmount"
@@ -148,12 +148,14 @@ export default {
             // await this.$fWallet.getStakerById(accountInfo.stakerIdHex)
 
             if (!isNaN(value)) {
-                if (value <= remainingBalance && value > 0) {
+                if (value <= remainingBalance && value >= 1) {
                     ok = true;
                 } else if (remainingBalance < 0) {
                     this.amountErrMsg = `You have no balance left`;
-                } else if (value > 0) {
-                    this.amountErrMsg = `You can stake max ${remainingBalance} FTM (Value + gas * price)`;
+                } else if (value > 0 && value < 1) {
+                    this.amountErrMsg = `You can't stake amount less than 1 FTM`;
+                } else if (value >= 1) {
+                    this.amountErrMsg = `You can stake max ${remainingBalance} FTM`;
                 }
             }
 

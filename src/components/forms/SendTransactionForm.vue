@@ -133,7 +133,7 @@ export default {
                 } else if (remainingBalance < 0) {
                     this.amountErrMsg = `You have no balance left`;
                 } else if (value > 0) {
-                    this.amountErrMsg = `You can transfer max ${remainingBalance} (Value + gas * price)`;
+                    this.amountErrMsg = `You can transfer max ${remainingBalance} FTM`;
                 }
             }
 

@@ -8,7 +8,7 @@ const kebabSplitRE = /([A-Z]|[ _-]+)/;
  * @return {string}
  */
 export function getUniqueId() {
-    return shortid.generate();
+    return `i${shortid.generate()}`;
 }
 
 /**

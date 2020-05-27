@@ -2,7 +2,12 @@
     <div class="address-actions-box">
         <ul class="no-markers">
             <li>
-                <f-copy-button :text="currentAccount.address" class="btn large light same-size round" />
+                <f-copy-button
+                    :text="currentAccount.address"
+                    tooltip="Copy address to clipboard"
+                    popover-text="Address copied to clipboard"
+                    class="btn large light same-size round"
+                />
             </li>
             <li>
                 <button
