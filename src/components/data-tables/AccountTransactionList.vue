@@ -17,6 +17,18 @@
                 f-card-off
                 @fetch-more="fetchMore"
             >
+                <template v-slot:column-status="{ value, column }">
+                    <div v-if="column" class="row no-collapse no-vert-col-padding">
+                        <div class="col-5 f-row-label">{{ column.label }}</div>
+                        <div class="col-7">
+                            <f-transaction-status :status="value" />
+                        </div>
+                    </div>
+                    <template v-else>
+                        <f-transaction-status :status="value" />
+                    </template>
+                </template>
+
                 <template v-slot:column-timestamp="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
@@ -54,18 +66,6 @@
                         <a :href="`${explorerUrl}address/${value}`" target="_blank">
                             <f-ellipsis :text="value" overflow="middle" />
                         </a>
-                    </template>
-                </template>
-
-                <template v-slot:column-status="{ value, column }">
-                    <div v-if="column" class="row no-collapse no-vert-col-padding">
-                        <div class="col-5 f-row-label">{{ column.label }}</div>
-                        <div class="col-7">
-                            <f-transaction-status :status="value" />
-                        </div>
-                    </div>
-                    <template v-else>
-                        <f-transaction-status :status="value" />
                     </template>
                 </template>
 
@@ -232,15 +232,16 @@ export default {
             dHasNext: false,
             dAccountByAddressError: '',
             dColumns: [
-                /*
                 {
-                    name: 'hash',
-                    label: 'TX Hash',
-                    width: '200px',
-                    // itemProp: `${!this.withoutCursor ? 'transaction.' : ''}hash`,
-                    itemProp: 'transaction.hash',
+                    name: 'status',
+                    label: 'Status',
+                    itemProp: 'transaction.status',
+                    formatter: (_value) => formatHexToInt(_value),
+                    width: '140px',
+                    css: {
+                        textAlign: 'center',
+                    },
                 },
-*/
                 {
                     name: 'timestamp',
                     label: 'Time',
@@ -268,16 +269,6 @@ export default {
                     },
                     oneLineMode: true,
                     // width: '180px'
-                },
-                {
-                    name: 'status',
-                    label: 'Status',
-                    itemProp: 'transaction.status',
-                    formatter: (_value) => formatHexToInt(_value),
-                    width: '140px',
-                    css: {
-                        textAlign: 'center',
-                    },
                 },
                 {
                     name: 'amount',

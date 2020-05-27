@@ -1,5 +1,5 @@
 <template>
-    <div class="account-list" :class="{ 'edit-mode': editMode }">
+    <div class="account-list" :class="{ 'edit-mode': editMode }" @click="onAccountListClick">
         <ul class="no-markers">
             <li v-for="(account, index) in accounts" :key="account.address">
                 <f-card>
@@ -22,6 +22,7 @@
                                         }"
                                         class="value"
                                         aria-label="Address"
+                                        :data-address="account.address"
                                     >
                                         <account-name align-right :account="account" />
                                     </router-link>
@@ -32,7 +33,6 @@
                                         title="Edit Account"
                                         :data-address="account.address"
                                         :data-index="index"
-                                        @click="onEditAccountClick"
                                     >
                                         <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                                     </button>
@@ -120,7 +120,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['accounts']),
+        ...mapGetters(['accounts', 'currentAccount']),
     },
 
     watch: {
@@ -178,7 +178,21 @@ export default {
         /**
          * @param {Event} _event
          */
-        onEditAccountClick(_event) {
+        onAccountListClick(_event) {
+            if (!this.onEditAccountButtonClick(_event)) {
+                const elem = _event.target.closest('[data-address]');
+                const address = elem ? elem.getAttribute('data-address') : '';
+
+                if (address && address.toLowerCase() === this.currentAccount.address.toLowerCase()) {
+                    this.$emit('account-picked', address);
+                }
+            }
+        },
+
+        /**
+         * @param {Event} _event
+         */
+        onEditAccountButtonClick(_event) {
             const elem = _event.target.closest('[data-address]');
             const address = elem ? elem.getAttribute('data-address') : '';
             const index = elem ? parseInt(elem.getAttribute('data-index')) : -1;
@@ -186,7 +200,11 @@ export default {
             if (address && !isNaN(index) && index > -1) {
                 this.accountData = { address, order: index + 1 };
                 this.$refs.accountSettingsWindow.show();
+
+                return true;
             }
+
+            return false;
         },
 
         toFTM,
