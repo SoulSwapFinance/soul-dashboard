@@ -33,7 +33,7 @@
         </div>
 
         <div v-if="useBottomMenu" class="bottom-menu">
-            <f-simple-navigation :items="navigation" />
+            <f-simple-navigation :items="navigation" icon-size="26" />
         </div>
     </div>
 </template>
