@@ -8,8 +8,8 @@
                             <icon
                                 v-if="item.icon"
                                 :data="item.icon"
-                                :width="item.iconSize || iconSize.toString()"
-                                :height="item.iconSize || iconSize.toString()"
+                                :width="item.iconSize || iconSize"
+                                :height="item.iconSize || iconSize"
                             />
                             <span class="title">{{ item.title }}</span>
                         </router-link>
@@ -40,8 +40,8 @@ export default {
         },
         /** Default icon size */
         iconSize: {
-            type: Number,
-            default: 32,
+            type: String,
+            default: '32',
         },
     },
 

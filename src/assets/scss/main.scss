@@ -242,6 +242,16 @@ form {
     }
 }
 
+.input-label-layout {
+    display: flex;
+
+    > .btn:last-child {
+        margin-left: auto;
+        position: relative;
+        top: -4px;
+    }
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;

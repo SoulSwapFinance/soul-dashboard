@@ -9,6 +9,7 @@
 
                     <div class="form-body">
                         <f-input
+                            v-model="amount"
                             label="Amount"
                             field-size="large"
                             type="number"
@@ -19,6 +20,14 @@
                             :validator="checkAmount"
                             validate-on-input
                         >
+                            <template #top="sProps">
+                                <div class="input-label-layout">
+                                    <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                    <button type="button" class="btn light small" @click="onEntireBalanceClick">
+                                        Entire balance
+                                    </button>
+                                </div>
+                            </template>
                             <template #bottom="sProps">
                                 <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                     {{ amountErrMsg }}
@@ -56,7 +65,6 @@
 
 <script>
 import FForm from '../core/FForm/FForm.vue';
-import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FInput from '../core/FInput/FInput.vue';
 import FCard from '../core/FCard/FCard.vue';
@@ -79,6 +87,7 @@ export default {
         return {
             amountErrMsg: 'Invalid amount',
             gasPrice: '',
+            amount: '',
         };
     },
 
@@ -109,10 +118,12 @@ export default {
     },
 
     mounted() {
+        /*
         const el = findFirstFocusableDescendant(this.$el);
         if (el) {
             el.focus();
         }
+        */
     },
 
     methods: {
@@ -168,6 +179,10 @@ export default {
         onAccountPicked() {
             // this.$refs.form.reset();
             // this.$refs.form.checkValidity();
+        },
+
+        onEntireBalanceClick() {
+            this.amount = this.remainingBalance > 0 ? this.remainingBalance : '0';
         },
     },
 };

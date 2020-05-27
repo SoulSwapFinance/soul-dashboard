@@ -9,6 +9,7 @@
 
                     <div class="form-body">
                         <f-input
+                            v-model="amount"
                             label="Amount"
                             field-size="large"
                             type="number"
@@ -19,6 +20,14 @@
                             :validator="checkAmount"
                             validate-on-input
                         >
+                            <template #top="sProps">
+                                <div class="input-label-layout">
+                                    <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                    <button type="button" class="btn light small" @click="onEntireBalanceClick">
+                                        Entire balance
+                                    </button>
+                                </div>
+                            </template>
                             <template #bottom="sProps">
                                 <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                     {{ amountErrMsg }}
@@ -104,6 +113,7 @@ export default {
                 id: '',
                 name: '',
             },
+            amount: '',
         };
     },
 
@@ -253,6 +263,10 @@ export default {
                     this.stakeCofirmation(parseFloat(data.amount));
                 }
             });
+        },
+
+        onEntireBalanceClick() {
+            this.amount = this.remainingBalance > 0 ? this.remainingBalance : '0';
         },
     },
 };

@@ -1,7 +1,7 @@
 <template>
     <span :id="id" class="f-input" :class="classes" @click="onClick">
         <slot name="top" v-bind="slotProps">
-            <label :for="`${id}-f-inp`">{{ label }}</label>
+            <label :for="inputId">{{ label }}</label>
         </slot>
         <span class="inp" :class="inpClasses">
             <slot name="prefix"></slot>
@@ -21,7 +21,7 @@
             </template>
             <template v-else>
                 <input
-                    :id="`${id}-f-inp`"
+                    :id="inputId"
                     ref="input"
                     v-bind="inputProps"
                     :value="val"
@@ -83,6 +83,7 @@ export default {
             hasFocus: false,
             errmsgslot: 'suffix',
             ariaDescribedBy: null,
+            inputId: `${this.id}-f-inp`,
         };
     },
 
@@ -123,6 +124,8 @@ export default {
             return {
                 showErrorMessage: this.isInvalid,
                 showInfoMessage: this.showInfoMessage,
+                inputId: this.inputId,
+                label: this.label,
             };
         },
 
