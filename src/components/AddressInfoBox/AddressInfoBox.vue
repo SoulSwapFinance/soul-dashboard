@@ -1,7 +1,7 @@
 <template>
     <div class="address-info-box">
         <div class="row align-items-center collapse-md">
-            <div class="col-9 align-center-md">
+            <div class="col-8 align-center-md">
                 <button class="no-style pick-account-btn" title="Pick an Account" @click="onPickAccountBtn">
                     <account-name :account="currentAccount" class="address">
                         <template #suffix>
@@ -17,7 +17,7 @@
 -->
                 </button>
             </div>
-            <div class="col-3 align-right align-center-md">
+            <div class="col-4 align-right align-center-md">
                 <address-actions-box />
             </div>
         </div>

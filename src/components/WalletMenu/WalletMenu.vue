@@ -1,6 +1,7 @@
 <template>
     <div class="wallet-menu" :class="cssClass">
         <f-hamburger-switch
+            v-if="!useBottomMenu"
             thickness="2"
             two-lines
             @hamburger-switch-on="onHamburgerSwitchOn"
@@ -30,6 +31,10 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="useBottomMenu" class="bottom-menu">
+            <f-simple-navigation :items="navigation" />
+        </div>
     </div>
 </template>
 
@@ -54,6 +59,14 @@ export default {
     components: { SocialMediaLinks, FHamburgerSwitch, FSimpleNavigation },
 
     mixins: [helpersMixin],
+
+    props: {
+        /** Use bottom menu on small screens */
+        useBottomMenu: {
+            type: Boolean,
+            default: false,
+        },
+    },
 
     data() {
         return {
@@ -99,6 +112,7 @@ export default {
             return {
                 'drawer-on': this.drawerOn,
                 'animate-menu': this.menuTransitionOn,
+                'bottom-menu-on': this.useBottomMenu,
             };
         },
 

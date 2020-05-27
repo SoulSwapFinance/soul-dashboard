@@ -1,6 +1,6 @@
 <template>
     <div class="view-wallet">
-        <wallet-menu />
+        <wallet-menu use-bottom-menu />
 
         <div class="narrow-container">
             <router-view></router-view>

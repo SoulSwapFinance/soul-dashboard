@@ -17,7 +17,8 @@
         padding-left: 0;
 
         > .narrow-container {
-            margin-top: 24px;
+            //margin-top: 24px;
+            margin-bottom: var(--f-bottom-menu-height);
         }
     }
 }
