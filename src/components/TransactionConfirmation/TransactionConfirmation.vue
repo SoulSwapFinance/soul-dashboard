@@ -186,7 +186,12 @@ export default {
                 el.focus();
             }
         }
+    },
 
+    /**
+     * Called when component is activated through `keep-alive`.
+     */
+    activated() {
         this.setSendToAddress();
     },
 

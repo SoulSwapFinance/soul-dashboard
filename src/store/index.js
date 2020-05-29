@@ -15,6 +15,8 @@ import {
     SET_CURRENCY,
     SET_FRACTION_DIGITS,
     SET_SEND_DIRECTION,
+    PUSH_BNBRIDGE_PENDING_REQUEST,
+    SHIFT_BNBRIDGE_PENDING_REQUEST,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -41,6 +43,7 @@ const vuexLocalStorage = new VuexPersist({
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
         accounts: _state.accounts,
+        bnbridgePendingRequests: _state.bnbridgePendingRequests,
         activeAccountIndex: _state.activeAccountIndex,
     }),
 });
@@ -57,6 +60,7 @@ export const store = new Vuex.Store({
         fractionDigits: 2,
         /** @type {[{address: String, balance: string, keystore: object, balanceFTM: (String|BN)}]} */
         accounts: [],
+        bnbridgePendingRequests: [],
         // index of active stored account
         activeAccountIndex: -1,
         activeAccountAddress: '',
@@ -254,6 +258,25 @@ export const store = new Vuex.Store({
             if (from !== to && from >= 0 && to >= 0 && from < accountsLen && to < accountsLen) {
                 _state.accounts.splice(to, 0, _state.accounts.splice(from, 1)[0]);
             }
+        },
+
+        /**
+         * Push new request to `bnbridgePendingRequests` array.
+         *
+         * @param {Object} _state
+         * @param {FSTRequest} _request
+         */
+        [PUSH_BNBRIDGE_PENDING_REQUEST](_state, _request) {
+            _state.bnbridgePendingRequests.push(_request);
+        },
+
+        /**
+         * Remove first request from `bnbridgePendingRequests` array.
+         *
+         * @param {Object} _state
+         */
+        [SHIFT_BNBRIDGE_PENDING_REQUEST](_state) {
+            _state.bnbridgePendingRequests.shift();
         },
     },
 

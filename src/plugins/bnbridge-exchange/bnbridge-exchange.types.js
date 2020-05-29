@@ -32,3 +32,12 @@
  * @property {number} balance
  * @property {number} pendingBalance
  */
+
+/**
+ * Object used as parameters of `BNBridgeExchange::finalizeSwapToken` method.
+ * @typedef {Object} FSTRequest
+ * @property {string} uuid
+ * @property {BNBridgeDirection} direction
+ * @property {string} memo
+ * @property {BNBridgeToken} [token]
+ */

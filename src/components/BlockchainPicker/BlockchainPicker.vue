@@ -2,7 +2,7 @@
     <div class="blockchain-picker">
         <f-card class="f-card-double-padding">
             <h2>
-                Send Opera FTM - Choose blockchain <span class="f-steps"><b>1</b> / 3</span>
+                Send Opera FTM <span class="f-steps"><b>1</b> / 3</span>
             </h2>
 
             <h3 class="align-center h2">What blockchain will you send FTM to?</h3>

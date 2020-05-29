@@ -38,12 +38,14 @@
 <script>
 import FCard from '../core/FCard/FCard.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbridge-exchange.js';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
     name: 'TransactionCompleting',
 
     components: { FCard, PulseLoader },
+
+    mixins: [eventBusMixin],
 
     props: {
         tokenSwapData: {
@@ -61,6 +63,10 @@ export default {
         };
     },
 
+    created() {
+        this._eventBus.on('fst-request-done', this.transactionCompleted);
+    },
+
     mounted() {
         // TMP!
         // this.transactionCompleted();
@@ -70,23 +76,19 @@ export default {
 
     methods: {
         async finalizeTransaction() {
-            console.log('finalize', this.tokenSwapData);
-
-            try {
-                await this.$bnb.finalizeSwapToken(this.tokenSwapData);
-                this.transactionCompleted();
-            } catch (_error) {
-                if (_error.code === BNBridgeExchangeErrorCodes.FINALIZE_SWAP_TOKEN_API_ERROR) {
-                    setTimeout(() => {
-                        this.finalizeTransaction();
-                    }, 1000);
-                }
-            }
+            this.$bnb.pushFSTRequest(this.tokenSwapData);
         },
 
-        transactionCompleted() {
-            this.title = 'Swap request pending';
-            this.success = true;
+        /**
+         * @param {FSTRequest} _request
+         */
+        transactionCompleted(_request) {
+            const { tokenSwapData } = this;
+
+            if (_request.direction === tokenSwapData.direction && _request.uuid === tokenSwapData.uuid) {
+                this.title = 'Swap request pending';
+                this.success = true;
+            }
         },
 
         /**

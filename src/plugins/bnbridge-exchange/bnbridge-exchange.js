@@ -55,10 +55,34 @@ export class BNBridgeExchange {
         this.bnbridgeApiPath = '';
         /**
          * List of available tokens.
+         *
          * @type {BNBridgeToken[]}
          * @private
          */
         this._tokens = [];
+        /**
+         * Array of objects used as parameters of `finalizeSwapToken` method.
+         *
+         * @type {FSTRequest[]}
+         * @private
+         */
+        this._fstPendingRequests = [];
+        /**
+         * Function called when `finalizeSwapToken` request is done.
+         *
+         * @type {function}
+         * @private
+         */
+        this._fstRequestDone = null;
+        /**
+         * Function called when object is appended to `this._fstPendingRequests` array.
+         *
+         * @type {function}
+         * @private
+         */
+        this._fstRequestPush = null;
+        /** FST request is processed. */
+        this._fstInProgress = false;
 
         if (!this.bnbridgeApiUrl) {
             throw new Error('Need bnbridge api url.');
@@ -236,6 +260,7 @@ export class BNBridgeExchange {
     /**
      * @param {string} uuid
      * @param {BNBridgeDirection} direction
+     * @param {string} memo
      * @param {BNBridgeToken} [_token]
      * @return {Promise<null>}
      */
@@ -406,5 +431,81 @@ export class BNBridgeExchange {
         }
 
         return result;
+    }
+
+    /**
+     * Process queue of FST pending requests.
+     *
+     * @param {FSTRequest} [_request]
+     * @return {Promise<void>}
+     */
+    async processFSTPendingRequests(_request) {
+        const requests = this._fstPendingRequests;
+
+        if (this._fstInProgress && !_request) {
+            return;
+        } else if (requests.length === 0) {
+            this._fstInProgress = false;
+            return;
+        }
+
+        const request = _request || requests[0];
+
+        this._fstInProgress = true;
+
+        try {
+            await this.finalizeSwapToken(request);
+
+            if (typeof this._fstRequestDone === 'function') {
+                this._fstRequestDone(request);
+            }
+
+            requests.shift();
+
+            this._fstInProgress = false;
+            this.processFSTPendingRequests();
+        } catch (_error) {
+            if (_error.code === BNBridgeExchangeErrorCodes.FINALIZE_SWAP_TOKEN_API_ERROR) {
+                setTimeout(() => {
+                    this.processFSTPendingRequests(request);
+                }, 1000);
+            }
+        }
+    }
+
+    /**
+     * @param {FSTRequest} _request
+     */
+    pushFSTRequest(_request) {
+        this._fstPendingRequests.push(_request);
+
+        if (typeof this._fstRequestPush === 'function') {
+            this._fstRequestPush(_request);
+        }
+
+        if (!this._fstInProgress) {
+            this.processFSTPendingRequests();
+        }
+    }
+
+    /**
+     * @param {FSTRequest[]} _requests
+     */
+    setFSTPendingRequests(_requests) {
+        this._fstPendingRequests = _requests;
+    }
+
+    /**
+     * @param {function} _callback
+     */
+    setFSTRequestDoneCallback(_callback) {
+        this._fstRequestDone = _callback;
+    }
+
+    /**
+     * @param {function} _callback
+     */
+    setFSTRequestPushCallback(_callback) {
+        this._fstRequestPush = _callback;
     }
 }
