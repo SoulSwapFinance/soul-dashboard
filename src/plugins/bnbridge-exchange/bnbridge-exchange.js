@@ -11,16 +11,16 @@ const ERC20_ADDRESS_LENGTH = 42;
 export let bnb = null;
 
 export const BNBridgeExchangeErrorCodes = {
-    SWAP_TOKEN_BAD_ETH_ADDRESS: 1,
-    SWAP_TOKEN_BAD_BNB_ADDRESS: 2,
+    BAD_ETH_ADDRESS: 1,
+    BAD_BNB_ADDRESS: 2,
     SWAP_TOKEN_API_ERROR: 3,
     FINALIZE_SWAP_TOKEN_API_ERROR: 4,
     BAD_PARAMETERS: 5,
 };
 
 export const BNBridgeExchangeErrorMessages = {
-    [BNBridgeExchangeErrorCodes.SWAP_TOKEN_BAD_ETH_ADDRESS]: 'Ethereum address is invalid',
-    [BNBridgeExchangeErrorCodes.SWAP_TOKEN_BAD_BNB_ADDRESS]: 'Binance address is invalid',
+    [BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS]: 'Ethereum address is invalid',
+    [BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS]: 'Binance address is invalid',
     [BNBridgeExchangeErrorCodes.BAD_PARAMETERS]: 'Bad parameters',
 };
 
@@ -118,7 +118,10 @@ export class BNBridgeExchange {
                 if (data.success) {
                     balance = data.result.balance;
                 } else {
-                    console.log('probably bad address');
+                    throw new BNBridgeExchangeError(
+                        BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS],
+                        BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS
+                    );
                 }
             }
         } else {
@@ -154,7 +157,10 @@ export class BNBridgeExchange {
                 if (data.success) {
                     balances = { ...data.result };
                 } else {
-                    console.log('probably bad address');
+                    throw new BNBridgeExchangeError(
+                        BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS],
+                        BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS
+                    );
                 }
             }
         } else {
@@ -190,12 +196,12 @@ export class BNBridgeExchange {
         if (dataOk) {
             if (direction.indexOf('ToBinance') > -1) {
                 if (!this.isBNBAddress(pData.bnb_address)) {
-                    errorCode = BNBridgeExchangeErrorCodes.SWAP_TOKEN_BAD_BNB_ADDRESS;
+                    errorCode = BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS;
                     dataOk = false;
                 }
             } else if (direction.indexOf('ToEthereum') > -1) {
                 if (!this.isETHAddress(pData.eth_address)) {
-                    errorCode = BNBridgeExchangeErrorCodes.SWAP_TOKEN_BAD_ETH_ADDRESS;
+                    errorCode = BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS;
                     dataOk = false;
                 }
             }
@@ -233,12 +239,13 @@ export class BNBridgeExchange {
      * @param {BNBridgeToken} [_token]
      * @return {Promise<null>}
      */
-    async finalizeSwapToken({ uuid = '', direction = '' }, _token) {
+    async finalizeSwapToken({ uuid = '', direction = '', memo = '' }, _token) {
         const token = /** @type {BNBridgeToken} */ _token || (await this.getFantomToken());
         const pData = {
             direction,
             token_uuid: token ? token.uuid : '',
             uuid,
+            memo,
         };
         const dataOk = pData.direction && pData.token_uuid && pData.uuid;
         let result = null;

@@ -4,6 +4,7 @@ export const SET_CURRENCY = 'setCurrency';
 export const SET_FRACTION_DIGITS = 'setFractionDigits';
 export const SET_ACTIVE_ACCOUNT_BY_ADDRESS = 'setActiveAccountByAddress';
 export const SET_ACTIVE_ACCOUNT_ADDRESS = 'setActiveAccountAddress';
+export const SET_SEND_DIRECTION = 'setSendDirection';
 export const DEACTIVATE_ACTIVE_ACCOUNT = 'deactiveActiveAccount';
 export const APPEND_ACCOUNT = 'appendAccount';
 export const REMOVE_ACTIVE_ACCOUNT = 'removeAccount';

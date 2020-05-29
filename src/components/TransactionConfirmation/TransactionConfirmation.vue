@@ -2,18 +2,16 @@
     <div class="transaction-confirmation">
         <f-card class="f-card-double-padding f-data-layout">
             <h2>
-                Send Opera FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                Send Opera FTM - Confirmation <span class="f-steps"><b>3</b> / 3</span>
             </h2>
 
             <div class="transaction-info">
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">
-                        {{ txData.opera_address }}
+                        {{ sendToAddress }}
                         <span v-show="sendToAddressBalance" class="f-row-label">
-                            <template v-if="sendToAddressBalance">
-                                ( {{ toFTM(sendToAddressBalance.balance) }} FTM )
-                            </template>
+                            <template v-if="sendToAddressBalance"> ( {{ sendToAddressBalance }} FTM ) </template>
                         </span>
                     </div>
                 </div>
@@ -128,6 +126,7 @@ import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
 import { toFTM } from '../../utils/transactions.js';
+import { formatNumberByLocale } from '../../filters.js';
 
 export default {
     components: { FWindow, LedgerMessage, CheckPasswordForm, FCard },
@@ -146,17 +145,38 @@ export default {
         return {
             errorMsg: '',
             error: null,
+            sendToAddress: '',
         };
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'sendDirection']),
     },
 
     asyncComputed: {
         async sendToAddressBalance() {
-            return await this.$fWallet.getBalance(this.txData.opera_address);
+            const { sendDirection } = this;
+            let balance = 0;
+            let data;
+
+            if (sendDirection === 'OperaToOpera') {
+                data = await this.$fWallet.getBalance(this.txData.opera_address);
+                balance = this.toFTM(data.balance);
+            } else if (sendDirection === 'OperaToBinance') {
+                data = await this.$bnb.getBNBBalances(this.txData.bnb_address);
+                balance = `BNB address: ${this.txData.bnb_address}, ${formatNumberByLocale(data.balance)}`;
+            } else if (sendDirection === 'OperaToEthereum') {
+                data = await this.$bnb.getETHBalance(this.txData.eth_address);
+                balance = `ETH address: ${this.txData.eth_address}, ${formatNumberByLocale(data)}`;
+            }
+
+            return balance;
         },
+    },
+
+    created() {
+        /** Data for token swap. */
+        this._swapTokenData = null;
     },
 
     mounted() {
@@ -166,9 +186,45 @@ export default {
                 el.focus();
             }
         }
+
+        this.setSendToAddress();
     },
 
     methods: {
+        async setSendToAddress() {
+            const { sendDirection } = this;
+            let data;
+            let stData = null;
+
+            if (sendDirection === 'OperaToOpera') {
+                this.sendToAddress = this.txData.opera_address;
+            } else if (sendDirection === 'OperaToBinance') {
+                stData = {
+                    direction: sendDirection,
+                    bnbAddress: this.txData.bnb_address,
+                };
+            } else if (sendDirection === 'OperaToEthereum') {
+                stData = {
+                    direction: sendDirection,
+                    ethAddress: this.txData.eth_address,
+                };
+            }
+
+            if (stData) {
+                data = await this.$bnb.swapToken(stData);
+
+                this._swapTokenData = {
+                    from_opera_address: this.currentAccount.address,
+                    ...this.txData,
+                    ...data,
+                };
+                this.sendToAddress = data.opera_address;
+                this.txData.opera_address = data.opera_address;
+
+                console.log('_swapTokenData', this._swapTokenData);
+            }
+        },
+
         sendTransaction(_rawTransaction) {
             this.$apollo
                 .mutate({
@@ -186,13 +242,24 @@ export default {
                     },
                 })
                 .then((_data) => {
-                    this.$emit('change-component', {
-                        from: 'transaction-confirmation',
-                        to: 'transaction-success-message',
-                        data: {
-                            tx: _data.data.sendTransaction.hash,
-                        },
-                    });
+                    if (this._swapTokenData) {
+                        this.$emit('change-component', {
+                            to: 'transaction-completing',
+                            from: 'transaction-confirmation',
+                            data: {
+                                tx: _data.data.sendTransaction.hash,
+                                ...this._swapTokenData,
+                            },
+                        });
+                    } else {
+                        this.$emit('change-component', {
+                            to: 'transaction-success-message',
+                            from: 'transaction-confirmation',
+                            data: {
+                                tx: _data.data.sendTransaction.hash,
+                            },
+                        });
+                    }
                 })
                 .catch((_error) => {
                     this.errorMsg = _error;
@@ -207,7 +274,7 @@ export default {
             const pwd = _event.detail.data.pwd;
             let rawTx = null;
 
-            if (currentAccount) {
+            if (currentAccount && this.sendToAddress) {
                 // transaction to sign
                 const tx = await fWallet.getTransactionToSign({
                     value: Web3.utils.toHex(Web3.utils.toWei(txData.amount)),

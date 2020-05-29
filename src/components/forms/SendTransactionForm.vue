@@ -4,7 +4,7 @@
             <f-form ref="form" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
                     <legend class="h2">
-                        Send Opera FTM <span class="f-steps"><b>1</b> / 2</span>
+                        Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
                     </legend>
 
                     <div class="form-body">
@@ -36,22 +36,33 @@
                         </f-input>
 
                         <f-input
-                            label="Send To"
+                            :label="sendToLabel"
                             field-size="large"
-                            name="opera_address"
+                            name="address"
                             :validator="checkAddress"
-                            validate-on-input
+                            :validate-on-input="sendDirection === 'OperaToOpera'"
                         >
                             <template #bottom="sProps">
                                 <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                    Enter a valid Opera FTM address
+                                    {{ sendToErrorMsg }}
                                 </f-message>
+                                <div v-if="ETHOrBNBAccountBalance">
+                                    {{ ETHOrBNBAccountBalance }}
+                                </div>
                             </template>
                         </f-input>
 
-                        <f-input label="Memo (optional)" field-size="large" name="memo" />
+                        <f-input
+                            v-if="sendDirection !== 'OperaToEthereum'"
+                            label="Memo (optional)"
+                            field-size="large"
+                            name="memo"
+                        />
 
                         <div class="align-center form-buttons">
+                            <button type="button" class="btn light large" @click="onPreviousBtnClick">
+                                Previous
+                            </button>
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
                             </button>
@@ -70,6 +81,7 @@ import FInput from '../core/FInput/FInput.vue';
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { eventBusMixin } from '../../mixins/event-bus.js';
+import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbridge-exchange.js';
 
 export default {
     name: 'SendTransactionForm',
@@ -88,11 +100,14 @@ export default {
             amountErrMsg: 'Invalid amount',
             gasPrice: '',
             amount: '',
+            sendToErrorMsg: 'Enter a valid Opera FTM address',
+            /** Balance of BNB or ETH account. */
+            ETHOrBNBAccountBalance: '',
         };
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'sendDirection']),
 
         /**
          * @return {number}
@@ -106,6 +121,24 @@ export default {
             }
 
             return price;
+        },
+
+        /**
+         * @return {string}
+         */
+        sendToLabel() {
+            let sendTo = 'Send To';
+
+            switch (this.sendDirection) {
+                case 'OperaToBinance':
+                    sendTo = 'BNB Receive Address';
+                    break;
+                case 'OperaToEthereum':
+                    sendTo = 'ETH Receive Address';
+                    break;
+            }
+
+            return sendTo;
         },
     },
 
@@ -127,8 +160,50 @@ export default {
     },
 
     methods: {
-        checkAddress(_value) {
-            return this.$fWallet.isValidAddress(_value);
+        async checkAddress(_value) {
+            const { sendDirection } = this;
+            let validAddress = false;
+
+            this.ETHOrBNBAccountBalance = '';
+
+            if (sendDirection === 'OperaToOpera') {
+                validAddress = this.$fWallet.isValidAddress(_value);
+                this.sendToErrorMsg = 'Enter a valid Opera FTM address';
+            } else if (sendDirection === 'OperaToBinance') {
+                validAddress = this.$bnb.isBNBAddress(_value);
+                this.sendToErrorMsg = 'Enter a valid BNB address';
+
+                if (validAddress) {
+                    try {
+                        const data = await this.$bnb.getBNBBalances(_value);
+                        this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${data.balance} FTM`;
+                    } catch (_error) {
+                        validAddress = false;
+
+                        if (_error.code !== BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS) {
+                            this.sendToErrorMsg = _error;
+                        }
+                    }
+                }
+            } else if (sendDirection === 'OperaToEthereum') {
+                validAddress = this.$bnb.isETHAddress(_value);
+                this.sendToErrorMsg = 'Enter a valid ETH address';
+
+                if (validAddress) {
+                    try {
+                        const balance = await this.$bnb.getETHBalance(_value);
+                        this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${balance} FTM`;
+                    } catch (_error) {
+                        validAddress = false;
+
+                        if (_error.code !== BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS) {
+                            this.sendToErrorMsg = _error;
+                        }
+                    }
+                }
+            }
+
+            return validAddress;
         },
 
         checkAmount(_value) {
@@ -163,17 +238,54 @@ export default {
         */
         async onFormSubmit(_event) {
             const { data } = _event.detail;
+            const { sendDirection } = this;
 
             if (this.currentAccount && data.amount) {
+                if (sendDirection === 'OperaToOpera') {
+                    data.opera_address = data.address;
+                } else if (sendDirection === 'OperaToBinance') {
+                    data.bnb_address = data.address;
+                } else if (sendDirection === 'OperaToEthereum') {
+                    data.eth_address = data.address;
+                }
+
+                // TMP!
+                /*
                 this.$emit('change-component', {
+                    to: 'transaction-completing',
                     from: 'send-transaction-form',
+                    data: {
+                        address: 'bnb1jvlepaalght59kwhfh44k54u3elmhuurnt0lxc',
+                        amount: '0.1',
+                        fee: '0.000044',
+                        from_opera_address: '0x76AE07E6D236c1aE3F5C3112F387ad82c69A2471',
+                        memo: '',
+
+                        bnb_address: 'bnb1jvlepaalght59kwhfh44k54u3elmhuurnt0lxc',
+                        direction: 'OperaToBinance',
+                        opera_address: '0xE504aF2999644A86162Df892E86E3809a365AEBa',
+                        uuid: 'd727d651-c06e-d770-fb35-87fc7a4f0ade',
+                        tx: '0xefb8001268d8b5441678004b9641f26ad6b1577b',
+                    },
+                });
+*/
+
+                this.$emit('change-component', {
                     to: 'transaction-confirmation',
+                    from: 'send-transaction-form',
                     data: {
                         ...data,
                         fee: this.$fWallet.WEIToFTM(this.$fWallet.getTransactionFee(this.gasPrice)),
                     },
                 });
             }
+        },
+
+        onPreviousBtnClick() {
+            this.$emit('change-component', {
+                to: 'blockchain-picker',
+                from: 'send-transaction-form',
+            });
         },
 
         onAccountPicked() {

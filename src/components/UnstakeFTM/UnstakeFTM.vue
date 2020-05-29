@@ -9,7 +9,7 @@
                 <h3>The withdrawal of your delegated tokens will take 7 days</h3>
 
                 <div class="form-buttons align-center">
-                    <button class="btn secondary large" @click="onPreviousBtnClick">Previous</button>
+                    <button class="btn light large" @click="onPreviousBtnClick">Previous</button>
                     <button class="btn large" @click="onUndelegateBtnClick">Ok, undelegate</button>
                 </div>
             </div>

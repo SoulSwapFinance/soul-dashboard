@@ -14,6 +14,7 @@ import {
     MOVE_ACCOUNT,
     SET_CURRENCY,
     SET_FRACTION_DIGITS,
+    SET_SEND_DIRECTION,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -59,6 +60,12 @@ export const store = new Vuex.Store({
         // index of active stored account
         activeAccountIndex: -1,
         activeAccountAddress: '',
+        /**
+         * Which blockchain FTM will be sent to
+         *
+         * @type {BNBridgeDirection}
+         */
+        sendDirection: 'OperaToOpera',
     },
 
     getters: {
@@ -72,6 +79,15 @@ export const store = new Vuex.Store({
 
         currentAccountAddress(_state) {
             return _state.activeAccountAddress;
+        },
+
+        /**
+         * Which blockchain FTM will be sent to
+         *
+         * @return {BNBridgeDirection}
+         */
+        sendDirection(_state) {
+            return _state.sendDirection;
         },
 
         getAccountByAddress(_state) {
@@ -144,6 +160,14 @@ export const store = new Vuex.Store({
          */
         [SET_FRACTION_DIGITS](_state, _fractionDigits) {
             _state.fractionDigits = _fractionDigits;
+        },
+
+        /**
+         * @param {Object} _state
+         * @param {BNBridgeDirection} _direction
+         */
+        [SET_SEND_DIRECTION](_state, _direction) {
+            _state.sendDirection = _direction;
         },
 
         /**

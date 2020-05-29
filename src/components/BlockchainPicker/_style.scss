@@ -1,0 +1,44 @@
+@import "../../assets/scss/vars";
+
+.blockchain-picker {
+    .bc-picker {
+        width: 280px;
+        margin: 0 auto;
+
+        label {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding-bottom: 8px;
+            cursor: pointer;
+
+            span {
+                font-family: $font-family-proxima;
+                font-size: 28px;
+                opacity: 0.45;
+
+                .logo-active {
+                    display: none;
+                }
+            }
+
+            input {
+                &:checked + span {
+                    opacity: 1;
+
+                    .logo-active {
+                        display: initial;
+                    }
+
+                    .logo-inactive {
+                        display: none;
+                    }
+                }
+
+                &:focus.focus-visible + span {
+                    background: #eee;
+                }
+            }
+        }
+    }
+}

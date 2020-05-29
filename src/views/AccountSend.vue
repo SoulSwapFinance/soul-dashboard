@@ -2,7 +2,8 @@
     <div class="view-account-send account-main-content-mt">
         <h1 class="not-visible">Send</h1>
 
-        <keep-alive :exclude="keepAliveExclude">
+        <!-- <keep-alive :exclude="keepAliveExclude"> -->
+        <keep-alive>
             <component
                 :is="currentComponent"
                 v-bind="currentComponentProperties"
@@ -17,19 +18,28 @@ import SendTransactionForm from '../components/forms/SendTransactionForm.vue';
 import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 import TransactionConfirmation from '../components/TransactionConfirmation/TransactionConfirmation.vue';
 import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
+import BlockchainPicker from '../components/BlockchainPicker/BlockchainPicker.vue';
+import TransactionCompleting from '../components/TransactionCompleting/TransactionCompleting.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
-const DEFAULT_COMPONENT = 'send-transaction-form';
+const DEFAULT_COMPONENT = 'blockchain-picker';
 
 export default {
-    components: { SendTransactionForm, TransactionSuccessMessage, TransactionConfirmation, TransactionRejectMessage },
+    components: {
+        TransactionCompleting,
+        BlockchainPicker,
+        SendTransactionForm,
+        TransactionSuccessMessage,
+        TransactionConfirmation,
+        TransactionRejectMessage,
+    },
 
     mixins: [eventBusMixin],
 
     data() {
         return {
             currentComponent: DEFAULT_COMPONENT,
-            keepAliveExclude: 'SendTransactionForm',
+            // keepAliveExclude: 'BlockchainPicker',
         };
     },
 
@@ -43,6 +53,10 @@ export default {
                 case 'transaction-success-message':
                     return {
                         tx: this._data_,
+                    };
+                case 'transaction-completing':
+                    return {
+                        tokenSwapData: this._data_,
                     };
                 default:
                     return null;
@@ -62,10 +76,10 @@ export default {
          * @param {Object} _data
          */
         onChangeComponent(_data) {
-            if (_data.to === 'transaction-confirmation') {
-                this._data_ = _data.data;
-            } else if (_data.to === 'transaction-success-message') {
+            if (_data.to === 'transaction-success-message') {
                 this._data_ = _data.data.tx;
+            } else {
+                this._data_ = _data.data;
             }
 
             this.currentComponent = _data.to;
