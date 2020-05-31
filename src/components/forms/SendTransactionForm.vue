@@ -283,7 +283,7 @@ export default {
 
         onPreviousBtnClick() {
             this.$emit('change-component', {
-                to: 'blockchain-picker',
+                to: 'blockchain-picker-form',
                 from: 'send-transaction-form',
             });
         },

@@ -1,44 +1,57 @@
 @import "../../assets/scss/vars";
 
 .blockchain-picker {
-    .bc-picker {
-        width: 280px;
-        margin: 0 auto;
+    display: flex;
+    padding: 32px 0;
 
-        label {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding-bottom: 8px;
-            cursor: pointer;
+    li {
+        flex: 1;
+    }
 
-            span {
-                font-family: $font-family-proxima;
-                font-size: 28px;
-                opacity: 0.45;
+    label {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding-bottom: 8px;
+        cursor: pointer;
+
+        > span {
+            font-family: $font-family-proxima;
+            font-size: 28px;
+            opacity: 0.45;
+
+            .logo-active {
+                display: none;
+            }
+
+            .title {
+                padding-left: 16px;
+            }
+        }
+
+        input {
+            &:checked + span {
+                opacity: 1;
 
                 .logo-active {
+                    display: initial;
+                }
+
+                .logo-inactive {
                     display: none;
                 }
             }
 
-            input {
-                &:checked + span {
-                    opacity: 1;
-
-                    .logo-active {
-                        display: initial;
-                    }
-
-                    .logo-inactive {
-                        display: none;
-                    }
-                }
-
-                &:focus.focus-visible + span {
-                    background: #eee;
-                }
+            &:focus.focus-visible + span {
+                background: #eee;
             }
         }
+    }
+}
+
+@include media-max($bp-menu) {
+    .blockchain-picker {
+        display: block;
+        padding: 8px 0;
     }
 }

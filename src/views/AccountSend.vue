@@ -18,16 +18,16 @@ import SendTransactionForm from '../components/forms/SendTransactionForm.vue';
 import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 import TransactionConfirmation from '../components/TransactionConfirmation/TransactionConfirmation.vue';
 import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
-import BlockchainPicker from '../components/BlockchainPicker/BlockchainPicker.vue';
+import BlockchainPickerForm from '../components/forms/BlockchainPickerForm.vue';
 import TransactionCompleting from '../components/TransactionCompleting/TransactionCompleting.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
-const DEFAULT_COMPONENT = 'blockchain-picker';
+const DEFAULT_COMPONENT = 'blockchain-picker-form';
 
 export default {
     components: {
         TransactionCompleting,
-        BlockchainPicker,
+        BlockchainPickerForm,
         SendTransactionForm,
         TransactionSuccessMessage,
         TransactionConfirmation,
