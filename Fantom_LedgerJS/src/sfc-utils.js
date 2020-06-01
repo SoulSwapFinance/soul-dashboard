@@ -19,17 +19,21 @@ const OPERA_CHAIN_ID = '0xfa';
 
 // SFC_FUNCTIONS represents a list of hashes of SFC contract state mutable functions
 // we call using signed transactions.
-// NOTE: We have the calls hashed for SFC tag 1.0.0!
+// NOTE: We have the calls hashed for SFC release tag 1.1.0-rc1!
 const SFC_FUNCTIONS = {
     CREATE_STAKE: '0xcc8c2120', // createStake(bytes metadata)
     CREATE_DELEGATION: '0xc312eb07', // createDelegation(uint256 to)
-    CLAIM_DELEGATOR_REWARDS: '0xf99837e6', // claimDelegationRewards(uint256 _fromEpoch, uint256 maxEpochs)
-    CLAIM_VALIDATOR_REWARDS: '0xf0f947c8', // claimValidatorRewards(uint256 _fromEpoch, uint256 maxEpochs)
+    CLAIM_DELEGATOR_REWARDS: '0x793c45ce', // claimDelegationRewards(uint256 maxEpochs) returns()
+    CLAIM_VALIDATOR_REWARDS: '0x295cccba', // claimValidatorRewards(uint256 maxEpochs) returns()
     INCREASE_STAKE: '0xd9e257ef', // increaseStake()
+    INCREASE_DELEGATION: '0x3a274ff6', // increaseDelegation() returns()
+    PREP_DELEGATION_WITHDRAW_PART: '0xe7ff9e78', // prepareToWithdrawDelegationPartial(uint256 wrID, uint256 amount) returns()
+    PREP_STAKE_WITHDRAW_PART: '0xc41b6405', // prepareToWithdrawStakePartial(uint256 wrID, uint256 amount) returns()
     PREP_DELEGATION_WITHDRAW: '0x1c333318', // PrepareToWithdrawDelegation()
     PREP_STAKE_WITHDRAW: '0xc41b6405', // prepareToWithdrawStake()
     WITHDRAW_DELEGATION: '0x16bfdd81', // withdrawDelegation()
-    WITHDRAW_STAKE: '0xbed9d861'  // withdrawStake()
+    WITHDRAW_STAKE: '0xbed9d861',  // withdrawStake()
+    WITHDRAW_PART_BY_REQUEST: '0xf8b18d8a'  // partialWithdrawByRequest(uint256 wrID) returns()
 };
 
 /**
@@ -37,22 +41,26 @@ const SFC_FUNCTIONS = {
  * We expect all parameters to be uint256 for now, no other params are needed so far.
  *
  * @param {string} hash SFC function hash.
- * @param {[number]} params List of parameters to be added to the call.
+ * @param {[number|string]} params List of parameters to be added to the call.
  * @return {string}
  */
 function formatCall(hash, params) {
     let result = hash;
     if (Array.isArray(params) && (0 < params.length)) {
-        result = params.reduce((previous, value) => previous + web3Utils.leftPad(value, UINT256_LEFT_PAD).replace(/^0x/i, ''), hash);
+        result = params.reduce((previous, value) =>
+            previous + web3Utils.leftPad(value, UINT256_LEFT_PAD).replace(/^0x/i, ''),
+            hash
+        );
     }
     return result;
 }
 
 /**
- * createDelegationTx creates a new delegation transaction structure for the given amount and validator index.
+ * createDelegationTx creates a new delegation transaction structure
+ * for the given amount and validator index.
  *
- * @param {number} amount
- * @param {int} to
+ * @param {number} amount Amount of FTM tokes to delegate.
+ * @param {int} to Id of the validator to delegate to.
  * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
  */
 function createDelegationTx(amount, to) {
@@ -78,7 +86,35 @@ function createDelegationTx(amount, to) {
         gasLimit: DEFAULT_GAS_LIMIT,
         to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
         value: web3Utils.numberToHex(web3Utils.toWei(amount.toString(10), "ether")),
-        data: formatCall(SFC_FUNCTIONS.CREATE_DELEGATION, [to]),
+        data: formatCall(SFC_FUNCTIONS.CREATE_DELEGATION, [web3Utils.numberToHex(to)]),
+        chainId: OPERA_CHAIN_ID
+    };
+}
+
+/**
+ * increaseDelegationTx creates a new increase delegation transaction structure
+ * for the given amount.
+ *
+ * Note: A delegation has to exist already on the source address
+ * for the transaction to be accepted on the server.
+ *
+ * @param {number} amount Amount of FTM tokes to delegate.
+ * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
+ */
+function increaseDelegationTx(amount) {
+    // validate amount
+    if (!Number.isFinite(amount) || amount < 1) {
+        throw 'Amount value can not be lower than minimal delegation amount.';
+    }
+
+    // make the transaction
+    return {
+        nonce: undefined,
+        gasPrice: undefined,
+        gasLimit: DEFAULT_GAS_LIMIT,
+        to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
+        value: web3Utils.numberToHex(web3Utils.toWei(amount.toString(10), "ether")),
+        data: formatCall(SFC_FUNCTIONS.INCREASE_DELEGATION, []),
         chainId: OPERA_CHAIN_ID
     };
 }
@@ -88,7 +124,7 @@ function createDelegationTx(amount, to) {
  * We have the call formatted for SFC tag 1.0.0; the 1.1.0-rc1 has
  * only one parameter here, no starting epoch.
  *
- * @param {int} maxEpochs
+ * @param {int} maxEpochs Max number of epochs to claim.
  * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
  */
 function claimDelegationRewardsTx(maxEpochs) {
@@ -103,7 +139,7 @@ function claimDelegationRewardsTx(maxEpochs) {
         gasLimit: DEFAULT_GAS_LIMIT,
         to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
         value: ZERO_AMOUNT,
-        data: formatCall(SFC_FUNCTIONS.CLAIM_DELEGATOR_REWARDS, [0, maxEpochs]),
+        data: formatCall(SFC_FUNCTIONS.CLAIM_DELEGATOR_REWARDS, [web3Utils.numberToHex(maxEpochs)]),
         chainId: OPERA_CHAIN_ID
     };
 }
@@ -113,7 +149,7 @@ function claimDelegationRewardsTx(maxEpochs) {
  * We have the call formatted for SFC tag 1.0.0; the 1.1.0-rc1 has
  * only one parameter here, no starting epoch.
  *
- * @param {number} maxEpochs
+ * @param {number} maxEpochs Max number of epochs to claim.
  * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
  */
 function claimValidatorRewardsTx(maxEpochs) {
@@ -128,13 +164,14 @@ function claimValidatorRewardsTx(maxEpochs) {
         gasLimit: DEFAULT_GAS_LIMIT,
         to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
         value: ZERO_AMOUNT,
-        data: formatCall(SFC_FUNCTIONS.CLAIM_VALIDATOR_REWARDS, [0, maxEpochs]),
+        data: formatCall(SFC_FUNCTIONS.CLAIM_VALIDATOR_REWARDS, [web3Utils.numberToHex(maxEpochs)]),
         chainId: OPERA_CHAIN_ID
     };
 }
 
 /**
- * prepareToWithdrawDelegationTx creates a transaction preparing delegations to be withdrawn.
+ * prepareToWithdrawDelegationTx creates a transaction preparing delegations
+ * to be withdrawn.
  *
  * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
  */
@@ -149,6 +186,72 @@ function prepareToWithdrawDelegationTx() {
         chainId: OPERA_CHAIN_ID
     };
 }
+
+/**
+ * prepareToWithdrawDelegationPartTx creates a transaction preparing part of the delegations
+ * to be withdrawn.
+ *
+ * Note: The amount must be lower than the total delegation amount for that account. Also,
+ * the requestId value has to be unique and previously unused numeric identifier of the new
+ * withdrawal. The actual withdraw execution, available after a lock period, will use the same
+ * request id to process the prepared withdrawal.
+ *
+ * @param {number} requestId Unique and unused identifier of the withdraw request.
+ * @param {number} amount Amount of FTM tokes to be prepared for withdraw.
+ * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
+ */
+function prepareToWithdrawDelegationPartTx(requestId, amount) {
+    // request id has to be uint
+    if (!Number.isInteger(requestId) || (0 >= requestId)) {
+        throw 'Request id must be a valid numeric identifier.';
+    }
+
+    // validate amount
+    if (!Number.isFinite(amount) || amount < 1) {
+        throw 'Amount value can not be lower than minimal withdraw amount.';
+    }
+
+    return {
+        nonce: undefined,
+        gasPrice: undefined,
+        gasLimit: DEFAULT_GAS_LIMIT,
+        to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
+        value: ZERO_AMOUNT,
+        data: formatCall(SFC_FUNCTIONS.PREP_DELEGATION_WITHDRAW_PART, [
+            web3Utils.numberToHex(requestId),
+            web3Utils.numberToHex(web3Utils.toWei(amount.toString(10), "ether"))
+        ]),
+        chainId: OPERA_CHAIN_ID
+    };
+}
+
+/**
+ * withdrawPartTx creates a transaction executing partial withdraw for the given
+ * prepared withdraw request.
+ *
+ * Note: The request id has to exist and has to be prepared for the withdraw to execute
+ * correctly.
+ *
+ * @param {number} requestId Unique and unused identifier of the withdraw request.
+ * @return {{gasLimit: string, data: string, chainId: string, to: string, nonce: undefined, value: string, gasPrice: undefined}}
+ */
+function withdrawPartTx(requestId) {
+    // request id has to be uint
+    if (!Number.isInteger(requestId) || (0 >= requestId)) {
+        throw 'Request id must be a valid numeric identifier.';
+    }
+
+    return {
+        nonce: undefined,
+        gasPrice: undefined,
+        gasLimit: DEFAULT_GAS_LIMIT,
+        to: SFC_CONTRACT_ADDRESS, /* SFC Contract */
+        value: ZERO_AMOUNT,
+        data: formatCall(SFC_FUNCTIONS.WITHDRAW_PART_BY_REQUEST, [web3Utils.numberToHex(requestId)]),
+        chainId: OPERA_CHAIN_ID
+    };
+}
+
 
 /**
  * withdrawDelegationTx creates a transaction withdrawing prepared delegation.
@@ -170,8 +273,11 @@ function withdrawDelegationTx() {
 // what we export here
 export default {
     createDelegationTx,
+    increaseDelegationTx,
     claimDelegationRewardsTx,
     claimValidatorRewardsTx,
+    prepareToWithdrawDelegationPartTx,
     prepareToWithdrawDelegationTx,
-    withdrawDelegationTx
+    withdrawDelegationTx,
+    withdrawPartTx
 };
