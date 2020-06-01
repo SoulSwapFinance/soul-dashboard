@@ -1,7 +1,7 @@
 <template>
     <div class="receive-ftm">
-        <f-card class="f-card-double-padding">
-            <h2>Receive Opera FTM</h2>
+        <div class="align-center">
+            Send your Opera FTM to:
 
             <h3 class="address break-word h2" :class="addressCssClass">
                 {{ currentAccount.address }} &nbsp;
@@ -12,62 +12,68 @@
                     height="20"
                 />
                 <icon v-show="complete && !verified" data="@/assets/svg/times.svg" width="20" height="20" />
+                <f-copy-button
+                    :text="currentAccount.address"
+                    tooltip="Copy address to clipboard"
+                    popover-text="Address copied to clipboard"
+                    class="btn large light same-size round"
+                />
             </h3>
+        </div>
 
-            <div v-if="currentAccount.isLedgerAccount" class="verify-cont center-v">
-                <div>
-                    <template v-if="verifying">
-                        <pulse-loader color="#1969ff"></pulse-loader>
-                    </template>
-                    <template v-else>
-                        <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">
-                            Verify Address on Ledger
-                        </button>
-                        <ledger-message :error="error" />
-                    </template>
-                </div>
+        <div v-if="currentAccount.isLedgerAccount" class="verify-cont center-v">
+            <div>
+                <template v-if="verifying">
+                    <pulse-loader color="#1969ff"></pulse-loader>
+                </template>
+                <template v-else>
+                    <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">
+                        Verify Address on Ledger
+                    </button>
+                    <ledger-message :error="error" />
+                </template>
+            </div>
+        </div>
+
+        <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
+
+        <f-window
+            ref="confirmationWindow"
+            modal
+            title="Address Verification"
+            style="max-width: 620px;"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
+        >
+            <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
+            <div class="align-center">
+                <img src="img/nano-s-verify-address.png" alt="fantom nano device" /><br /><br />
             </div>
 
-            <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
+            <p class="align-center">Please verify following address on your Ledger device:</p>
 
-            <f-window
-                ref="confirmationWindow"
-                modal
-                title="Address Verification"
-                style="max-width: 620px;"
-                animation-in="scale-center-enter-active"
-                animation-out="scale-center-leave-active"
-            >
-                <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
-                <div class="align-center">
-                    <img src="img/nano-s-verify-address.png" alt="fantom nano device" /><br /><br />
-                </div>
-
-                <p class="align-center">Please verify following address on your Ledger device:</p>
-
-                <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
-            </f-window>
-        </f-card>
+            <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
+        </f-window>
     </div>
 </template>
 
 <script>
-import FCard from '../core/FCard/FCard.vue';
 import VueQRCodeComponent from 'vue-qrcode-component';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
+import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 
 export default {
     name: 'ReceiveFTM',
 
-    components: { FWindow, LedgerMessage, FCard, VueQRCodeComponent, PulseLoader },
+    components: { FCopyButton, FWindow, LedgerMessage, VueQRCodeComponent, PulseLoader },
 
     props: {
-        /** Start verifying process */
-        verify: {
+        /** Start verify FTM account */
+        verifyAccount: {
             type: Boolean,
             default: false,
         },
@@ -96,7 +102,7 @@ export default {
     },
 
     mounted() {
-        if (this.verify) {
+        if (this.verifyAccount) {
             this.onVerifyBtnClick();
         }
     },
@@ -154,7 +160,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss">
-@import 'style';
-</style>

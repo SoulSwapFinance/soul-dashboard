@@ -10,7 +10,7 @@
                     <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">
                         {{ sendToAddress }}
-                        <span v-show="sendToAddressBalance" class="f-row-label">
+                        <span v-show="sendToAddressBalance" class="f-row-label" style="display: inline-block;">
                             <template v-if="sendToAddressBalance"> ( {{ sendToAddressBalance }} FTM ) </template>
                         </span>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="col-3 f-row-label">Send From</div>
                     <div class="col break-word">
                         {{ currentAccount.address }}
-                        <span class="f-row-label">
+                        <span class="f-row-label" style="display: inline-block;">
                             ( {{ toFTM(currentAccount.balance) }} FTM
                             <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
                         </span>

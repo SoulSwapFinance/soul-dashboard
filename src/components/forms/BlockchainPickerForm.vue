@@ -36,9 +36,22 @@ export default {
     methods: {
         onFormSubmit(_event) {
             const { data } = _event.detail;
+            let direction = '';
 
-            if (data.direction) {
-                this.$store.commit(SET_SEND_DIRECTION, data.direction);
+            if (data.blockchain) {
+                switch (data.blockchain) {
+                    case 'opera':
+                        direction = 'OperaToOpera';
+                        break;
+                    case 'binance':
+                        direction = 'OperaToBinance';
+                        break;
+                    case 'ethereum':
+                        direction = 'OperaToEthereum';
+                        break;
+                }
+
+                this.$store.commit(SET_SEND_DIRECTION, direction);
 
                 this.$emit('change-component', {
                     to: 'send-transaction-form',

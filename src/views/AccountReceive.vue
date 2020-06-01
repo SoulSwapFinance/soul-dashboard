@@ -1,14 +1,14 @@
 <template>
-    <div class="view-account-revieve account-main-content-mt">
-        <receive-f-t-m :verify="!!this.$route.params.verify" />
+    <div class="view-account-receieve account-main-content-mt">
+        <receive-coins :verify-account="!!this.$route.params.verify" />
     </div>
 </template>
 
 <script>
-import ReceiveFTM from '../components/ReceiveFTM/ReceiveFTM.vue';
+import ReceiveCoins from '../components/ReceiveCoins/ReceiveCoins.vue';
 
 export default {
-    components: { ReceiveFTM },
+    components: { ReceiveCoins },
 };
 </script>
 

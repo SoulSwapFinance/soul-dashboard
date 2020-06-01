@@ -200,17 +200,19 @@ export class BNBridgeExchange {
     /**
      * @param {string} [ethAddress]
      * @param {string} [bnbAddress]
+     * @param {string} [operaAddress]
      * @param {BNBridgeDirection} [direction]
      * @param {BNBridgeToken} [_token]
      * @return {Promise<null>}
      */
-    async swapToken({ ethAddress = '', bnbAddress = '', direction = 'EthereumToBinance' }, _token) {
+    async swapToken({ ethAddress = '', bnbAddress = '', operaAddress = '', direction = 'EthereumToBinance' }, _token) {
         const token = /** @type {BNBridgeToken} */ _token || (await this.getFantomToken());
         const pData = {
             direction,
             token_uuid: token ? token.uuid : '',
             eth_address: ethAddress,
             bnb_address: bnbAddress,
+            opera_address: operaAddress,
         };
         let dataOk = !!pData.token_uuid;
         let result = null;
@@ -283,7 +285,7 @@ export class BNBridgeExchange {
             if (data) {
                 if (data.success) {
                     console.log(data.result);
-                    result = { ...data.result, direction };
+                    result = { result: data.result, direction };
                 } else {
                     errorCode = BNBridgeExchangeErrorCodes.FINALIZE_SWAP_TOKEN_API_ERROR;
 
@@ -454,10 +456,19 @@ export class BNBridgeExchange {
         this._fstInProgress = true;
 
         try {
-            await this.finalizeSwapToken(request);
+            const data = await this.finalizeSwapToken(request);
 
             if (typeof this._fstRequestDone === 'function') {
-                this._fstRequestDone(request);
+                console.log('data:', data);
+                console.log('request:', request);
+                console.log('datarequest:', {
+                    ...data,
+                    ...request,
+                });
+                this._fstRequestDone({
+                    ...data,
+                    ...request,
+                });
             }
 
             requests.shift();
@@ -507,5 +518,39 @@ export class BNBridgeExchange {
      */
     setFSTRequestPushCallback(_callback) {
         this._fstRequestPush = _callback;
+    }
+
+    /**
+     * @param {BNBridgeDirection} _direction
+     * @return {string}
+     */
+    getFTMCurrencyByDirection(_direction) {
+        let currency = 'FTM';
+
+        if (_direction === 'OperaToOpera') {
+            currency += '-Opera';
+        } else if (_direction.indexOf('Binance') > -1) {
+            currency += '-BEP2';
+        } else if (_direction.indexOf('Ethereum') > -1) {
+            currency += '-ERC20';
+        }
+
+        return currency;
+    }
+
+    /**
+     * @param {BNBridgeDirection} _direction
+     * @return {string}
+     */
+    getAddressKeyByDirection(_direction) {
+        let blockchain = 'opera';
+
+        if (_direction.indexOf('Binance') > -1) {
+            blockchain = 'bnb';
+        } else if (_direction.indexOf('Ethereum') > -1) {
+            blockchain = 'eth';
+        }
+
+        return `${blockchain}_address`;
     }
 }

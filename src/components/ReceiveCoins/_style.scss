@@ -1,7 +1,7 @@
 @import "../../assets/scss/vars";
 //@import "../core/FMessage/variables";
 
-.receive-ftm {
+.receive-coins {
     text-align: center;
 
     .address {
@@ -27,5 +27,18 @@
 
     .verify-cont {
         min-height: 48px;
+    }
+
+    .form-buttons {
+        padding-top: 32px;
+        padding-bottom: 16px;
+
+        .btn-next {
+            min-width: 256px;
+        }
+
+        .f-message {
+            padding-bottom: 16px;
+        }
     }
 }

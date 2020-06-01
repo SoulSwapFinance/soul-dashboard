@@ -1,26 +1,37 @@
 <template>
-    <f-card class="transaction-completing f-card-double-padding">
+    <f-card class="transaction-completing f-card-double-padding" :off="receive">
         <h2>{{ title }}</h2>
 
         <template v-if="success">
-            <p>We have added the following transaction to our log for your address:</p>
+            <p>We have added the following transaction/s to our log for your address:</p>
 
-            <p>
-                <b>{{ tokenSwapData.amount }} {{ getFTMCurrencyByBlockchain('OperaToOpera') }} </b>
-                from <b class="break-word">{{ tokenSwapData.from_opera_address }}</b>
-            </p>
+            <ul class="no-markers" style="margin-bottom: 16px;">
+                <li v-for="result in tsData.result" :key="result.uuid">
+                    <b>
+                        {{ result.amount }}
+                        {{ $bnb.getFTMCurrencyByDirection(receive ? tsData.direction : 'OperaToOpera') }}
+                    </b>
+                    from
+                    <b class="break-word">{{
+                        receive ? tsData[$bnb.getAddressKeyByDirection(tsData.direction)] : tsData.from_opera_address
+                    }}</b>
+                </li>
+            </ul>
 
             <p>
                 You will receive another
-                <b> {{ tokenSwapData.amount }} {{ getFTMCurrencyByBlockchain(tokenSwapData.direction) }}</b> in your
-                address
-                <b> {{ tokenSwapData.address }}</b>
+                <b>
+                    {{ tsData.amount || tsData.result[0].amount }}
+                    {{ $bnb.getFTMCurrencyByDirection(receive ? 'OperaToOpera' : tsData.direction) }}
+                </b>
+                in your address
+                <b> {{ tsData.address || tsData.result[0].opera_address }}</b>
             </p>
 
             <!--
             <h3 class="break-word">
                 <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">
-                    {{ tokenSwapData.tx | formatHash }}
+                    {{ tsData.tx | formatHash }}
                 </a>
             </h3>
 -->
@@ -54,12 +65,17 @@ export default {
                 return {};
             },
         },
+        receive: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
         return {
             title: 'Completing transaction',
             success: false,
+            tsData: this.tokenSwapData,
         };
     },
 
@@ -68,45 +84,29 @@ export default {
     },
 
     mounted() {
-        // TMP!
-        // this.transactionCompleted();
-
-        this.finalizeTransaction();
+        if (!this.receive) {
+            this.finalizeTransaction();
+        } else {
+            this.transactionCompleted(this.tsData);
+        }
     },
 
     methods: {
         async finalizeTransaction() {
-            this.$bnb.pushFSTRequest(this.tokenSwapData);
+            this.$bnb.pushFSTRequest(this.tsData);
         },
 
         /**
          * @param {FSTRequest} _request
          */
         transactionCompleted(_request) {
-            const { tokenSwapData } = this;
+            const { tsData } = this;
 
-            if (_request.direction === tokenSwapData.direction && _request.uuid === tokenSwapData.uuid) {
+            if (_request.direction === tsData.direction && _request.uuid === tsData.uuid) {
+                this.tsData = _request;
                 this.title = 'Swap request pending';
                 this.success = true;
             }
-        },
-
-        /**
-         * @param {BNBridgeDirection} _sendDirection
-         * @return {string}
-         */
-        getFTMCurrencyByBlockchain(_sendDirection) {
-            let currency = 'FTM';
-
-            if (_sendDirection === 'OperaToOpera') {
-                currency += '-Opera';
-            } else if (_sendDirection === 'OperaToBinance') {
-                currency += '-BEP2';
-            } else if (_sendDirection === 'OperaToEthereum') {
-                currency += '-ERC20';
-            }
-
-            return currency;
         },
     },
 };

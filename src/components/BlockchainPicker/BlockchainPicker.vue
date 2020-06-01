@@ -4,10 +4,10 @@
             <label for="bc-opera">
                 <input
                     id="bc-opera"
-                    v-model="direction"
+                    v-model="blockchain"
                     type="radio"
-                    name="direction"
-                    value="OperaToOpera"
+                    name="blockchain"
+                    value="opera"
                     class="not-visible"
                 />
                 <span>
@@ -35,10 +35,10 @@
             <label for="bc-eth">
                 <input
                     id="bc-eth"
-                    v-model="direction"
+                    v-model="blockchain"
                     type="radio"
-                    name="direction"
-                    value="OperaToEthereum"
+                    name="blockchain"
+                    value="ethereum"
                     class="not-visible"
                 />
                 <span>
@@ -66,10 +66,10 @@
             <label for="bc-binance">
                 <input
                     id="bc-binance"
-                    v-model="direction"
+                    v-model="blockchain"
                     type="radio"
-                    name="direction"
-                    value="OperaToBinance"
+                    name="blockchain"
+                    value="binance"
                     class="not-visible"
                 />
                 <span>
@@ -102,12 +102,12 @@ export default {
 
     data() {
         return {
-            direction: 'OperaToOpera',
+            blockchain: 'opera',
         };
     },
 
     watch: {
-        direction(_value) {
+        blockchain(_value) {
             this.$emit('blockchain-pick', _value);
         },
     },
