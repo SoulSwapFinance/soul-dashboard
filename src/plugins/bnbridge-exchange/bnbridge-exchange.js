@@ -212,7 +212,7 @@ export class BNBridgeExchange {
             token_uuid: token ? token.uuid : '',
             eth_address: ethAddress,
             bnb_address: bnbAddress,
-            opera_address: operaAddress,
+            opera_address: operaAddress ? operaAddress.replace('0x', '0X') : '',
         };
         let dataOk = !!pData.token_uuid;
         let result = null;
