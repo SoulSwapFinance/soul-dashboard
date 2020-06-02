@@ -212,7 +212,7 @@ export class BNBridgeExchange {
             token_uuid: token ? token.uuid : '',
             eth_address: ethAddress,
             bnb_address: bnbAddress,
-            opera_address: operaAddress ? operaAddress.replace('0x', '0X') : '',
+            opera_address: operaAddress,
         };
         let dataOk = !!pData.token_uuid;
         let result = null;
@@ -234,7 +234,7 @@ export class BNBridgeExchange {
         }
 
         if (dataOk) {
-            const data = await this.fetch({ slug: 'swaps', data: pData });
+            let data = await this.fetch({ slug: 'swaps', data: pData });
 
             if (data) {
                 if (data.success) {
@@ -247,6 +247,20 @@ export class BNBridgeExchange {
                         errorMessage = data.errMessage;
                     } else {
                         errorMessage = data.result;
+                    }
+
+                    if (
+                        errorMessage === 'Symbol already exists' &&
+                        pData.opera_address !== pData.opera_address.toLowerCase()
+                    ) {
+                        // resend request with Opera address in lowercase
+                        pData.opera_address = pData.opera_address.toLowerCase();
+                        data = await this.fetch({ slug: 'swaps', data: pData });
+
+                        if (data.success) {
+                            result = { ...data.result, direction };
+                            errorCode = -1;
+                        }
                     }
                 }
             }
