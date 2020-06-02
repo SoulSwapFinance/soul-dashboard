@@ -3,7 +3,10 @@
         <slot name="top" v-bind="slotProps">
             <label :for="inputId">{{ label }}</label>
         </slot>
-        <span class="inp" :class="inpClasses">
+        <template v-if="disabledAsText && disabled">
+            {{ val }}
+        </template>
+        <span v-else class="inp" :class="inpClasses">
             <slot name="prefix"></slot>
             <template v-if="isTextarea">
                 <textarea
@@ -49,28 +52,33 @@ export default {
     mixins: [inputMixin, helpersMixin, eventBusMixin],
 
     props: {
-        // use textarea instead of input element
+        /** Use textarea instead of input element */
         isTextarea: {
             type: Boolean,
             default: false,
         },
-        // input type
+        /** Input type */
         type: {
             type: String,
             default: 'text',
         },
-        // custom validator function
+        /** Custom validator function */
         validator: {
             type: Function,
             default: null,
         },
-        // size of input, 'large' | 'small'
+        /** Size of input, 'large' | 'small' */
         fieldSize: {
             type: String,
             default: '',
         },
-        // validate on input event as well
+        /** Validate on input event as well */
         validateOnInput: {
+            type: Boolean,
+            default: false,
+        },
+        /** Show disabled input/textarea as plain text, not disabled input/textarea */
+        disabledAsText: {
             type: Boolean,
             default: false,
         },
@@ -165,11 +173,13 @@ export default {
             }
 
             if (fMessage) {
-                // set custom error message
-                if (this.isInvalid) {
-                    eInput.setCustomValidity(fMessage.getMessage());
-                } else {
-                    eInput.setCustomValidity('');
+                if (eInput) {
+                    // set custom error message
+                    if (this.isInvalid) {
+                        eInput.setCustomValidity(fMessage.getMessage());
+                    } else {
+                        eInput.setCustomValidity('');
+                    }
                 }
 
                 const id = getUniqueId();
@@ -188,7 +198,7 @@ export default {
                     const value = await result;
                     this.isInvalid = !value;
                 } else {
-                    this.isInvalid = !this.validator(this.val);
+                    this.isInvalid = !result;
                 }
 
                 if (_setError) {
@@ -221,8 +231,10 @@ export default {
          * @param {Event} _event
          */
         onClick(_event) {
-            if (_event.target !== this.$refs.input) {
-                this.$refs.input.focus();
+            const eInput = this.$refs.input;
+
+            if (eInput && _event.target !== eInput) {
+                eInput.focus();
             }
         },
 

@@ -38,7 +38,7 @@
                             <div v-if="stakerInfo">
                                 <a
                                     v-if="stakerInfo"
-                                    :href="`${eplorerUrl}validator/${stakerInfo.stakerAddress}`"
+                                    :href="`${explorerUrl}validator/${stakerInfo.stakerAddress}`"
                                     target="_blank"
                                 >
                                     {{ stakerInfo.stakerInfo.name }}
@@ -82,6 +82,9 @@
                         </template>
                         <template v-else>
                             <button class="btn large" disabled @click="claimRewards()">Claim Rewards</button>
+                            <button class="btn large" @click="increaseDelegation()">
+                                Increase Delegation
+                            </button>
                             <button class="btn large" @click="unstake()">Undelegate</button>
                         </template>
                     </template>
@@ -108,7 +111,7 @@ export default {
 
     data() {
         return {
-            eplorerUrl: appConfig.explorerUrl,
+            explorerUrl: appConfig.explorerUrl,
         };
     },
 
@@ -158,10 +161,19 @@ export default {
     },
 
     methods: {
-        stake() {
+        /**
+         * @param {boolean} [_increaseDelegation]
+         */
+        async stake(_increaseDelegation) {
+            const stakerInfo = await this.stakerInfo;
+
             this.$emit('change-component', {
                 to: 'stake-form',
                 from: 'stake-f-t-m',
+                data: {
+                    increaseDelegation: !!_increaseDelegation,
+                    stakerInfo,
+                },
             });
         },
 
@@ -179,6 +191,10 @@ export default {
                     },
                 },
             });
+        },
+
+        increaseDelegation() {
+            this.stake(true);
         },
 
         claimRewards() {

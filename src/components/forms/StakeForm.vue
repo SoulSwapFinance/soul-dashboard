@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-form account-main-content-mt">
+    <div class="stake-form account-main-content-mt" :class="{ 'increase-delegation': increaseDelegation }">
         <f-card class="f-card-double-padding">
             <f-form ref="stakeForm" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
@@ -42,6 +42,8 @@
                             autocomplete="off"
                             name="validator"
                             readonly
+                            :disabled="increaseDelegation"
+                            disabled-as-text
                             class="validator-select"
                             :validator="checkValidator"
                             validate-on-input
@@ -101,6 +103,21 @@ export default {
 
     components: { ValidatorPickerWindow, FInput, FMessage, FForm, FCard },
 
+    props: {
+        /** Increase delegation mode. */
+        increaseDelegation: {
+            type: Boolean,
+            default: false,
+        },
+        /** Validator info. */
+        stakerInfo: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
+    },
+
     data() {
         return {
             amountErrMsg: 'Invalid amount',
@@ -141,6 +158,29 @@ export default {
         });
     },
 
+    activated() {
+        const { stakerInfo } = this;
+
+        this.validator = 'Select a Validator';
+        this.validatorInfo = {
+            address: '',
+            id: '',
+            name: '',
+        };
+
+        if (stakerInfo) {
+            this.validatorInfo = {
+                id: stakerInfo.id,
+                address: stakerInfo.stakerAddress,
+                name: stakerInfo.stakerInfo.name,
+            };
+
+            this.updateValidatorInfo().then(() => {
+                this.validator = `${this.validatorInfo.name}, ${parseInt(this.validatorInfo.id, 16)}`;
+            });
+        }
+    },
+
     methods: {
         /**
          * Validator for `amount` input field.
@@ -169,7 +209,7 @@ export default {
                 }
             }
 
-            if (ok && this.validatorInfo.delegatedLimit) {
+            if (ok && this.validatorInfo.delegatedLimit && this.validatorInfo.address) {
                 const delegatedLimit = parseFloat(this.$fWallet.WEIToFTM(this.validatorInfo.delegatedLimit));
 
                 if (value > delegatedLimit) {
@@ -188,6 +228,7 @@ export default {
          * @return {Boolean}
          */
         checkValidator() {
+            console.log('checkValidator', !!this.validatorInfo.address);
             return !!this.validatorInfo.address;
         },
 
@@ -213,8 +254,16 @@ export default {
          */
         async stakeCofirmation(_amount) {
             const amount = parseFloat(_amount);
+            let delegationTx = null;
+
+            if (this.increaseDelegation) {
+                delegationTx = sfcUtils.increaseDelegationTx(amount);
+            } else {
+                delegationTx = sfcUtils.createDelegationTx(amount, parseInt(this.validatorInfo.id, 16));
+            }
+
             const tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.createDelegationTx(amount, parseInt(this.validatorInfo.id, 16)),
+                delegationTx,
                 this.currentAccount.address,
                 '0x30D40'
             );
@@ -226,24 +275,30 @@ export default {
                     amount: amount,
                     ...this.validatorInfo,
                     tx,
+                    increaseDelegation: this.increaseDelegation,
+                    stakerInfo: this.stakerInfo || this.validatorInfo,
                 },
             });
         },
 
         onValidatorSelected(_validatorInfo) {
-            this.validator = `${_validatorInfo.name}, ${parseInt(_validatorInfo.id, 16)}`;
-            this.validatorInfo = { ..._validatorInfo };
-            this.updateValidatorInfo().then(() => {
-                this.$refs.stakeForm.checkValidity();
-            });
+            if (!this.increaseDelegation) {
+                this.validator = `${_validatorInfo.name}, ${parseInt(_validatorInfo.id, 16)}`;
+                this.validatorInfo = { ..._validatorInfo };
+                this.updateValidatorInfo().then(() => {
+                    this.$refs.stakeForm.checkValidity();
+                });
+            }
         },
 
         onSelectValidatorClick() {
-            this.$refs.validatorPickerWindow.show();
+            if (!this.increaseDelegation) {
+                this.$refs.validatorPickerWindow.show();
+            }
         },
 
         onSelectValidatorKeyup(_event) {
-            if (isAriaAction(_event)) {
+            if (!this.increaseDelegation && isAriaAction(_event)) {
                 this.$refs.validatorPickerWindow.show();
             }
         },
@@ -259,7 +314,7 @@ export default {
             const { data } = _event.detail;
 
             this.updateValidatorInfo().then(() => {
-                if (this.$refs.stakeForm.checkValidity()) {
+                if (this.$refs.stakeForm.checkValidity() && this.validatorInfo.address) {
                     this.stakeCofirmation(parseFloat(data.amount));
                 }
             });
@@ -273,9 +328,11 @@ export default {
 </script>
 
 <style lang="scss">
-.validator-select,
-.validator-select > *,
-.validator-select input {
-    cursor: pointer !important;
+.stake-form:not(.increase-delegation) {
+    .validator-select,
+    .validator-select > *,
+    .validator-select input {
+        cursor: pointer !important;
+    }
 }
 </style>

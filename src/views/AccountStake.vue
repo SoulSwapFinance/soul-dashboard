@@ -44,9 +44,13 @@ export default {
     computed: {
         currentComponentProperties() {
             switch (this.currentComponent) {
+                case 'stake-form':
+                    return this._data_;
                 case 'stake-confirmation':
                     return {
                         stakeData: this._data_,
+                        increaseDelegation: this._data_.increaseDelegation,
+                        stakerInfo: this._data_.stakerInfo,
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
@@ -85,7 +89,10 @@ export default {
         },
 
         onAccountPicked() {
-            this.currentComponent = DEFAULT_COMPONENT;
+            this.currentComponent = '';
+            this.$nextTick(() => {
+                this.currentComponent = DEFAULT_COMPONENT;
+            });
         },
     },
 };

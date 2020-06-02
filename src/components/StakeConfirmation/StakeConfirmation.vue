@@ -119,6 +119,18 @@ export default {
                 return {};
             },
         },
+        /** Increase delegation mode. */
+        increaseDelegation: {
+            type: Boolean,
+            default: false,
+        },
+        /** Validator info. */
+        stakerInfo: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
     },
 
     data() {
@@ -221,6 +233,10 @@ export default {
             this.$emit('change-component', {
                 to: 'stake-form',
                 from: 'stake-confirmation',
+                data: {
+                    increaseDelegation: this.increaseDelegation,
+                    stakerInfo: this.stakerInfo,
+                },
             });
         },
 
