@@ -47,17 +47,7 @@
             </li>
         </ul>
 
-        <f-window
-            ref="qrWindow"
-            modal
-            title="Address"
-            style="max-width: 620px;"
-            animation-in="scale-center-enter-active"
-            animation-out="scale-center-leave-active"
-        >
-            <h3 class="break-word h2 align-center">{{ currentAccount.address }}</h3>
-            <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
-        </f-window>
+        <q-r-code-window ref="qrWindow" :address="currentAccount.address" />
 
         <account-settings-window ref="accountSettingsWindow" :account-data="accountData" />
     </div>
@@ -66,12 +56,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
-import VueQRCodeComponent from 'vue-qrcode-component';
-import FWindow from '../core/FWindow/FWindow.vue';
 import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSettingsWindow.vue';
+import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 
 export default {
-    components: { AccountSettingsWindow, FWindow, FCopyButton, VueQRCodeComponent },
+    components: { QRCodeWindow, AccountSettingsWindow, FCopyButton },
 
     computed: {
         ...mapGetters(['currentAccount']),

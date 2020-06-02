@@ -36,6 +36,7 @@ import gql from 'graphql-tag';
 import { formatCurrencyByLocale } from '../../filters.js';
 import { toFTM } from '../../utils/transactions.js';
 import { pollingMixin } from '../../mixins/polling.js';
+import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 
 export default {
     components: { FCard, AccountActionsBox },
@@ -96,6 +97,7 @@ export default {
             () => {
                 if (!this.$apollo.queries.account.loading) {
                     this.$apollo.queries.account.refresh();
+                    this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
                 }
             },
             3000

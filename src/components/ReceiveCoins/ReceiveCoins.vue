@@ -55,7 +55,6 @@ export default {
                         verifyAccount: this.verifyAccount,
                     };
                 case 'transaction-completing':
-                    console.log(this._data_);
                     return {
                         receive: true,
                         tokenSwapData: this._data_,

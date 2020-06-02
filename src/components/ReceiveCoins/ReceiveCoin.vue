@@ -12,17 +12,26 @@
                         popover-text="Address copied to clipboard"
                         class="btn large light same-size round"
                     />
+                    <button
+                        class="btn large light same-size round"
+                        title="QR code of address"
+                        @click="$refs.qrWindow.show()"
+                    >
+                        <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                    </button>
                 </h3>
 
-                <vue-q-r-code-component :text="address" class="qr-code" />
+                and then click 'Confirm Deposit' below
 
                 <div class="form-buttons">
                     <pulse-loader v-if="loading" color="#1969ff"></pulse-loader>
                     <template v-else>
                         <f-message v-if="error" type="info" with-icon>{{ error }}</f-message>
-                        <button class="btn large btn-next" @click="onNextBtnClick">Receive</button>
+                        <button class="btn large btn-next" @click="onNextBtnClick">Confirm Deposit</button>
                     </template>
                 </div>
+
+                <q-r-code-window ref="qrWindow" :address="address" />
             </template>
             <template v-else-if="error">
                 <f-message type="info" with-icon>{{ error }}</f-message>
@@ -36,16 +45,16 @@
 </template>
 
 <script>
-import VueQRCodeComponent from 'vue-qrcode-component';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
+import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 
 export default {
     name: 'ReceiveCoin',
 
-    components: { FMessage, FCopyButton, VueQRCodeComponent, PulseLoader },
+    components: { QRCodeWindow, FMessage, FCopyButton, PulseLoader },
 
     props: {
         /**
