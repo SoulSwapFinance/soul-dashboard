@@ -96,9 +96,10 @@ export default {
     methods: {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
+                // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
+                sfcUtils.claimDelegationRewardsTx(200),
                 this.currentAccount.address,
-                '0xF4240'
+                '0x3D0900'
             );
         },
 
