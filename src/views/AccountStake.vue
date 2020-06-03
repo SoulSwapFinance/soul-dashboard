@@ -18,6 +18,7 @@ import TransactionSuccessMessage from '../components/TransactionSuccessMessage/T
 import TransactionRejectMessage from '../components/TransactionRejectMessage/TransactionRejectMessage.vue';
 import UnstakeFTM from '../components/UnstakeFTM/UnstakeFTM.vue';
 import UnstakeConfirmation from '../components/UnstakeConfirmation/UnstakeConfirmation.vue';
+import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/ClaimRewardsConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
 const DEFAULT_COMPONENT = 'staking-info';
@@ -31,6 +32,7 @@ export default {
         StakeForm,
         StakingInfo,
         UnstakeConfirmation,
+        ClaimRewardsConfirmation,
     },
 
     mixins: [eventBusMixin],
@@ -54,6 +56,7 @@ export default {
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
+                case 'claim-rewards-confirmation':
                     return {
                         accountInfo: this._data_.accountInfo,
                     };

@@ -1,37 +1,27 @@
 <template>
-    <div class="unstake-confirmation">
+    <div class="claim-rewards-confirmation">
         <tx-confirmation
             :tx="tx"
-            confirmation-comp-name="unstake-confirmation"
-            send-button-label="Undelegate"
-            password-label="Please enter your wallet password to undelegate your FTM"
+            confirmation-comp-name="claim-rewards-confirmation"
+            go-back-comp-name="staking-info"
+            send-button-label="Claim Rewards"
+            password-label="Please enter your wallet password to claim rewards"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
-            </h2>
+            <h2>Claim Rewards</h2>
 
             <div class="transaction-info">
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Validator</div>
                     <div class="col break-word">
-                        {{ accountInfo.stakerInfo.stakerInfo.name }}, {{ parseInt(accountInfo.stakerInfo.id) }}
+                        {{ accountInfo.stakerInfo.stakerInfo.name }}, {{ accountInfo.stakerId }}
                     </div>
                 </div>
 
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">From</div>
-                    <div class="col break-word">
-                        {{ currentAccount.address }}
-                        <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
-                    </div>
-                </div>
-
-                <div class="row no-collapse">
-                    <div class="col-3 f-row-label">Undelegate Amount</div>
-                    <div class="col break-word">{{ toFTM(accountInfo.delegation.amount) }}</div>
+                    <div class="col-3 f-row-label">Amount</div>
+                    <div class="col break-word">{{ toFTM(accountInfo.delegation.pendingRewards.amount) }} FTM</div>
                 </div>
             </div>
 
@@ -75,12 +65,12 @@ import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 
 export default {
-    name: 'UnstakeConfirmation',
+    name: 'ClaimRewardsConfirmation',
 
     components: { TxConfirmation },
 
     props: {
-        /** `accountInfo` object from `UnstakeFTM` component. */
+        /** `accountInfo` object from `StakingInfo` component. */
         accountInfo: {
             type: Object,
             default() {
@@ -99,32 +89,26 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
+    mounted() {
+        this.setTx();
+    },
+
     methods: {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.prepareToWithdrawDelegationTx(),
+                sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 this.currentAccount.address,
-                '0x30D40'
+                '0x7A120'
             );
         },
 
         onSendTransactionSuccess(_data) {
             this.$emit('change-component', {
                 to: 'transaction-success-message',
-                from: 'unstake-confirmation',
+                from: 'claim-rewards-confirmation',
                 data: {
                     tx: _data.data.sendTransaction.hash,
-                    successMessage: 'Undelegation Successful',
-                },
-            });
-        },
-
-        onGoBack() {
-            this.$emit('change-component', {
-                to: 'unstake-f-t-m',
-                from: 'unstake-confirmation',
-                data: {
-                    accountInfo: this.accountInfo,
+                    successMessage: 'Claiming Rewards Successful',
                 },
             });
         },

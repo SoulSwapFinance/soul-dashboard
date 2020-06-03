@@ -1,6 +1,14 @@
 <template>
     <div class="stake-confirmation">
-        <f-card class="f-card-double-padding f-data-layout">
+        <tx-confirmation
+            :tx="tx"
+            confirmation-comp-name="stake-confirmation"
+            password-label="Please enter your wallet password to delegate your FTM"
+            send-button-label="Delegate"
+            :on-send-transaction-success="onSendTransactionSuccess"
+            :on-go-back="onGoBack"
+            @change-component="onChangeComponent"
+        >
             <h2>
                 Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
             </h2>
@@ -28,88 +36,57 @@
                 </div>
             </div>
 
-            <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
-
-            <transaction-confirmation-form
-                :error-message="errorMsg"
-                :show-password-field="!currentAccount.isLedgerAccount"
-                password-label="Please enter your wallet password to delegate your FTM"
-                send-button-label="Delegate"
-                @f-form-submit="onFFormSubmit"
-                @go-back="onGoBack"
-            />
-        </f-card>
-
-        <f-window
-            v-if="currentAccount.isLedgerAccount"
-            ref="confirmationWindow"
-            modal
-            title="Transaction Confirmation"
-            style="max-width: 800px;"
-            animation-in="scale-center-enter-active"
-            animation-out="scale-center-leave-active"
-        >
-            <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
-            <div class="align-center"><img src="img/nano-s-confirm-tx.png" alt="fantom nano device" /><br /><br /></div>
-
-            <p class="align-center">Please confirm this transaction on your Ledger device:</p>
-
-            <ol class="f-data-layout">
-                <li>
-                    <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Send To</div>
-                        <div class="col break-word">
-                            {{ stakeData.tx.to }}
+            <template #window-content>
+                <ol class="f-data-layout">
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Send To</div>
+                            <div class="col break-word">
+                                {{ stakeData.tx.to }}
+                            </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Send From</div>
-                        <div class="col break-word">
-                            {{ currentAccount.address }}
-                            <span class="f-row-label">
-                                ( {{ toFTM(currentAccount.balance) }} FTM
-                                <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
-                            </span>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Send From</div>
+                            <div class="col break-word">
+                                {{ currentAccount.address }}
+                                <span class="f-row-label">
+                                    ( {{ toFTM(currentAccount.balance) }} FTM
+                                    <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Amount</div>
-                        <div class="col">{{ stakeData.amount }}</div>
-                    </div>
-                </li>
-                <!--
-                <li>
-                    <div class="row no-collapse">
-                        <div class="col-3 f-row-label">Max Fee</div>
-                        <div class="col">{{ stakeData.tx.fee }}</div>
-                    </div>
-                </li>
-                -->
-            </ol>
-        </f-window>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Amount</div>
+                            <div class="col">{{ stakeData.amount }}</div>
+                        </div>
+                    </li>
+                    <!--
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Max Fee</div>
+                            <div class="col">{{ stakeData.tx.fee }}</div>
+                        </div>
+                    </li>
+                    -->
+                </ol>
+            </template>
+        </tx-confirmation>
     </div>
 </template>
 
 <script>
-import FCard from '../core/FCard/FCard.vue';
-import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
-import TransactionConfirmationForm from '../forms/TransactionConfirmationForm.vue';
-import gql from 'graphql-tag';
-// import { Web3 } from '../../plugins/fantom-web3-wallet.js';
-import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
-import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
-import FWindow from '../core/FWindow/FWindow.vue';
+import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 
 export default {
     name: 'StakeConfirmation',
 
-    components: { FWindow, TransactionConfirmationForm, LedgerMessage, FCard },
+    components: { TxConfirmation },
 
     props: {
         /** Data sent from StakeForm component. Info about transaction, validator and amount of FTM. */
@@ -135,8 +112,7 @@ export default {
 
     data() {
         return {
-            errorMsg: '',
-            error: null,
+            tx: {},
         };
     },
 
@@ -144,89 +120,24 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
+    mounted() {
+        this.setTx();
+    },
+
     methods: {
-        sendTransaction(_rawTransaction) {
-            this.$apollo
-                .mutate({
-                    mutation: gql`
-                        mutation($tx: Bytes!) {
-                            sendTransaction(tx: $tx) {
-                                hash
-                                from
-                                to
-                            }
-                        }
-                    `,
-                    variables: {
-                        tx: _rawTransaction,
-                    },
-                })
-                .then((_data) => {
-                    this.$emit('change-component', {
-                        to: 'transaction-success-message',
-                        from: 'stake-confirmation',
-                        data: {
-                            tx: _data.data.sendTransaction.hash,
-                            successMessage: 'Delegation Successful',
-                        },
-                    });
-                })
-                .catch((_error) => {
-                    this.errorMsg = _error;
-                });
+        setTx() {
+            this.tx = this.stakeData.tx;
         },
 
-        async onFFormSubmit(_event) {
-            const { currentAccount } = this;
-            const fWallet = this.$fWallet;
-            const tx = this.stakeData.tx;
-            const pwd = _event.detail.data.pwd;
-            let rawTx = null;
-
-            if (currentAccount && tx) {
-                console.log('tx', tx);
-
-                if (currentAccount.keystore) {
-                    delete tx.gasLimit;
-
-                    if (pwd) {
-                        try {
-                            rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
-                        } catch (_error) {
-                            console.error(_error);
-                            this.errorMsg = _error.toString();
-                            // this.errorMsg = 'Invalid password';
-                        }
-                    }
-                } else {
-                    delete tx.gas;
-
-                    try {
-                        this.$refs.confirmationWindow.show();
-
-                        rawTx = await this.$fNano.signTransaction(
-                            tx,
-                            currentAccount.accountId,
-                            currentAccount.addressId
-                        );
-
-                        this.$refs.confirmationWindow.hide('fade-leave-active');
-                    } catch (_error) {
-                        this.error = _error;
-                        this.$refs.confirmationWindow.hide();
-                        // this.errorMsg = _error.toString();
-                    }
-                }
-
-                if (rawTx) {
-                    console.log('rawTx', rawTx);
-                    this.sendTransaction(rawTx);
-
-                    setTimeout(() => {
-                        this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
-                    }, 3000);
-                }
-            }
+        onSendTransactionSuccess(_data) {
+            this.$emit('change-component', {
+                to: 'transaction-success-message',
+                from: 'stake-confirmation',
+                data: {
+                    tx: _data.data.sendTransaction.hash,
+                    successMessage: 'Delegation Successful',
+                },
+            });
         },
 
         onGoBack() {
@@ -241,17 +152,12 @@ export default {
         },
 
         /**
-         * Triggered on 'ledger-status-code' event.
+         * Re-target `'change-component'` event.
          *
-         * @param {string} _code
+         * @param {object} _data
          */
-        onLedgerStatusCode(_code) {
-            if (_code === U2FStatus.USER_REJECTED_REQUESTED_ACTION) {
-                this.$emit('change-component', {
-                    to: 'transaction-reject-message',
-                    from: 'stake-confirmation',
-                });
-            }
+        onChangeComponent(_data) {
+            this.$emit('change-component', _data);
         },
 
         toFTM,

@@ -1,6 +1,14 @@
 <template>
     <div class="transaction-confirmation">
-        <f-card class="f-card-double-padding f-data-layout">
+        <tx-confirmation
+            :tx="tx"
+            confirmation-comp-name="transaction-confirmation"
+            go-back-comp-name="send-transaction-form"
+            send-button-label="Send"
+            password-label="Please enter your wallet password to send the transaction"
+            :on-send-transaction-success="onSendTransactionSuccess"
+            @change-component="onChangeComponent"
+        >
             <h2>
                 Send Opera FTM - Confirmation <span class="f-steps"><b>3</b> / 3</span>
             </h2>
@@ -45,31 +53,7 @@
                 -->
             </div>
 
-            <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
-
-            <check-password-form
-                :error-message="errorMsg"
-                :show-password-field="!currentAccount.isLedgerAccount"
-                @f-form-submit="onFFormSubmit"
-                @go-back="onGoBack"
-            />
-
-            <f-window
-                v-if="currentAccount.isLedgerAccount"
-                ref="confirmationWindow"
-                modal
-                title="Transaction Confirmation"
-                style="max-width: 800px;"
-                animation-in="scale-center-enter-active"
-                animation-out="scale-center-leave-active"
-            >
-                <!--                <icon data="@/assets/svg/nano-s-confirm-tx.svg" width="300" height="91" />-->
-                <div class="align-center">
-                    <img src="img/nano-s-confirm-tx.png" alt="fantom nano device" /><br /><br />
-                </div>
-
-                <p class="align-center">Please confirm this transaction on your Ledger device:</p>
-
+            <template #window-content>
                 <ol class="f-data-layout">
                     <li>
                         <div class="row no-collapse">
@@ -109,27 +93,21 @@
                         </div>
                     </li>
                 </ol>
-            </f-window>
-        </f-card>
+            </template>
+        </tx-confirmation>
     </div>
 </template>
 
 <script>
-import FCard from '../core/FCard/FCard.vue';
-import gql from 'graphql-tag';
-import CheckPasswordForm from '../forms/TransactionConfirmationForm.vue';
 import { mapGetters } from 'vuex';
-import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import { Web3 } from '../../plugins/fantom-web3-wallet.js';
-import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
-import { U2FStatus } from '../../plugins/fantom-nano.js';
-import FWindow from '../core/FWindow/FWindow.vue';
 import { toFTM } from '../../utils/transactions.js';
 import { formatNumberByLocale } from '../../filters.js';
+import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 
 export default {
-    components: { FWindow, LedgerMessage, CheckPasswordForm, FCard },
+    components: { TxConfirmation },
 
     props: {
         // transaction data from SendTransactionForm
@@ -143,9 +121,9 @@ export default {
 
     data() {
         return {
-            errorMsg: '',
-            error: null,
             sendToAddress: '',
+            dTxData: this.txData,
+            tx: {},
         };
     },
 
@@ -224,135 +202,55 @@ export default {
                     ...data,
                 };
                 this.sendToAddress = data.opera_address;
-                this.txData.opera_address = data.opera_address;
+                this.dTxData.opera_address = data.opera_address;
 
                 console.log('_swapTokenData', this._swapTokenData);
             }
+
+            this.setTx();
         },
 
-        sendTransaction(_rawTransaction) {
-            this.$apollo
-                .mutate({
-                    mutation: gql`
-                        mutation($tx: Bytes!) {
-                            sendTransaction(tx: $tx) {
-                                hash
-                                from
-                                to
-                            }
-                        }
-                    `,
-                    variables: {
-                        tx: _rawTransaction,
-                    },
-                })
-                .then((_data) => {
-                    if (this._swapTokenData) {
-                        this.$emit('change-component', {
-                            to: 'transaction-completing',
-                            from: 'transaction-confirmation',
-                            data: {
-                                tx: _data.data.sendTransaction.hash,
-                                ...this._swapTokenData,
-                            },
-                        });
-                    } else {
-                        this.$emit('change-component', {
-                            to: 'transaction-success-message',
-                            from: 'transaction-confirmation',
-                            data: {
-                                tx: _data.data.sendTransaction.hash,
-                            },
-                        });
-                    }
-                })
-                .catch((_error) => {
-                    this.errorMsg = _error;
-                });
-        },
-
-        async onFFormSubmit(_event) {
-            const { currentAccount } = this;
-            const from = currentAccount ? currentAccount.address : '';
+        async setTx() {
+            const from = this.currentAccount ? this.currentAccount.address : '';
+            const { dTxData } = this;
             const fWallet = this.$fWallet;
-            const { txData } = this;
-            const pwd = _event.detail.data.pwd;
-            let rawTx = null;
 
-            if (currentAccount && this.sendToAddress) {
-                // transaction to sign
-                const tx = await fWallet.getTransactionToSign({
-                    value: Web3.utils.toHex(Web3.utils.toWei(txData.amount)),
-                    from,
-                    to: fWallet.toChecksumAddress(txData.opera_address),
-                    memo: txData.memo,
-                });
-
-                console.log('tx', tx);
-
-                if (currentAccount.keystore) {
-                    delete tx.gasLimit;
-
-                    if (pwd) {
-                        try {
-                            rawTx = await fWallet.signTransaction(tx, currentAccount.keystore, pwd);
-                        } catch (_error) {
-                            console.error(_error);
-                            this.errorMsg = _error.toString();
-                            // this.errorMsg = 'Invalid password';
-                        }
-                    }
-                } else {
-                    delete tx.gas;
-
-                    try {
-                        console.log(currentAccount);
-                        this.$refs.confirmationWindow.show();
-
-                        rawTx = await this.$fNano.signTransaction(
-                            tx,
-                            currentAccount.accountId,
-                            currentAccount.addressId
-                        );
-
-                        this.$refs.confirmationWindow.hide('fade-leave-active');
-                    } catch (_error) {
-                        this.error = _error;
-                        this.$refs.confirmationWindow.hide();
-                        // this.errorMsg = _error.toString();
-                    }
-                }
-
-                if (rawTx) {
-                    console.log('rawTx', rawTx);
-                    this.sendTransaction(rawTx);
-
-                    setTimeout(() => {
-                        this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
-                    }, 3000);
-                }
-            }
-        },
-
-        onGoBack() {
-            this.$emit('change-component', {
-                from: 'transaction-confirmation',
-                to: 'send-transaction-form',
+            this.tx = await fWallet.getTransactionToSign({
+                value: Web3.utils.toHex(Web3.utils.toWei(dTxData.amount)),
+                from,
+                to: fWallet.toChecksumAddress(dTxData.opera_address),
+                memo: dTxData.memo,
             });
         },
 
-        /**
-         * Triggered on 'ledger-status-code' event.
-         *
-         * @param {string} _code
-         */
-        onLedgerStatusCode(_code) {
-            if (_code === U2FStatus.USER_REJECTED_REQUESTED_ACTION) {
+        onSendTransactionSuccess(_data) {
+            if (this._swapTokenData) {
                 this.$emit('change-component', {
+                    to: 'transaction-completing',
                     from: 'transaction-confirmation',
-                    to: 'transaction-reject-message',
+                    data: {
+                        tx: _data.data.sendTransaction.hash,
+                        ...this._swapTokenData,
+                    },
+                });
+            } else {
+                this.$emit('change-component', {
+                    to: 'transaction-success-message',
+                    from: 'transaction-confirmation',
+                    data: {
+                        tx: _data.data.sendTransaction.hash,
+                    },
                 });
             }
+        },
+
+        /**
+         * Re-target `'change-component'` event.
+         *
+         * @param {object} _data
+         */
+        onChangeComponent(_data) {
+            this.$emit('change-component', _data);
         },
 
         toFTM,

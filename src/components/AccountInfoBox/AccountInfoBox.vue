@@ -32,7 +32,6 @@
 import FCard from '../core/FCard/FCard.vue';
 import AccountActionsBox from '../AccountActionsBox/AccountActionsBox.vue';
 import { mapGetters } from 'vuex';
-import gql from 'graphql-tag';
 import { formatCurrencyByLocale } from '../../filters.js';
 import { toFTM } from '../../utils/transactions.js';
 import { pollingMixin } from '../../mixins/polling.js';
@@ -43,62 +42,23 @@ export default {
 
     mixins: [pollingMixin],
 
-    apollo: {
-        account: {
-            query: gql`
-                query AccountByAddress($address: Address!) {
-                    account(address: $address) {
-                        address
-                        balance
-                        totalValue
-                        txCount
-                    }
-                }
-            `,
-            // pollInterval: 3000,
-            variables() {
-                return {
-                    address: this.currentAccountAddress,
-                };
-            },
-            result(_data) {
-                if (_data.data.account) {
-                    this.dAccount = _data.data.account;
-                }
-            },
-            error(_error) {
-                console.log(_error);
-                // this.dAccountByAddressError = _error.message;
-            },
-        },
-    },
-
-    data() {
-        return {
-            dAccount: {},
-        };
-    },
-
     computed: {
         ...mapGetters(['currentAccount', 'currentAccountAddress']),
 
         accountBalance() {
-            return this.account ? this.account.balance : this.currentAccount ? this.currentAccount.balance : 0;
+            return this.currentAccount ? this.currentAccount.balance : 0;
         },
 
         accountTotalBalance() {
-            return this.account ? this.account.totalValue : this.currentAccount ? this.currentAccount.totalBalance : 0;
+            return this.currentAccount ? this.currentAccount.totalBalance : 0;
         },
     },
 
     mounted() {
         this._polling.start(
-            'acount-query',
+            'update-account-balance',
             () => {
-                if (!this.$apollo.queries.account.loading) {
-                    this.$apollo.queries.account.refresh();
-                    this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
-                }
+                this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
             },
             3000
         );

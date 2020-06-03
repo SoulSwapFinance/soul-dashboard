@@ -81,8 +81,10 @@
                             </h3>
                         </template>
                         <template v-else>
-                            <button class="btn large" disabled @click="claimRewards()">Claim Rewards</button>
-                            <button class="btn large" @click="increaseDelegation()">
+                            <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
+                                Claim Rewards
+                            </button>
+                            <button class="btn large" :disabled="!canIncreaseDelegation" @click="increaseDelegation()">
                                 Increase Delegation
                             </button>
                             <button class="btn large" @click="unstake()">Undelegate</button>
@@ -105,7 +107,7 @@ import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 
 export default {
-    name: 'StakeFTM',
+    name: 'StakingInfo',
 
     components: { FCard },
 
@@ -117,6 +119,12 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        canIncreaseDelegation() {
+            const { accountInfo } = this;
+
+            return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+        },
     },
 
     asyncComputed: {
@@ -137,6 +145,9 @@ export default {
                 delegation.pendingRewards.amount === '0x0' &&
                 delegation.pendingRewards.fromEpoch === '0x0' &&
                 delegation.pendingRewards.toEpoch === '0x0';
+
+            accountInfo.fromEpoch = delegation ? formatHexToInt(delegation.pendingRewards.fromEpoch) : 0;
+            accountInfo.toEpoch = delegation ? formatHexToInt(delegation.pendingRewards.toEpoch) : 0;
 
             return accountInfo;
         },
@@ -169,7 +180,7 @@ export default {
 
             this.$emit('change-component', {
                 to: 'stake-form',
-                from: 'stake-f-t-m',
+                from: 'staking-info',
                 data: {
                     increaseDelegation: !!_increaseDelegation,
                     stakerInfo,
@@ -183,7 +194,7 @@ export default {
 
             this.$emit('change-component', {
                 to: 'unstake-f-t-m',
-                from: 'stake-f-t-m',
+                from: 'staking-info',
                 data: {
                     accountInfo: {
                         ...accountInfo,
@@ -197,8 +208,22 @@ export default {
             this.stake(true);
         },
 
-        claimRewards() {
-            alert('not implemented yet');
+        async claimRewards() {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            if (accountInfo.pendingRewards > 0) {
+                this.$emit('change-component', {
+                    to: 'claim-rewards-confirmation',
+                    from: 'staking-info',
+                    data: {
+                        accountInfo: {
+                            ...accountInfo,
+                            stakerInfo,
+                        },
+                    },
+                });
+            }
         },
 
         toFTM,
