@@ -98,7 +98,7 @@ export default {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 this.currentAccount.address,
-                '0x7A120'
+                '0xF4240'
             );
         },
 
