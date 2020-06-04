@@ -21,11 +21,11 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col-7">
-                            <f-transaction-status :status="value" />
+                            <f-transaction-status :status="value" class="light" />
                         </div>
                     </div>
                     <template v-else>
-                        <f-transaction-status :status="value" />
+                        <f-transaction-status :status="value" class="light" />
                     </template>
                 </template>
 

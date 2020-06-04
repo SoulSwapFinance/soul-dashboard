@@ -1,28 +1,53 @@
 <template>
     <div class="unstake-ftm">
         <f-card class="f-card-double-padding f-data-layout">
-            <h2 class="align-left">
-                Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
-            </h2>
+            <f-form ref="form" center-form @f-form-submit="onFormSubmit">
+                <legend class="h2 align-left">
+                    Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                </legend>
 
-            <div class="smaller-content">
-                <h3>The withdrawal of your delegated tokens will take 7 days</h3>
+                <div class="form-body">
+                    <h3>The withdrawal of your delegated tokens will take 7 days</h3>
 
-                <div class="form-buttons align-center">
-                    <button class="btn light large" @click="onPreviousBtnClick">Previous</button>
-                    <button class="btn large" @click="onUndelegateBtnClick">Ok, undelegate</button>
+                    <f-input
+                        label="Amount"
+                        field-size="large"
+                        type="number"
+                        autocomplete="off"
+                        min="1"
+                        step="any"
+                        name="amount"
+                        :value="undelegateMax.toString()"
+                        :validator="checkAmount"
+                        validate-on-input
+                    >
+                        <template #bottom="sProps">
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                {{ amountErrMsg }}
+                            </f-message>
+                        </template>
+                    </f-input>
+
+                    <div class="form-buttons align-center">
+                        <button type="button" class="btn light large" @click="onPreviousBtnClick">Previous</button>
+                        <button type="submit" class="btn large">Ok, undelegate</button>
+                    </div>
                 </div>
-            </div>
+            </f-form>
         </f-card>
     </div>
 </template>
 
 <script>
 import FCard from '../core/FCard/FCard.vue';
+import FForm from '../core/FForm/FForm.vue';
+import FInput from '../core/FInput/FInput.vue';
+import FMessage from '../core/FMessage/FMessage.vue';
+import { WEIToFTM } from '../../utils/transactions.js';
 export default {
     name: 'UnstakeFTM',
 
-    components: { FCard },
+    components: { FMessage, FInput, FForm, FCard },
 
     props: {
         /** `accountInfo` object from `StakingInfo` component. */
@@ -34,7 +59,35 @@ export default {
         },
     },
 
+    data() {
+        return {
+            amountErrMsg: '',
+        };
+    },
+
+    computed: {
+        undelegateMax() {
+            return this.accountInfo ? WEIToFTM(this.accountInfo.delegation.amount) : 0;
+        },
+    },
+
     methods: {
+        checkAmount(_value) {
+            const value = parseFloat(_value);
+            const { undelegateMax } = this;
+            let ok = false;
+
+            this.amountErrMsg = `You can undelegate min 1 FTM and max ${undelegateMax} FTM`;
+
+            if (!isNaN(value)) {
+                if (value >= 1 && value <= undelegateMax) {
+                    ok = true;
+                }
+            }
+
+            return ok;
+        },
+
         onPreviousBtnClick() {
             this.$emit('change-component', {
                 to: 'staking-info',
@@ -42,12 +95,16 @@ export default {
             });
         },
 
-        onUndelegateBtnClick() {
+        onFormSubmit(_event) {
+            const amount = parseFloat(_event.detail.data.amount);
+
             this.$emit('change-component', {
                 to: 'unstake-confirmation',
                 from: 'unstake-f-t-m',
                 data: {
                     accountInfo: this.accountInfo,
+                    amount,
+                    undelegateMax: amount === this.undelegateMax,
                 },
             });
         },

@@ -12,6 +12,15 @@ export function getUniqueId() {
 }
 
 /**
+ * @return {int}
+ */
+export function getRandomInt() {
+    return window.crypto
+        ? window.crypto.getRandomValues(new Uint32Array(1))[0] + 1
+        : Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER - 1)) + 1;
+}
+
+/**
  * Stringify object, skip cyclic objects.
  *
  * @param {object} _obj

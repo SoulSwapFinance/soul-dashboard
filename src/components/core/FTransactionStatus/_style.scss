@@ -16,6 +16,23 @@
     &.pending {
         color: #2B3954;
     }
+
+    &.light {
+        background-color: transparent;
+        border-radius: 0;
+        color: #2B3954;
+        font-weight: bold;
+        padding: initial;
+
+        &.success {
+            color: #18a957;
+        }
+
+        &.error {
+            color: #df1642;
+        }
+    }
+
     /*
     background-color: $warning-color;
     border-radius: 16px;

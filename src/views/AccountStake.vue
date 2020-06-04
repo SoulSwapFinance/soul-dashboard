@@ -59,6 +59,8 @@ export default {
                 case 'claim-rewards-confirmation':
                     return {
                         accountInfo: this._data_.accountInfo,
+                        amount: this._data_.amount,
+                        undelegateMax: this._data_.undelegateMax,
                     };
                 case 'transaction-success-message':
                     return {

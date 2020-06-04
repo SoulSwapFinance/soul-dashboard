@@ -9,7 +9,7 @@ const ethUtil = require('ethereumjs-util');
 const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})/;
 const mnemonicRE = /^[ a-z]+$/;
 
-const FANTOM_CHAIN_ID = 0xfa;
+export const FANTOM_CHAIN_ID = 0xfa;
 
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
@@ -105,6 +105,9 @@ export class FantomWeb3Wallet {
                                 amount
                                 fromEpoch
                                 toEpoch
+                            }
+                            withdrawRequests {
+                                address
                             }
                         }
                     }

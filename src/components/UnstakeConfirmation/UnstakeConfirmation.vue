@@ -31,7 +31,7 @@
 
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Undelegate Amount</div>
-                    <div class="col break-word">{{ toFTM(accountInfo.delegation.amount) }}</div>
+                    <div class="col break-word">{{ amount }}</div>
                 </div>
             </div>
 
@@ -73,6 +73,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { getRandomInt } from '../../utils';
 
 export default {
     name: 'UnstakeConfirmation',
@@ -87,6 +88,16 @@ export default {
                 return {};
             },
         },
+        /** Amount of FTM tokens to unstake */
+        amount: {
+            type: Number,
+            default: 1,
+        },
+        /** Unstake maximal amount of FTM tokens */
+        undelegateMax: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -99,10 +110,16 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
+    activated() {
+        this.setTx();
+    },
+
     methods: {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.prepareToWithdrawDelegationTx(),
+                this.undelegateMax
+                    ? sfcUtils.prepareToWithdrawDelegationTx()
+                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), this.amount),
                 this.currentAccount.address,
                 '0x30D40'
             );

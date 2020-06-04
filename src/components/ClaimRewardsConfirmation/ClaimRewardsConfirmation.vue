@@ -89,7 +89,7 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    mounted() {
+    activated() {
         this.setTx();
     },
 
