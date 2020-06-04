@@ -6,15 +6,23 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-6 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
-                            <template v-if="value">{{ value }}</template>
-                            <template v-else>neni :(</template>
+                            <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
+                            <template v-else>
+                                <button
+                                    :disabled="!!canNotWithdraw(item.requestBlock.timestamp)"
+                                    class="btn withdraw-btn"
+                                    :data-validator-id="value"
+                                >
+                                    {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
+                                </button>
+                            </template>
                         </div>
                     </div>
                     <template v-else>
                         <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                         <template v-else>
                             <button
-                                :disabled="item.requestBlock.timestamp"
+                                :disabled="!!canNotWithdraw(item.requestBlock.timestamp)"
                                 class="btn withdraw-btn"
                                 :data-validator-id="value"
                             >
