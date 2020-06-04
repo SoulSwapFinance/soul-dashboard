@@ -108,6 +108,23 @@ export class FantomWeb3Wallet {
                             }
                             withdrawRequests {
                                 address
+                                receiver
+                                account {
+                                    address
+                                }
+                                stakerID
+                                withdrawRequestID
+                                isDelegation
+                                amount
+                                withdrawPenalty
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
                             }
                         }
                     }

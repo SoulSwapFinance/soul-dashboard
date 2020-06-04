@@ -10,18 +10,18 @@ export const filtersOptions = {
 };
 
 /**
- * @param {string|number} _value
- * @return {Date|null}
+ * @param {string|number} _timestamp
+ * @return {int}
  */
-export function timestampToDate(_value) {
-    if (!_value) {
-        return '';
+export function prepareTimestamp(_timestamp) {
+    if (!_timestamp) {
+        return 0;
     }
 
-    let timestamp = _value;
+    let timestamp = _timestamp;
 
-    if (web3utils.isHexStrict(_value)) {
-        timestamp = formatHexToInt(_value);
+    if (web3utils.isHexStrict(_timestamp)) {
+        timestamp = formatHexToInt(_timestamp);
     }
 
     if (timestamp >= 1e16 || timestamp <= -1e16) {
@@ -32,11 +32,21 @@ export function timestampToDate(_value) {
         timestamp *= 1000;
     }
 
-    if (timestamp) {
-        return new Date(timestamp);
+    return timestamp;
+}
+
+/**
+ * @param {string|number} _timestamp
+ * @return {Date|''}
+ */
+export function timestampToDate(_timestamp) {
+    const timestamp = prepareTimestamp(_timestamp);
+
+    if (!timestamp) {
+        return '';
     }
 
-    return null;
+    return new Date(timestamp);
 }
 
 /**

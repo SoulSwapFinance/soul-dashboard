@@ -238,9 +238,6 @@ export default {
                     itemProp: 'transaction.status',
                     formatter: (_value) => formatHexToInt(_value),
                     width: '140px',
-                    css: {
-                        textAlign: 'center',
-                    },
                 },
                 {
                     name: 'timestamp',

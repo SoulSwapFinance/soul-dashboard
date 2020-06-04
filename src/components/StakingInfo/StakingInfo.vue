@@ -87,7 +87,9 @@
                             <button class="btn large" :disabled="!canIncreaseDelegation" @click="increaseDelegation()">
                                 Increase Delegation
                             </button>
-                            <button class="btn large" @click="unstake()">Undelegate</button>
+                            <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
+                                Undelegate
+                            </button>
                         </template>
                     </template>
                     <template v-else>
@@ -95,6 +97,20 @@
                     </template>
                 </div>
             </div>
+        </f-card>
+
+        <f-card
+            v-if="
+                accountInfo &&
+                accountInfo.delegation &&
+                accountInfo.delegation.withdrawRequests &&
+                accountInfo.delegation.withdrawRequests.length
+            "
+            class="f-card-double-padding account-main-content-mt"
+        >
+            <h2>Undelegations History</h2>
+
+            <withdraw-request-list :items="accountInfo.delegation.withdrawRequests" />
         </f-card>
     </div>
 </template>
@@ -105,11 +121,12 @@ import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
+import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 
 export default {
     name: 'StakingInfo',
 
-    components: { FCard },
+    components: { WithdrawRequestList, FCard },
 
     data() {
         return {
@@ -121,6 +138,12 @@ export default {
         ...mapGetters(['currentAccount']),
 
         canIncreaseDelegation() {
+            const { accountInfo } = this;
+
+            return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+        },
+
+        canUndelegate() {
             const { accountInfo } = this;
 
             return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
@@ -188,7 +211,11 @@ export default {
             });
         },
 
-        async unstake() {
+        async undelegate() {
+            if (!this.canUndelegate) {
+                return;
+            }
+
             const accountInfo = await this.accountInfo;
             const stakerInfo = await this.stakerInfo;
 
@@ -205,14 +232,16 @@ export default {
         },
 
         increaseDelegation() {
-            this.stake(true);
+            if (this.canIncreaseDelegation) {
+                this.stake(true);
+            }
         },
 
         async claimRewards() {
             const accountInfo = await this.accountInfo;
             const stakerInfo = await this.stakerInfo;
 
-            if (accountInfo.pendingRewards > 0) {
+            if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
                 this.$emit('change-component', {
                     to: 'claim-rewards-confirmation',
                     from: 'staking-info',
