@@ -111,11 +111,11 @@ export default {
          * @return {string}
          */
         canNotWithdraw(_timestamp) {
-            const start = dayjs(this.prepareTimestamp(_timestamp));
-            const end = start.add(7, 'days');
+            const end = dayjs(this.prepareTimestamp(_timestamp)).add(7, 'days');
+            const now = dayjs();
 
-            if (start.diff(end) < 0) {
-                return end.from(start);
+            if (now.diff(end) < 0) {
+                return end.from(now);
             } else {
                 return '';
             }
