@@ -24,7 +24,7 @@
                             <button
                                 :disabled="!!canNotWithdraw(item.requestBlock.timestamp)"
                                 class="btn withdraw-btn"
-                                :data-validator-id="value"
+                                :data-item-id="item.id"
                             >
                                 {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
                             </button>
@@ -133,7 +133,12 @@ export default {
             const eWithdrawBtn = _event.target.closest('.withdraw-btn');
 
             if (eWithdrawBtn) {
-                alert('not implemented yet');
+                const id = eWithdrawBtn.getAttribute('data-item-id');
+                const withdrawRequest = this.dItems.find((_item) => _item.id === id);
+
+                if (withdrawRequest) {
+                    this.$emit('withdraw-request-selected', withdrawRequest);
+                }
             }
         },
 

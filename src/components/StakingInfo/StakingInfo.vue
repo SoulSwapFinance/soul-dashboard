@@ -76,9 +76,11 @@
                 <div class="col align-center form-buttons">
                     <template v-if="stakerInfo">
                         <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
+                            <!--
                             <h3 class="align-center">
                                 Your {{ toFTM(accountInfo.delegated) }} Opera FTM is available for withdraw in 7 days.
                             </h3>
+                            -->
                         </template>
                         <template v-else>
                             <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
@@ -99,18 +101,10 @@
             </div>
         </f-card>
 
-        <f-card
-            v-if="
-                accountInfo &&
-                accountInfo.delegation &&
-                accountInfo.delegation.withdrawRequests &&
-                accountInfo.delegation.withdrawRequests.length
-            "
-            class="f-card-double-padding account-main-content-mt"
-        >
+        <f-card v-if="withdrawRequests.length" class="f-card-double-padding account-main-content-mt">
             <h2>Undelegations History</h2>
 
-            <withdraw-request-list :items="accountInfo.delegation.withdrawRequests" />
+            <withdraw-request-list :items="withdrawRequests" @withdraw-request-selected="onWithdrawRequestSelected" />
         </f-card>
     </div>
 </template>
@@ -147,6 +141,34 @@ export default {
             const { accountInfo } = this;
 
             return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+        },
+
+        withdrawRequests() {
+            const { accountInfo } = this;
+            const requests = [];
+
+            if (accountInfo) {
+                if (accountInfo.preparedForWithdrawal) {
+                    requests.push({
+                        amount: accountInfo.delegation.amount,
+                        requestBlock: {
+                            timestamp: accountInfo.delegation.deactivatedTime,
+                        },
+                    });
+                }
+
+                if (
+                    accountInfo.delegation &&
+                    accountInfo.delegation.withdrawRequests &&
+                    accountInfo.delegation.withdrawRequests.length
+                ) {
+                    accountInfo.delegation.withdrawRequests.forEach((_request) => {
+                        requests.push(_request);
+                    });
+                }
+            }
+
+            return requests;
         },
     },
 
@@ -253,6 +275,28 @@ export default {
                     },
                 });
             }
+        },
+
+        /**
+         * @param {object} _withdrawRequest
+         */
+        async onWithdrawRequestSelected(_withdrawRequest) {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            this.$emit('change-component', {
+                to: 'withdraw-f-t-m-confirmation',
+                from: 'staking-info',
+                data: {
+                    accountInfo: {
+                        ...accountInfo,
+                        stakerInfo,
+                    },
+                    amount: parseFloat(this.toFTM(_withdrawRequest.amount)),
+                    withdraw: true,
+                    withdrawRequest: _withdrawRequest,
+                },
+            });
         },
 
         toFTM,

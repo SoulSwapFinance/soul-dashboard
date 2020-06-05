@@ -19,6 +19,7 @@ import TransactionRejectMessage from '../components/TransactionRejectMessage/Tra
 import UnstakeFTM from '../components/UnstakeFTM/UnstakeFTM.vue';
 import UnstakeConfirmation from '../components/UnstakeConfirmation/UnstakeConfirmation.vue';
 import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/ClaimRewardsConfirmation.vue';
+import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/WithdrawFTMConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
 const DEFAULT_COMPONENT = 'staking-info';
@@ -33,6 +34,7 @@ export default {
         StakingInfo,
         UnstakeConfirmation,
         ClaimRewardsConfirmation,
+        WithdrawFTMConfirmation,
     },
 
     mixins: [eventBusMixin],
@@ -67,6 +69,8 @@ export default {
                         tx: this._data_.tx,
                         title: this._data_.successMessage,
                     };
+                case 'withdraw-f-t-m-confirmation':
+                    return this._data_;
                 default:
                     return null;
             }
