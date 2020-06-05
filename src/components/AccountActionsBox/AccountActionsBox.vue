@@ -28,7 +28,7 @@
             <li>
                 <router-link :to="{ name: 'account-history' }" class="action" title="Home">
                     <span class="btn large same-size round">
-                        <icon data="@/assets/svg/dashboard.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/tx-history.svg" width="20" height="20" aria-hidden="true" />
                     </span>
                     <span class="link-label">History</span>
                 </router-link>

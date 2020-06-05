@@ -2,7 +2,14 @@
     <div class="keystore-password-form">
         <f-form @f-form-submit="onFormSubmit" @f-form-change="onFormChange" @f-form-input="onFormInput">
             <fieldset class="">
-                <legend><h2>Create a keystore file and password</h2></legend>
+                <legend class="h2">
+                    <template v-if="downloadKeystoreFile">
+                        Create a keystore file and password
+                    </template>
+                    <template v-else>
+                        Set the password for your wallet
+                    </template>
+                </legend>
 
                 <div class="form-body">
                     <div class="main">
@@ -44,9 +51,15 @@
                         </f-password-field>
 
                         <f-checkbox v-model="confirmation" name="confirmation">
-                            I made a backup of the keystore file and saved the password in a safe.
-                            <br />
-                            I understand that I will need the password and the keystore file to access my wallet.
+                            <template v-if="downloadKeystoreFile">
+                                I understand that I will need both the keystore file and the password to access my
+                                wallet. Once I have downloaded the file below, I will safely store it as well as the
+                                password
+                            </template>
+                            <template v-else>
+                                I understand that I will need this password to verify all transactions within my wallet.
+                                I will safely store the password.
+                            </template>
                         </f-checkbox>
                     </div>
 
@@ -57,7 +70,12 @@
                             style="max-width: 100%;"
                             :class="{ disabled: submitDisabled }"
                         >
-                            Download keystore file and continue
+                            <template v-if="downloadKeystoreFile">
+                                Download keystore file and continue
+                            </template>
+                            <template v-else>
+                                Continue
+                            </template>
                         </button>
                     </div>
                 </div>
@@ -73,6 +91,7 @@ import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
+import { clientInfo } from '../../utils/client-info.js';
 
 export default {
     components: {
@@ -101,6 +120,7 @@ export default {
             secondaryPwd: '',
             confirmation: false,
             submitDisabled: true,
+            downloadKeystoreFile: !clientInfo.mobile && !this.restoreAccount,
         };
     },
 
@@ -181,7 +201,11 @@ export default {
                     } else if (!this.restoreAccount) {
                         // create new account
                         account = await this.$fWallet.createMnemonic(pwd);
-                        // fWallet.downloadKeystore(account.keystore);
+
+                        if (this.downloadKeystoreFile) {
+                            fWallet.downloadKeystore(account.keystore);
+                        }
+
                         this.$emit('change-component', {
                             detail: {
                                 from: 'create-password-form',

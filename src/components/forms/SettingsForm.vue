@@ -15,7 +15,7 @@
 
                         <f-select
                             name="fraction_digits"
-                            label="Fraction Digits"
+                            label="Decimal Points"
                             select-size="large"
                             :data="fractionDigits"
                             :value="$store.state.fractionDigits.toString()"
@@ -23,8 +23,10 @@
 
                         <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
 
+                        <!--
                         <br />
                         <f-checkbox name="night_mode" label="Night Mode" />
+                        -->
                     </div>
                 </fieldset>
             </f-form>
@@ -35,14 +37,13 @@
 <script>
 import FCard from '../core/FCard/FCard.vue';
 import FForm from '../core/FForm/FForm.vue';
-import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FSelect, FCheckbox, FForm, FCard },
+    components: { FSelect, FForm, FCard },
 
     data() {
         return {

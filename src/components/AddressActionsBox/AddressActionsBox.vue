@@ -4,7 +4,7 @@
             <li>
                 <f-copy-button
                     :text="currentAccount.address"
-                    tooltip="Copy address to clipboard"
+                    tooltip="Copy Address to Clipboard"
                     popover-text="Address copied to clipboard"
                     class="btn large light same-size round"
                 />
@@ -12,16 +12,16 @@
             <li>
                 <button
                     class="btn large light same-size round"
-                    title="QR code of address"
+                    title="QR Code of Address"
                     @click="$refs.qrWindow.show()"
                 >
                     <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </li>
-            <li v-if="!currentAccount.isLedgerAccount">
+            <li v-if="downloadKeystoreFile">
                 <button
                     class="btn large light same-size round"
-                    title="Download keystore"
+                    title="Download Keystore"
                     @click="onDownloadKeystoreClick"
                 >
                     <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
@@ -54,19 +54,19 @@
                     class="btn large light"
                 >
                     <icon data="@/assets/svg/copy.svg" width="20" height="20" aria-hidden="true" />
-                    Copy address to clipboard
+                    Copy Address to Clipboard
                 </f-copy-button>
             </li>
             <li>
                 <button class="btn large light" @click="$refs.qrWindow.show()">
                     <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
-                    QR code of address
+                    QR Code of Address
                 </button>
             </li>
-            <li v-if="!currentAccount.isLedgerAccount">
+            <li v-if="downloadKeystoreFile">
                 <button class="btn large light" @click="onDownloadKeystoreClick">
                     <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
-                    Download keystore
+                    Download Keystore
                 </button>
             </li>
             <li v-if="currentAccount.isLedgerAccount">
@@ -94,6 +94,7 @@ import { mapGetters } from 'vuex';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSettingsWindow.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
+import { clientInfo } from '../../utils/client-info.js';
 
 export default {
     components: { QRCodeWindow, AccountSettingsWindow, FCopyButton },
@@ -114,6 +115,10 @@ export default {
                 address: this.currentAccount.address,
                 order: -1,
             };
+        },
+
+        downloadKeystoreFile() {
+            return !this.currentAccount.isLedgerAccount && !clientInfo.mobile;
         },
     },
 

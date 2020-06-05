@@ -92,6 +92,12 @@
                             <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
                                 Undelegate
                             </button>
+
+                            <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
+                                You can claim rewards for a maximum of 200 epochs. <br />
+                                If you have more than 200 epochs of pending rewards, please use the claim function
+                                repeatedly.
+                            </f-message>
                         </template>
                     </template>
                     <template v-else>
@@ -116,11 +122,12 @@ import { toFTM } from '../../utils/transactions.js';
 import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
     name: 'StakingInfo',
 
-    components: { WithdrawRequestList, FCard },
+    components: { FMessage, WithdrawRequestList, FCard },
 
     data() {
         return {

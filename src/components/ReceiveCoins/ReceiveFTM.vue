@@ -18,6 +18,13 @@
                     popover-text="Address copied to clipboard"
                     class="btn large light same-size round"
                 />
+                <button
+                    class="btn large light same-size round"
+                    title="QR code of address"
+                    @click="$refs.qrWindow.show()"
+                >
+                    <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                </button>
             </h3>
         </div>
 
@@ -35,7 +42,7 @@
             </div>
         </div>
 
-        <vue-q-r-code-component :text="currentAccount.address" class="qr-code" />
+        <q-r-code-window ref="qrWindow" :address="currentAccount.address" />
 
         <f-window
             ref="confirmationWindow"
@@ -58,18 +65,18 @@
 </template>
 
 <script>
-import VueQRCodeComponent from 'vue-qrcode-component';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
+import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 
 export default {
     name: 'ReceiveFTM',
 
-    components: { FCopyButton, FWindow, LedgerMessage, VueQRCodeComponent, PulseLoader },
+    components: { QRCodeWindow, FCopyButton, FWindow, LedgerMessage, PulseLoader },
 
     props: {
         /** Start verify FTM account */
