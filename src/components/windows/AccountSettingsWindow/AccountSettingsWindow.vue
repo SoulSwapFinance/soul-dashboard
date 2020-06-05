@@ -8,6 +8,7 @@
             class="double-body-padding c-footer_"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
+            @window-hide="onWindowHide"
         >
             <account-settings-form
                 :account-data="accountData"
@@ -50,6 +51,15 @@ export default {
          */
         onAccountSettingsFormData() {
             this.$refs.win.hide('fade-leave-active');
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

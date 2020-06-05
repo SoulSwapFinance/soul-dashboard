@@ -1,6 +1,6 @@
 <template>
     <div class="address-actions-box">
-        <ul class="no-markers">
+        <ul v-if="!verticalMode" class="no-markers">
             <li>
                 <f-copy-button
                     :text="currentAccount.address"
@@ -39,17 +39,53 @@
             <li>
                 <button
                     class="btn large light same-size round"
-                    title="Edit Account"
+                    title="Edit Wallet"
                     @click="$refs.accountSettingsWindow.show()"
                 >
                     <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                 </button>
             </li>
         </ul>
+        <ul v-else class="no-markers vertical-mode">
+            <li>
+                <f-copy-button
+                    :text="currentAccount.address"
+                    popover-text="Address copied to clipboard"
+                    class="btn large light"
+                >
+                    <icon data="@/assets/svg/copy.svg" width="20" height="20" aria-hidden="true" />
+                    Copy address to clipboard
+                </f-copy-button>
+            </li>
+            <li>
+                <button class="btn large light" @click="$refs.qrWindow.show()">
+                    <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                    QR code of address
+                </button>
+            </li>
+            <li v-if="!currentAccount.isLedgerAccount">
+                <button class="btn large light" @click="onDownloadKeystoreClick">
+                    <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
+                    Download keystore
+                </button>
+            </li>
+            <li v-if="currentAccount.isLedgerAccount">
+                <router-link :to="{ name: 'account-receive', params: { verify: true } }" class="btn large light">
+                    <icon data="@/assets/svg/check.svg" width="20" height="20" />
+                    Verify Address on Ledger
+                </router-link>
+            </li>
+            <li>
+                <button class="btn large light" @click="$refs.accountSettingsWindow.show()">
+                    <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
+                    Edit Wallet
+                </button>
+            </li>
+        </ul>
 
-        <q-r-code-window ref="qrWindow" :address="currentAccount.address" />
+        <q-r-code-window ref="qrWindow" :address="currentAccount.address" @window-hide="onWindowHide" />
 
-        <account-settings-window ref="accountSettingsWindow" :account-data="accountData" />
+        <account-settings-window ref="accountSettingsWindow" :account-data="accountData" @window-hide="onWindowHide" />
     </div>
 </template>
 
@@ -61,6 +97,14 @@ import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 
 export default {
     components: { QRCodeWindow, AccountSettingsWindow, FCopyButton },
+
+    props: {
+        /** Show buttons with labels. */
+        verticalMode: {
+            type: Boolean,
+            default: false,
+        },
+    },
 
     computed: {
         ...mapGetters(['currentAccount']),
@@ -80,6 +124,15 @@ export default {
             if (keystore) {
                 this.$fWallet.downloadKeystore(keystore);
             }
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

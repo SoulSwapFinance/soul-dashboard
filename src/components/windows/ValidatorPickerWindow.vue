@@ -6,6 +6,7 @@
             style="max-width: 1000px; height: 100%;"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
+            @window-hide="onWindowHide"
         >
             <template #title>
                 <h2>
@@ -47,6 +48,15 @@ export default {
         onValidatorSelected(_validatorInfo) {
             this.$refs.win.hide('fade-leave-active');
             this.$emit('validator-selected', _validatorInfo);
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

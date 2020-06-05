@@ -269,6 +269,9 @@ export function keyboardNavigation(_event, _selector, _circular) {
 
             if (_circular && elem === null) {
                 elem = eTarget.parentElement.firstElementChild;
+                while (elem && !elem.matches(_selector)) {
+                    elem = elem.nextElementSibling;
+                }
             }
         } else if (isKey('ArrowLeft', _event) || isKey('ArrowDown', _event)) {
             elem = eTarget.previousElementSibling;
@@ -278,6 +281,9 @@ export function keyboardNavigation(_event, _selector, _circular) {
 
             if (_circular && elem === null) {
                 elem = eTarget.parentElement.lastElementChild;
+                while (elem && !elem.matches(_selector)) {
+                    elem = elem.previousElementSibling;
+                }
             }
         }
     }

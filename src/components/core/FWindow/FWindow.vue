@@ -2,6 +2,7 @@
     <transition :enter-active-class="dAnimationIn" :leave-active-class="dAnimationOut">
         <div
             v-if="isVisible"
+            :id="id"
             class="f-window"
             :class="cssClass"
             :style="style"
@@ -51,7 +52,7 @@
 
 <script>
 import { getLengthAndUnit, getComputedStyle } from '../../../utils/css.js';
-import { throttle } from '../../../utils/index.js';
+import { getUniqueId, throttle } from '../../../utils/index.js';
 import FOverlay from '../FOverlay/FOverlay.vue';
 import { focusTrap, isKey, returnFocus, setReceiveFocusFromAttr } from '../../../utils/aria.js';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -199,6 +200,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Hide window on browser window mousedown. */
+        hideOnWindowMousedown: {
+            type: Boolean,
+            default: false,
+        },
         /** Hide window when escape key is pressed. */
         hideOnEscapeKey: {
             type: Boolean,
@@ -208,6 +214,7 @@ export default {
 
     data() {
         return {
+            id: getUniqueId(),
             isVisible: false,
             dPosition: this.popover ? 'absolute' : this.position,
             dAnimationIn: this.animationIn,
@@ -281,7 +288,13 @@ export default {
     mounted() {
         document.body.appendChild(this.$el);
 
-        window.addEventListener('resize', this._resizeCallback, false);
+        if (this.hideOnWindowResize) {
+            window.addEventListener('resize', this._resizeCallback, false);
+        }
+
+        if (this.hideOnWindowMousedown) {
+            window.addEventListener('mousedown', this.onWindowMousedown, false);
+        }
 
         if (this.visible) {
             this.$nextTick(() => {
@@ -293,8 +306,12 @@ export default {
     beforeDestroy() {
         this._firstLastFocusables = null;
 
-        if (this._resizeCallback) {
+        if (this.hideOnWindowResize) {
             window.removeEventListener('resize', this._resizeCallback);
+        }
+
+        if (this.hideOnWindowMousedown) {
+            window.removeEventListener('mousedown', this.onWindowMousedown);
         }
 
         this.clearHideAfterTimeout();
@@ -591,6 +608,15 @@ export default {
             return alignment;
         },
 
+        /**
+         * @return {boolean}
+         */
+        isChildWindowOpened() {
+            const openedWindow = this.findChildByName('f-window', false, (_component) => _component.isVisible);
+
+            return !!openedWindow;
+        },
+
         onWindowResize() {
             if (this.isVisible) {
                 if (this.hideOnWindowResize) {
@@ -598,6 +624,20 @@ export default {
                 } /* else {
                     this.correctPositionAndSize();
                 }*/
+            }
+        },
+
+        /**
+         * @param {MouseEvent} _event
+         */
+        onWindowMousedown(_event) {
+            if (
+                this.isVisible &&
+                this.hideOnWindowMousedown &&
+                !_event.target.closest(`#${this.id}`) &&
+                !this.isChildWindowOpened()
+            ) {
+                this.hide();
             }
         },
 

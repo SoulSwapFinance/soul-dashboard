@@ -49,6 +49,8 @@ import { getUniqueId } from '../../../utils';
 import { eventBusMixin } from '../../../mixins/event-bus.js';
 
 export default {
+    name: 'FInput',
+
     mixins: [inputMixin, helpersMixin, eventBusMixin],
 
     props: {
@@ -214,7 +216,7 @@ export default {
          * @return {null|*|Vue}
          */
         getFMessage(_type) {
-            const fMessages = this.findChildrenByName('f-message');
+            const fMessages = this.findChildrenByName('f-message', true);
             let fMessage = null;
 
             for (let i = 0, len1 = fMessages.length; i < len1; i++) {
@@ -243,6 +245,11 @@ export default {
          */
         onInput(_event) {
             this.val = _event.target.value;
+
+            /**
+             * Passthrough input event
+             * @type {Event}
+             */
             this.$emit('input', _event.target.value);
 
             if (this.validateOnInput) {

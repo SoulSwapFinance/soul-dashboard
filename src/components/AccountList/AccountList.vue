@@ -30,7 +30,7 @@
                                     <button
                                         v-if="editMode"
                                         class="btn large_ light same-size round"
-                                        title="Edit Account"
+                                        title="Edit Wallet"
                                         :data-address="account.address"
                                         :data-index="index"
                                     >
@@ -53,7 +53,7 @@
                                     <li>
                                         <button
                                             class="btn large_ light same-size round"
-                                            title="Edit Account"
+                                            title="Edit Wallet"
                                             :data-address="account.address"
                                             :data-index="index"
                                             @click="onEditAccountClick"

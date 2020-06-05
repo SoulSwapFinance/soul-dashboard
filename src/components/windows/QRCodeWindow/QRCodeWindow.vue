@@ -6,6 +6,7 @@
         style="max-width: 620px;"
         animation-in="scale-center-enter-active"
         animation-out="scale-center-leave-active"
+        @window-hide="onWindowHide"
     >
         <h3 class="break-word h2 align-center">{{ address }}</h3>
         <vue-q-r-code-component :text="address" class="qr-code" />
@@ -32,6 +33,15 @@ export default {
     methods: {
         show() {
             this.$refs.qrWindow.show();
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

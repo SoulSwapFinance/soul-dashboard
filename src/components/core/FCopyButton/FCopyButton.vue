@@ -35,7 +35,9 @@ import FWindow from '../FWindow/FWindow.vue';
 
 export default {
     name: 'FCopyButton',
+
     components: { FWindow },
+
     props: {
         /** Text to copy. */
         text: {

@@ -166,7 +166,7 @@ export default {
          * @return {null|*|Vue}
          */
         getFMessage(_type) {
-            const fMessages = this.findChildrenByName('f-message');
+            const fMessages = this.findChildrenByName('f-message', true);
             let fMessage = null;
 
             for (let i = 0, len1 = fMessages.length; i < len1; i++) {

@@ -59,4 +59,9 @@
             opacity: 0.6;
         }
     }
+
+    &.popover.light {
+        color: $body-color;
+        background: #fff;
+    }
 }

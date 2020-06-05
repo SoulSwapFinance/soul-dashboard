@@ -7,6 +7,7 @@
             class="colored-header create-account-color double-body-padding c-footer"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
+            @window-hide="onWindowHide"
         >
             <template #title>
                 <h2>
@@ -42,6 +43,15 @@ export default {
     methods: {
         show() {
             this.$refs.win.show();
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

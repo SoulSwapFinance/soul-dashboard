@@ -8,6 +8,7 @@
             class="colored-header ledger-accounts-color double-body-padding"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
+            @window-hide="onWindowHide"
         >
             <template #controls>
                 <button class="btn white-btn close-btn same-size round light" title="Close window">
@@ -32,6 +33,15 @@ export default {
     methods: {
         show() {
             this.$refs.win.show();
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };
