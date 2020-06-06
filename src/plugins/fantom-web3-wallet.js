@@ -126,6 +126,17 @@ export class FantomWeb3Wallet {
                                     timestamp
                                 }
                             }
+                            deactivation {
+                                address
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
                         }
                     }
                 }

@@ -108,7 +108,7 @@
         </f-card>
 
         <f-card v-if="withdrawRequests.length" class="f-card-double-padding account-main-content-mt">
-            <h2>Undelegations History</h2>
+            <h2>Pending Undelegations</h2>
 
             <withdraw-request-list :items="withdrawRequests" @withdraw-request-selected="onWithdrawRequestSelected" />
         </f-card>
@@ -152,24 +152,31 @@ export default {
 
         withdrawRequests() {
             const { accountInfo } = this;
+            const delegation = accountInfo ? accountInfo.delegation : null;
             const requests = [];
+            let amount = '';
 
-            if (accountInfo) {
+            if (delegation) {
                 if (accountInfo.preparedForWithdrawal) {
+                    amount = delegation.amount;
+                }
+
+                if (delegation.deactivation && delegation.deactivation.length) {
+                    delegation.deactivation.forEach((_request) => {
+                        _request.amount = amount;
+                        requests.push(_request);
+                    });
+                } else if (accountInfo.preparedForWithdrawal) {
                     requests.push({
-                        amount: accountInfo.delegation.amount,
+                        amount: delegation.amount,
                         requestBlock: {
-                            timestamp: accountInfo.delegation.deactivatedTime,
+                            timestamp: delegation.deactivatedTime,
                         },
                     });
                 }
 
-                if (
-                    accountInfo.delegation &&
-                    accountInfo.delegation.withdrawRequests &&
-                    accountInfo.delegation.withdrawRequests.length
-                ) {
-                    accountInfo.delegation.withdrawRequests.forEach((_request) => {
+                if (delegation.withdrawRequests && delegation.withdrawRequests.length) {
+                    delegation.withdrawRequests.forEach((_request) => {
                         requests.push(_request);
                     });
                 }

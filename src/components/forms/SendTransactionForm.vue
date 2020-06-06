@@ -160,38 +160,48 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {string} _value
+         */
         async checkAddress(_value) {
             const { sendDirection } = this;
             let validAddress = false;
+            const value = _value.trim();
 
             this.ETHOrBNBAccountBalance = '';
 
             if (sendDirection === 'OperaToOpera') {
-                validAddress = this.$fWallet.isValidAddress(_value);
+                validAddress = this.$fWallet.isValidAddress(value);
                 this.sendToErrorMsg = 'Enter a valid Opera FTM address';
             } else if (sendDirection === 'OperaToBinance') {
-                validAddress = this.$bnb.isBNBAddress(_value);
+                validAddress = this.$bnb.isBNBAddress(value);
                 this.sendToErrorMsg = 'Enter a valid BNB address';
 
                 if (validAddress) {
-                    try {
-                        const data = await this.$bnb.getBNBBalances(_value);
-                        this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${data.balance} FTM`;
-                    } catch (_error) {
+                    if (value.toLowerCase() === 'bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23') {
                         validAddress = false;
+                        this.sendToErrorMsg =
+                            "Deposits to Binance's central BEP2 wallet address have been disabled to ensure users don't lose funds through MEMO errors. Please choose Ethereum as the receiving blockchain and use your Binance ERC20 deposit address instead";
+                    } else {
+                        try {
+                            const data = await this.$bnb.getBNBBalances(value);
+                            this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${data.balance} FTM`;
+                        } catch (_error) {
+                            validAddress = false;
 
-                        if (_error.code !== BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS) {
-                            this.sendToErrorMsg = _error;
+                            if (_error.code !== BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS) {
+                                this.sendToErrorMsg = _error;
+                            }
                         }
                     }
                 }
             } else if (sendDirection === 'OperaToEthereum') {
-                validAddress = this.$bnb.isETHAddress(_value);
+                validAddress = this.$bnb.isETHAddress(value);
                 this.sendToErrorMsg = 'Enter a valid ETH address';
 
                 if (validAddress) {
                     try {
-                        const balance = await this.$bnb.getETHBalance(_value);
+                        const balance = await this.$bnb.getETHBalance(value);
                         this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${balance} FTM`;
                     } catch (_error) {
                         validAddress = false;

@@ -22,6 +22,7 @@
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             style="width: auto; max-width: 360px;"
+            @window-hide="onWindowHide"
         >
             {{ popoverText }}
         </f-window>
@@ -81,6 +82,15 @@ export default {
             } else {
                 this.$refs.popover.show();
             }
+        },
+
+        /**
+         * Re-target `'window-hide'` event.
+         *
+         * @param {object} _data
+         */
+        onWindowHide(_data) {
+            this.$emit('window-hide', _data);
         },
     },
 };

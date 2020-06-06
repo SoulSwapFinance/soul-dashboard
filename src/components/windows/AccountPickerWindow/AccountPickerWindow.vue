@@ -4,7 +4,7 @@
             ref="win"
             modal
             style="max-width: 1050px;"
-            title="Pick an Account"
+            title="Select Wallet"
             class="account-picker-f-window"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"

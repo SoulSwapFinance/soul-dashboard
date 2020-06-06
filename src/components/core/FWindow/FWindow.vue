@@ -234,6 +234,7 @@ export default {
                 'pos-fixed': this.dPosition === 'fixed',
                 'with-header': this.withHeader,
                 'with-footer': this.withFooter,
+                'no-title': !this.title,
                 modal: this.modal,
                 popover: this.popover,
             };

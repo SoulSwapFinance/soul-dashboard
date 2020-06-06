@@ -4,17 +4,13 @@
             <li>
                 <f-copy-button
                     :text="currentAccount.address"
-                    tooltip="Copy Address to Clipboard"
+                    tooltip="Copy Address"
                     popover-text="Address copied to clipboard"
                     class="btn large light same-size round"
                 />
             </li>
             <li>
-                <button
-                    class="btn large light same-size round"
-                    title="QR Code of Address"
-                    @click="$refs.qrWindow.show()"
-                >
+                <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
                     <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </li>
@@ -52,21 +48,16 @@
                     :text="currentAccount.address"
                     popover-text="Address copied to clipboard"
                     class="btn large light"
+                    @window-hide="onWindowHide"
                 >
                     <icon data="@/assets/svg/copy.svg" width="20" height="20" aria-hidden="true" />
-                    Copy Address to Clipboard
+                    Copy Address
                 </f-copy-button>
             </li>
             <li>
                 <button class="btn large light" @click="$refs.qrWindow.show()">
                     <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
-                    QR Code of Address
-                </button>
-            </li>
-            <li v-if="downloadKeystoreFile">
-                <button class="btn large light" @click="onDownloadKeystoreClick">
-                    <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
-                    Download Keystore
+                    Show QR Code
                 </button>
             </li>
             <li v-if="currentAccount.isLedgerAccount">
@@ -79,6 +70,12 @@
                 <button class="btn large light" @click="$refs.accountSettingsWindow.show()">
                     <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                     Edit Wallet
+                </button>
+            </li>
+            <li v-if="downloadKeystoreFile">
+                <button class="btn large light" @click="onDownloadKeystoreClick">
+                    <icon data="@/assets/svg/download.svg" width="20" height="20" aria-hidden="true" />
+                    Download Keystore
                 </button>
             </li>
         </ul>

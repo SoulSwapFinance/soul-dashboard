@@ -42,10 +42,9 @@
             attach-position="auto"
             preferred-attach-position="bottom"
             :attach-margin="[4, 4, 4, 4]"
-            :with-header="false"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
-            class="light"
+            class="light popover-menu"
             style="width: auto; max-width: 100%;"
         >
             <address-actions-box vertical-mode @window-hide="onWindowHide" />

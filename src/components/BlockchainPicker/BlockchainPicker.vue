@@ -89,7 +89,7 @@
                         aria-hidden="true"
                         class="logo-inactive"
                     />
-                    <span class="title">Binance</span>
+                    <span class="title">Binance Chain</span>
                 </span>
             </label>
         </li>

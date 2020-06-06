@@ -5,7 +5,7 @@
                 Send Opera FTM <span class="f-steps"><b>1</b> / 3</span>
             </h2>
 
-            <h3 class="align-center h2">What blockchain will you send FTM to?</h3>
+            <h3 class="align-center h2">Which blockchain are you sending FTM to?</h3>
 
             <div class="bc-picker">
                 <f-form ref="form" center-form @f-form-submit="onFormSubmit">

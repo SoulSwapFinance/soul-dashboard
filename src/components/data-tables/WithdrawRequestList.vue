@@ -95,6 +95,15 @@ export default {
         };
     },
 
+    watch: {
+        items: {
+            handler(_value) {
+                this.dItems = _value;
+            },
+            deep: true,
+        },
+    },
+
     created() {
         if (this.items.length > 0) {
             this.dItems = this.items;

@@ -63,5 +63,19 @@
     &.popover.light {
         color: $body-color;
         background: #fff;
+
+        &.popover-menu {
+            header {
+                padding: 0;
+            }
+
+            &.no-title {
+                .close-btn {
+                    position: relative;
+                    top: 8px;
+                    right: 8px;
+                }
+            }
+        }
     }
 }
