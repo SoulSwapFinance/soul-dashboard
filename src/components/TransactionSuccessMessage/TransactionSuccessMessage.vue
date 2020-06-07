@@ -9,6 +9,11 @@
         <div class="success-icon">
             <icon data="@/assets/svg/message/check-circle.svg" width="96" height="96" aria-hidden="true" />
         </div>
+
+        <div v-if="continueTo">
+            <br />
+            <button class="btn large" @click="onContinueBtnClick">Continue</button>
+        </div>
     </f-card>
 </template>
 
@@ -27,6 +32,24 @@ export default {
         title: {
             type: String,
             default: 'Transaction sent!',
+        },
+        /** Name of component/route used in 'continue' button. */
+        continueTo: {
+            type: String,
+            default: '',
+        },
+    },
+
+    methods: {
+        onContinueBtnClick() {
+            if (this.continueTo === 'account-history') {
+                this.$router.replace({ name: this.continueTo });
+            } else {
+                this.$emit('change-component', {
+                    to: this.continueTo,
+                    from: 'transaction-success-message',
+                });
+            }
         },
     },
 };

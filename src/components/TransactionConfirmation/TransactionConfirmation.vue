@@ -204,7 +204,7 @@ export default {
                 this.sendToAddress = data.opera_address;
                 this.dTxData.opera_address = data.opera_address;
 
-                console.log('_swapTokenData', this._swapTokenData);
+                // console.log('_swapTokenData', this._swapTokenData);
             }
 
             this.setTx();
@@ -239,6 +239,7 @@ export default {
                     from: 'transaction-confirmation',
                     data: {
                         tx: _data.data.sendTransaction.hash,
+                        continueTo: 'account-history',
                     },
                 });
             }

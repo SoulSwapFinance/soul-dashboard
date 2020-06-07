@@ -40,3 +40,11 @@
         }
     }
 }
+
+@include media-max($bp-small) {
+    .info-box {
+        .total-balance {
+            padding-top: 16px;
+        }
+    }
+}

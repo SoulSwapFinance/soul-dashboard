@@ -141,7 +141,7 @@ export default {
             let rawTx = null;
 
             if (currentAccount && this.tx && this.tx.to) {
-                console.log('tx', this.tx);
+                // console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;
@@ -176,7 +176,7 @@ export default {
                 }
 
                 if (rawTx) {
-                    console.log('rawTx', rawTx);
+                    // console.log('rawTx', rawTx);
                     this.sendTransaction(rawTx);
 
                     setTimeout(() => {

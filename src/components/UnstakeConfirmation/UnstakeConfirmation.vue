@@ -74,6 +74,7 @@ import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { getRandomInt } from '../../utils';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'UnstakeConfirmation',
@@ -121,7 +122,7 @@ export default {
                     ? sfcUtils.prepareToWithdrawDelegationTx()
                     : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), this.amount),
                 this.currentAccount.address,
-                '0x30D40'
+                GAS_LIMITS.undelegate
             );
         },
 
@@ -132,6 +133,7 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
+                    continueTo: 'staking-info',
                 },
             });
         },

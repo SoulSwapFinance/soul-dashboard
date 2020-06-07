@@ -158,7 +158,7 @@ export default {
 
             if (delegation) {
                 if (accountInfo.preparedForWithdrawal) {
-                    amount = delegation.amount;
+                    amount = delegation.amountDelegated;
                 }
 
                 if (delegation.deactivation && delegation.deactivation.length) {
@@ -168,7 +168,7 @@ export default {
                     });
                 } else if (accountInfo.preparedForWithdrawal) {
                     requests.push({
-                        amount: delegation.amount,
+                        amount: amount,
                         requestBlock: {
                             timestamp: delegation.deactivatedTime,
                         },

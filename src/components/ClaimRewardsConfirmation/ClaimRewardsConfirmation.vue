@@ -63,6 +63,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'ClaimRewardsConfirmation',
@@ -99,7 +100,7 @@ export default {
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 sfcUtils.claimDelegationRewardsTx(200),
                 this.currentAccount.address,
-                '0x3D0900'
+                GAS_LIMITS.claimRewards
             );
         },
 
@@ -110,6 +111,7 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Claiming Rewards Successful',
+                    continueTo: 'staking-info',
                 },
             });
         },

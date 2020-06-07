@@ -73,6 +73,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'WithdrawFTMConfirmation',
@@ -124,7 +125,7 @@ export default {
                     ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
                     : sfcUtils.withdrawDelegationTx(),
                 this.currentAccount.address,
-                '0x30D40'
+                GAS_LIMITS.withdraw
             );
         },
 
@@ -135,6 +136,7 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
+                    continueTo: 'staking-info',
                 },
             });
         },

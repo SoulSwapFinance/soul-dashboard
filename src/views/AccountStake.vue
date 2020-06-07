@@ -68,6 +68,7 @@ export default {
                     return {
                         tx: this._data_.tx,
                         title: this._data_.successMessage,
+                        continueTo: this._data_.continueTo,
                     };
                 case 'withdraw-f-t-m-confirmation':
                     return this._data_;

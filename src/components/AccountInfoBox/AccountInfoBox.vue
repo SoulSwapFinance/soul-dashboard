@@ -2,7 +2,7 @@
     <f-card class="account-info-box info-box f-card-double-padding">
         <div class="row no-vert-col-padding align-items-center align-center-lg">
             <div class="col col-6-lg">
-                <div class="balance" style="padding-bottom: 16px;">
+                <div class="balance">
                     <h3 class="align-center-lg">
                         <span>{{ toFTM(accountBalance) }} FTM</span>
                     </h3>
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="col col-6-lg">
-                <div class="balance">
+                <div class="balance total-balance">
                     <h3 class="align-center-lg">
                         <span>{{ toFTM(accountTotalBalance) }} FTM</span>
                     </h3>

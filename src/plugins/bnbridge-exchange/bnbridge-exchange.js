@@ -238,7 +238,7 @@ export class BNBridgeExchange {
 
             if (data) {
                 if (data.success) {
-                    console.log(data.result);
+                    // console.log(data.result);
                     result = { ...data.result, direction };
                 } else {
                     errorCode = BNBridgeExchangeErrorCodes.SWAP_TOKEN_API_ERROR;
@@ -298,7 +298,7 @@ export class BNBridgeExchange {
 
             if (data) {
                 if (data.success) {
-                    console.log(data.result);
+                    // console.log(data.result);
                     result = { result: data.result, direction };
                 } else {
                     errorCode = BNBridgeExchangeErrorCodes.FINALIZE_SWAP_TOKEN_API_ERROR;
@@ -473,12 +473,14 @@ export class BNBridgeExchange {
             const data = await this.finalizeSwapToken(request);
 
             if (typeof this._fstRequestDone === 'function') {
+                /*
                 console.log('data:', data);
                 console.log('request:', request);
                 console.log('datarequest:', {
                     ...data,
                     ...request,
                 });
+                */
                 this._fstRequestDone({
                     ...data,
                     ...request,

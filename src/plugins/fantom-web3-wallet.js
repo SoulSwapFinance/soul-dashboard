@@ -1,6 +1,8 @@
 // import Bip39 from 'bip39';
 import fileDownload from 'js-file-download';
 import gql from 'graphql-tag';
+import web3utils from 'web3-utils';
+import Accounts from 'web3-eth-accounts';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -11,11 +13,16 @@ const mnemonicRE = /^[ a-z]+$/;
 
 export const FANTOM_CHAIN_ID = 0xfa;
 
+export const GAS_LIMITS = {
+    default: '0xabe0',
+    claimRewards: '0x3D0900',
+    undelegate: '0x30D40',
+    withdraw: '0x30D40',
+    delegate: '0x30D40',
+};
+
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
-
-import web3utils from 'web3-utils';
-import Accounts from 'web3-eth-accounts';
 
 export const Web3 = {
     utils: web3utils,
@@ -100,6 +107,8 @@ export class FantomWeb3Wallet {
                             deactivatedEpoch
                             deactivatedTime
                             amount
+                            amountDelegated
+                            amountInWithdraw
                             claimedReward
                             pendingRewards {
                                 amount
@@ -379,7 +388,7 @@ export class FantomWeb3Wallet {
         return { privateKey, mnemonic, keystore };
     }
 
-    async getTransactionToSign({ from, to, value, memo = '', gasLimit = '0xabe0' }) {
+    async getTransactionToSign({ from, to, value, memo = '', gasLimit = GAS_LIMITS.default }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
 
@@ -402,7 +411,7 @@ export class FantomWeb3Wallet {
      * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getSFCTransactionToSign(_tx, _from, _gasLimit = '0xabe0') {
+    async getSFCTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
 
@@ -494,10 +503,10 @@ export class FantomWeb3Wallet {
      * Get transaction fee in WEI.
      *
      * @param {*} _gasPrice
-     * @param _gasLimit
+     * @param {string} _gasLimit
      * @return {BN}
      */
-    getTransactionFee(_gasPrice, _gasLimit = 44000) {
+    getTransactionFee(_gasPrice, _gasLimit = GAS_LIMITS.default) {
         // const gasPrice = _gasPrice || await this.getGasPrice(true);
         return this.toBN(_gasPrice).mul(this.toBN(_gasLimit));
     }
@@ -507,10 +516,12 @@ export class FantomWeb3Wallet {
      *
      * @param {*} _balance
      * @param {*} _gasPrice
-     * @param _gasLimit
+     * @param {string} _gasLimit
      * @return {number}
      */
     getRemainingBalance(_balance, _gasPrice, _gasLimit) {
+        console.log('tmp', _gasLimit);
+
         const fee = this.getTransactionFee(_gasPrice, _gasLimit);
         const balance = this.toBN(_balance);
 

@@ -94,6 +94,7 @@ import ValidatorPickerWindow from '../windows/ValidatorPickerWindow.vue';
 import { mapGetters } from 'vuex';
 import { isAriaAction } from '../../utils/aria.js';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 // import { formatHexToInt } from '../../filters.js';
 // import { WEIToFTM } from '../../utils/transactions.js';
@@ -145,7 +146,7 @@ export default {
             let price = 0;
 
             if (this.gasPrice && currentAccount) {
-                price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice);
+                price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, GAS_LIMITS.delegate);
             }
 
             return price;
@@ -228,7 +229,6 @@ export default {
          * @return {Boolean}
          */
         checkValidator() {
-            console.log('checkValidator', !!this.validatorInfo.address);
             return !!this.validatorInfo.address;
         },
 
@@ -265,7 +265,7 @@ export default {
             const tx = await this.$fWallet.getSFCTransactionToSign(
                 delegationTx,
                 this.currentAccount.address,
-                '0x30D40'
+                GAS_LIMITS.delegate
             );
 
             this.$emit('change-component', {

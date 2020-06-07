@@ -2,7 +2,7 @@
     <div class="address-info-box">
         <div class="row align-items-center collapse-md">
             <div class="col-8 align-center-md address-col">
-                <button class="no-style pick-account-btn" title="Pick an Account" @click="onPickAccountBtn">
+                <button class="no-style pick-account-btn" title="Select Wallet" @click="onPickAccountBtn">
                     <account-name :account="currentAccount" class="address">
                         <template #suffix>
                             <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />

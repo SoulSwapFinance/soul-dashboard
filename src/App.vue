@@ -102,7 +102,7 @@ export default {
          * @param {FSTRequest} _request
          */
         onFSTRequestPush(_request) {
-            console.log('onFSTRequestPush', _request);
+            // console.log('onFSTRequestPush', _request);
             this.$store.commit(PUSH_BNBRIDGE_PENDING_REQUEST, _request);
         },
 
@@ -110,7 +110,7 @@ export default {
          * @param {FSTRequest} _request
          */
         onFSTRequestDone(_request) {
-            console.log('onFSTRequestDone', _request);
+            // console.log('onFSTRequestDone', _request);
             this._eventBus.emit('fst-request-done', _request);
             this.$store.commit(SHIFT_BNBRIDGE_PENDING_REQUEST);
         },

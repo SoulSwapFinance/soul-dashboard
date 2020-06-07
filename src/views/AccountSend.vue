@@ -51,9 +51,7 @@ export default {
                         txData: this._data_,
                     };
                 case 'transaction-success-message':
-                    return {
-                        tx: this._data_,
-                    };
+                    return this._data_;
                 case 'transaction-completing':
                     return {
                         tokenSwapData: this._data_,
@@ -76,11 +74,7 @@ export default {
          * @param {Object} _data
          */
         onChangeComponent(_data) {
-            if (_data.to === 'transaction-success-message') {
-                this._data_ = _data.data.tx;
-            } else {
-                this._data_ = _data.data;
-            }
+            this._data_ = _data.data;
 
             this.currentComponent = _data.to;
 
