@@ -25,7 +25,7 @@
 
         &:not(.off) {
             .label {
-                padding-top: 4px;
+                padding-top: 8px;
                 padding-bottom: 0;
             }
         }
@@ -87,12 +87,12 @@
             .address-col {
                 button.btn-edit {
                     top: initial;
-                    bottom: 20px;
+                    bottom: 18px;
                 }
 
                 .f-copy-button {
                     top: initial;
-                    bottom: 44px;
+                    bottom: 50px;
                 }
             }
         }

@@ -6,11 +6,13 @@
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
                             <span class="col col-6-md">
-                                <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
+                                <span class="value">
+                                    {{ toFTM(account.totalBalance) }} <span class="ftm">FTM</span>
+                                </span>
                                 <span class="label">Total</span>
                             </span>
                             <span class="col col-6-md">
-                                <span class="value">{{ toFTM(account.balance) }} FTM</span>
+                                <span class="value">{{ toFTM(account.balance) }} <span class="ftm">FTM</span></span>
                                 <span class="label">Available</span>
                             </span>
                             <span class="col-7 col-10-md align-right align-left-md">
@@ -41,7 +43,7 @@
                                         :text="account.address"
                                         tooltip="Copy address to clipboard"
                                         popover-text="Address copied to clipboard"
-                                        default-icon-size="16"
+                                        :default-icon-size="16"
                                         class="btn light same-size round"
                                     />
                                 </span>

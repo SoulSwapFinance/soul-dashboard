@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 530px;"
+            style="max-width: 560px;"
             title="Wallet Settings"
             class="double-body-padding c-footer_"
             animation-in="scale-center-enter-active"

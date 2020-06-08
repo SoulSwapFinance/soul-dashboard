@@ -252,6 +252,10 @@ form {
     }
 }
 
+.ftm {
+    font-size: 0.6em;
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
