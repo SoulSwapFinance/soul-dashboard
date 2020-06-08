@@ -42,10 +42,15 @@
                                     <f-copy-button
                                         :text="account.address"
                                         tooltip="Copy address to clipboard"
-                                        popover-text="Address copied to clipboard"
                                         :default-icon-size="16"
                                         class="btn light same-size round"
-                                    />
+                                    >
+                                        <template #popover-text>
+                                            Address copied to clipboard. <br />
+                                            Warning: Use this address to receive Opera FTM only. If you are receiving
+                                            FTM-ERC20 you need to use a different address!
+                                        </template>
+                                    </f-copy-button>
                                 </span>
                                 <span class="label">
                                     <template v-if="account.isLedgerAccount">
