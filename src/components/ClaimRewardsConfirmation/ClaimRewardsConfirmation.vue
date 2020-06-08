@@ -111,7 +111,7 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Claiming Rewards Successful',
-                    continueTo: 'staking-info',
+                    continueTo: 'account-history',
                 },
             });
         },

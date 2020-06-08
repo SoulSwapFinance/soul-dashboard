@@ -136,7 +136,7 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Delegation Successful',
-                    continueTo: 'staking-info',
+                    continueTo: 'account-history',
                 },
             });
         },
