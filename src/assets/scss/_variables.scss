@@ -54,7 +54,8 @@ $light-gray-color: #8e8e98;
 
 $f-message-success-color: #0ebec2;
 $f-message-error-color: $error-color;
-$f-message-info-color: #416ed5;
+//$f-message-info-color: #416ed5;
+$f-message-info-color: $light-gray-color;
 $f-message-warning-color: $warning-color-dark;
 
 // css variables

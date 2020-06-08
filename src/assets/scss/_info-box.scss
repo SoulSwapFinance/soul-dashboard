@@ -21,6 +21,19 @@
             padding-bottom: 0 !important;
         }
     }
+
+    .balances {
+        display: flex;
+        //flex-flow: row wrap;
+        //justify-content: center;
+        margin-left: -8px;
+
+        > * {
+            flex: 1;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    }
 }
 
 @include media-max($bp-large) {
@@ -38,13 +51,27 @@
         .label.h3 {
             text-align: center;
         }
+
+        .balances {
+            margin-left: 0;
+            flex-flow: row wrap;
+            justify-content: center;
+
+            > * {
+                flex: initial;
+            }
+        }
     }
 }
 
 @include media-max($bp-small) {
     .info-box {
         .total-balance {
-            padding-top: 16px;
+            //padding-top: 16px;
+        }
+
+        .ftm {
+            font-size: 0.5em;
         }
     }
 }

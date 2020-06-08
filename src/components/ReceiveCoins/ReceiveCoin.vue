@@ -12,11 +12,7 @@
                         popover-text="Address copied to clipboard"
                         class="btn large light same-size round"
                     />
-                    <button
-                        class="btn large light same-size round"
-                        title="QR code of address"
-                        @click="$refs.qrWindow.show()"
-                    >
+                    <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
                         <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
                     </button>
                 </h3>

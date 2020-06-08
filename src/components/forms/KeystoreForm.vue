@@ -27,15 +27,21 @@
                         </f-message>
                         <br />
 
-                        <f-input
+                        <f-password-field
                             v-model="pwd"
-                            type="password"
                             label="Enter your wallet password"
                             field-size="large"
+                            autocomplete="off"
                             name="pwd"
                             validate-on-input
                             :validator="checkPassword"
-                        />
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Type a password
+                                </f-message>
+                            </template>
+                        </f-password-field>
 
                         <f-message v-if="dErrorMsg" type="error" with-icon>{{ dErrorMsg }}</f-message>
                     </div>
@@ -56,13 +62,13 @@ import FForm from '../core/FForm/FForm.vue';
 import FFileInputButton from '../core/FFileInputButton/FFileInputButton.vue';
 import { FileReaderP } from '../../utils/file-reader.js';
 import { mapGetters } from 'vuex';
-import FInput from '../core/FInput/FInput.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 
 export default {
     components: {
+        FPasswordField,
         FMessage,
-        FInput,
         FForm,
         FFileInputButton,
     },

@@ -1,21 +1,19 @@
 <template>
     <f-card class="account-info-box info-box f-card-double-padding">
-        <div class="row no-vert-col-padding align-items-center align-center-lg">
-            <div class="col col-6-lg">
+        <div class="row no-vert-col-padding align-items-center align-center-lg no-collapse">
+            <div class="col balances">
                 <div class="balance total-balance">
                     <h3 class="align-center-lg">
-                        <span>{{ toFTM(accountTotalBalance) }} FTM</span>
+                        <span>{{ toFTM(accountTotalBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountTotalBalance, this.$store.state.tokenPrice) }}
                     </div>
                     <div class="label h3">Total</div>
                 </div>
-            </div>
-            <div class="col col-6-lg">
                 <div class="balance">
                     <h3 class="align-center-lg">
-                        <span>{{ toFTM(accountBalance) }} FTM</span>
+                        <span>{{ toFTM(accountBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountBalance, this.$store.state.tokenPrice) }}

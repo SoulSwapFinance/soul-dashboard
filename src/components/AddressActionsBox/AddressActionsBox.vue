@@ -5,7 +5,7 @@
                 <f-copy-button
                     :text="currentAccount.address"
                     tooltip="Copy Address"
-                    hide-popover-after=" 3100"
+                    :hide-popover-after="3100"
                     class="btn large light same-size round"
                 >
                     <template #popover-text>
@@ -52,7 +52,7 @@
             <li>
                 <f-copy-button
                     :text="currentAccount.address"
-                    hide-popover-after=" 3100"
+                    :hide-popover-after="3100"
                     class="btn large light"
                     @window-hide="onWindowHide"
                 >

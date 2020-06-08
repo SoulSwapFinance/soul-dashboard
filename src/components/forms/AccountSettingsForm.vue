@@ -7,7 +7,26 @@
                 <div class="form-body">
                     <span class="form-label">Address</span>
                     <div class="break-word">
-                        {{ account.address }}
+                        <b style="padding-right: 16px;">{{ account.address }}</b>
+                        <f-copy-button
+                            :text="account.address"
+                            tooltip="Copy address to clipboard"
+                            :hide-popover-after="3100"
+                            class="btn large light same-size round"
+                        >
+                            <template #popover-text>
+                                Address copied to clipboard. <br />
+                                Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you
+                                need to use a different address!
+                            </template>
+                        </f-copy-button>
+                        <button
+                            class="btn large light same-size round"
+                            title="Show QR Code"
+                            @click.prevent="$refs.qrWindow.show()"
+                        >
+                            <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                        </button>
                     </div>
                     <br />
 
@@ -74,6 +93,8 @@
                 <button class="btn large" @click="onConfirmationWindowOkBtnClick">Remove</button>
             </div>
         </f-window>
+
+        <q-r-code-window ref="qrWindow" :address="account.address" />
     </div>
 </template>
 
@@ -85,6 +106,8 @@ import FMessage from '../core/FMessage/FMessage.vue';
 import { REMOVE_ACCOUNT_BY_ADDRESS, UPDATE_ACCOUNT } from '../../store/actions.type.js';
 import FWindow from '../core/FWindow/FWindow.vue';
 import { helpersMixin } from '../../mixins/helpers.js';
+import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
+import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 
 /**
  * @mixes helpersMixin
@@ -92,7 +115,7 @@ import { helpersMixin } from '../../mixins/helpers.js';
 export default {
     name: 'AccountSettingsForm',
 
-    components: { FWindow, FMessage, FInput, FForm },
+    components: { QRCodeWindow, FCopyButton, FWindow, FMessage, FInput, FForm },
 
     mixins: [helpersMixin],
 

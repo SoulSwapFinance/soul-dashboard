@@ -35,17 +35,24 @@
         font-size: 21px;
     }
 
-    &.edit-mode {
+    //&.edit-mode {
         .address-col {
             //position: relative;
             display: block;
 
             padding-right: 32px;
 
-            button {
+            button.btn-edit, .f-copy-button {
                 position: absolute;
-                top: 20px;
                 right: 12px;
+            }
+
+            .f-copy-button {
+                top: 20px;
+            }
+
+            .button.btn-edit {
+                top: 40px;
             }
         }
 
@@ -56,7 +63,7 @@
                 }
             }
         }
-    }
+    //}
 
     .account-edit-actions {
         position: relative;
@@ -78,7 +85,12 @@
 
         &.edit-mode {
             .address-col {
-                button {
+                button.btn-edit {
+                    top: initial;
+                    bottom: 20px;
+                }
+
+                .f-copy-button {
                     top: initial;
                     bottom: 44px;
                 }

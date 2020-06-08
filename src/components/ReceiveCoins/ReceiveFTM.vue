@@ -15,7 +15,7 @@
                 <f-copy-button
                     :text="currentAccount.address"
                     tooltip="Copy address to clipboard"
-                    hide-popover-after=" 3100"
+                    :hide-popover-after="3100"
                     class="btn large light same-size round"
                 >
                     <template #popover-text>
@@ -24,11 +24,7 @@
                         use a different address!
                     </template>
                 </f-copy-button>
-                <button
-                    class="btn large light same-size round"
-                    title="QR code of address"
-                    @click="$refs.qrWindow.show()"
-                >
+                <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
                     <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </h3>

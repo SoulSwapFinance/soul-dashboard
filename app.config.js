@@ -1,8 +1,8 @@
 const appConfig = {
     // app title
-    name: 'Fantom Metamask',
+    name: 'Fantom PWA Wallet',
     // app description
-    description: 'Fantom Metamask',
+    description: 'Fantom PWA Wallet',
     // app keywords
     keywords: 'fantom, metamask',
     // apollo client settings
@@ -37,7 +37,7 @@ const appConfig = {
     // pwa settings
     pwa: {
         // name used in pwa manifest
-        name: 'Fantom Metamask',
+        name: 'Fantom PWA Wallet',
     },
     // determines if app is chrome extension
     isChromeExtension: !!process.env.VUE_APP_IS_CHROME_EXTENSION,
@@ -46,9 +46,9 @@ const appConfig = {
         // chrome extension version - increase version number, if you want to publish in the chrome web store
         version: '0.0.1',
         // chrome extension name
-        name: 'Fantom Metamask',
+        name: 'Fantom PWA Wallet',
         // chrome extension description
-        description: 'Fantom Metamask',
+        description: 'Fantom PWA Wallet',
     },
     // default options for production build
     build: {

@@ -29,13 +29,21 @@
 
                                     <button
                                         v-if="editMode"
-                                        class="btn large_ light same-size round"
+                                        class="btn large_ light same-size round btn-edit"
                                         title="Edit Wallet"
                                         :data-address="account.address"
                                         :data-index="index"
                                     >
                                         <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                                     </button>
+
+                                    <f-copy-button
+                                        :text="account.address"
+                                        tooltip="Copy address to clipboard"
+                                        popover-text="Address copied to clipboard"
+                                        default-icon-size="16"
+                                        class="btn light same-size round"
+                                    />
                                 </span>
                                 <span class="label">
                                     <template v-if="account.isLedgerAccount">
@@ -93,11 +101,12 @@ import { UPDATE_ACCOUNTS_BALANCES } from '../../store/actions.type.js';
 import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSettingsWindow.vue';
 import AccountName from '../AccountName/AccountName.vue';
 import { pollingMixin } from '../../mixins/polling.js';
+import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 
 export default {
     name: 'AccountList',
 
-    components: { AccountName, AccountSettingsWindow, FCard },
+    components: { FCopyButton, AccountName, AccountSettingsWindow, FCard },
 
     mixins: [eventBusMixin, pollingMixin],
 

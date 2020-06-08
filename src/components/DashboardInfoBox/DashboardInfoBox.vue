@@ -1,21 +1,19 @@
 <template>
     <f-card class="dashboard-info-box info-box f-card-double-padding">
         <div class="row no-vert-col-padding align-items-center align-center-lg">
-            <div class="col col-6-lg">
+            <div class="col balances">
                 <div class="balance total-balance">
                     <h3 class="align-center-lg">
-                        <span>{{ formatNumberByLocale(accountsTotalBalance) }} FTM</span>
+                        <span>{{ formatNumberByLocale(accountsTotalBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountsTotalBalance, this.$store.state.tokenPrice, false) }}
                     </div>
                     <div class="label h3">Total (Sum)</div>
                 </div>
-            </div>
-            <div class="col col-6-lg">
                 <div class="balance">
                     <h3 class="align-center-lg">
-                        <span>{{ formatNumberByLocale(accountsBalance) }} FTM</span>
+                        <span>{{ formatNumberByLocale(accountsBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
                         {{ formatCurrencyByLocale(accountsBalance, this.$store.state.tokenPrice, false) }}
