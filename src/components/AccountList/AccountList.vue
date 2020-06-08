@@ -29,16 +29,6 @@
                                         <account-name align-right :account="account" />
                                     </router-link>
 
-                                    <button
-                                        v-if="editMode"
-                                        class="btn large_ light same-size round btn-edit"
-                                        title="Edit Wallet"
-                                        :data-address="account.address"
-                                        :data-index="index"
-                                    >
-                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
-                                    </button>
-
                                     <f-copy-button
                                         :text="account.address"
                                         tooltip="Copy address to clipboard"
@@ -51,6 +41,16 @@
                                             FTM-ERC20 you need to use a different address!
                                         </template>
                                     </f-copy-button>
+
+                                    <button
+                                        v-if="editMode"
+                                        class="btn large_ light same-size round btn-edit"
+                                        title="Edit Wallet"
+                                        :data-address="account.address"
+                                        :data-index="index"
+                                    >
+                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
+                                    </button>
                                 </span>
                                 <span class="label">
                                     <template v-if="account.isLedgerAccount">

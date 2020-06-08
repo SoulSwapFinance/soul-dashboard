@@ -20,8 +20,8 @@
 
     .f-card {
         height: 100%;
-        //padding-left: $f-card-padding-2x;
-        //padding-right: $f-card-padding-2x;
+        padding-left: 30px;
+        padding-right: 30px;
 
         &:not(.off) {
             .label {
@@ -44,7 +44,7 @@
 
             button.btn-edit, .f-copy-button {
                 position: absolute;
-                right: 12px;
+                right: 20px;
             }
 
             .f-copy-button {
