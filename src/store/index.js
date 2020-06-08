@@ -293,6 +293,7 @@ export const store = new Vuex.Store({
                 balance: balance.balance,
                 totalBalance: balance.totalValue,
                 keystore: _keystore,
+                name: `Wallet ${_context.state.accounts.length + 1}`,
             };
 
             _context.commit(APPEND_ACCOUNT, account);

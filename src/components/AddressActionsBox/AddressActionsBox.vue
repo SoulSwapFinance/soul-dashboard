@@ -5,9 +5,15 @@
                 <f-copy-button
                     :text="currentAccount.address"
                     tooltip="Copy Address"
-                    popover-text="Address copied to clipboard"
+                    hide-popover-after=" 3100"
                     class="btn large light same-size round"
-                />
+                >
+                    <template #popover-text>
+                        Address copied to clipboard. <br />
+                        Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to
+                        use a different address!
+                    </template>
+                </f-copy-button>
             </li>
             <li>
                 <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
@@ -46,12 +52,17 @@
             <li>
                 <f-copy-button
                     :text="currentAccount.address"
-                    popover-text="Address copied to clipboard"
+                    hide-popover-after=" 3100"
                     class="btn large light"
                     @window-hide="onWindowHide"
                 >
                     <icon data="@/assets/svg/copy.svg" width="20" height="20" aria-hidden="true" />
                     Copy Address
+                    <template #popover-text>
+                        Address copied to clipboard. <br />
+                        Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to
+                        use a different address!
+                    </template>
                 </f-copy-button>
             </li>
             <li>
@@ -80,7 +91,12 @@
             </li>
         </ul>
 
-        <q-r-code-window ref="qrWindow" :address="currentAccount.address" @window-hide="onWindowHide" />
+        <q-r-code-window ref="qrWindow" :address="currentAccount.address" @window-hide="onWindowHide">
+            <f-message type="info" with-icon>
+                Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
+                different address!
+            </f-message>
+        </q-r-code-window>
 
         <account-settings-window ref="accountSettingsWindow" :account-data="accountData" @window-hide="onWindowHide" />
     </div>
@@ -92,9 +108,10 @@ import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSettingsWindow.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 import { clientInfo } from '../../utils/client-info.js';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
-    components: { QRCodeWindow, AccountSettingsWindow, FCopyButton },
+    components: { FMessage, QRCodeWindow, AccountSettingsWindow, FCopyButton },
 
     props: {
         /** Show buttons with labels. */

@@ -15,9 +15,15 @@
                 <f-copy-button
                     :text="currentAccount.address"
                     tooltip="Copy address to clipboard"
-                    popover-text="Address copied to clipboard"
+                    hide-popover-after=" 3100"
                     class="btn large light same-size round"
-                />
+                >
+                    <template #popover-text>
+                        Address copied to clipboard. <br />
+                        Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to
+                        use a different address!
+                    </template>
+                </f-copy-button>
                 <button
                     class="btn large light same-size round"
                     title="QR code of address"
@@ -42,7 +48,12 @@
             </div>
         </div>
 
-        <q-r-code-window ref="qrWindow" :address="currentAccount.address" />
+        <q-r-code-window ref="qrWindow" :address="currentAccount.address">
+            <f-message type="info" with-icon>
+                Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
+                different address!
+            </f-message>
+        </q-r-code-window>
 
         <f-window
             ref="confirmationWindow"
@@ -72,11 +83,12 @@ import { U2FStatus } from '../../plugins/fantom-nano.js';
 import FWindow from '../core/FWindow/FWindow.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
+import FMessage from '../core/FMessage/FMessage.vue';
 
 export default {
     name: 'ReceiveFTM',
 
-    components: { QRCodeWindow, FCopyButton, FWindow, LedgerMessage, PulseLoader },
+    components: { FMessage, QRCodeWindow, FCopyButton, FWindow, LedgerMessage, PulseLoader },
 
     props: {
         /** Start verify FTM account */

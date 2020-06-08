@@ -6,12 +6,12 @@
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
                             <span class="col col-6-md">
-                                <span class="value">{{ toFTM(account.balance) }} FTM</span>
-                                <span class="label">Available</span>
-                            </span>
-                            <span class="col col-6-md">
                                 <span class="value">{{ toFTM(account.totalBalance) }} FTM</span>
                                 <span class="label">Total</span>
+                            </span>
+                            <span class="col col-6-md">
+                                <span class="value">{{ toFTM(account.balance) }} FTM</span>
+                                <span class="label">Available</span>
                             </span>
                             <span class="col-7 col-10-md align-right align-left-md">
                                 <span class="address-col">

@@ -9,12 +9,16 @@
         color: $f-message-success-color;
     }
 
-    &.error {
-        color: $f-message-error-color;
-    }
-
     &.info {
         color: $f-message-info-color;
+    }
+
+    &.warning {
+        color: $f-message-warning-color;
+    }
+
+    &.error {
+        color: $f-message-error-color;
     }
 
     .f-message-body {

@@ -8,7 +8,7 @@
         <div class="view-account-main">
             <div class="main-buttons v2 collapse-md">
                 <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
-                    Connect to Ledger
+                    Ledger (Coming Soon)
                 </router-link>
                 <router-link :to="{ name: 'create-account' }" class="btn create-account-btn large w100p">
                     Create Wallet

@@ -2,17 +2,6 @@
     <f-card class="account-info-box info-box f-card-double-padding">
         <div class="row no-vert-col-padding align-items-center align-center-lg">
             <div class="col col-6-lg">
-                <div class="balance">
-                    <h3 class="align-center-lg">
-                        <span>{{ toFTM(accountBalance) }} FTM</span>
-                    </h3>
-                    <div class="currency">
-                        {{ formatCurrencyByLocale(accountBalance, this.$store.state.tokenPrice) }}
-                    </div>
-                    <div class="label h3">Available</div>
-                </div>
-            </div>
-            <div class="col col-6-lg">
                 <div class="balance total-balance">
                     <h3 class="align-center-lg">
                         <span>{{ toFTM(accountTotalBalance) }} FTM</span>
@@ -21,6 +10,17 @@
                         {{ formatCurrencyByLocale(accountTotalBalance, this.$store.state.tokenPrice) }}
                     </div>
                     <div class="label h3">Total</div>
+                </div>
+            </div>
+            <div class="col col-6-lg">
+                <div class="balance">
+                    <h3 class="align-center-lg">
+                        <span>{{ toFTM(accountBalance) }} FTM</span>
+                    </h3>
+                    <div class="currency">
+                        {{ formatCurrencyByLocale(accountBalance, this.$store.state.tokenPrice) }}
+                    </div>
+                    <div class="label h3">Available</div>
                 </div>
             </div>
             <div class="col-5 col-12-lg align-right align-center-lg"><account-actions-box /></div>

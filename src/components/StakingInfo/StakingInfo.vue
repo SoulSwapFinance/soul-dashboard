@@ -76,6 +76,10 @@
                 <div class="col align-center form-buttons">
                     <template v-if="stakerInfo">
                         <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
+                            <f-message type="info" with-icon>
+                                You will be able to delegate from this address again once all pending undelegations have
+                                been withdrawn.
+                            </f-message>
                             <!--
                             <h3 class="align-center">
                                 Your {{ toFTM(accountInfo.delegated) }} Opera FTM is available for withdraw in 7 days.
@@ -94,6 +98,8 @@
                             </button>
 
                             <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
+                                You need to claim all pending rewards before increasing your delegation or undelegating.
+                                <br />
                                 You can claim rewards for a maximum of 200 epochs. <br />
                                 If you have more than 200 epochs of pending rewards, please use the claim function
                                 repeatedly.
