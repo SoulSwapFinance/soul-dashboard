@@ -97,12 +97,13 @@
                                 Undelegate
                             </button>
 
+                            <f-message v-if="claimedRewards > 0" type="info" with-icon class="align-left">
+                                Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
+                                June
+                                <br />
+                            </f-message>
+
                             <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
-                                <template v-if="claimedRewards > 0">
-                                    Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
-                                    June
-                                    <br />
-                                </template>
                                 You need to claim all pending rewards before increasing your delegation or undelegating.
                                 <br />
                                 You can claim rewards for a maximum of 200 epochs at once (use repeatedly if needed).

@@ -27,7 +27,7 @@
                             <br />
                         </div>
                         <div v-if="notEnoughFTM">
-                            <f-message type="info" with-icon class="align-left">
+                            <f-message type="warning" with-icon class="align-left">
                                 Warning: Not enough available FTM for gas fees. Transfer FTM to your address to proceed.
                             </f-message>
                             <br />

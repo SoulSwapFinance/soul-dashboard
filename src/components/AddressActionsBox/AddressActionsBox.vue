@@ -92,7 +92,7 @@
         </ul>
 
         <q-r-code-window ref="qrWindow" :address="currentAccount.address" @window-hide="onWindowHide">
-            <f-message type="info" with-icon>
+            <f-message type="warning" with-icon>
                 Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
                 different address!
             </f-message>

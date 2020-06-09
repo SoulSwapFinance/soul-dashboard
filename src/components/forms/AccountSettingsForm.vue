@@ -88,9 +88,9 @@
                 Are you sure you want to remove wallet <span class="break-word">{{ account.address }}</span> ?
             </div>
             <br />
-            <f-message type="info" with-icon>
-                Removing wallet clears the wallet from local storage. It will not be accessible again unless the private
-                key or mnemonic is imported. This action is irreversible.
+            <f-message type="warning" with-icon>
+                Removing a wallet clears it from local storage. You will not be able to access it again unless you
+                restore via mnemonic phrase, keystore file or private key. This action is irreversible.
             </f-message>
             <br />
             <div class="align-center form-buttons">
@@ -99,7 +99,12 @@
             </div>
         </f-window>
 
-        <q-r-code-window ref="qrWindow" :address="account.address" />
+        <q-r-code-window ref="qrWindow" :address="account.address">
+            <f-message type="warning" with-icon>
+                Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
+                different address!
+            </f-message>
+        </q-r-code-window>
     </div>
 </template>
 
