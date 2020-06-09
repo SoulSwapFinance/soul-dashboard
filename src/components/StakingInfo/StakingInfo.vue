@@ -25,7 +25,7 @@
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <div v-show="accountInfo">
-                                <template v-if="accountInfo">{{ toFTM(accountInfo.claimedRewards) }} FTM</template>
+                                <template v-if="accountInfo">{{ claimedRewards }} FTM</template>
                             </div>
                         </div>
                     </div>
@@ -98,11 +98,14 @@
                             </button>
 
                             <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
+                                <template v-if="claimedRewards > 0">
+                                    Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
+                                    June
+                                    <br />
+                                </template>
                                 You need to claim all pending rewards before increasing your delegation or undelegating.
                                 <br />
-                                You can claim rewards for a maximum of 200 epochs. <br />
-                                If you have more than 200 epochs of pending rewards, please use the claim function
-                                repeatedly.
+                                You can claim rewards for a maximum of 200 epochs at once (use repeatedly if needed).
                             </f-message>
                         </template>
                     </template>
@@ -154,6 +157,15 @@ export default {
             const { accountInfo } = this;
 
             return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+        },
+
+        /**
+         * @return {number}
+         */
+        claimedRewards() {
+            const { accountInfo } = this;
+
+            return accountInfo ? parseFloat(this.toFTM(accountInfo.claimedRewards)) : 0;
         },
 
         withdrawRequests() {
