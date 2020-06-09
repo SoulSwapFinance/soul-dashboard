@@ -5,6 +5,7 @@
             confirmation-comp-name="stake-confirmation"
             password-label="Please enter your wallet password to delegate your FTM"
             send-button-label="Delegate"
+            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :on-go-back="onGoBack"
             @change-component="onChangeComponent"
@@ -82,6 +83,7 @@
 import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'StakeConfirmation',
@@ -113,6 +115,7 @@ export default {
     data() {
         return {
             tx: {},
+            gasLimit: GAS_LIMITS.delegate,
         };
     },
 

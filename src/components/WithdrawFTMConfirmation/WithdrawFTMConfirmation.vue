@@ -5,6 +5,7 @@
             confirmation-comp-name="withdraw-ftm-confirmation"
             send-button-label="Withdraw"
             password-label="Please enter your wallet password to withdraw your FTM"
+            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :on-go-back="onGoBack"
             @change-component="onChangeComponent"
@@ -105,6 +106,7 @@ export default {
     data() {
         return {
             tx: {},
+            gasLimit: GAS_LIMITS.withdraw,
         };
     },
 

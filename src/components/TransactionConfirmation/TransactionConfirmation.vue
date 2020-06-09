@@ -6,6 +6,7 @@
             go-back-comp-name="send-transaction-form"
             send-button-label="Send"
             password-label="Please enter your wallet password to send the transaction"
+            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -105,6 +106,7 @@ import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { toFTM } from '../../utils/transactions.js';
 import { formatNumberByLocale } from '../../filters.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 export default {
     components: { TxConfirmation },
@@ -124,6 +126,7 @@ export default {
             sendToAddress: '',
             dTxData: this.txData,
             tx: {},
+            gasLimit: GAS_LIMITS.default,
         };
     },
 

@@ -88,6 +88,11 @@
                 Are you sure you want to remove wallet <span class="break-word">{{ account.address }}</span> ?
             </div>
             <br />
+            <f-message type="info" with-icon>
+                Removing wallet clears the wallet from local storage. It will not be accessible again unless the private
+                key or mnemonic is imported. This action is irreversible.
+            </f-message>
+            <br />
             <div class="align-center form-buttons">
                 <button class="btn large secondary" @click="$refs.confirmationWindow.hide()">Cancel</button>
                 <button class="btn large" @click="onConfirmationWindowOkBtnClick">Remove</button>
@@ -200,10 +205,10 @@ export default {
         async removeAccount(_address) {
             const activeAccountRemoved = await this.$store.dispatch(REMOVE_ACCOUNT_BY_ADDRESS, _address);
 
-            if (activeAccountRemoved) {
-                if (this.$route.name !== 'dashboard') {
-                    this.$router.replace({ name: 'dashboard' });
-                }
+            if (this.accounts.length === 0) {
+                this.$router.replace({ path: '/' });
+            } else if (activeAccountRemoved && this.$route.name !== 'dashboard') {
+                this.$router.replace({ name: 'dashboard' });
             }
         },
 

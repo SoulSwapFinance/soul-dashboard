@@ -26,6 +26,12 @@
                             <f-message type="error" with-icon>{{ errorMessage }}</f-message>
                             <br />
                         </div>
+                        <div v-if="notEnoughFTM">
+                            <f-message type="info" with-icon class="align-left">
+                                Warning: Not enough available FTM for gas fees. Transfer FTM to your address to proceed.
+                            </f-message>
+                            <br />
+                        </div>
 
                         <a
                             href="#"
@@ -36,7 +42,12 @@
                         >
                             Previous
                         </a>
-                        <button type="submit" class="btn large break-word" style="max-width: 100%;">
+                        <button
+                            type="submit"
+                            class="btn large break-word"
+                            style="max-width: 100%;"
+                            :disabled="notEnoughFTM"
+                        >
                             {{ sendButtonLabel }}
                         </button>
                     </div>
@@ -50,6 +61,8 @@
 import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { mapGetters } from 'vuex';
 
 export default {
     components: { FMessage, FPasswordField, FForm },
@@ -71,6 +84,43 @@ export default {
             type: String,
             default: 'Send',
         },
+        /** Transaction's gas limit */
+        gasLimit: {
+            type: String,
+            default: GAS_LIMITS.default,
+        },
+    },
+
+    data() {
+        return {
+            gasPrice: '',
+        };
+    },
+
+    computed: {
+        ...mapGetters(['currentAccount']),
+
+        /**
+         * @return {number}
+         */
+        notEnoughFTM() {
+            const { currentAccount } = this;
+            let price = 0;
+
+            if (this.gasPrice && currentAccount) {
+                price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, this.gasLimit);
+            }
+
+            console.log('price', price);
+
+            return price <= 0;
+        },
+    },
+
+    created() {
+        this.$fWallet.getGasPrice().then((_gasPrice) => {
+            this.gasPrice = _gasPrice;
+        });
     },
 
     methods: {

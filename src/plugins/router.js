@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { routes } from '../routes.js';
+import { store } from '../store';
 
 Vue.use(VueRouter);
 
@@ -19,4 +20,13 @@ export const router = new VueRouter({
         }
     },
     // mode: 'history'
+});
+
+router.beforeEach((_to, _from, _next) => {
+    // redirect to dashboard if an account exists and we are on homepage
+    if (!_from.name && _to.name === 'welcome' && store.getters.accounts.length > 0) {
+        _next({ name: 'dashboard' });
+    } else {
+        _next();
+    }
 });

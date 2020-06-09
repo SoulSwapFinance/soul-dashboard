@@ -5,6 +5,7 @@
             confirmation-comp-name="unstake-confirmation"
             send-button-label="Undelegate"
             password-label="Please enter your wallet password to undelegate your FTM"
+            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :on-go-back="onGoBack"
             @change-component="onChangeComponent"
@@ -104,6 +105,7 @@ export default {
     data() {
         return {
             tx: {},
+            gasLimit: GAS_LIMITS.undelegate,
         };
     },
 

@@ -43,6 +43,7 @@ import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 
 /**
  * Base component for other 'transaction confirmation and send' components.
@@ -81,6 +82,11 @@ export default {
             type: String,
             default: '',
         },
+        /** Transaction's gas limit */
+        gasLimit: {
+            type: String,
+            default: GAS_LIMITS.default,
+        },
         /**
          * Function called when transaction was successful
          * @param {object} _data
@@ -105,6 +111,10 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+    },
+
+    mounted() {
+        console.log('gasLimit', this.gasLimit);
     },
 
     methods: {

@@ -520,8 +520,6 @@ export class FantomWeb3Wallet {
      * @return {number}
      */
     getRemainingBalance(_balance, _gasPrice, _gasLimit) {
-        console.log('tmp', _gasLimit);
-
         const fee = this.getTransactionFee(_gasPrice, _gasLimit);
         const balance = this.toBN(_balance);
 
