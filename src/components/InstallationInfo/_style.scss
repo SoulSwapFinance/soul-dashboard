@@ -1,0 +1,18 @@
+.installation-info {
+    padding: 24px 0;
+
+    .inst-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        grid-column-gap: 8px;
+        grid-row-gap: 8px;
+
+        button {
+            width: 100%;
+
+            svg {
+                margin-right: 8px;
+            }
+        }
+    }
+}

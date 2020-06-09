@@ -48,11 +48,11 @@
             }
 
             .f-copy-button {
-                top: 20px;
+                bottom: 54px;
             }
 
             .button.btn-edit {
-                top: 40px;
+                bottom: 18px;
             }
         }
 
@@ -83,7 +83,7 @@
             }
         }
 
-        &.edit-mode {
+        //&.edit-mode {
             .address-col {
                 button.btn-edit {
                     top: initial;
@@ -95,6 +95,6 @@
                     bottom: 50px;
                 }
             }
-        }
+        //}
     }
 }

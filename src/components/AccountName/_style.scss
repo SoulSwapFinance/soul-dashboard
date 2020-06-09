@@ -14,14 +14,10 @@
 
     text-align: left;
 
-    &.an-align-right {
-        text-align: right;
-    }
-
-    .an-name {
+    .an-name, > svg {
         //min-width: 100%;
         color: $theme-color;
-        padding-right: 16px;
+        //padding-right: 16px;
         //white-space: nowrap;
         //@include zpe-three-dots;
     }
@@ -30,10 +26,15 @@
         white-space: nowrap;
     }
 
+    &.an-align-right {
+        text-align: right;
+    }
+
     &.has-name {
         .an-address {
             color: $light-gray-color;
             font-weight: normal;
+            font-size: 0.75em;
         }
     }
 }
@@ -46,7 +47,7 @@
 
         &.has-name {
             .an-address {
-                display: none;
+                //display: none;
             }
         }
     }

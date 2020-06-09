@@ -18,6 +18,7 @@
                 </router-link>
             </div>
 
+            <installation-info />
             <account-list />
         </div>
     </div>
@@ -25,12 +26,14 @@
 
 <script>
 import AccountList from '../../components/AccountList/AccountList.vue';
+import InstallationInfo from '../../components/InstallationInfo/InstallationInfo.vue';
 
 // import {WEIToFTM} from "../utils/transactions.js";
 export default {
     name: 'Welcome',
 
     components: {
+        InstallationInfo,
         AccountList,
     },
 };

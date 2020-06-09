@@ -27,6 +27,12 @@
                         <br />
                         <f-checkbox name="night_mode" label="Night Mode" />
                         -->
+
+                        <p>
+                            <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
+                                How to use Fantom PWA wallet
+                            </a>
+                        </p>
                     </div>
                 </fieldset>
             </f-form>
