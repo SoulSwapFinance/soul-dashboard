@@ -25,7 +25,7 @@
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <div v-show="accountInfo">
-                                <template v-if="accountInfo">{{ claimedRewards }} FTM</template>
+                                <template v-if="accountInfo">{{ toFTM(accountInfo.claimedRewards) }} FTM</template>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,12 @@
                                 Undelegate
                             </button>
 
-                            <f-message v-if="claimedRewards > 0" type="info" with-icon class="align-left">
+                            <f-message
+                                v-if="accountInfo.claimedRewards !== '0x0'"
+                                type="info"
+                                with-icon
+                                class="align-left"
+                            >
                                 Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
                                 June
                                 <br />
@@ -158,15 +163,6 @@ export default {
             const { accountInfo } = this;
 
             return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
-        },
-
-        /**
-         * @return {number}
-         */
-        claimedRewards() {
-            const { accountInfo } = this;
-
-            return accountInfo ? parseFloat(this.toFTM(accountInfo.claimedRewards)) : 0;
         },
 
         withdrawRequests() {
