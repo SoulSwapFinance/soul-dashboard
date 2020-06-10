@@ -1,10 +1,10 @@
 <template>
-    <div class="address-info-box">
+    <div class="address-info-box" :class="{ 'one-account': accountsLen === 1 }">
         <div class="row align-items-center collapse-md">
             <div class="col-8 align-center-md address-col">
                 <button class="no-style pick-account-btn" title="Select Wallet" @click="onPickAccountBtn">
                     <account-name :account="currentAccount" class="address">
-                        <template #suffix>
+                        <template v-if="accountsLen > 1" #suffix>
                             <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </template>
                     </account-name>
@@ -65,7 +65,7 @@ export default {
     components: { FWindow, AccountName, AccountPickerWindow, AddressActionsBox },
 
     computed: {
-        ...mapGetters(['currentAccountAddress', 'currentAccount']),
+        ...mapGetters(['currentAccountAddress', 'currentAccount', 'accounts']),
 
         /**
          * Property is set to `true`, if 'menu-mobile' breakpoint is reached.
@@ -77,11 +77,20 @@ export default {
 
             return menuMobileBreakpoint && menuMobileBreakpoint.matches;
         },
+
+        /**
+         * @return {number}
+         */
+        accountsLen() {
+            return this.accounts.length;
+        },
     },
 
     methods: {
         onPickAccountBtn() {
-            this.$refs.accountPickerWindow.show();
+            if (this.accountsLen > 1) {
+                this.$refs.accountPickerWindow.show();
+            }
         },
 
         onWindowHide() {

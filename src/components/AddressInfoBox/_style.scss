@@ -22,4 +22,10 @@
             margin-left: 8px;
         }
     }
+
+    &.one-account {
+        .pick-account-btn {
+            cursor: initial;
+        }
+    }
 }
