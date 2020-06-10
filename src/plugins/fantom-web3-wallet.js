@@ -537,6 +537,20 @@ export class FantomWeb3Wallet {
     }
 
     /**
+     * Get the remaining balance (in FTM) after deducting transaction fee.
+     *
+     * @param {*} _balance
+     * @param {*} _gasPrice
+     * @return {number}
+     */
+    getMaxRemainingBalance(_balance, _gasPrice) {
+        const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.claimRewards);
+        const balance = this.toBN(_balance);
+
+        return this.WEIToFTM(balance.sub(fee.mul(this.toBN(10))));
+    }
+
+    /**
      * @param {String} _key
      * @return {String}
      */

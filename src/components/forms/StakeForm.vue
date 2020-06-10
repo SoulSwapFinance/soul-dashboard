@@ -151,6 +151,20 @@ export default {
 
             return price;
         },
+
+        /**
+         * @return {number}
+         */
+        maxRemainingBalance() {
+            const { currentAccount } = this;
+            let price = 0;
+
+            if (this.gasPrice && currentAccount) {
+                price = this.$fWallet.getMaxRemainingBalance(currentAccount.balance, this.gasPrice);
+            }
+
+            return price;
+        },
     },
 
     created() {
@@ -321,7 +335,7 @@ export default {
         },
 
         onEntireBalanceClick() {
-            this.amount = this.remainingBalance > 0 ? this.remainingBalance : '0';
+            this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance : '0';
         },
     },
 };
