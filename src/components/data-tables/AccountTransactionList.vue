@@ -156,7 +156,6 @@ export default {
                     account(address: $address) {
                         address
                         balance
-                        totalValue
                         txCount
                         txList(cursor: $cursor, count: $count) {
                             pageInfo {

@@ -14,6 +14,13 @@ export function WEIToFTM(_value) {
 /**
  * @return {number}
  */
+export function WeiToFtm(_value) {
+    return parseFloat(web3utils.fromWei(_value, 'ether'));
+}
+
+/**
+ * @return {number}
+ */
 export function FTMToWEI(_value) {
     return _value * WEI_IN_FTM;
 }

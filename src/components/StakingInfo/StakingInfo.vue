@@ -133,7 +133,7 @@
 <script>
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
-import { toFTM } from '../../utils/transactions.js';
+import { toFTM, WeiToFtm } from '../../utils/transactions.js';
 import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
@@ -321,7 +321,7 @@ export default {
                         ...accountInfo,
                         stakerInfo,
                     },
-                    amount: parseFloat(this.toFTM(_withdrawRequest.amount)),
+                    amount: WeiToFtm(_withdrawRequest.amount),
                     withdraw: true,
                     withdrawRequest: _withdrawRequest,
                 },
