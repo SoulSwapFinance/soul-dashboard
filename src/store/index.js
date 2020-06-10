@@ -325,15 +325,17 @@ export const store = new Vuex.Store({
          */
         async [UPDATE_ACCOUNTS_BALANCES](_context) {
             const accounts = _context.getters.accounts;
-            let balance = 0;
+            let balance;
             let account;
             // const balances = await Promise.all(accounts.map((_address) => fWallet.getBalance(_address.address)));
 
             for (let i = 0, len1 = accounts.length; i < len1; i++) {
                 account = accounts[i];
-                balance = await fWallet.getBalance(account.address);
+                balance = await fWallet.getBalance(account.address, false, true);
 
-                if (account.balance !== balance.balance || account.totalBalance !== balance.totalValue) {
+                if (account.balance !== balance.balance) {
+                    balance = await fWallet.getBalance(account.address);
+
                     _context.commit(SET_ACCOUNT, {
                         ...account,
                         balance: balance.balance,
@@ -353,12 +355,11 @@ export const store = new Vuex.Store({
 
             if (account) {
                 const { index } = _context.getters.getAccountAndIndexByAddress(account.address);
-                const balance = await fWallet.getBalance(account.address);
+                let balance = await fWallet.getBalance(account.address, false, true);
 
-                if (
-                    index > -1 &&
-                    (account.balance !== balance.balance || account.totalBalance !== balance.totalValue)
-                ) {
+                if (index > -1 && account.balance !== balance.balance) {
+                    balance = await fWallet.getBalance(account.address);
+
                     _context.commit(SET_ACCOUNT, {
                         ...account,
                         balance: balance.balance,

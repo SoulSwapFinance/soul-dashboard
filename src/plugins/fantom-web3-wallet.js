@@ -75,9 +75,10 @@ export class FantomWeb3Wallet {
      *
      * @param {String} _address
      * @param {Boolean} [_withDelegations] Include delegations and staker info.
+     * @param {Boolean} [_justBalance]
      * @return {Promise<{totalValue: string, address: string, balance: string}>}
      */
-    async getBalance(_address, _withDelegations) {
+    async getBalance(_address, _withDelegations, _justBalance) {
         let query = gql`
             query AccountByAddress($address: Address!) {
                 account(address: $address) {
@@ -88,7 +89,16 @@ export class FantomWeb3Wallet {
             }
         `;
 
-        if (_withDelegations) {
+        if (_justBalance) {
+            query = gql`
+                query AccountByAddress($address: Address!) {
+                    account(address: $address) {
+                        address
+                        balance
+                    }
+                }
+            `;
+        } else if (_withDelegations) {
             query = gql`
                 query AccountByAddress($address: Address!) {
                     account(address: $address) {
