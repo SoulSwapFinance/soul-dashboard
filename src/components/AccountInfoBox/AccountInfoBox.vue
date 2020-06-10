@@ -58,7 +58,7 @@ export default {
             () => {
                 this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
             },
-            6000
+            3000
         );
     },
 
