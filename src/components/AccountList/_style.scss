@@ -27,12 +27,21 @@
             .label {
                 padding-top: 8px;
                 padding-bottom: 0;
+                font-weight: normal;
             }
         }
     }
 
     .value {
-        font-size: 21px;
+        font-size: 22px;
+    }
+
+    .currency {
+        display: block;
+        //margin-top: -4px;
+        color: $light-gray-color;
+        font-weight: normal;
+        font-size: 0.917em;
     }
 
     //&.edit-mode {
@@ -48,13 +57,22 @@
             }
 
             .f-copy-button {
-                bottom: 54px;
+                top: 20px;
             }
 
             .button.btn-edit {
                 bottom: 18px;
             }
         }
+
+    .account-name-exists {
+        .address-col {
+            .f-copy-button {
+                top: initial;
+                bottom: 54px;
+            }
+        }
+    }
 
         .f-card {
             &:not(.off) {

@@ -7,7 +7,7 @@
                         <span>{{ toFTM(accountTotalBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
-                        {{ formatCurrencyByLocale(accountTotalBalance, this.$store.state.tokenPrice) }}
+                        {{ formatCurrencyByLocale(accountTotalBalance, tokenPrice) }}
                     </div>
                     <div class="label h3">Total</div>
                 </div>
@@ -16,7 +16,7 @@
                         <span>{{ toFTM(accountBalance) }} <span class="ftm">FTM</span></span>
                     </h3>
                     <div class="currency">
-                        {{ formatCurrencyByLocale(accountBalance, this.$store.state.tokenPrice) }}
+                        {{ formatCurrencyByLocale(accountBalance, tokenPrice) }}
                     </div>
                     <div class="label h3">Available</div>
                 </div>
@@ -49,6 +49,10 @@ export default {
 
         accountTotalBalance() {
             return this.currentAccount ? this.currentAccount.totalBalance : 0;
+        },
+
+        tokenPrice() {
+            return this.$store.state.tokenPrice;
         },
     },
 

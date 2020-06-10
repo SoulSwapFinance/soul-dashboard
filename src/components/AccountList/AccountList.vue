@@ -9,13 +9,22 @@
                                 <span class="value">
                                     {{ toFTM(account.totalBalance) }} <span class="ftm">FTM</span>
                                 </span>
+                                <span class="currency">
+                                    {{ formatCurrencyByLocale(account.totalBalance, tokenPrice) }}
+                                </span>
                                 <span class="label">Total</span>
                             </span>
                             <span class="col col-6-md">
                                 <span class="value">{{ toFTM(account.balance) }} <span class="ftm">FTM</span></span>
+                                <span class="currency">
+                                    {{ formatCurrencyByLocale(account.balance, tokenPrice) }}
+                                </span>
                                 <span class="label">Available</span>
                             </span>
-                            <span class="col-7 col-10-md align-right align-left-md">
+                            <span
+                                class="col-5 col-10-md align-right align-left-md"
+                                :class="{ 'account-name-exists': !!account.name }"
+                            >
                                 <span class="address-col">
                                     <router-link
                                         :to="{
@@ -109,6 +118,7 @@ import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSetti
 import AccountName from '../AccountName/AccountName.vue';
 import { pollingMixin } from '../../mixins/polling.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
+import { formatCurrencyByLocale } from '../../filters.js';
 
 export default {
     name: 'AccountList',
@@ -137,6 +147,10 @@ export default {
 
     computed: {
         ...mapGetters(['accounts', 'currentAccount']),
+
+        tokenPrice() {
+            return this.$store.state.tokenPrice;
+        },
     },
 
     watch: {
@@ -223,6 +237,7 @@ export default {
             return false;
         },
 
+        formatCurrencyByLocale,
         toFTM,
     },
 };
