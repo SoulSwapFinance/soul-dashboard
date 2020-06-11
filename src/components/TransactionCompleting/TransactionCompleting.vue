@@ -30,7 +30,7 @@
 
             <!--
             <h3 class="break-word">
-                <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">
+                <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">
                     {{ tsData.tx | formatHash }}
                 </a>
             </h3>
@@ -50,6 +50,7 @@
 import FCard from '../core/FCard/FCard.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'TransactionCompleting',
@@ -76,6 +77,7 @@ export default {
             title: 'Completing transaction',
             success: false,
             tsData: this.tokenSwapData,
+            explorerUrl: appConfig.explorerUrl,
         };
     },
 

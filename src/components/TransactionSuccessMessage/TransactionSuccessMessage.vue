@@ -3,7 +3,7 @@
         <h2>{{ title }}</h2>
 
         <h3 class="break-word">
-            <a :href="`https://explorer.fantom.network/transactions/${tx}`" target="_blank">{{ tx | formatHash }}</a>
+            <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">{{ tx | formatHash }}</a>
         </h3>
 
         <div class="success-icon">
@@ -19,6 +19,7 @@
 
 <script>
 import FCard from '../core/FCard/FCard.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     components: { FCard },
@@ -38,6 +39,12 @@ export default {
             type: String,
             default: '',
         },
+    },
+
+    data() {
+        return {
+            explorerUrl: appConfig.explorerUrl,
+        };
     },
 
     methods: {

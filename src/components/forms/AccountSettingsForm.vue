@@ -23,6 +23,7 @@
                         <button
                             class="btn large light same-size round"
                             title="Show QR Code"
+                            type="button"
                             @click.prevent="$refs.qrWindow.show()"
                         >
                             <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
