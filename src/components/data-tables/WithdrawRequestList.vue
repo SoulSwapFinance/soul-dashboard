@@ -1,7 +1,14 @@
 <template>
     <div class="withdraw-request-list-dt" @click="onClick">
         <template v-if="!withdrawRequestListError">
-            <f-data-table :columns="columns" :items="dItems" first-m-v-column-width="6" fixed-header f-card-off>
+            <f-data-table
+                :columns="columns"
+                :items="dItems"
+                first-m-v-column-width="6"
+                fixed-header
+                f-card-off
+                no-f-l-padding
+            >
                 <template v-slot:column-withdrawal="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-6 f-row-label">{{ column.label }}</div>
@@ -44,6 +51,7 @@ import { formatDate, formatNumberByLocale, prepareTimestamp, timestampToDate } f
 import { WEIToFTM } from '../../utils/transactions.js';
 import FDataTable from '../core/FDataTable/FDataTable.vue';
 import dayjs from 'dayjs';
+import { sortByHex } from '../../utils/array-sorting.js';
 
 export default {
     name: 'WithdrawRequestList',
@@ -106,7 +114,7 @@ export default {
 
     created() {
         if (this.items.length > 0) {
-            this.dItems = this.items;
+            this.dItems = this.items.sort(sortByHex('requestBlock.timestamp', 'desc'));
         }
     },
 

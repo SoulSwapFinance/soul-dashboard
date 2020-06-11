@@ -73,51 +73,59 @@
             </div>
 
             <div class="row">
-                <div class="col align-center form-buttons">
-                    <template v-if="stakerInfo">
-                        <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
-                            <f-message type="info" with-icon>
-                                You will be able to delegate from this address again once all pending undelegations have
-                                been withdrawn.
-                            </f-message>
-                            <!--
-                            <h3 class="align-center">
-                                Your {{ toFTM(accountInfo.delegated) }} Opera FTM is available for withdraw in 7 days.
-                            </h3>
-                            -->
+                <div class="col align-center">
+                    <div class="form-buttons">
+                        <template v-if="stakerInfo">
+                            <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
+                                <f-message type="info" with-icon>
+                                    You will be able to delegate from this address again once all pending undelegations
+                                    have been withdrawn.
+                                </f-message>
+                                <!--
+                                <h3 class="align-center">
+                                    Your {{ toFTM(accountInfo.delegated) }} Opera FTM is available for withdraw in 7 days.
+                                </h3>
+                                -->
+                            </template>
+                            <template v-else>
+                                <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
+                                    Claim Rewards
+                                </button>
+                                <button
+                                    class="btn large"
+                                    :disabled="!canIncreaseDelegation"
+                                    @click="increaseDelegation()"
+                                >
+                                    Increase Delegation
+                                </button>
+                                <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
+                                    Undelegate
+                                </button>
+
+                                <f-message
+                                    v-if="accountInfo.claimedRewards !== '0x0'"
+                                    type="info"
+                                    with-icon
+                                    class="align-left"
+                                >
+                                    Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
+                                    June
+                                    <br />
+                                </f-message>
+
+                                <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
+                                    You need to claim all pending rewards before increasing your delegation or
+                                    undelegating.
+                                    <br />
+                                    You can claim rewards for a maximum of 200 epochs at once (use repeatedly if
+                                    needed).
+                                </f-message>
+                            </template>
                         </template>
                         <template v-else>
-                            <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
-                                Claim Rewards
-                            </button>
-                            <button class="btn large" :disabled="!canIncreaseDelegation" @click="increaseDelegation()">
-                                Increase Delegation
-                            </button>
-                            <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
-                                Undelegate
-                            </button>
-
-                            <f-message
-                                v-if="accountInfo.claimedRewards !== '0x0'"
-                                type="info"
-                                with-icon
-                                class="align-left"
-                            >
-                                Claimed rewards are still locked and cannot be withdrawn or delegated until the 24th
-                                June
-                                <br />
-                            </f-message>
-
-                            <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
-                                You need to claim all pending rewards before increasing your delegation or undelegating.
-                                <br />
-                                You can claim rewards for a maximum of 200 epochs at once (use repeatedly if needed).
-                            </f-message>
+                            <button class="btn large" @click="stake()">Delegate</button>
                         </template>
-                    </template>
-                    <template v-else>
-                        <button class="btn large" @click="stake()">Delegate</button>
-                    </template>
+                    </div>
                 </div>
             </div>
         </f-card>
@@ -199,6 +207,25 @@ export default {
 
             return requests;
         },
+
+        /**
+         * Sum of amount of withdraw request (not withdrawn yet).
+         */
+        withdrawRequestsAmount() {
+            const { accountInfo } = this;
+            const delegation = accountInfo ? accountInfo.delegation : null;
+            let amount = 0;
+
+            if (delegation && delegation.withdrawRequests && delegation.withdrawRequests.length) {
+                delegation.withdrawRequests.forEach((_request) => {
+                    if (!_request.withdrawBlock) {
+                        amount += WeiToFtm(_request.amount);
+                    }
+                });
+            }
+
+            return amount;
+        },
     },
 
     asyncComputed: {
@@ -277,6 +304,7 @@ export default {
                     accountInfo: {
                         ...accountInfo,
                         stakerInfo,
+                        withdrawRequestsAmount: this.withdrawRequestsAmount,
                     },
                 },
             });

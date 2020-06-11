@@ -119,6 +119,8 @@ export default {
 
     methods: {
         async setTx() {
+            console.log(this.amount, this.undelegateMax);
+
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 this.undelegateMax
                     ? sfcUtils.prepareToWithdrawDelegationTx()

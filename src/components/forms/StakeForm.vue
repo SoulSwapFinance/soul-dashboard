@@ -24,7 +24,7 @@
                                 <div class="input-label-layout">
                                     <label :for="sProps.inputId">{{ sProps.label }}</label>
                                     <button type="button" class="btn light small" @click="onEntireBalanceClick">
-                                        Entire balance
+                                        Entire Balance
                                     </button>
                                 </div>
                             </template>

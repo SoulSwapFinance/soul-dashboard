@@ -189,19 +189,6 @@
             /*border-bottom: 1px solid $grey-color-semi;*/
         }
 
-        tr {
-            td,
-            th {
-                &.f-col {
-                    padding-left: 0;
-                }
-
-                &.l-col {
-                    padding-right: 0;
-                }
-            }
-        }
-
         .mobile-view {
             padding-top: 16px;
             padding-bottom: 16px;
@@ -225,6 +212,20 @@
     &.height-set {
         .table-container {
             overflow: auto;
+        }
+    }
+
+    &.no-fl-padding {
+        tr {
+            td, th {
+                &.f-col {
+                    padding-left: 0;
+                }
+
+                &.l-col {
+                    padding-right: 0;
+                }
+            }
         }
     }
 }

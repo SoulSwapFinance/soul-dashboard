@@ -10,6 +10,7 @@
                     <h3>The withdrawal of your delegated tokens will take 7 days</h3>
 
                     <f-input
+                        v-model="amount"
                         label="Amount"
                         field-size="large"
                         type="number"
@@ -17,10 +18,17 @@
                         min="1"
                         step="any"
                         name="amount"
-                        :value="undelegateMax.toString()"
                         :validator="checkAmount"
                         validate-on-input
                     >
+                        <template #top="sProps">
+                            <div class="input-label-layout">
+                                <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                <button type="button" class="btn light small" @click="onEntireDelegationClick">
+                                    Entire Delegation
+                                </button>
+                            </div>
+                        </template>
                         <template #bottom="sProps">
                             <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                 {{ amountErrMsg }}
@@ -62,13 +70,20 @@ export default {
     data() {
         return {
             amountErrMsg: '',
+            amount: '',
         };
     },
 
     computed: {
         undelegateMax() {
-            return this.accountInfo ? WEIToFTM(this.accountInfo.delegation.amount) : 0;
+            return this.accountInfo
+                ? WEIToFTM(this.accountInfo.delegation.amount) - this.accountInfo.withdrawRequestsAmount
+                : 0;
         },
+    },
+
+    created() {
+        this.setMaxUndelegation();
     },
 
     methods: {
@@ -107,6 +122,14 @@ export default {
                     undelegateMax: amount === this.undelegateMax,
                 },
             });
+        },
+
+        setMaxUndelegation() {
+            this.amount = this.undelegateMax.toString();
+        },
+
+        onEntireDelegationClick() {
+            this.setMaxUndelegation();
         },
     },
 };

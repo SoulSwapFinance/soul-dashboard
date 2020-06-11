@@ -271,6 +271,12 @@ export default {
             default: false,
         },
 
+        /** No left padding on the first column and right padding on the last column. */
+        noFLPadding: {
+            type: Boolean,
+            default: false,
+        },
+
         ...FPagination.props,
     },
 
@@ -340,6 +346,7 @@ export default {
                 'f-card-on': !this.fCardOff,
                 'height-set': this.height !== 'auto',
                 'fixed-header': this.fixedHeader,
+                'no-fl-padding': this.noFLPadding || !this.fCardOff,
             };
         },
     },
