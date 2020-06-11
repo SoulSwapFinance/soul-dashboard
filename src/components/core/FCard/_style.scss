@@ -3,11 +3,9 @@
 .f-card:not(.off) {
     position: relative;
     padding: $f-card-padding;
-    /*border: 1px solid #f8f8f8;*/
     border-radius: $f-card-border-radius;
     background-color: $f-card-background-color;
-    /*box-shadow: 0 0 40px 0 rgba(0,0,0,.06);*/
-    box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: $f-card-box-shadow;
     transition: box-shadow $f-card-transition-length ease, transform $f-card-transition-length ease;
 
     &.f-card-hover:hover {

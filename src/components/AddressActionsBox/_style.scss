@@ -37,7 +37,7 @@
     .address-info-box {
         .address-col {
             display: flex;
-            align-items: start;
+            align-items: flex-start;
 
             > button:first-child {
                 max-width: 84%;
