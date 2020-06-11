@@ -47,6 +47,15 @@
                     <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                 </button>
             </li>
+            <li>
+                <button
+                    class="btn large light same-size round"
+                    title="Remove Wallet"
+                    @click="$refs.removeAccountWindow.show()"
+                >
+                    <icon data="@/assets/svg/logout2.svg" width="16" height="16" aria-hidden="true" />
+                </button>
+            </li>
         </ul>
         <ul v-else class="no-markers vertical-mode">
             <li>
@@ -89,6 +98,12 @@
                     Download Keystore
                 </button>
             </li>
+            <li>
+                <button class="btn large light" @click="$refs.removeAccountWindow.show()">
+                    <icon data="@/assets/svg/logout2.svg" width="16" height="16" aria-hidden="true" />
+                    Remove Wallet
+                </button>
+            </li>
         </ul>
 
         <q-r-code-window ref="qrWindow" :address="currentAccount.address" @window-hide="onWindowHide">
@@ -99,6 +114,7 @@
         </q-r-code-window>
 
         <account-settings-window ref="accountSettingsWindow" :account-data="accountData" @window-hide="onWindowHide" />
+        <remove-account-window ref="removeAccountWindow" />
     </div>
 </template>
 
@@ -109,9 +125,10 @@ import AccountSettingsWindow from '../windows/AccountSettingsWindow/AccountSetti
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 import { clientInfo } from '../../utils/client-info.js';
 import FMessage from '../core/FMessage/FMessage.vue';
+import RemoveAccountWindow from '../windows/RemoveAccountWindow/RemoveAccountWindow.vue';
 
 export default {
-    components: { FMessage, QRCodeWindow, AccountSettingsWindow, FCopyButton },
+    components: { RemoveAccountWindow, FMessage, QRCodeWindow, AccountSettingsWindow, FCopyButton },
 
     props: {
         /** Show buttons with labels. */

@@ -77,28 +77,7 @@
             </fieldset>
         </f-form>
 
-        <f-window
-            ref="confirmationWindow"
-            modal
-            title="Remove Wallet"
-            style="max-width: 500px;"
-            animation-in="scale-center-enter-active"
-            animation-out="scale-center-leave-active"
-        >
-            <div class="align-center">
-                Are you sure you want to remove wallet <span class="break-word">{{ account.address }}</span> ?
-            </div>
-            <br />
-            <f-message type="warning" with-icon>
-                Removing a wallet clears it from local storage. You will not be able to access it again unless you
-                restore via mnemonic phrase, keystore file or private key. This action is irreversible.
-            </f-message>
-            <br />
-            <div class="align-center form-buttons">
-                <button class="btn large secondary" @click="$refs.confirmationWindow.hide()">Cancel</button>
-                <button class="btn large" @click="onConfirmationWindowOkBtnClick">Remove</button>
-            </div>
-        </f-window>
+        <remove-account-window ref="confirmationWindow" :account="cAccount" @account-removed="onAccountRemoved" />
 
         <q-r-code-window ref="qrWindow" :address="account.address">
             <f-message type="warning" with-icon>
@@ -114,11 +93,11 @@ import FForm from '../core/FForm/FForm.vue';
 import FInput from '../core/FInput/FInput.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
-import { REMOVE_ACCOUNT_BY_ADDRESS, UPDATE_ACCOUNT } from '../../store/actions.type.js';
-import FWindow from '../core/FWindow/FWindow.vue';
+import { UPDATE_ACCOUNT } from '../../store/actions.type.js';
 import { helpersMixin } from '../../mixins/helpers.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
+import RemoveAccountWindow from '../windows/RemoveAccountWindow/RemoveAccountWindow.vue';
 
 /**
  * @mixes helpersMixin
@@ -126,7 +105,7 @@ import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 export default {
     name: 'AccountSettingsForm',
 
-    components: { QRCodeWindow, FCopyButton, FWindow, FMessage, FInput, FForm },
+    components: { RemoveAccountWindow, QRCodeWindow, FCopyButton, FMessage, FInput, FForm },
 
     mixins: [helpersMixin],
 
@@ -173,6 +152,10 @@ export default {
 
             return order.toString(10);
         },
+
+        cAccount() {
+            return this.account;
+        },
     },
 
     mounted() {
@@ -204,21 +187,6 @@ export default {
         },
 
         /**
-         * Remove account by address.
-         *
-         * @param {string} _address
-         */
-        async removeAccount(_address) {
-            const activeAccountRemoved = await this.$store.dispatch(REMOVE_ACCOUNT_BY_ADDRESS, _address);
-
-            if (this.accounts.length === 0) {
-                this.$router.replace({ path: '/' });
-            } else if (activeAccountRemoved && this.$route.name !== 'dashboard') {
-                this.$router.replace({ name: 'dashboard' });
-            }
-        },
-
-        /**
          * @param {{detail: {data: {}}}} _event
          */
         onFormSubmit(_event) {
@@ -245,16 +213,12 @@ export default {
             this.$refs.confirmationWindow.show();
         },
 
-        onConfirmationWindowOkBtnClick() {
+        onAccountRemoved() {
             const parentWindow = this.findParentByName('f-window');
-
-            this.$refs.confirmationWindow.hide('fade-leave-active');
 
             if (parentWindow) {
                 parentWindow.hide();
             }
-
-            this.removeAccount(this.account.address);
         },
     },
 };
