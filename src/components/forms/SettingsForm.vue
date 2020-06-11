@@ -33,6 +33,8 @@
                                 How to use Fantom PWA wallet
                             </a>
                         </p>
+
+                        <social-media-links />
                     </div>
                 </fieldset>
             </f-form>
@@ -45,11 +47,12 @@ import FCard from '../core/FCard/FCard.vue';
 import FForm from '../core/FForm/FForm.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
+import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FSelect, FForm, FCard },
+    components: { SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
