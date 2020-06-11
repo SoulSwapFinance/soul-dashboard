@@ -37,7 +37,7 @@
                 </template>
                 <template v-else>
                     <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">
-                        Verify Address on Ledger
+                        Verify on Ledger
                     </button>
                     <ledger-message :error="error" />
                 </template>

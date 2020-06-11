@@ -30,13 +30,9 @@
                 </button>
             </li>
             <li v-if="currentAccount.isLedgerAccount">
-                <router-link
-                    :to="{ name: 'account-receive', params: { verify: true } }"
-                    class="btn large light same-size round"
-                    title="Verify Address on Ledger"
-                >
+                <button class="btn large light same-size round" title="Verify on Ledger" @click="onVerifyOnLedgerClick">
                     <icon data="@/assets/svg/check.svg" width="20" height="20" />
-                </router-link>
+                </button>
             </li>
             <li>
                 <button
@@ -81,10 +77,10 @@
                 </button>
             </li>
             <li v-if="currentAccount.isLedgerAccount">
-                <router-link :to="{ name: 'account-receive', params: { verify: true } }" class="btn large light">
+                <button class="btn large light" @click="onVerifyOnLedgerClick">
                     <icon data="@/assets/svg/check.svg" width="20" height="20" />
-                    Verify Address on Ledger
-                </router-link>
+                    Verify on Ledger
+                </button>
             </li>
             <li>
                 <button class="btn large light" @click="$refs.accountSettingsWindow.show()">
@@ -160,6 +156,11 @@ export default {
             if (keystore) {
                 this.$fWallet.downloadKeystore(keystore);
             }
+        },
+
+        onVerifyOnLedgerClick() {
+            this.$router.push({ name: 'account-receive', params: { verify: true } }).catch(() => {});
+            this.$emit('window-hide');
         },
 
         /**
