@@ -173,6 +173,11 @@ export default {
             return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
         },
 
+        /**
+         * Data for WithdrawRequestList.
+         *
+         * @return {array} Array of withdraw requests.
+         */
         withdrawRequests() {
             const { accountInfo } = this;
             const delegation = accountInfo ? accountInfo.delegation : null;
@@ -187,11 +192,13 @@ export default {
                 if (delegation.deactivation && delegation.deactivation.length) {
                     delegation.deactivation.forEach((_request) => {
                         _request.amount = amount;
+                        _request.final = true;
                         requests.push(_request);
                     });
                 } else if (accountInfo.preparedForWithdrawal) {
                     requests.push({
                         amount: amount,
+                        final: true,
                         requestBlock: {
                             timestamp: delegation.deactivatedTime,
                         },

@@ -16,7 +16,7 @@
                             <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                             <template v-else>
                                 <button
-                                    :disabled="!!canNotWithdraw(item.requestBlock.timestamp)"
+                                    :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
                                     class="btn withdraw-btn"
                                     :data-validator-id="value"
                                 >
@@ -29,7 +29,7 @@
                         <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                         <template v-else>
                             <button
-                                :disabled="!!canNotWithdraw(item.requestBlock.timestamp)"
+                                :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
                                 class="btn withdraw-btn"
                                 :data-item-id="item.id"
                             >
@@ -103,6 +103,20 @@ export default {
         };
     },
 
+    computed: {
+        pendingPartialUndelegations() {
+            let count = 0;
+
+            this.dItems.forEach((_item) => {
+                if (!_item.withdrawBlock) {
+                    count++;
+                }
+            });
+
+            return count > 1;
+        },
+    },
+
     watch: {
         items: {
             handler(_value) {
@@ -146,6 +160,16 @@ export default {
             }
         },
 
+        /**
+         * Check if amount is available to withdraw.
+         *
+         * @param {object} _withdrawRequest
+         * @return {boolean}
+         */
+        canWithdraw(_withdrawRequest) {
+            return (!this.pendingPartialUndelegations || !_withdrawRequest.final) && !_withdrawRequest.withdrawBlock;
+        },
+
         onClick(_event) {
             const eWithdrawBtn = _event.target.closest('.withdraw-btn');
 
@@ -153,7 +177,7 @@ export default {
                 const id = eWithdrawBtn.getAttribute('data-item-id');
                 const withdrawRequest = this.dItems.find((_item) => _item.id === id);
 
-                if (withdrawRequest) {
+                if (withdrawRequest && this.canWithdraw(withdrawRequest)) {
                     this.$emit('withdraw-request-selected', withdrawRequest);
                 }
             }

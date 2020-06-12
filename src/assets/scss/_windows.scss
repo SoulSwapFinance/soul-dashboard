@@ -47,7 +47,7 @@
 
         &.colored-header {
             .body {
-                padding-top: 40px;
+                padding-top: var(--f-window-padding-with-header) !important;
             }
         }
     }

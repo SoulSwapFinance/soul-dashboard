@@ -6,7 +6,8 @@
     --f-data-table-header-sticky-top: 146px;
     --f-left-menu-width: 100px;
     --f-bottom-menu-height: 68px;
-    --f-window-body-padding-with-header: 0 40px 40px 40px;
+    --f-window-padding-with-header: 40px;
+    --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
 }
 
 @include media-max($bp-menu) {
@@ -22,6 +23,6 @@
     :root {
         //--f-header-height: 52px;
         --f-header-height: 0;
-        --f-window-body-padding-with-header: 0 24px 24px 24px;
+        --f-window-padding-with-header: 24px;
     }
 }
