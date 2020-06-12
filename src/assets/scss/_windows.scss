@@ -80,7 +80,13 @@
     }
 
     .inst-content {
-        padding: 8px 16px 16px 16px;
+        padding-top: 8px;
         line-height: 2;
+    }
+
+    &.with-header {
+        .body {
+            padding: var(--f-window-body-padding-with-header) !important;
+        }
     }
 }

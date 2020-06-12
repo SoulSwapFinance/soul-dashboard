@@ -6,6 +6,7 @@
     --f-data-table-header-sticky-top: 146px;
     --f-left-menu-width: 100px;
     --f-bottom-menu-height: 68px;
+    --f-window-body-padding-with-header: 0 40px 40px 40px;
 }
 
 @include media-max($bp-menu) {
@@ -21,5 +22,6 @@
     :root {
         //--f-header-height: 52px;
         --f-header-height: 0;
+        --f-window-body-padding-with-header: 0 24px 24px 24px;
     }
 }
