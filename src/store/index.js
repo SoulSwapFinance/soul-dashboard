@@ -50,6 +50,18 @@ const vuexLocalStorage = new VuexPersist({
 
 vuexPlugins.push(vuexLocalStorage.plugin);
 
+/**
+ * Get pending rewards amount from account structure.
+ *
+ * @param {object} _account
+ * @return {string}
+ */
+function getPendingRewards(_account) {
+    return _account && _account.delegation && _account.delegation.pendingRewards
+        ? _account.delegation.pendingRewards.amount
+        : '';
+}
+
 export const store = new Vuex.Store({
     plugins: vuexPlugins,
 
@@ -292,6 +304,7 @@ export const store = new Vuex.Store({
                 address,
                 balance: balance.balance,
                 totalBalance: balance.totalValue,
+                pendingRewards: getPendingRewards(balance),
                 keystore: _keystore,
                 name: `Wallet ${_context.state.accounts.length + 1}`,
             };
@@ -313,6 +326,7 @@ export const store = new Vuex.Store({
                     address,
                     balance: balance.balance,
                     totalBalance: balance.totalValue,
+                    pendingRewards: getPendingRewards(balance),
                     isLedgerAccount: true,
                 };
 
@@ -327,19 +341,23 @@ export const store = new Vuex.Store({
             const accounts = _context.getters.accounts;
             let balance;
             let account;
+            let pendingRewards;
             // const balances = await Promise.all(accounts.map((_address) => fWallet.getBalance(_address.address)));
 
             for (let i = 0, len1 = accounts.length; i < len1; i++) {
                 account = accounts[i];
-                balance = await fWallet.getBalance(account.address, false, true);
 
-                if (account.balance !== balance.balance) {
+                balance = await fWallet.getBalance(account.address, false, true);
+                pendingRewards = getPendingRewards(balance);
+
+                if (account.balance !== balance.balance || account.pendingRewards !== pendingRewards) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {
                         ...account,
                         balance: balance.balance,
                         totalBalance: balance.totalValue,
+                        pendingRewards,
                         index: i,
                     });
                 }
@@ -356,14 +374,16 @@ export const store = new Vuex.Store({
             if (account) {
                 const { index } = _context.getters.getAccountAndIndexByAddress(account.address);
                 let balance = await fWallet.getBalance(account.address, false, true);
+                let pendingRewards = getPendingRewards(balance);
 
-                if (index > -1 && account.balance !== balance.balance) {
+                if (index > -1 && (account.balance !== balance.balance || account.pendingRewards !== pendingRewards)) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {
                         ...account,
                         balance: balance.balance,
                         totalBalance: balance.totalValue,
+                        pendingRewards,
                         index,
                     });
                 }

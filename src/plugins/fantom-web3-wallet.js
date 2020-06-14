@@ -85,6 +85,11 @@ export class FantomWeb3Wallet {
                     address
                     balance
                     totalValue
+                    delegation {
+                        pendingRewards {
+                            amount
+                        }
+                    }
                 }
             }
         `;
@@ -95,6 +100,11 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
+                        delegation {
+                            pendingRewards {
+                                amount
+                            }
+                        }
                     }
                 }
             `;
