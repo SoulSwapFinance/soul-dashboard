@@ -23,7 +23,7 @@
                     title="More Actions"
                     @click="$refs.addressActionsPopover.show()"
                 >
-                    <icon data="@/assets/svg/ellipsis-v.svg" width="20" height="20" aria-hidden="true" />
+                    <icon data="@/assets/svg/ellipsis-v.svg" width="24" height="24" aria-hidden="true" />
                 </button>
             </div>
             <div v-if="!mobileView" class="col-4 align-right align-center-md">

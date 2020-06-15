@@ -131,7 +131,7 @@
         </f-card>
 
         <f-card v-if="withdrawRequests.length" class="f-card-double-padding account-main-content-mt">
-            <h2>Pending Undelegations</h2>
+            <h2>Undelegation History</h2>
 
             <withdraw-request-list :items="withdrawRequests" @withdraw-request-selected="onWithdrawRequestSelected" />
         </f-card>
