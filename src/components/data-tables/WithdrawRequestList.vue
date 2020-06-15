@@ -18,7 +18,7 @@
                                 <button
                                     :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
                                     class="btn withdraw-btn"
-                                    :data-validator-id="value"
+                                    :data-item-id="item.id"
                                 >
                                     {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
                                 </button>
