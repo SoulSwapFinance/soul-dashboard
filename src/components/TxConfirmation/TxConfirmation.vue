@@ -151,7 +151,7 @@ export default {
             let rawTx = null;
 
             if (currentAccount && this.tx && this.tx.to) {
-                this.tx.nonce = fWallet.getTransactionCount(currentAccount.address);
+                this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
                 // console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
