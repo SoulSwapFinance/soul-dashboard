@@ -120,16 +120,11 @@ export default {
     watch: {
         items: {
             handler(_value) {
-                this.dItems = _value;
+                this.dItems = _value.sort(sortByHex('requestBlock.timestamp', 'desc'));
             },
             deep: true,
+            immediate: true,
         },
-    },
-
-    created() {
-        if (this.items.length > 0) {
-            this.dItems = this.items.sort(sortByHex('requestBlock.timestamp', 'desc'));
-        }
     },
 
     methods: {

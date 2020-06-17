@@ -18,11 +18,11 @@
                 </span>
             </li>
             <li>
-                <span class="action" title="Ledger (Coming Soon)" @click="onConnectToLedgerClick">
+                <span class="action" title="Ledger (Coming)" @click="onConnectToLedgerClick">
                     <button class="btn ledger-accounts-btn large same-size round">
                         <icon data="@/assets/svg/ledger-logo-icon.svg" width="20" height="20" aria-hidden="true" />
                     </button>
-                    <span class="link-label ledger-accounts-color">Ledger (Coming Soon)</span>
+                    <span class="link-label ledger-accounts-color">Ledger (Coming)</span>
                 </span>
             </li>
         </ul>

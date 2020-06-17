@@ -34,6 +34,12 @@
                             </a>
                         </p>
 
+                        <p style="padding: 0 0 32px 0;">
+                            <a href="https://explorer.fantom.network/" target="_blank">
+                                Fantom Explorer
+                            </a>
+                        </p>
+
                         <social-media-links />
                     </div>
                 </fieldset>
