@@ -257,10 +257,6 @@ form {
     font-size: 0.6em;
 }
 
-h1, .h1 {
-    font-weight: normal;
-}
-
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
