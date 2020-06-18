@@ -3,7 +3,9 @@
         <h2>{{ title }}</h2>
 
         <h3 class="break-word">
-            <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">{{ tx | formatHash }}</a>
+            <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">
+                <f-ellipsis :text="tx" overflow="middle" />
+            </a>
         </h3>
 
         <div class="success-icon">
@@ -11,7 +13,6 @@
         </div>
 
         <div v-if="continueTo">
-            <br />
             <button class="btn large" @click="onContinueBtnClick">Continue</button>
         </div>
     </f-card>
@@ -20,9 +21,10 @@
 <script>
 import FCard from '../core/FCard/FCard.vue';
 import appConfig from '../../../app.config.js';
+import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
 
 export default {
-    components: { FCard },
+    components: { FEllipsis, FCard },
 
     props: {
         /** Transaction hash */
