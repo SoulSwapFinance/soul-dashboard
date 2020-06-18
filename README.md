@@ -1,6 +1,6 @@
-# Fantom Metamask
+# Fantom PWA Wallet
 
-JavaScript and Vue based Fantom metamask.
+JavaScript and Vue based Fantom pwa wallet.
 
 We are using:
 * Node / NPM
