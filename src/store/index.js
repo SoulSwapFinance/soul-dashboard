@@ -328,6 +328,7 @@ export const store = new Vuex.Store({
                     totalBalance: balance.totalValue,
                     pendingRewards: getPendingRewards(balance),
                     isLedgerAccount: true,
+                    name: `Wallet ${_context.state.accounts.length + 1}`,
                 };
 
                 _context.commit(APPEND_ACCOUNT, account);
