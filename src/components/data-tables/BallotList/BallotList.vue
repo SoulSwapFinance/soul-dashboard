@@ -18,13 +18,49 @@
                 >
                     <template v-slot:column-name="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
-                            <div class="col-6 f-row-label">{{ column.label }}</div>
-                            <div class="col-6">
-                                <a :href="item.detailsUrl" target="_blank">{{ value }}</a>
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
+                            <div class="col-8">
+                                <template v-if="item.ballot.detailsUrl">
+                                    <a :href="item.ballot.detailsUrl" target="_blank">{{ value }}</a>
+                                </template>
+                                <template v-else>
+                                    {{ value }}
+                                </template>
                             </div>
                         </div>
                         <template v-else>
-                            <a :href="item.detailsUrl" target="_blank">{{ value }}</a>
+                            <template v-if="item.ballot.detailsUrl">
+                                <a :href="item.ballot.detailsUrl" target="_blank">{{ value }}</a>
+                            </template>
+                            <template v-else>
+                                {{ value }}
+                            </template>
+                        </template>
+                    </template>
+
+                    <template v-slot:column-vote="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
+                            <div class="col-8">
+                                <template v-if="item.ballot._proposal">{{ item.ballot._proposal }}</template>
+                                <template v-else-if="item.ballot.isOpen">
+                                    <button
+                                        type="button"
+                                        class="btn vote-btn"
+                                        :data-ballot-address="item.ballot.address"
+                                    >
+                                        Vote
+                                    </button>
+                                </template>
+                                <template v-else>-</template>
+                            </div>
+                        </div>
+                        <template v-else>
+                            <template v-if="item.ballot._proposal">{{ item.ballot._proposal }}</template>
+                            <template v-else-if="item.ballot.isOpen">
+                                <button class="btn vote-btn" :data-ballot-address="item.ballot.address">Vote</button>
+                            </template>
+                            <template v-else>-</template>
                         </template>
                     </template>
                 </f-data-table>
@@ -43,7 +79,6 @@ import gql from 'graphql-tag';
 import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
 import { mapGetters } from 'vuex';
-import Vue from 'vue';
 
 export default {
     name: 'BallotList',
@@ -84,7 +119,6 @@ export default {
                                 end
                                 isOpen
                                 isFinalized
-                                winner
                                 proposals
                             }
                             cursor
@@ -98,15 +132,13 @@ export default {
                     count: this.itemsPerPage,
                 };
             },
-            result(_data, _key) {
+            async result(_data, _key) {
                 let data;
 
                 if (_key === 'ballots') {
                     data = _data.data.ballots;
 
-                    const edges = data.edges;
-
-                    // this.processVoteColumn(edges);
+                    const edges = await this.processEdges(data.edges);
 
                     this.hasNext = data.pageInfo.hasNext;
 
@@ -139,7 +171,6 @@ export default {
                     name: 'name',
                     label: 'Name',
                     itemProp: 'ballot.name',
-                    width: '140px',
                 },
                 {
                     name: 'start',
@@ -148,6 +179,7 @@ export default {
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), true, true);
                     },
+                    width: '220px',
                 },
                 {
                     name: 'end',
@@ -156,6 +188,7 @@ export default {
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), true, true);
                     },
+                    width: '220px',
                 },
                 {
                     name: 'winner',
@@ -168,13 +201,13 @@ export default {
                             return proposals[parseInt(_value)];
                         }
 
-                        return '';
+                        return '-';
                     },
                 },
                 {
                     name: 'vote',
                     label: 'Vote',
-                    itemProp: 'ballot.isOpen',
+                    itemProp: 'ballot._proposal',
                 },
             ],
         };
@@ -190,54 +223,51 @@ export default {
 
     methods: {
         /**
+         * Prepare 'vote' column.
+         *
          * @param {array} _edges
          */
-        async processVoteColumn(_edges) {
-            const notFinalizedBallots = [];
+        async processEdges(_edges) {
+            const ballotAddresses = [];
 
             _edges.forEach((_item) => {
                 const { ballot } = _item;
 
-                if (ballot && !ballot.isFinalized) {
-                    notFinalizedBallots.push(ballot.address);
-                }
+                ballot._proposal = '';
+                ballotAddresses.push(ballot.address);
             });
 
-            if (notFinalizedBallots.length > 0) {
+            if (ballotAddresses.length > 0) {
                 // send votes request
                 const data = await this.$apollo.query({
                     query: gql`
                         query VoteList($voter: Address!, $ballots: [Address!]!) {
                             votes(voter: $voter, ballots: $ballots) {
-                                vote {
-                                    ballot
-                                    vote
-                                }
+                                ballot
+                                vote
                             }
                         }
                     `,
                     variables: {
                         voter: this.currentAccount.address,
-                        ballots: notFinalizedBallots,
+                        ballots: ballotAddresses,
                     },
                     fetchPolicy: 'no-cache',
                 });
 
                 if (data) {
                     const { votes } = data.data;
-                    const { dItems } = this;
 
                     console.log(votes);
 
                     if (votes) {
                         votes.forEach((_item) => {
-                            for (let i = 0, len1 = dItems.length; i < len1; i++) {
-                                if (dItems[i].ballot === _item.ballot.address) {
-                                    // update vote column
-                                    Vue.set(dItems, i, {
-                                        ...dItems[i],
-                                        vote: _item.vote,
-                                    });
+                            let edge;
+
+                            for (let i = 0, len1 = _edges.length; i < len1; i++) {
+                                edge = _edges[i];
+                                if (edge.ballot.address === _item.ballot) {
+                                    edge._propsal = edge.proposals[parseInt(_item.vote)];
                                     break;
                                 }
                             }
@@ -245,6 +275,8 @@ export default {
                     }
                 }
             }
+
+            return _edges;
         },
 
         fetchMore() {
