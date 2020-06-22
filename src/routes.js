@@ -13,6 +13,7 @@ import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 import AccountHistory from './views/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
+import AccountVote from './views/AccountVote.vue';
 
 export const routes = [
     {
@@ -71,6 +72,11 @@ export const routes = [
                         name: 'account-stake',
                         path: 'stake',
                         component: AccountStake,
+                    },
+                    {
+                        name: 'account-vote',
+                        path: 'vote',
+                        component: AccountVote,
                     },
                 ],
             },
