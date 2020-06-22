@@ -45,9 +45,16 @@
 
         <p v-if="editMode" class="add-contact">
             <button class="btn large" type="button" @click="onAddContactBtnClick">
-                <icon data="@/assets/svg/plus.svg" width="16" height="16" aria-hidden="true" /> Add Contact
+                <icon data="@/assets/svg/plus.svg" width="16" height="16" aria-hidden="true" /> New Contact
             </button>
         </p>
+
+        <contact-detail-window
+            v-if="editMode"
+            ref="contactDetailWindow"
+            :action="contactAction"
+            :contact-data="contactData"
+        />
     </div>
 </template>
 
@@ -56,16 +63,35 @@ import { mapGetters } from 'vuex';
 import FCard from '../core/FCard/FCard.vue';
 import AccountName from '../AccountName/AccountName.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
+import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
 
 export default {
     name: 'ContactList',
-    components: { FCopyButton, AccountName, FCard },
+
+    components: { ContactDetailWindow, FCopyButton, AccountName, FCard },
+
     props: {
-        /** Show edit icon. */
+        /** Show edit icon and 'new contact' button. */
         editMode: {
             type: Boolean,
             default: false,
         },
+    },
+
+    data() {
+        return {
+            /**
+             * Type of action with contact.
+             *
+             * @type {('new' | 'add' | 'edit')}
+             */
+            contactAction: 'new',
+            contactData: {
+                address: '',
+                index: -1,
+                blockchain: 'fantom',
+            },
+        };
     },
 
     computed: {
@@ -75,12 +101,12 @@ export default {
         contacts() {
             return [
                 {
-                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78',
+                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78a',
                     name: 'Contact 1',
                     blockchain: 'fantom',
                 },
                 {
-                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78',
+                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78Y',
                     name: 'Contact 2',
                     blockchain: 'binance',
                 },
@@ -93,13 +119,16 @@ export default {
          * @param {Event} _event
          */
         onContactListClick(_event) {
-            if (!this.onEditContactButtonClick(_event)) {
+            if (!this.onEditContactButtonClick(_event) && !this.editMode) {
+                alert('contact picked');
+                /*
                 const elem = _event.target.closest('[data-address]');
                 const address = elem ? elem.getAttribute('data-address') : '';
 
                 if (address && address.toLowerCase() === this.currentContact.address.toLowerCase()) {
                     this.$emit('contact-picked', address);
                 }
+*/
             }
         },
         /**
@@ -111,8 +140,10 @@ export default {
             const index = elem ? parseInt(elem.getAttribute('data-index')) : -1;
 
             if (address && !isNaN(index) && index > -1) {
-                this.accountData = { address, order: index + 1 };
-                this.$refs.accountSettingsWindow.show();
+                this.contactAction = 'edit';
+                this.contactData = { address, order: index + 1 };
+
+                this.$refs.contactDetailWindow.show();
 
                 return true;
             }
@@ -121,7 +152,10 @@ export default {
         },
 
         onAddContactBtnClick() {
-            alert('not implemented yet');
+            this.contactAction = 'new';
+            this.contactData = { address: '', order: -1, blockchain: 'fantom' };
+
+            this.$refs.contactDetailWindow.show();
         },
     },
 };

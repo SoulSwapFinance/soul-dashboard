@@ -206,6 +206,12 @@ form {
 }
 
 .f-window {
+    .form-buttons {
+        padding-bottom: 8px;
+    }
+}
+
+.f-window {
     .f-data-table {
         --f-data-table-header-sticky-top: 0;
 
