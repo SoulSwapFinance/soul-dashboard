@@ -26,6 +26,14 @@
                 </router-link>
             </li>
             <li>
+                <router-link :to="{ name: 'account-vote' }" class="action" title="Vote">
+                    <span class="btn large same-size round">
+                        <icon data="@/assets/svg/vote.svg" width="26" height="26" aria-hidden="true" />
+                    </span>
+                    <span class="link-label">Voting</span>
+                </router-link>
+            </li>
+            <li>
                 <router-link :to="{ name: 'account-history' }" class="action" title="Home">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/tx-history.svg" width="20" height="20" aria-hidden="true" />

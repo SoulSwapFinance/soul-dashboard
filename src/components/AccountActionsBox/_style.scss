@@ -1,0 +1,23 @@
+@import '../../assets/scss/vars';
+
+.account-actions-box {
+    &.actions-box {
+        ul {
+            li {
+                .action {
+                    min-width: 68px;
+                }
+            }
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .account-actions-box {
+        &.actions-box {
+            ul {
+                overflow-x: auto;
+            }
+        }
+    }
+}
