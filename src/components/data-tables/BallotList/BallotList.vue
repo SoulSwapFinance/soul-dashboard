@@ -2,7 +2,7 @@
     <div class="ballot-list">
         <f-card class="account-transaction-list-dt" :off="windowMode">
             <h2 v-if="!windowMode" class="dt-heading">
-                Ballots <span class="f-records-count">({{ totalCount | formatHexToInt }})</span>
+                Ballots <span class="f-records-count">({{ totalCount }})</span>
             </h2>
 
             <template v-if="!ballotsError">
@@ -42,6 +42,8 @@ import FCard from '../../core/FCard/FCard.vue';
 import gql from 'graphql-tag';
 import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
+import { mapGetters } from 'vuex';
+import Vue from 'vue';
 
 export default {
     name: 'BallotList',
@@ -75,10 +77,13 @@ export default {
                         }
                         edges {
                             ballot {
+                                address
                                 name
                                 detailsUrl
                                 start
                                 end
+                                isOpen
+                                isFinalized
                                 winner
                                 proposals
                             }
@@ -100,6 +105,8 @@ export default {
                     data = _data.data.ballots;
 
                     const edges = data.edges;
+
+                    // this.processVoteColumn(edges);
 
                     this.hasNext = data.pageInfo.hasNext;
 
@@ -154,6 +161,15 @@ export default {
                     name: 'winner',
                     label: 'Winner',
                     itemProp: 'ballot.winner',
+                    formatter: (_value, _item) => {
+                        const { proposals } = _item;
+
+                        if (_item.isFinalized && proposals && proposals.length) {
+                            return proposals[parseInt(_value)];
+                        }
+
+                        return '';
+                    },
                 },
                 {
                     name: 'vote',
@@ -165,12 +181,72 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         cLoading() {
             return this.$apollo.queries.ballots.loading;
         },
     },
 
     methods: {
+        /**
+         * @param {array} _edges
+         */
+        async processVoteColumn(_edges) {
+            const notFinalizedBallots = [];
+
+            _edges.forEach((_item) => {
+                const { ballot } = _item;
+
+                if (ballot && !ballot.isFinalized) {
+                    notFinalizedBallots.push(ballot.address);
+                }
+            });
+
+            if (notFinalizedBallots.length > 0) {
+                // send votes request
+                const data = await this.$apollo.query({
+                    query: gql`
+                        query VoteList($voter: Address!, $ballots: [Address!]!) {
+                            votes(voter: $voter, ballots: $ballots) {
+                                vote {
+                                    ballot
+                                    vote
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        voter: this.currentAccount.address,
+                        ballots: notFinalizedBallots,
+                    },
+                    fetchPolicy: 'no-cache',
+                });
+
+                if (data) {
+                    const { votes } = data.data;
+                    const { dItems } = this;
+
+                    console.log(votes);
+
+                    if (votes) {
+                        votes.forEach((_item) => {
+                            for (let i = 0, len1 = dItems.length; i < len1; i++) {
+                                if (dItems[i].ballot === _item.ballot.address) {
+                                    // update vote column
+                                    Vue.set(dItems, i, {
+                                        ...dItems[i],
+                                        vote: _item.vote,
+                                    });
+                                    break;
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        },
+
         fetchMore() {
             const { ballots } = this;
 
