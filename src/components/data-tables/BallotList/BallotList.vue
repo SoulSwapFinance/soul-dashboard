@@ -215,10 +215,10 @@ export default {
                     label: 'Winner',
                     itemProp: 'ballot.winner',
                     formatter: (_value, _item) => {
-                        const { proposals } = _item;
+                        const { proposals } = _item.ballot;
 
-                        if (_item.isFinalized && proposals && proposals.length) {
-                            return proposals[parseInt(_value)];
+                        if (_item.ballot.isFinalized && proposals && proposals.length) {
+                            return proposals[parseInt(_value, 16)];
                         }
 
                         return '-';
@@ -295,8 +295,8 @@ export default {
 
                             for (let i = 0, len1 = _edges.length; i < len1; i++) {
                                 edge = _edges[i];
-                                if (edge.ballot.address === _item.ballot) {
-                                    edge._propsal = edge.proposals[parseInt(_item.vote)];
+                                if (edge.ballot.address.toLowerCase() === _item.ballot.toLowerCase()) {
+                                    edge.ballot._proposal = edge.ballot.proposals[parseInt(_item.vote, 16)];
                                     break;
                                 }
                             }

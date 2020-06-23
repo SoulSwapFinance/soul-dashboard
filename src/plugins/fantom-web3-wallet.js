@@ -19,6 +19,7 @@ export const GAS_LIMITS = {
     undelegate: '0x30D40',
     withdraw: '0x30D40',
     delegate: '0x30D40',
+    ballot: '0x3D0900',
 };
 
 /** @type {FantomWeb3Wallet} */

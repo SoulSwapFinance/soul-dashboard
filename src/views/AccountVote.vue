@@ -7,6 +7,7 @@
             v-bind="currentComponentProperties"
             @change-component="onChangeComponent"
             @ballot-selected="onBallotSelected"
+            @f-form-submit="onBallotFormSubmit"
         ></component>
     </div>
 </template>
@@ -14,6 +15,8 @@
 <script>
 import BallotList from '../components/data-tables/BallotList/BallotList.vue';
 import BallotForm from '../components/forms/BallotForm/BallotForm.vue';
+import BallotConfirmation from '../components/BallotConfirmation/BallotConfirmation.vue';
+import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 
 const DEFAULT_COMPONENT = 'ballot-list';
 
@@ -23,6 +26,8 @@ export default {
     components: {
         BallotList,
         BallotForm,
+        BallotConfirmation,
+        TransactionSuccessMessage,
     },
 
     data() {
@@ -39,6 +44,10 @@ export default {
                     return {
                         ballot: this._data_,
                     };
+                case 'ballot-confirmation':
+                    return this._data_;
+                case 'transaction-success-message':
+                    return this._data_;
                 default:
                     return null;
             }
@@ -68,6 +77,16 @@ export default {
             this.currentComponent = 'ballot-form';
 
             this._data_ = _ballot;
+
+            this.$nextTick(() => {
+                this._data_ = null;
+            });
+        },
+
+        onBallotFormSubmit(_event) {
+            this.currentComponent = 'ballot-confirmation';
+
+            this._data_ = _event.detail.data;
 
             this.$nextTick(() => {
                 this._data_ = null;

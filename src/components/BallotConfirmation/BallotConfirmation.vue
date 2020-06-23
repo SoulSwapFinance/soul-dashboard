@@ -1,0 +1,157 @@
+<template>
+    <div class="ballot-confirmation">
+        <tx-confirmation
+            :tx="tx"
+            confirmation-comp-name="withdraw-ftm-confirmation"
+            send-button-label="Vote"
+            password-label="Please enter your wallet password to poll"
+            :gas-limit="gasLimit"
+            :on-send-transaction-success="onSendTransactionSuccess"
+            :on-go-back="onGoBack"
+            @change-component="onChangeComponent"
+        >
+            <h2>
+                Polls - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            </h2>
+
+            <div class="transaction-info">
+                <div class="row no-collapse">
+                    <div class="col-3 f-row-label">Poll Name</div>
+                    <div class="col break-word">
+                        <template v-if="ballot.detailsUrl">
+                            <a :href="ballot.detailsUrl" target="_blank">{{ ballot.name }}</a>
+                        </template>
+                        <template v-else>
+                            {{ ballot.name }}
+                        </template>
+                    </div>
+                </div>
+
+                <div class="row no-collapse">
+                    <div class="col-3 f-row-label">Vote</div>
+                    <div class="col break-word">
+                        {{ ballot.proposals[proposal] }}
+                    </div>
+                </div>
+            </div>
+
+            <template #window-content>
+                <ol class="f-data-layout">
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Send To</div>
+                            <div class="col break-word">
+                                {{ tx.to }}
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">From</div>
+                            <div class="col break-word">
+                                {{ currentAccount.address }}
+                                <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Amount</div>
+                            <div class="col">
+                                0
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </template>
+        </tx-confirmation>
+    </div>
+</template>
+
+<script>
+import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { mapGetters } from 'vuex';
+import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
+import { toFTM } from '../../utils/transactions.js';
+
+export default {
+    name: 'BallotConfirmation',
+
+    components: { TxConfirmation },
+
+    props: {
+        /** Ballot data object. */
+        ballot: {
+            type: Object,
+            default() {
+                return {};
+            },
+            required: true,
+        },
+        /** Index into `ballot.proposals` array. */
+        proposal: {
+            type: Number,
+            default: -1,
+        },
+    },
+
+    data() {
+        return {
+            tx: {},
+            gasLimit: GAS_LIMITS.ballot,
+        };
+    },
+
+    computed: {
+        ...mapGetters(['currentAccount']),
+    },
+
+    created() {
+        this.setTx();
+    },
+
+    methods: {
+        async setTx() {
+            if (this.proposal > -1) {
+                this.tx = await this.$fWallet.getSFCTransactionToSign(
+                    sfcUtils.ballotVote(this.ballot.address, this.proposal),
+                    this.currentAccount.address,
+                    this.gasLimit
+                );
+            }
+        },
+
+        onSendTransactionSuccess(_data) {
+            this.$emit('change-component', {
+                to: 'transaction-success-message',
+                from: 'ballot-confirmation',
+                data: {
+                    tx: _data.data.sendTransaction.hash,
+                    successMessage: 'Polls Successful',
+                    continueTo: 'account-history',
+                },
+            });
+        },
+
+        onGoBack() {
+            this.$emit('change-component', {
+                to: 'ballot-form',
+                from: 'ballot-confirmation',
+                data: this.ballot,
+            });
+        },
+
+        /**
+         * Re-target `'change-component'` event.
+         *
+         * @param {object} _data
+         */
+        onChangeComponent(_data) {
+            this.$emit('change-component', _data);
+        },
+
+        toFTM,
+    },
+};
+</script>

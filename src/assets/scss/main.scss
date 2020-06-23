@@ -269,7 +269,15 @@ form {
         padding-left: 0;
         padding-right: 0;
     }
+}
 
+@include media-max($bp-menu) {
+    main {
+        padding-top: 0;
+    }
+}
+
+@include media-max($bp-medium) {
     .form-buttons {
         .btn {
             margin-right: 8px;
@@ -281,12 +289,6 @@ form {
             }
             */
         }
-    }
-}
-
-@include media-max($bp-menu) {
-    main {
-        padding-top: 0;
     }
 }
 

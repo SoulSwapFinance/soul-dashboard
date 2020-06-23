@@ -306,5 +306,6 @@ export default {
     prepareToWithdrawDelegationPartTx,
     prepareToWithdrawDelegationTx,
     withdrawDelegationTx,
-    withdrawPartTx
+    withdrawPartTx,
+    ballotVote
 };

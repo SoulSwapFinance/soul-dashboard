@@ -75,22 +75,16 @@ export default {
     },
 
     methods: {
-        onFormSubmit() {
+        onFormSubmit(_event) {
             if (this.proposal === -1) {
                 this.proposalErrorMsg = 'Please select one of the options';
             } else {
                 this.proposalErrorMsg = '';
 
-                /*
-                this.$emit('change-component', {
-                    to: 'ballot-confirmation',
-                    from: 'ballot-form',
-                    data: {
-                        ballot: this.ballot,
-                        proposalIndex: this.proposal,
-                    },
-                });
-*/
+                _event.detail.data.proposal = parseInt(_event.detail.data.proposal);
+                _event.detail.data.ballot = this.ballot;
+
+                this.$emit('f-form-submit', _event);
             }
         },
 
