@@ -15,6 +15,7 @@
                     fixed-header
                     f-card-off
                     @fetch-more="fetchMore"
+                    @click.native="onDataTableClick"
                 >
                     <template v-slot:column-name="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
@@ -294,6 +295,22 @@ export default {
                         return fetchMoreResult;
                     },
                 });
+            }
+        },
+
+        /**
+         * @param {Event} _event
+         */
+        onDataTableClick(_event) {
+            const eVoteBtn = _event.target.closest('.vote-btn');
+
+            if (eVoteBtn) {
+                const ballotAddress = eVoteBtn.getAttribute('data-ballot-address');
+                const ballot = this.dItems.find((_item) => _item.ballot.address === ballotAddress);
+
+                if (ballot && ballot.ballot.isOpen && !ballot.ballot._proposal) {
+                    this.$emit('ballot-selected', ballot);
+                }
             }
         },
     },

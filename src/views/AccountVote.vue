@@ -2,13 +2,12 @@
     <div class="view-account-vote account-main-content-mt">
         <h1 class="not-visible">Vote</h1>
 
-        <keep-alive>
-            <component
-                :is="currentComponent"
-                v-bind="currentComponentProperties"
-                @change-component="onChangeComponent"
-            ></component>
-        </keep-alive>
+        <component
+            :is="currentComponent"
+            v-bind="currentComponentProperties"
+            @change-component="onChangeComponent"
+            @ballot-selected="onBallotSelected"
+        ></component>
     </div>
 </template>
 
@@ -58,6 +57,10 @@ export default {
             this.$nextTick(() => {
                 this._data_ = null;
             });
+        },
+
+        onBallotSelected(_ballot) {
+            console.log(_ballot);
         },
     },
 };
