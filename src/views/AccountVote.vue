@@ -13,6 +13,7 @@
 
 <script>
 import BallotList from '../components/data-tables/BallotList/BallotList.vue';
+import BallotForm from '../components/forms/BallotForm/BallotForm.vue';
 
 const DEFAULT_COMPONENT = 'ballot-list';
 
@@ -21,6 +22,7 @@ export default {
 
     components: {
         BallotList,
+        BallotForm,
     },
 
     data() {
@@ -33,16 +35,19 @@ export default {
     computed: {
         currentComponentProperties() {
             switch (this.currentComponent) {
-                /*
-                case 'transaction-confirmation':
+                case 'ballot-form':
                     return {
-                        txData: this._data_,
+                        ballot: this._data_,
                     };
-*/
                 default:
                     return null;
             }
         },
+    },
+
+    created() {
+        // temporary data
+        this._data_ = null;
     },
 
     methods: {
@@ -60,7 +65,13 @@ export default {
         },
 
         onBallotSelected(_ballot) {
-            console.log(_ballot);
+            this.currentComponent = 'ballot-form';
+
+            this._data_ = _ballot;
+
+            this.$nextTick(() => {
+                this._data_ = null;
+            });
         },
     },
 };

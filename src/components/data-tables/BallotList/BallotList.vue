@@ -2,7 +2,7 @@
     <div class="ballot-list">
         <f-card class="account-transaction-list-dt" :off="windowMode">
             <h2 v-if="!windowMode" class="dt-heading">
-                Ballots <span class="f-records-count">({{ totalCount }})</span>
+                Polls <span class="f-records-count">({{ totalCount }})</span>
             </h2>
 
             <template v-if="!ballotsError">
@@ -10,6 +10,7 @@
                     :columns="columns"
                     :items="dItems"
                     :disable-infinite-scroll="!hasNext"
+                    :mobile-view="cMobileView"
                     :loading="cLoading"
                     infinite-scroll
                     fixed-header
@@ -36,6 +37,20 @@
                             <template v-else>
                                 {{ value }}
                             </template>
+                        </template>
+                    </template>
+
+                    <template v-slot:column-startend="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
+                            <div class="col-8">
+                                {{ value }} <br />
+                                {{ formatDate(timestampToDate(item.ballot.end), true, true) }}
+                            </div>
+                        </div>
+                        <template v-else>
+                            {{ value }} <br />
+                            {{ formatDate(timestampToDate(item.ballot.end), true, true) }}
                         </template>
                     </template>
 
@@ -120,6 +135,7 @@ export default {
                                 end
                                 isOpen
                                 isFinalized
+                                winner
                                 proposals
                             }
                             cursor
@@ -172,16 +188,18 @@ export default {
                     name: 'name',
                     label: 'Name',
                     itemProp: 'ballot.name',
+                    width: '320px',
                 },
                 {
-                    name: 'start',
-                    label: 'Start',
+                    name: 'startend',
+                    label: 'Start / End',
                     itemProp: 'ballot.start',
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), true, true);
                     },
                     width: '220px',
                 },
+                /*
                 {
                     name: 'end',
                     label: 'End',
@@ -191,6 +209,7 @@ export default {
                     },
                     width: '220px',
                 },
+*/
                 {
                     name: 'winner',
                     label: 'Winner',
@@ -216,6 +235,17 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        /**
+         * Property is set to `true`, if 'ballot-list-dt-mobile-view' breakpoint is reached.
+         *
+         * @return {Boolean}
+         */
+        cMobileView() {
+            const dataTableBreakpoint = this.$store.state.breakpoints['ballot-list-dt-mobile-view'];
+
+            return dataTableBreakpoint && dataTableBreakpoint.matches;
+        },
 
         cLoading() {
             return this.$apollo.queries.ballots.loading;
@@ -258,8 +288,6 @@ export default {
 
                 if (data) {
                     const { votes } = data.data;
-
-                    console.log(votes);
 
                     if (votes) {
                         votes.forEach((_item) => {
@@ -309,10 +337,13 @@ export default {
                 const ballot = this.dItems.find((_item) => _item.ballot.address === ballotAddress);
 
                 if (ballot && ballot.ballot.isOpen && !ballot.ballot._proposal) {
-                    this.$emit('ballot-selected', ballot);
+                    this.$emit('ballot-selected', ballot.ballot);
                 }
             }
         },
+
+        formatDate,
+        timestampToDate,
     },
 };
 </script>
