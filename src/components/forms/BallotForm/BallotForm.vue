@@ -4,7 +4,7 @@
             <f-form center-form @f-form-submit="onFormSubmit">
                 <fieldset class="f-data-layout">
                     <legend class="h2">
-                        Polls <span class="f-steps"><b>1</b> / 2</span>
+                        Vote <span class="f-steps"><b>1</b> / 2</span>
                     </legend>
 
                     <div class="form-body">

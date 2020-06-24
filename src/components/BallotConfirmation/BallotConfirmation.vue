@@ -4,14 +4,14 @@
             :tx="tx"
             confirmation-comp-name="withdraw-ftm-confirmation"
             send-button-label="Vote"
-            password-label="Please enter your wallet password to poll"
+            password-label="Please enter your wallet password to vote"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
             <h2>
-                Polls - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                Vote - Confirmation <span class="f-steps"><b>2</b> / 2</span>
             </h2>
 
             <div class="transaction-info">

@@ -28,7 +28,7 @@
             <li>
                 <router-link :to="{ name: 'account-vote' }" class="action" title="Poll">
                     <span class="btn large same-size round">
-                        <icon data="@/assets/svg/vote.svg" width="26" height="26" aria-hidden="true" />
+                        <icon data="@/assets/svg/thumb.svg" width="20" height="20" aria-hidden="true" />
                     </span>
                     <span class="link-label">Polls</span>
                 </router-link>
