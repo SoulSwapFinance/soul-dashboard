@@ -88,6 +88,9 @@
                                 -->
                             </template>
                             <template v-else>
+                                <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
+                                    Unstash Rewards
+                                </button>
                                 <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
                                     Claim Rewards
                                 </button>
@@ -330,6 +333,24 @@ export default {
             if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
                 this.$emit('change-component', {
                     to: 'claim-rewards-confirmation',
+                    from: 'staking-info',
+                    data: {
+                        accountInfo: {
+                            ...accountInfo,
+                            stakerInfo,
+                        },
+                    },
+                });
+            }
+        },
+
+        async unstash() {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            if (accountInfo.canUnStash) {
+                this.$emit('change-component', {
+                    to: 'unstash-confirmation',
                     from: 'staking-info',
                     data: {
                         accountInfo: {

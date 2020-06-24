@@ -115,6 +115,8 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
+                        stashed
+                        canUnStash
                         totalValue
                         staker {
                             id
