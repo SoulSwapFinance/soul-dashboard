@@ -546,7 +546,7 @@ export class FantomWeb3Wallet {
         const fee = this.getTransactionFee(_gasPrice, _gasLimit);
         const balance = this.toBN(_balance);
 
-        return this.WEIToFTM(balance.sub(fee.mul(this.toBN(2))));
+        return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(2)))));
     }
 
     /**
@@ -560,7 +560,7 @@ export class FantomWeb3Wallet {
         const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.claimRewards);
         const balance = this.toBN(_balance);
 
-        return this.WEIToFTM(balance.sub(fee.mul(this.toBN(10))));
+        return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(1)))));
     }
 
     /**

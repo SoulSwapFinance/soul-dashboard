@@ -318,7 +318,7 @@ export default {
         },
 
         onEntireBalanceClick() {
-            this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance : '0';
+            this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance.toString() : '0';
         },
     },
 };

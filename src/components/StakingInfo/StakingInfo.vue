@@ -175,13 +175,23 @@ export default {
         canIncreaseDelegation() {
             const { accountInfo } = this;
 
-            return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+            return (
+                accountInfo &&
+                accountInfo.pendingRewards &&
+                accountInfo.pendingRewards === '0x0' &&
+                accountInfo.stashed === '0x0'
+            );
         },
 
         canUndelegate() {
             const { accountInfo } = this;
 
-            return accountInfo && accountInfo.pendingRewards && accountInfo.pendingRewards === '0x0';
+            return (
+                accountInfo &&
+                accountInfo.pendingRewards &&
+                accountInfo.pendingRewards === '0x0' &&
+                accountInfo.stashed === '0x0'
+            );
         },
 
         /**

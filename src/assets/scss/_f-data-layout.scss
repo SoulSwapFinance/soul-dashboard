@@ -22,6 +22,6 @@
 
     @include flexbox-cols() {
         //padding: 0 $grid-layout-gutter-width-2x $grid-layout-gutter-width-4x;
-        padding: $f-data-layout-cols-padding !important;
+        padding: $f-data-layout-cols-padding;
     }
 }
