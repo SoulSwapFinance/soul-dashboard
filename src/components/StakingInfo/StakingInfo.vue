@@ -22,6 +22,14 @@
                         </div>
                     </div>
                     <div class="row no-collapse">
+                        <div class="col f-row-label">Stashed Rewards</div>
+                        <div class="col">
+                            <div v-show="accountInfo">
+                                <template v-if="accountInfo">{{ toFTM(accountInfo.stashed) }} FTM</template>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row no-collapse">
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <div v-show="accountInfo">
