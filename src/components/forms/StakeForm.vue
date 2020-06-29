@@ -24,7 +24,7 @@
                                 <div class="input-label-layout">
                                     <label :for="sProps.inputId">{{ sProps.label }}</label>
                                     <button type="button" class="btn light small" @click="onEntireBalanceClick">
-                                        Entire Balance
+                                        Entire Balance -2 FTM
                                     </button>
                                 </div>
                             </template>
@@ -335,7 +335,13 @@ export default {
         },
 
         onEntireBalanceClick() {
-            this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance.toString() : '0';
+            let amount = 0;
+
+            if (this.maxRemainingBalance > 0) {
+                amount = parseFloat(this.maxRemainingBalance) - 2;
+            }
+
+            this.amount = amount.toString();
         },
     },
 };
