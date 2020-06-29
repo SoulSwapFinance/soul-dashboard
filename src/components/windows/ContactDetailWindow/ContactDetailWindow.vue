@@ -43,7 +43,7 @@ export default {
         /**
          * Type of action with contact.
          *
-         * @type {('new' | 'add' | 'edit')}
+         * @type {WalletContactAction}
          */
         action: {
             type: String,

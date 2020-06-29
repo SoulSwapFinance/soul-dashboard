@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
-import './store.types.js';
 
 import {
     APPEND_ACCOUNT,

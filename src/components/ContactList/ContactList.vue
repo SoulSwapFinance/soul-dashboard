@@ -85,7 +85,7 @@ export default {
             /**
              * Type of action with contact.
              *
-             * @type {('new' | 'add' | 'edit')}
+             * @type {WalletContactAction}
              */
             contactAction: 'new',
             /** @type {WalletContact} */
@@ -166,7 +166,10 @@ export default {
          */
         onContactDetailFormData(_data) {
             console.log('onContactDetailFormData', _data);
-            this.$store.dispatch(ADD_CONTACT, _data);
+
+            if (this.contactAction === 'new') {
+                this.$store.dispatch(ADD_CONTACT, _data);
+            }
         },
     },
 };

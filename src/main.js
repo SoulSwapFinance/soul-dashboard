@@ -17,6 +17,8 @@ import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.
 import { FNano } from './plugins/fantom-nano.js';
 import 'focus-visible';
 
+import './wallet.types.js';
+
 Vue.use(FantomWeb3Wallet, {
     apolloClient,
 });
