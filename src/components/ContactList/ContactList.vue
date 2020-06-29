@@ -54,6 +54,7 @@
             ref="contactDetailWindow"
             :action="contactAction"
             :contact-data="contactData"
+            @contact-detail-form-data="onContactDetailFormData"
         />
     </div>
 </template>
@@ -64,6 +65,7 @@ import FCard from '../core/FCard/FCard.vue';
 import AccountName from '../AccountName/AccountName.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
+import { ADD_CONTACT } from '../../store/actions.type.js';
 
 export default {
     name: 'ContactList',
@@ -86,18 +88,16 @@ export default {
              * @type {('new' | 'add' | 'edit')}
              */
             contactAction: 'new',
-            contactData: {
-                address: '',
-                index: -1,
-                blockchain: 'fantom',
-            },
+            /** @type {WalletContact} */
+            contactData: {},
         };
     },
 
     computed: {
-        ...mapGetters(['contacts__']),
+        ...mapGetters(['contacts']),
 
         // TMP!
+        /*
         contacts() {
             return [
                 {
@@ -112,6 +112,7 @@ export default {
                 },
             ];
         },
+*/
     },
 
     methods: {
@@ -153,9 +154,19 @@ export default {
 
         onAddContactBtnClick() {
             this.contactAction = 'new';
-            this.contactData = { address: '', order: -1, blockchain: 'fantom' };
+            this.contactData = {};
 
             this.$refs.contactDetailWindow.show();
+        },
+
+        /**
+         * Called when `ContactSettingsForm` is submited.
+         *
+         * @param {object} _data
+         */
+        onContactDetailFormData(_data) {
+            console.log('onContactDetailFormData', _data);
+            this.$store.dispatch(ADD_CONTACT, _data);
         },
     },
 };

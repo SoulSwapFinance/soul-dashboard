@@ -7,17 +7,18 @@
                 <div class="form-body">
                     <f-input
                         v-if="action === 'new'"
+                        ref="eAddress"
+                        v-model="address"
                         type="text"
                         label="Address"
                         field-size="large"
                         name="address"
                         validate-on-input
-                        :value="contact.address"
                         :validator="checkAddress"
                     >
                         <template #bottom="sProps">
                             <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                This field cannot be blank
+                                {{ addressErrorMsg }}
                             </f-message>
                         </template>
                     </f-input>
@@ -25,9 +26,9 @@
                     <template v-else>
                         <span class="form-label">Address</span>
                         <div class="break-word">
-                            <b style="padding-right: 16px;">{{ contact.address }}</b>
+                            <b style="padding-right: 16px;">{{ contactData.address }}</b>
                             <f-copy-button
-                                :text="contact.address"
+                                :text="contactData.address"
                                 tooltip="Copy address to clipboard"
                                 :hide-popover-after="3100"
                                 class="btn large light same-size round"
@@ -68,10 +69,11 @@
 
                     <f-select
                         v-if="action === 'new'"
+                        v-model="blockchain"
                         :data="blockchains"
-                        :value="contactBlockchain"
                         select-size="large"
                         label="Blockchain"
+                        name="blockchain"
                     />
 
                     <f-input
@@ -79,7 +81,7 @@
                         type="number"
                         autocomplete="off"
                         min="1"
-                        :max="contacts.length.toString(10)"
+                        :max="maxOrder.toString(10)"
                         step="1"
                         label="Order"
                         field-size="large"
@@ -111,7 +113,7 @@
 
         <!--        <remove-contact-window ref="confirmationWindow" :contact="cContact" @contact-removed="onContactRemoved" />-->
 
-        <q-r-code-window ref="qrWindow" :address="contact.address">
+        <q-r-code-window ref="qrWindow" :address="contactData.address">
             <f-message type="warning" with-icon>
                 Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
                 different address!
@@ -125,7 +127,6 @@ import FForm from '../core/FForm/FForm.vue';
 import FInput from '../core/FInput/FInput.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
-import { UPDATE_ACCOUNT } from '../../store/actions.type.js';
 import { helpersMixin } from '../../mixins/helpers.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
@@ -143,15 +144,15 @@ export default {
     mixins: [helpersMixin],
 
     props: {
-        /** Contact data */
+        /**
+         * Contact data
+         *
+         * @type {WalletContact}
+         */
         contactData: {
             type: Object,
             default() {
-                return {
-                    address: '',
-                    order: -1,
-                    blockchain: 'fantom',
-                };
+                return {};
             },
             required: true,
         },
@@ -171,7 +172,9 @@ export default {
 
     data() {
         return {
-            contact: {},
+            address: '',
+            blockchain: 'fantom',
+            addressErrorMsg: '',
             blockchains: [
                 {
                     value: 'fantom',
@@ -190,22 +193,22 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['contacts', 'getContactAndIndexByAddress']),
+        ...mapGetters(['contacts', 'getContactAndIndexByAddress', 'getAccountAndIndexByAddress']),
 
         /**
          * @return {string}
          */
         contactName() {
-            return this.contact.name || this.contact.address || `Contact ${this.contacts.length + 1}`;
+            return this.contactData.name || this.contactData.address || `Contact ${this.contacts.length + 1}`;
         },
 
         /**
          * @return {string}
          */
         contactOrder() {
-            let order = this.contactData.order;
+            let order = this.contactData.order || -1;
 
-            if (order === -1) {
+            if (order === -1 && this.contactData.address) {
                 const { index } = this.getContactAndIndexByAddress(this.contactData.address);
                 order = index + 1;
             }
@@ -214,19 +217,33 @@ export default {
                 order++;
             }
 
+            if (order < 1) {
+                order = 1;
+            }
+
             return order.toString(10);
         },
 
-        contactBlockchain() {
-            return this.contact.blockchain || this.contactData.blockchain || 'fantom';
-        },
+        maxOrder() {
+            const len = this.contacts.length;
 
-        cContact() {
-            return this.contact;
+            return this.action === 'new' ? len + 1 : len;
+        },
+    },
+
+    watch: {
+        blockchain() {
+            const { eAddress } = this.$refs;
+
+            if (eAddress && this.address) {
+                eAddress.validate();
+            }
         },
     },
 
     mounted() {
+        this.address = this.contactData.address || '';
+        this.blockchain = this.contactData.blockchain || 'fantom';
         // this.contact = this.getContactByAddress(this.contactData.address);
     },
 
@@ -244,7 +261,30 @@ export default {
          * @return {boolean}
          */
         checkAddress(_value) {
-            return !!_value.trim();
+            const { blockchain } = this;
+            let ok = true;
+
+            this.addressErrorMsg = '';
+
+            if (!(ok = !!_value.trim())) {
+                this.addressErrorMsg = 'This field cannot be blank';
+            } else if (!(ok = this.$fWallet.isValidAddress(_value, blockchain))) {
+                if (blockchain === 'fantom') {
+                    this.addressErrorMsg = 'Not valid fantom address';
+                } else if (blockchain === 'ethereum') {
+                    this.addressErrorMsg = 'Not valid ethereum address';
+                } else if (blockchain === 'binance') {
+                    this.addressErrorMsg = 'Not valid binance address';
+                }
+            } else if (
+                this.getContactAndIndexByAddress(_value).index !== -1 ||
+                (blockchain === 'fantom' && this.getAccountAndIndexByAddress(_value).index !== -1)
+            ) {
+                this.addressErrorMsg = 'Address already exists';
+                ok = false;
+            }
+
+            return ok;
         },
 
         /**
@@ -268,22 +308,25 @@ export default {
          * @param {{detail: {data: {}}}} _event
          */
         onFormSubmit(_event) {
-            const { contactData } = this;
+            // const { contactData } = this;
             const { data } = _event.detail;
             const { name } = data;
             const order = parseInt(data.order);
-            let changed = false;
+            const address = data.address;
+            // let changed = false;
 
-            if (this.checkName(name) && this.checkOrder(order)) {
-                const adName = this.contact.name || contactData.address;
+            if (this.checkName(name) && this.checkOrder(order) && this.checkAddress(address)) {
+                /*
+                                const adName = this.contactData.name || contactData.address;
 
-                changed = adName !== name || parseInt(this.contactOrder) !== order;
+                                changed = adName !== name || parseInt(this.contactOrder) !== order;
 
-                if (changed) {
-                    this.$store.dispatch(UPDATE_ACCOUNT, { address: contactData.address, name, order });
-                }
+                                if (changed) {
+                                    this.$store.dispatch(UPDATE_ACCOUNT, { address: contactData.address, name, order });
+                                }
+                */
 
-                this.$emit('contact-detail-form-data', { name, order, changed });
+                this.$emit('contact-detail-form-data', { ...data, name, order, address });
             }
         },
 

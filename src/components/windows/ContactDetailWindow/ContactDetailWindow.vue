@@ -29,15 +29,15 @@ export default {
     components: { ContactDetailForm, FWindow },
 
     props: {
-        /** Contact data */
+        /**
+         * Contact data
+         *
+         * @type {WalletContact}
+         */
         contactData: {
             type: Object,
             default() {
-                return {
-                    address: '',
-                    order: -1,
-                    blockchain: 'fantom',
-                };
+                return {};
             },
         },
         /**
@@ -75,9 +75,13 @@ export default {
 
         /**
          * Called when `ContactSettingsForm` is submited.
+         *
+         * @param {object} _data
          */
-        onContactDetailFormData() {
+        onContactDetailFormData(_data) {
             this.$refs.win.hide('fade-leave-active');
+
+            this.$emit('contact-detail-form-data', _data);
         },
 
         /**

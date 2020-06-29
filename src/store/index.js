@@ -31,6 +31,7 @@ import {
     UPDATE_ACCOUNTS_BALANCES,
     REMOVE_ACCOUNT_BY_ADDRESS,
     UPDATE_CONTACT,
+    ADD_CONTACT,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
@@ -529,16 +530,24 @@ export const store = new Vuex.Store({
         },
         /**
          * @param {Object} _context
+         * @param {WalletContact} _contact
+         */
+        async [ADD_CONTACT](_context, _contact) {
+            _context.commit(APPEND_CONTACT, _contact);
+        },
+        /**
+         * @param {Object} _context
          * @param {Object} _contactData
          */
         [UPDATE_CONTACT](_context, _contactData) {
-            const { contact, index } = _context.getters.getAccountAndIndexByAddress(_contactData.address);
+            const { contact, index } = _context.getters.getContactAndIndexByAddress(_contactData.address);
 
             if (contact) {
                 const name = _contactData.name !== contact.address ? _contactData.name : '';
 
                 _context.commit(SET_CONTACT, {
                     ...contact,
+                    ..._contactData,
                     name,
                     index,
                 });

@@ -18,4 +18,5 @@
  * @property {string} address
  * @property {string} name
  * @property {('fantom' | 'ethereum' | 'binance')} blockchain
+ * @property {number} order Order in contact list. Index into contacts array.
  */
