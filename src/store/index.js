@@ -531,8 +531,20 @@ export const store = new Vuex.Store({
          * @param {Object} _context
          * @param {WalletContact} _contact
          */
-        async [ADD_CONTACT](_context, _contact) {
+        [ADD_CONTACT](_context, _contact) {
+            const { order } = _contact;
+            const contacts = _context.getters.contacts;
+
+            delete _contact.order;
+
             _context.commit(APPEND_CONTACT, _contact);
+
+            if (order !== contacts.length) {
+                _context.commit(MOVE_CONTACT, {
+                    from: contacts.length - 1,
+                    to: order - 1,
+                });
+            }
         },
         /**
          * @param {Object} _context
@@ -543,6 +555,9 @@ export const store = new Vuex.Store({
 
             if (contact) {
                 const name = _contact.name !== contact.address ? _contact.name : '';
+                const { order } = _contact;
+
+                delete _contact.order;
 
                 _context.commit(SET_CONTACT, {
                     ...contact,
@@ -551,10 +566,10 @@ export const store = new Vuex.Store({
                     index,
                 });
 
-                if (_contact.order - 1 !== index) {
+                if (order - 1 !== index) {
                     _context.commit(MOVE_CONTACT, {
                         from: index,
-                        to: _contact.order - 1,
+                        to: order - 1,
                     });
                 }
             }
