@@ -64,8 +64,8 @@ export default {
     },
 
     methods: {
-        validate() {
-            this.$refs.input.validate();
+        async validate() {
+            await this.$refs.input.validate();
         },
 
         onEyeButtonClick() {
