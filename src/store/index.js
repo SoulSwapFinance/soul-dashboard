@@ -152,7 +152,7 @@ export const store = new Vuex.Store({
 
                 for (let i = 0, len1 = accounts.length; i < len1; i++) {
                     if (accounts[i].address === address) {
-                        ret.account = accounts[i];
+                        ret.account = { ...accounts[i] };
                         ret.index = i;
                         break;
                     }
@@ -185,7 +185,7 @@ export const store = new Vuex.Store({
 
                 for (let i = 0, len1 = contacts.length; i < len1; i++) {
                     if (contacts[i].address.toLowerCase() === address) {
-                        ret.contact = contacts[i];
+                        ret.contact = { ...contacts[i] };
                         ret.index = i;
                         break;
                     }
@@ -536,25 +536,25 @@ export const store = new Vuex.Store({
         },
         /**
          * @param {Object} _context
-         * @param {Object} _contactData
+         * @param {WalletContact} _contact
          */
-        [UPDATE_CONTACT](_context, _contactData) {
-            const { contact, index } = _context.getters.getContactAndIndexByAddress(_contactData.address);
+        [UPDATE_CONTACT](_context, _contact) {
+            const { contact, index } = _context.getters.getContactAndIndexByAddress(_contact.address);
 
             if (contact) {
-                const name = _contactData.name !== contact.address ? _contactData.name : '';
+                const name = _contact.name !== contact.address ? _contact.name : '';
 
                 _context.commit(SET_CONTACT, {
                     ...contact,
-                    ..._contactData,
+                    ..._contact,
                     name,
                     index,
                 });
 
-                if (_contactData.order - 1 !== index) {
+                if (_contact.order - 1 !== index) {
                     _context.commit(MOVE_CONTACT, {
                         from: index,
-                        to: _contactData.order - 1,
+                        to: _contact.order - 1,
                     });
                 }
             }

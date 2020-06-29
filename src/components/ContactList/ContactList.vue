@@ -1,7 +1,7 @@
 <template>
     <div class="contact-list" :class="{ 'edit-mode': editMode }" @click="onContactListClick">
         <ul class="no-markers">
-            <li v-for="(contact, index) in contacts" :key="contact.address">
+            <li v-for="contact in contacts" :key="contact.address">
                 <f-card>
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
@@ -31,7 +31,6 @@
                                         title="Edit Wallet"
                                         type="button"
                                         :data-address="contact.address"
-                                        :data-index="index"
                                     >
                                         <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
                                     </button>
@@ -65,7 +64,7 @@ import FCard from '../core/FCard/FCard.vue';
 import AccountName from '../AccountName/AccountName.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
-import { ADD_CONTACT } from '../../store/actions.type.js';
+import { ADD_CONTACT, UPDATE_CONTACT } from '../../store/actions.type.js';
 
 export default {
     name: 'ContactList',
@@ -94,7 +93,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['contacts']),
+        ...mapGetters(['contacts', 'getContactAndIndexByAddress']),
 
         // TMP!
         /*
@@ -137,12 +136,13 @@ export default {
          */
         onEditContactButtonClick(_event) {
             const elem = _event.target.closest('[data-address]');
-            const address = elem ? elem.getAttribute('data-address') : '';
-            const index = elem ? parseInt(elem.getAttribute('data-index')) : -1;
+            const contact = this.getContactAndIndexByAddress(elem ? elem.getAttribute('data-address') : '');
 
-            if (address && !isNaN(index) && index > -1) {
+            if (contact.contact) {
                 this.contactAction = 'edit';
-                this.contactData = { address, order: index + 1 };
+                this.contactData = { ...contact.contact, order: contact.index + 1 };
+
+                console.log(this.contactData);
 
                 this.$refs.contactDetailWindow.show();
 
@@ -165,10 +165,10 @@ export default {
          * @param {object} _data
          */
         onContactDetailFormData(_data) {
-            console.log('onContactDetailFormData', _data);
-
             if (this.contactAction === 'new') {
                 this.$store.dispatch(ADD_CONTACT, _data);
+            } else if (this.contactAction === 'edit') {
+                this.$store.dispatch(UPDATE_CONTACT, _data);
             }
         },
     },

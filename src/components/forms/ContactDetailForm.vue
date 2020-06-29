@@ -22,7 +22,6 @@
                             </f-message>
                         </template>
                     </f-input>
-
                     <template v-else>
                         <span class="form-label">Address</span>
                         <div class="break-word">
@@ -75,6 +74,13 @@
                         label="Blockchain"
                         name="blockchain"
                     />
+                    <template v-else>
+                        <span class="form-label">Blockchain</span>
+                        <div class="break-word">
+                            {{ getBlockchainLabel(contactData.blockchain) }}
+                        </div>
+                        <br />
+                    </template>
 
                     <f-input
                         :value="contactOrder"
@@ -114,7 +120,7 @@
         <!--        <remove-contact-window ref="confirmationWindow" :contact="cContact" @contact-removed="onContactRemoved" />-->
 
         <q-r-code-window ref="qrWindow" :address="contactData.address">
-            <f-message type="warning" with-icon>
+            <f-message v-show="blockchain === 'fantom'" type="warning" with-icon>
                 Warning: Use this address to receive Opera FTM only. If you are receiving FTM-ERC20 you need to use a
                 different address!
             </f-message>
@@ -265,6 +271,10 @@ export default {
             const { blockchain } = this;
             let ok = true;
 
+            if (this.action !== 'new') {
+                return true;
+            }
+
             this.addressErrorMsg = '';
 
             if (!(ok = !!_value.trim())) {
@@ -306,27 +316,29 @@ export default {
         },
 
         /**
+         * @param {WalletBlockchain} _blockchain
+         * @return {string}
+         */
+        getBlockchainLabel(_blockchain) {
+            const blockchain = this.blockchains.find((_item) => _item.value === _blockchain);
+
+            if (blockchain) {
+                return blockchain.label;
+            }
+
+            return '';
+        },
+
+        /**
          * @param {{detail: {data: {}}}} _event
          */
         onFormSubmit(_event) {
-            // const { contactData } = this;
             const { data } = _event.detail;
             const { name } = data;
             const order = parseInt(data.order);
-            const address = data.address;
-            // let changed = false;
+            const address = data.address || this.address;
 
             if (this.checkName(name) && this.checkOrder(order) && this.checkAddress(address)) {
-                /*
-                                const adName = this.contactData.name || contactData.address;
-
-                                changed = adName !== name || parseInt(this.contactOrder) !== order;
-
-                                if (changed) {
-                                    this.$store.dispatch(UPDATE_ACCOUNT, { address: contactData.address, name, order });
-                                }
-                */
-
                 this.$emit('contact-detail-form-data', { ...data, name, order, address });
             }
         },
