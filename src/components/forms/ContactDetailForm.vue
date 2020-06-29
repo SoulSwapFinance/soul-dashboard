@@ -117,7 +117,11 @@
             </fieldset>
         </f-form>
 
-        <!--        <remove-contact-window ref="confirmationWindow" :contact="cContact" @contact-removed="onContactRemoved" />-->
+        <remove-contact-window
+            ref="confirmationWindow"
+            :contact-address="address"
+            @contact-removed="onContactRemoved"
+        />
 
         <q-r-code-window ref="qrWindow" :address="contactData.address">
             <f-message v-show="blockchain === 'fantom'" type="warning" with-icon>
@@ -137,6 +141,7 @@ import { helpersMixin } from '../../mixins/helpers.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
+import RemoveContactWindow from '../windows/RemoveContactWindow/RemoveContactWindow.vue';
 // import RemoveContactWindow from '../windows/RemoveContactWindow/RemoveContactWindow.vue';
 
 /**
@@ -145,7 +150,7 @@ import FSelect from '../core/FSelect/FSelect.vue';
 export default {
     name: 'ContactDetailForm',
 
-    components: { FSelect, QRCodeWindow, FCopyButton, FMessage, FInput, FForm },
+    components: { RemoveContactWindow, FSelect, QRCodeWindow, FCopyButton, FMessage, FInput, FForm },
 
     mixins: [helpersMixin],
 
