@@ -1,6 +1,6 @@
 <template>
     <span class="address-field form-field">
-        <f-input ref="input" v-bind="fInputProps" :value="inputValue" @input="onInput">
+        <f-input ref="input" v-model="inputValue" v-bind="fInputProps" @input="onInput">
             <template #top="sProps">
                 <div class="input-label-layout">
                     <label :for="sProps.inputId">{{ sProps.label }}</label>
@@ -14,9 +14,9 @@
             </template>
             <template #suffix="sProps">
                 <slot name="suffix" v-bind="sProps">
-                    <span @click="onEyeButtonClick">
+                    <span @click="onAddAddressBtnClick">
                         <span
-                            v-show="addIconVisible"
+                            v-show="addAddressBtnVisible"
                             class="btn same-size round small light"
                             aria-hidden="true"
                             tabindex="0"
@@ -33,6 +33,13 @@
         </f-input>
 
         <address-picker-window ref="pickAddressWindow" :blockchain="blockchain" @address-picked="onAddressPicked" />
+
+        <contact-detail-window
+            ref="contactDetailWindow"
+            action="add"
+            :contact-data="contactData"
+            @contact-detail-form-data="onContactDetailFormData"
+        />
     </span>
 </template>
 
@@ -41,6 +48,8 @@ import FInput from '../core/FInput/FInput.vue';
 import { inputMixin } from '../../mixins/input.js';
 import AddressPickerWindow from '../windows/AddressPickerWindow/AddressPickerWindow.vue';
 import { mapGetters } from 'vuex';
+import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
+import { ADD_CONTACT } from '../../store/actions.type.js';
 
 /**
  * Input field with possibility to pick an address from address book or wallets and for adding address to address book.
@@ -48,7 +57,7 @@ import { mapGetters } from 'vuex';
 export default {
     name: 'AddressField',
 
-    components: { AddressPickerWindow, FInput },
+    components: { ContactDetailWindow, AddressPickerWindow, FInput },
 
     mixins: [inputMixin],
 
@@ -67,7 +76,9 @@ export default {
     data() {
         return {
             inputValue: '',
-            addIconVisible: false,
+            /** @type {WalletContact} */
+            contactData: {},
+            addAddressBtnVisible: false,
         };
     },
 
@@ -92,8 +103,8 @@ export default {
     },
 
     methods: {
-        setAddIconVisibility(_address) {
-            this.addIconVisible =
+        setAddAddressBtnVisibility(_address) {
+            this.addAddressBtnVisible =
                 !!_address &&
                 this.$fWallet.isValidAddress(_address, this.blockchain) &&
                 !(
@@ -112,13 +123,34 @@ export default {
 
         onAddressPicked(_address) {
             this.inputValue = _address;
-            this.setAddIconVisibility(_address);
+            this.setAddAddressBtnVisibility(_address);
         },
 
-        onEyeButtonClick() {},
+        onAddAddressBtnClick() {
+            const address = this.inputValue.trim();
+
+            if (address) {
+                this.contactData = {
+                    address,
+                    blockchain: this.blockchain,
+                };
+
+                this.$refs.contactDetailWindow.show();
+            }
+        },
+
+        /**
+         * Called when `ContactSettingsForm` is submited.
+         *
+         * @param {object} _data
+         */
+        onContactDetailFormData(_data) {
+            this.$store.dispatch(ADD_CONTACT, { ..._data, blockchain: this.blockchain });
+            this.setAddAddressBtnVisibility(_data.address);
+        },
 
         onInput(_value) {
-            this.setAddIconVisibility(_value.trim());
+            this.setAddAddressBtnVisibility(_value.trim());
             this.$emit('input', _value);
         },
     },

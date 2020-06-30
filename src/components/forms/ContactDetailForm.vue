@@ -97,7 +97,7 @@
                     >
                         <template #bottom="sProps">
                             <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
-                                Value must be between 1 and {{ contacts.length }}
+                                Value must be between 1 and {{ maxOrder }}
                             </f-message>
                         </template>
                     </f-input>
@@ -211,7 +211,7 @@ export default {
          * @return {string}
          */
         contactName() {
-            return this.contactData.name || this.contactData.address || `Contact ${this.contacts.length + 1}`;
+            return this.contactData.name || `Contact ${this.contacts.length + 1}`;
         },
 
         /**
@@ -219,13 +219,14 @@ export default {
          */
         contactOrder() {
             let order = this.contactData.order || -1;
+            const { action } = this;
 
             if (order === -1 && this.contactData.address) {
                 const { index } = this.getContactAndIndexByAddress(this.contactData.address);
                 order = index + 1;
             }
 
-            if (this.action === 'new') {
+            if (action === 'new' || action === 'add') {
                 order = this.contacts.length + 1;
             }
 
@@ -244,8 +245,9 @@ export default {
 
         maxOrder() {
             const len = this.contacts.length;
+            const { action } = this;
 
-            return this.action === 'new' ? len + 1 : len;
+            return action === 'new' || action === 'add' ? len + 1 : len;
         },
     },
 
@@ -280,9 +282,10 @@ export default {
          */
         checkAddress(_value) {
             const { blockchain } = this;
+            const { action } = this;
             let ok = true;
 
-            if (this.action !== 'new') {
+            if (action !== 'new' && action !== 'add') {
                 return true;
             }
 
@@ -317,7 +320,8 @@ export default {
             let ok = false;
             const value = parseInt(_value);
             const contactsLen = this.contacts.length;
-            const max = this.action === 'new' ? contactsLen + 1 : contactsLen;
+            const { action } = this;
+            const max = action === 'new' || action === 'add' ? contactsLen + 1 : contactsLen;
 
             if (!isNaN(value)) {
                 ok = value > 0 && value <= max;
