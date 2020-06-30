@@ -327,8 +327,8 @@ export default {
         async onFormSubmit(_event) {
             const { data } = _event.detail;
 
-            this.updateValidatorInfo().then(() => {
-                if (this.$refs.stakeForm.checkValidity() && this.validatorInfo.address) {
+            this.updateValidatorInfo().then(async () => {
+                if ((await this.$refs.stakeForm.checkValidity()) && this.validatorInfo.address) {
                     this.stakeCofirmation(parseFloat(data.amount));
                 }
             });

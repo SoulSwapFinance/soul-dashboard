@@ -17,6 +17,10 @@ import {
     SET_SEND_DIRECTION,
     PUSH_BNBRIDGE_PENDING_REQUEST,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
+    APPEND_CONTACT,
+    MOVE_CONTACT,
+    REMOVE_CONTACT,
+    SET_CONTACT,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -25,6 +29,8 @@ import {
     UPDATE_ACCOUNT_BALANCE,
     UPDATE_ACCOUNTS_BALANCES,
     REMOVE_ACCOUNT_BY_ADDRESS,
+    UPDATE_CONTACT,
+    ADD_CONTACT,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 
@@ -43,6 +49,7 @@ const vuexLocalStorage = new VuexPersist({
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
         accounts: _state.accounts,
+        contacts: _state.contacts,
         bnbridgePendingRequests: _state.bnbridgePendingRequests,
         activeAccountIndex: _state.activeAccountIndex,
     }),
@@ -70,8 +77,10 @@ export const store = new Vuex.Store({
         tokenPrice: 0,
         currency: 'USD',
         fractionDigits: 2,
-        /** @type {[{address: String, balance: string, keystore: object, balanceFTM: (String|BN)}]} */
+        /** @type {[WalletAccount]} */
         accounts: [],
+        /** @type {[WalletContact]} */
+        contacts: [],
         bnbridgePendingRequests: [],
         // index of active stored account
         activeAccountIndex: -1,
@@ -85,27 +94,40 @@ export const store = new Vuex.Store({
     },
 
     getters: {
+        /**
+         * @param {Object} _state
+         * @return {[WalletAccount]}
+         */
         accounts(_state) {
             return _state.accounts;
         },
-
+        /**
+         * @param {Object} _state
+         * @return {?WalletAccount}
+         */
         currentAccount(_state) {
             return _state.activeAccountIndex > -1 ? _state.accounts[_state.activeAccountIndex] : null;
         },
-
+        /**
+         * @param {Object} _state
+         * @return {number}
+         */
         currentAccountAddress(_state) {
             return _state.activeAccountAddress;
         },
-
         /**
          * Which blockchain FTM will be sent to
          *
+         * @param {Object} _state
          * @return {BNBridgeDirection}
          */
         sendDirection(_state) {
             return _state.sendDirection;
         },
-
+        /**
+         * @param {Object} _state
+         * @return {function(*=): ?WalletAccount}
+         */
         getAccountByAddress(_state) {
             return (_address) => {
                 const address = fWallet.toChecksumAddress(_address);
@@ -113,12 +135,11 @@ export const store = new Vuex.Store({
                 return _state.accounts.find((_item) => _item.address === address);
             };
         },
-
         /**
          * Get account and index into `state.accounts` array by account address.
          *
          * @param _state
-         * @return {function(*=): {index: number, account: null}}
+         * @return {function(string): {index: number, account: WalletAccount}}
          */
         getAccountAndIndexByAddress(_state) {
             return (_address) => {
@@ -131,13 +152,66 @@ export const store = new Vuex.Store({
 
                 for (let i = 0, len1 = accounts.length; i < len1; i++) {
                     if (accounts[i].address === address) {
-                        ret.account = accounts[i];
+                        ret.account = { ...accounts[i] };
                         ret.index = i;
                         break;
                     }
                 }
 
                 return ret;
+            };
+        },
+        /**
+         * @param {Object} _state
+         * @return {[WalletContact]}
+         */
+        contacts(_state) {
+            return _state.contacts;
+        },
+        /**
+         * Get contact and index into `state.contacts` array by contact address.
+         *
+         * @param _state
+         * @return {function(*=): {index: number, contact: WalletContact}}
+         */
+        getContactAndIndexByAddress(_state) {
+            return (_address) => {
+                const { contacts } = _state;
+                const address = _address.toLowerCase();
+                const ret = {
+                    contact: null,
+                    index: -1,
+                };
+
+                for (let i = 0, len1 = contacts.length; i < len1; i++) {
+                    if (contacts[i].address.toLowerCase() === address) {
+                        ret.contact = { ...contacts[i] };
+                        ret.index = i;
+                        break;
+                    }
+                }
+
+                return ret;
+            };
+        },
+        /**
+         * Get contact and index into `state.contacts` array by contact address.
+         *
+         * @param _state
+         * @return {function(*=): {WalletContact}
+         */
+        getContactsByBlockchain(_state) {
+            return (_blockchain) => {
+                const { contacts } = _state;
+                const rContacts = [];
+
+                for (let i = 0, len1 = contacts.length; i < len1; i++) {
+                    if (contacts[i].blockchain === _blockchain) {
+                        rContacts.push({ ...contacts[i] });
+                    }
+                }
+
+                return rContacts;
             };
         },
     },
@@ -153,7 +227,6 @@ export const store = new Vuex.Store({
                 ...{ [_breakpoint.code]: _breakpoint },
             };
         },
-
         /**
          * @param {Object} _state
          * @param {number} _tokenPrice
@@ -161,7 +234,6 @@ export const store = new Vuex.Store({
         [SET_TOKEN_PRICE](_state, _tokenPrice) {
             _state.tokenPrice = _tokenPrice;
         },
-
         /**
          * @param {Object} _state
          * @param {number} _currency
@@ -169,7 +241,6 @@ export const store = new Vuex.Store({
         [SET_CURRENCY](_state, _currency) {
             _state.currency = _currency;
         },
-
         /**
          * @param {Object} _state
          * @param {number} _fractionDigits
@@ -177,7 +248,6 @@ export const store = new Vuex.Store({
         [SET_FRACTION_DIGITS](_state, _fractionDigits) {
             _state.fractionDigits = _fractionDigits;
         },
-
         /**
          * @param {Object} _state
          * @param {BNBridgeDirection} _direction
@@ -185,10 +255,9 @@ export const store = new Vuex.Store({
         [SET_SEND_DIRECTION](_state, _direction) {
             _state.sendDirection = _direction;
         },
-
         /**
          * @param {Object} _state
-         * @param {String} _address
+         * @param {string} _address
          */
         [SET_ACTIVE_ACCOUNT_BY_ADDRESS](_state, _address) {
             const { accounts } = _state;
@@ -203,15 +272,13 @@ export const store = new Vuex.Store({
                 }
             }
         },
-
         /**
          * @param {Object} _state
-         * @param {String} _address
+         * @param {string} _address
          */
         [SET_ACTIVE_ACCOUNT_ADDRESS](_state, _address) {
             _state.activeAccountAddress = fWallet.toChecksumAddress(_address);
         },
-
         /**
          * @param {Object} _state
          */
@@ -219,10 +286,9 @@ export const store = new Vuex.Store({
             _state.activeAccountIndex = -1;
             _state.activeAccountAddress = '';
         },
-
         /**
          * @param {Object} _state
-         * @param {Object} _account
+         * @param {WalletAccount} _account
          */
         [APPEND_ACCOUNT](_state, _account) {
             // if account is not created already
@@ -230,7 +296,6 @@ export const store = new Vuex.Store({
                 _state.accounts.push(_account);
             }
         },
-
         /**
          * @param {Object} _state
          */
@@ -240,7 +305,6 @@ export const store = new Vuex.Store({
                 _state.activeAccountIndex = -1;
             }
         },
-
         /**
          * Update account by `_accountData` object. `_accountData` must contain `index` property.
          *
@@ -256,7 +320,6 @@ export const store = new Vuex.Store({
                 Vue.set(_state.accounts, index, _accountData);
             }
         },
-
         /**
          * Update account by `_accountData` object. `_accountData` must contain `index` property.
          *
@@ -271,7 +334,6 @@ export const store = new Vuex.Store({
                 _state.accounts.splice(to, 0, _state.accounts.splice(from, 1)[0]);
             }
         },
-
         /**
          * Push new request to `bnbridgePendingRequests` array.
          *
@@ -281,7 +343,6 @@ export const store = new Vuex.Store({
         [PUSH_BNBRIDGE_PENDING_REQUEST](_state, _request) {
             _state.bnbridgePendingRequests.push(_request);
         },
-
         /**
          * Remove first request from `bnbridgePendingRequests` array.
          *
@@ -289,6 +350,56 @@ export const store = new Vuex.Store({
          */
         [SHIFT_BNBRIDGE_PENDING_REQUEST](_state) {
             _state.bnbridgePendingRequests.shift();
+        },
+        /**
+         * @param {Object} _state
+         * @param {WalletContact} _contact
+         */
+        [APPEND_CONTACT](_state, _contact) {
+            // if account is not created already
+            if (!_state.contacts.find((_item) => _item.address.toLowerCase() === _contact.address.toLowerCase())) {
+                _state.contacts.push(_contact);
+            }
+        },
+        /**
+         * Move contact from one index to another.
+         *
+         * @param {Object} _state
+         * @param {{from: number, to: number}} _params
+         */
+        [MOVE_CONTACT](_state, _params) {
+            const { from, to } = _params;
+            const contactsLen = _state.contacts.length;
+
+            if (from !== to && from >= 0 && to >= 0 && from < contactsLen && to < contactsLen) {
+                _state.contacts.splice(to, 0, _state.contacts.splice(from, 1)[0]);
+            }
+        },
+        /**
+         * Remove contact by index.
+         *
+         * @param {Object} _state
+         * @param {number} _index
+         */
+        [REMOVE_CONTACT](_state, _index) {
+            if (_index > -1 && _index < _state.contacts.length) {
+                _state.contacts.splice(_index, 1);
+            }
+        },
+        /**
+         * Update contact by `_contactData` object. `_contactData` must contain `index` property.
+         *
+         * @param {Object} _state
+         * @param {{index: number, ...}} _contactData
+         */
+        [SET_CONTACT](_state, _contactData) {
+            const { index } = _contactData;
+
+            if (index !== undefined && index > -1 && index < _state.contacts.length) {
+                delete _contactData.index;
+
+                Vue.set(_state.contacts, index, _contactData);
+            }
         },
     },
 
@@ -311,10 +422,9 @@ export const store = new Vuex.Store({
 
             _context.commit(APPEND_ACCOUNT, account);
         },
-
         /**
          * @param {Object} _context
-         * @param {Object} _account
+         * @param {WalletAccount} _account
          */
         async [ADD_LEDGER_ACCOUNT](_context, _account) {
             const address = fWallet.toChecksumAddress(_account.address);
@@ -334,7 +444,6 @@ export const store = new Vuex.Store({
                 _context.commit(APPEND_ACCOUNT, account);
             }
         },
-
         /**
          * @param {Object} _context
          */
@@ -364,10 +473,9 @@ export const store = new Vuex.Store({
                 }
             }
         },
-
         /**
          * @param {Object} _context
-         * @param {Object} [_account]
+         * @param {WalletAccount} [_account]
          */
         async [UPDATE_ACCOUNT_BALANCE](_context, _account) {
             const account = _account || _context.getters.currentAccount;
@@ -390,7 +498,6 @@ export const store = new Vuex.Store({
                 }
             }
         },
-
         /**
          * @param {Object} _context
          * @param {Object} _accountData
@@ -419,10 +526,9 @@ export const store = new Vuex.Store({
                 _context.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, activeAccountAddress);
             }
         },
-
         /**
          * @param {Object} _context
-         * @param {String} _address
+         * @param {string} _address
          * @return Promise<boolean> Current account removed?
          */
         [REMOVE_ACCOUNT_BY_ADDRESS](_context, _address) {
@@ -440,6 +546,53 @@ export const store = new Vuex.Store({
             }
 
             return activeAccountRemoved;
+        },
+        /**
+         * @param {Object} _context
+         * @param {WalletContact} _contact
+         */
+        [ADD_CONTACT](_context, _contact) {
+            const { order } = _contact;
+            const contacts = _context.getters.contacts;
+
+            delete _contact.order;
+
+            _context.commit(APPEND_CONTACT, _contact);
+
+            if (order !== contacts.length) {
+                _context.commit(MOVE_CONTACT, {
+                    from: contacts.length - 1,
+                    to: order - 1,
+                });
+            }
+        },
+        /**
+         * @param {Object} _context
+         * @param {WalletContact} _contact
+         */
+        [UPDATE_CONTACT](_context, _contact) {
+            const { contact, index } = _context.getters.getContactAndIndexByAddress(_contact.address);
+
+            if (contact) {
+                const name = _contact.name !== contact.address ? _contact.name : '';
+                const { order } = _contact;
+
+                delete _contact.order;
+
+                _context.commit(SET_CONTACT, {
+                    ...contact,
+                    ..._contact,
+                    name,
+                    index,
+                });
+
+                if (order - 1 !== index) {
+                    _context.commit(MOVE_CONTACT, {
+                        from: index,
+                        to: order - 1,
+                    });
+                }
+            }
         },
     },
 });

@@ -1,0 +1,58 @@
+@import "../../assets/scss/vars";
+
+.contact-list {
+    > ul {
+        li {
+            padding-top: 16px;
+        }
+    }
+
+    h3 {
+        margin-bottom: 0 !important;
+        font-size: 22px;
+    }
+
+    .f-card {
+        height: 100%;
+        padding-left: 30px;
+        padding-right: 30px;
+
+        &:not(.off) {
+            .label {
+                padding-top: 8px;
+                padding-bottom: 0;
+                font-weight: normal;
+            }
+        }
+    }
+
+    .address-col {
+        //position: relative;
+        display: block;
+
+        padding-right: 32px;
+
+        button.btn-edit, .f-copy-button {
+            position: absolute;
+            right: 20px;
+        }
+
+        .f-copy-button {
+            top: 52px;
+        }
+
+        button.btn-edit {
+            top: 20px;
+        }
+    }
+
+    .add-contact {
+        padding-top: 32px;
+        padding-bottom: 32px;
+        text-align: center;
+    }
+
+    .account-name .an-name {
+        color: $body-color;
+    }
+}

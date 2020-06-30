@@ -192,7 +192,7 @@ export default {
          *
          * @return {Boolean}
          */
-        checkValidity() {
+        async checkValidity() {
             const children = this.$children;
             let valid = true;
             let child;
@@ -201,7 +201,7 @@ export default {
                 for (let i = 0, len1 = children.length; i < len1; i++) {
                     child = children[i];
                     if (typeof child.validate === 'function') {
-                        child.validate(true);
+                        await child.validate(true);
                     }
                 }
 
@@ -249,13 +249,15 @@ export default {
          *
          * @param {Event} _event
          */
-        onSubmit(_event) {
+        async onSubmit(_event) {
             if (this.cancelSubmit) {
                 _event.preventDefault();
             }
 
+            const valid = await this.checkValidity();
+
             if (
-                !this.checkValidity() ||
+                !valid ||
                 !this.emitCustomEvent('f-form-submit', {
                     data: this.getElementsValues(),
                     lastChangedElem: this._lastChangedElem,

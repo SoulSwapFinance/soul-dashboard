@@ -10,6 +10,7 @@ const ethUtil = require('ethereumjs-util');
 // const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
 const strongPasswordRE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,})/;
 const mnemonicRE = /^[ a-z]+$/;
+const BNB_ADDRESS_LENGTH = 42;
 
 export const FANTOM_CHAIN_ID = 0xfa;
 
@@ -583,9 +584,16 @@ export class FantomWeb3Wallet {
 
     /**
      * @param _address
+     * @param {('fantom' | 'ethereum' | 'binance')} _blockchain
      * @return {boolean}
      */
-    isValidAddress(_address) {
-        return Web3.utils.isHexStrict(_address) && Web3.utils.isAddress(_address);
+    isValidAddress(_address, _blockchain = 'fantom') {
+        if (_blockchain === 'fantom' || _blockchain === 'ethereum') {
+            return Web3.utils.isHexStrict(_address) && Web3.utils.isAddress(_address);
+        } else if (_blockchain === 'binance') {
+            return _address.length === BNB_ADDRESS_LENGTH && _address.indexOf('bnb') === 0;
+        }
+
+        return false;
     }
 }

@@ -149,9 +149,16 @@ export default {
             }
         },
 
-        validate(_setError) {
+        async validate(_setError) {
             if (this.validator) {
-                this.isInvalid = !this.validator(this.val);
+                const result = this.validator(this.val);
+
+                if (result instanceof Promise) {
+                    const value = await result;
+                    this.isInvalid = !value;
+                } else {
+                    this.isInvalid = !result;
+                }
 
                 if (_setError) {
                     this.setAriaDescribedBy();

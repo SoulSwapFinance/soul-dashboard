@@ -12,3 +12,7 @@ export const SET_ACCOUNT = 'setAccount';
 export const MOVE_ACCOUNT = 'moveAccount';
 export const PUSH_BNBRIDGE_PENDING_REQUEST = 'pushBnbbridgePendingRequests';
 export const SHIFT_BNBRIDGE_PENDING_REQUEST = 'shiftBnbbridgePendingRequests';
+export const APPEND_CONTACT = 'appendContact';
+export const MOVE_CONTACT = 'moveContact';
+export const REMOVE_CONTACT = 'removeContact';
+export const SET_CONTACT = 'setContact';
