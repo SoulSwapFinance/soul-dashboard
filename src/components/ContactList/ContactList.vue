@@ -6,7 +6,7 @@
         @keyup="onContactListKeyup"
     >
         <ul class="no-markers">
-            <li v-for="contact in contacts" :key="contact.address">
+            <li v-for="contact in cContacts" :key="contact.address">
                 <f-card>
                     <h3 slot="title" class="title" :data-address="contact.address">
                         <span class="row no-collapse align-items-start">
@@ -91,6 +91,18 @@ export default {
             type: Boolean,
             default: false,
         },
+        /**
+         * Filter contacts by given blockchain.
+         *
+         * @type {WalletBlockchain}
+         */
+        filterByBlockchain: {
+            type: String,
+            default: '',
+            validator: function (_value) {
+                return !_value || ['fantom', 'ethereum', 'binance'].indexOf(_value) !== -1;
+            },
+        },
     },
 
     data() {
@@ -107,25 +119,15 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['contacts', 'getContactAndIndexByAddress']),
+        ...mapGetters(['contacts', 'getContactAndIndexByAddress', 'getContactsByBlockchain']),
 
-        // TMP!
-        /*
-        contacts() {
-            return [
-                {
-                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78a',
-                    name: 'Contact 1',
-                    blockchain: 'fantom',
-                },
-                {
-                    address: '0xA2176B5eae87708Da2bc0cCb034833D3da3f1E78Y',
-                    name: 'Contact 2',
-                    blockchain: 'binance',
-                },
-            ];
+        cContacts() {
+            if (this.filterByBlockchain) {
+                return this.getContactsByBlockchain(this.filterByBlockchain);
+            }
+
+            return this.contacts;
         },
-*/
     },
 
     methods: {

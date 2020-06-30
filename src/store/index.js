@@ -194,6 +194,26 @@ export const store = new Vuex.Store({
                 return ret;
             };
         },
+        /**
+         * Get contact and index into `state.contacts` array by contact address.
+         *
+         * @param _state
+         * @return {function(*=): {WalletContact}
+         */
+        getContactsByBlockchain(_state) {
+            return (_blockchain) => {
+                const { contacts } = _state;
+                const rContacts = [];
+
+                for (let i = 0, len1 = contacts.length; i < len1; i++) {
+                    if (contacts[i].blockchain === _blockchain) {
+                        rContacts.push({ ...contacts[i] });
+                    }
+                }
+
+                return rContacts;
+            };
+        },
     },
 
     mutations: {

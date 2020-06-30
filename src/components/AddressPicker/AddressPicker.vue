@@ -1,9 +1,11 @@
 <template>
     <div class="address-picker">
-        <h2>Wallets</h2>
-        <account-list pick-mode @account-picked="onAddressPicked" />
+        <template v-if="blockchain === 'fantom'">
+            <h2>Wallets</h2>
+            <account-list pick-mode @account-picked="onAddressPicked" />
+        </template>
         <h2>Contacts</h2>
-        <contact-list pick-mode @contact-picked="onAddressPicked" />
+        <contact-list pick-mode :filter-by-blockchain="blockchain" @contact-picked="onAddressPicked" />
     </div>
 </template>
 
@@ -15,6 +17,17 @@ export default {
     name: 'AddressPicker',
 
     components: { ContactList, AccountList },
+
+    props: {
+        /** @type {WalletBlockchain} */
+        blockchain: {
+            type: String,
+            default: 'fantom',
+            validator: function (_value) {
+                return ['fantom', 'ethereum', 'binance'].indexOf(_value) !== -1;
+            },
+        },
+    },
 
     methods: {
         onAddressPicked(_address) {

@@ -225,9 +225,15 @@ export default {
                 order = index + 1;
             }
 
+            if (this.action === 'new') {
+                order = this.contacts.length + 1;
+            }
+
+            /*
             if (this.action === 'new' && order === this.contacts.length) {
                 order++;
             }
+*/
 
             if (order < 1) {
                 order = 1;

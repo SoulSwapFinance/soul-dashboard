@@ -10,7 +10,7 @@
             animation-out="scale-center-leave-active"
             @window-hide="$emit('window-hide', $event)"
         >
-            <address-picker @address-picked="onAddressPicked" />
+            <address-picker :blockchain="blockchain" @address-picked="onAddressPicked" />
         </f-window>
     </div>
 </template>
@@ -23,6 +23,17 @@ export default {
     name: 'AddressPickerWindow',
 
     components: { FWindow, AddressPicker },
+
+    props: {
+        /** @type {WalletBlockchain} */
+        blockchain: {
+            type: String,
+            default: 'fantom',
+            validator: function (_value) {
+                return ['fantom', 'ethereum', 'binance'].indexOf(_value) !== -1;
+            },
+        },
+    },
 
     methods: {
         show() {

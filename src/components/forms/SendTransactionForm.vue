@@ -35,7 +35,8 @@
                             </template>
                         </f-input>
 
-                        <f-input
+                        <address-field
+                            :blockchain="blockchain"
                             :label="sendToLabel"
                             field-size="large"
                             name="address"
@@ -50,7 +51,7 @@
                                     {{ ETHOrBNBAccountBalance }}
                                 </div>
                             </template>
-                        </f-input>
+                        </address-field>
 
                         <f-input
                             v-if="sendDirection !== 'OperaToEthereum'"
@@ -82,11 +83,13 @@ import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbridge-exchange.js';
+import AddressField from '../AddressField/AddressField.vue';
 
 export default {
     name: 'SendTransactionForm',
 
     components: {
+        AddressField,
         FCard,
         FInput,
         FMessage,
@@ -153,6 +156,24 @@ export default {
             }
 
             return sendTo;
+        },
+
+        /**
+         * @return {WalletBlockchain}
+         */
+        blockchain() {
+            let blockchain = 'fantom';
+
+            switch (this.sendDirection) {
+                case 'OperaToBinance':
+                    blockchain = 'binance';
+                    break;
+                case 'OperaToEthereum':
+                    blockchain = 'ethereum';
+                    break;
+            }
+
+            return blockchain;
         },
     },
 
