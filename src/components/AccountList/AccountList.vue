@@ -1,5 +1,10 @@
 <template>
-    <div class="account-list" :class="{ 'edit-mode': editMode }" @click="onAccountListClick">
+    <div
+        class="account-list"
+        :class="{ 'edit-mode': editMode }"
+        @click="onAccountListClick"
+        @keyup="onAccountListKeyup"
+    >
         <ul class="no-markers">
             <li v-for="(account, index) in accounts" :key="account.address">
                 <f-card>
@@ -26,7 +31,16 @@
                                 :class="{ 'account-name-exists': !!account.name }"
                             >
                                 <span class="address-col">
+                                    <span
+                                        v-if="pickMode"
+                                        class="value clickable"
+                                        :data-address="account.address"
+                                        tabindex="0"
+                                    >
+                                        <account-name align-right :account="account" />
+                                    </span>
                                     <router-link
+                                        v-else
                                         :to="{
                                             name: routeName,
                                             params: { address: account.address },
@@ -119,6 +133,7 @@ import AccountName from '../AccountName/AccountName.vue';
 import { pollingMixin } from '../../mixins/polling.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import { formatCurrencyByLocale } from '../../filters.js';
+import { isAriaAction } from '../../utils/aria.js';
 
 export default {
     name: 'AccountList',
@@ -130,6 +145,11 @@ export default {
     props: {
         /** Show action icons on the right side. */
         editMode: {
+            type: Boolean,
+            default: false,
+        },
+        /** Emit 'account-picked' event when whole account element is clicked. */
+        pickMode: {
             type: Boolean,
             default: false,
         },
@@ -213,7 +233,8 @@ export default {
                 const elem = _event.target.closest('[data-address]');
                 const address = elem ? elem.getAttribute('data-address') : '';
 
-                if (address && address.toLowerCase() === this.currentAccount.address.toLowerCase()) {
+                // if (address && address.toLowerCase() === this.currentAccount.address.toLowerCase()) {
+                if (address) {
                     this.$emit('account-picked', address);
                 }
             }
@@ -235,6 +256,20 @@ export default {
             }
 
             return false;
+        },
+
+        /**
+         * @param {KeyboardEvent} _event
+         */
+        onAccountListKeyup(_event) {
+            if (this.pickMode && isAriaAction(_event) && !_event.target.closest('.btn')) {
+                const elem = _event.target.closest('[data-address]');
+                const address = elem ? elem.getAttribute('data-address') : '';
+
+                if (address) {
+                    this.$emit('account-picked', address);
+                }
+            }
         },
 
         formatCurrencyByLocale,

@@ -1,13 +1,31 @@
 <template>
-    <div class="contact-list" :class="{ 'edit-mode': editMode }" @click="onContactListClick">
+    <div
+        class="contact-list"
+        :class="{ 'edit-mode': editMode }"
+        @click="onContactListClick"
+        @keyup="onContactListKeyup"
+    >
         <ul class="no-markers">
             <li v-for="contact in contacts" :key="contact.address">
                 <f-card>
-                    <h3 slot="title" class="title">
+                    <h3 slot="title" class="title" :data-address="contact.address">
                         <span class="row no-collapse align-items-start">
                             <span class="col">
                                 <span class="address-col">
-                                    <account-name :account="contact" />
+                                    <account-name
+                                        :account="contact"
+                                        :class="{ clickable: pickMode }"
+                                        :tabindex="pickMode ? 0 : -1"
+                                    />
+
+                                    <button
+                                        v-if="editMode"
+                                        class="btn large_ light same-size round btn-edit"
+                                        title="Edit Wallet"
+                                        type="button"
+                                    >
+                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
+                                    </button>
 
                                     <f-copy-button
                                         :text="contact.address"
@@ -24,16 +42,6 @@
                                             </template>
                                         </template>
                                     </f-copy-button>
-
-                                    <button
-                                        v-if="editMode"
-                                        class="btn large_ light same-size round btn-edit"
-                                        title="Edit Wallet"
-                                        type="button"
-                                        :data-address="contact.address"
-                                    >
-                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
-                                    </button>
                                 </span>
                             </span>
                         </span>
@@ -65,6 +73,7 @@ import AccountName from '../AccountName/AccountName.vue';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
 import { ADD_CONTACT, UPDATE_CONTACT } from '../../store/actions.type.js';
+import { isAriaAction } from '../../utils/aria.js';
 
 export default {
     name: 'ContactList',
@@ -74,6 +83,11 @@ export default {
     props: {
         /** Show edit icon and 'new contact' button. */
         editMode: {
+            type: Boolean,
+            default: false,
+        },
+        /** Emit 'contact-picked' event when whole contact element is clicked. */
+        pickMode: {
             type: Boolean,
             default: false,
         },
@@ -118,31 +132,39 @@ export default {
         /**
          * @param {Event} _event
          */
-        onContactListClick(_event) {
-            if (!this.onEditContactButtonClick(_event) && !this.editMode) {
-                alert('contact picked');
-                /*
-                const elem = _event.target.closest('[data-address]');
-                const address = elem ? elem.getAttribute('data-address') : '';
+        getContactByEvent(_event) {
+            const elem = _event.target.closest('[data-address]');
 
-                if (address && address.toLowerCase() === this.currentContact.address.toLowerCase()) {
-                    this.$emit('contact-picked', address);
+            return this.getContactAndIndexByAddress(elem ? elem.getAttribute('data-address') : '');
+        },
+
+        /**
+         * @param {Event} _event
+         */
+        onContactListClick(_event) {
+            if (
+                !this.onEditContactButtonClick(_event) &&
+                !this.editMode &&
+                this.pickMode &&
+                !_event.target.closest('.btn')
+            ) {
+                const contact = this.getContactByEvent(_event);
+
+                if (contact.contact) {
+                    this.$emit('contact-picked', contact.contact.address);
                 }
-*/
             }
         },
+
         /**
          * @param {Event} _event
          */
         onEditContactButtonClick(_event) {
-            const elem = _event.target.closest('[data-address]');
-            const contact = this.getContactAndIndexByAddress(elem ? elem.getAttribute('data-address') : '');
+            const contact = this.getContactByEvent(_event);
 
-            if (contact.contact) {
+            if (contact.contact && _event.target.closest('.btn-edit')) {
                 this.contactAction = 'edit';
                 this.contactData = { ...contact.contact, order: contact.index + 1 };
-
-                console.log(this.contactData);
 
                 this.$refs.contactDetailWindow.show();
 
@@ -169,6 +191,19 @@ export default {
                 this.$store.dispatch(ADD_CONTACT, _data);
             } else if (this.contactAction === 'edit') {
                 this.$store.dispatch(UPDATE_CONTACT, _data);
+            }
+        },
+
+        /**
+         * @param {KeyboardEvent} _event
+         */
+        onContactListKeyup(_event) {
+            if (this.pickMode && isAriaAction(_event) && !_event.target.closest('.btn')) {
+                const contact = this.getContactByEvent(_event);
+
+                if (contact.contact) {
+                    this.$emit('contact-picked', contact.contact.address);
+                }
             }
         },
     },
