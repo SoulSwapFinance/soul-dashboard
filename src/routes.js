@@ -87,16 +87,16 @@ export const routes = [
                 component: Dashboard,
             },
             {
+                name: 'defi',
+                path: '/defi/:address',
+                component: Defi,
+            },
+            {
                 name: 'settings',
                 path: '/settings',
                 component: Settings,
             },
         ],
-    },
-    {
-        name: 'defi',
-        path: '/defi/:address',
-        component: Defi,
     },
     {
         name: 'playground',

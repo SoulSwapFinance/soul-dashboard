@@ -93,6 +93,13 @@ export default {
                 },
                 {
                     url: {
+                        name: 'defi',
+                    },
+                    title: 'DeFi',
+                    icon: settingsIcon,
+                },
+                {
+                    url: {
                         name: 'settings',
                     },
                     title: 'Settings',
