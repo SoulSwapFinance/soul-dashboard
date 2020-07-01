@@ -14,6 +14,7 @@ import AccountHistory from './views/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';
+import Defi from './views/Defi/Defi.vue';
 
 export const routes = [
     {
@@ -91,6 +92,11 @@ export const routes = [
                 component: Settings,
             },
         ],
+    },
+    {
+        name: 'defi',
+        path: '/defi/:address',
+        component: Defi,
     },
     {
         name: 'playground',
