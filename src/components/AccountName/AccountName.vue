@@ -4,16 +4,28 @@
             <span class="an-name">{{ account.name }}</span>
             <!--            <span class="an-address">{{ account.address | formatHash }}</span>-->
             <slot name="suffix"></slot>
-            <f-ellipsis :text="account.address" overflow="middle" :align-right="alignRight" class="an-address" />
+
+            <a v-if="addressAsLink" :href="addressUrl" target="_blank">
+                <f-ellipsis :text="account.address" overflow="middle" :align-right="alignRight" class="an-address" />
+            </a>
+            <f-ellipsis v-else :text="account.address" overflow="middle" :align-right="alignRight" class="an-address" />
         </template>
-        <f-ellipsis v-else :text="account.address" overflow="middle" :align-right="alignRight" class="an-address">
-            <template #suffix><slot name="suffix"></slot></template>
-        </f-ellipsis>
+        <template v-else>
+            <a v-if="addressAsLink" :href="addressUrl" target="_blank">
+                <f-ellipsis :text="account.address" overflow="middle" :align-right="alignRight" class="an-address">
+                    <template #suffix><slot name="suffix"></slot></template>
+                </f-ellipsis>
+            </a>
+            <f-ellipsis v-else :text="account.address" overflow="middle" :align-right="alignRight" class="an-address">
+                <template #suffix><slot name="suffix"></slot></template>
+            </f-ellipsis>
+        </template>
     </span>
 </template>
 
 <script>
 import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'AccountName',
@@ -34,9 +46,42 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Use link to address detail. */
+        addressAsLink: {
+            type: Boolean,
+            default: false,
+        },
+        /** @type {WalletBlockchain} */
+        blockchain: {
+            type: String,
+            default: 'fantom',
+            validator: function (_value) {
+                return ['fantom', 'ethereum', 'binance'].indexOf(_value) !== -1;
+            },
+        },
     },
 
     computed: {
+        addressUrl() {
+            const { blockchain } = this;
+            const { address } = this.account;
+            let url = '';
+
+            switch (blockchain) {
+                case 'fantom':
+                    url = `${appConfig.explorerUrl}address/${address}`;
+                    break;
+                case 'ethereum':
+                    url = `${appConfig.ethereumExplorerUrl}address/${address}`;
+                    break;
+                case 'binance':
+                    url = `${appConfig.binanceExplorerUrl}address/${address}`;
+                    break;
+            }
+
+            return url;
+        },
+
         cssClass() {
             return {
                 'has-name': !!this.account.name,

@@ -54,21 +54,14 @@
             button.btn-edit, .f-copy-button {
                 position: absolute;
                 right: 20px;
-            }
-
-            .f-copy-button {
                 top: 20px;
             }
-        }
 
-    .account-name-exists {
-        .address-col {
             .f-copy-button {
-                top: initial;
-                bottom: 54px;
+                top: 48px;
             }
         }
-    }
+
 
         .f-card {
             &:not(.off) {
@@ -101,7 +94,7 @@
             .address-col {
                 button.btn-edit {
                     top: initial;
-                    bottom: 18px;
+                    bottom: 76px;
                 }
 
                 .f-copy-button {

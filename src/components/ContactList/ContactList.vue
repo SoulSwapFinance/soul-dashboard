@@ -13,7 +13,9 @@
                             <span class="col">
                                 <span class="address-col">
                                     <account-name
+                                        address-as-link
                                         :account="contact"
+                                        :blockchain="contact.blockchain"
                                         :class="{ clickable: pickMode }"
                                         :tabindex="pickMode ? 0 : -1"
                                     />

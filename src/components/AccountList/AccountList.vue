@@ -45,7 +45,7 @@
                                             name: routeName,
                                             params: { address: account.address },
                                         }"
-                                        class="value"
+                                        class="value clickable"
                                         aria-label="Address"
                                         :data-address="account.address"
                                     >

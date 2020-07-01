@@ -32,6 +32,10 @@
     }
 
     &.has-name {
+        a, a:visited {
+            color: $light-gray-color;
+        }
+
         .an-address {
             color: $light-gray-color;
             font-weight: normal;

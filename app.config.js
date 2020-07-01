@@ -25,6 +25,10 @@ const appConfig = {
     },
     // used in links pointing to fantom explorer
     explorerUrl: 'https://explorer.fantom.network/',
+    // used in links pointing to ethereum explorer
+    ethereumExplorerUrl: 'https://etherscan.io/',
+    // used in links pointing to binance explorer
+    binanceExplorerUrl: 'https://explorer.binance.org/',
     // BNBridge api config
     bnbridgeApi: {
         // url of api point
