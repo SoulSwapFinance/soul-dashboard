@@ -1,11 +1,15 @@
 <template>
     <div class="view-defi-home">
-        DeFi Home
+        <defi-menu />
     </div>
 </template>
 
 <script>
+import DefiMenu from '../../components/DefiMenu/DefiMenu.vue';
+
 export default {
     name: 'DefiHome',
+
+    components: { DefiMenu },
 };
 </script>

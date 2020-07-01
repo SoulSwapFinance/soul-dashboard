@@ -97,6 +97,7 @@ export default {
                     },
                     title: 'DeFi',
                     icon: settingsIcon,
+                    deFiLink: true,
                 },
                 {
                     url: {
@@ -197,33 +198,43 @@ export default {
          * @param {object} _account
          */
         setWalletUrl(_account) {
+            this.setMenuItemUrl('walletLink', _account);
+            this.setMenuItemUrl('deFiLink', _account, 'defi-home');
+        },
+
+        /**
+         * @param {string} _propName
+         * @param {object} [_account]
+         * @param {string} [_routeName]
+         */
+        setMenuItemUrl(_propName, _account, _routeName = ACCOUNT_DEFAULT_VIEW) {
             const { navigation } = this;
             const account = _account || this.currentAccount;
-            let walletNavItemIdx = -1;
+            let navItemIdx = -1;
 
             navigation.find((_item, _idx) => {
-                if (_item.walletLink) {
-                    walletNavItemIdx = _idx;
+                if (_item[_propName]) {
+                    navItemIdx = _idx;
                     return true;
                 }
 
                 return false;
             });
 
-            if (walletNavItemIdx > -1) {
+            if (navItemIdx > -1) {
                 if (account) {
-                    this.$set(navigation, walletNavItemIdx, {
-                        ...navigation[walletNavItemIdx],
+                    this.$set(navigation, navItemIdx, {
+                        ...navigation[navItemIdx],
                         url: {
-                            name: ACCOUNT_DEFAULT_VIEW,
+                            name: _routeName,
                             params: { address: account.address },
                         },
                         linkTitle: account.name || account.address,
                         disabled: false,
                     });
                 } else {
-                    this.$set(navigation, walletNavItemIdx, {
-                        ...navigation[walletNavItemIdx],
+                    this.$set(navigation, navItemIdx, {
+                        ...navigation[navItemIdx],
                         url: { path: '#' },
                         linkTitle: '',
                         disabled: true,

@@ -1,0 +1,56 @@
+<template>
+    <div class="defi-menu">
+        <ul class="no-markers row no-collapse">
+            <li class="col-6">
+                <div class="menu-item">
+                    <h2 class="h1">Mint</h2>
+                    <div class="icon">
+                        <icon data="@/assets/svg/defi/mint.svg" width="96" height="96" />
+                    </div>
+                    <p class="description">Mint fUSD by locking your FTM</p>
+                    <a href="/#" class="clickable title">Mint fUSD</a>
+                </div>
+            </li>
+            <li class="col-6">
+                <div class="menu-item disabled" tabindex="0">
+                    <h2 class="h1">Repay</h2>
+                    <div class="icon">
+                        <icon data="@/assets/svg/defi/repay.svg" width="96" height="96" />
+                    </div>
+                    <p class="description">Repay the fUSD you minted and unlock your FTM</p>
+                    <div class="title">Coming Soon</div>
+                </div>
+            </li>
+            <li class="col-6">
+                <div class="menu-item disabled" tabindex="0">
+                    <h2 class="h1">fTrade</h2>
+                    <div class="icon">
+                        <icon data="@/assets/svg/defi/ftrade.svg" width="96" height="96" />
+                    </div>
+                    <p class="description">Trade synthetic assets to FTM and fUSD</p>
+                    <div class="title">Coming Soon</div>
+                </div>
+            </li>
+            <li class="col-6">
+                <div class="menu-item disabled" tabindex="0">
+                    <h2 class="h1">fLend</h2>
+                    <div class="icon">
+                        <icon data="@/assets/svg/defi/flend.svg" width="96" height="96" />
+                    </div>
+                    <p class="description">Loan your tokens and borrow synths</p>
+                    <div class="title">Coming Soon</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'DefiMenu',
+};
+</script>
+
+<style lang="scss">
+@import 'style';
+</style>
