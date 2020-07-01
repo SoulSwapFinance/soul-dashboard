@@ -15,6 +15,7 @@ import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
+import DefiHome from './views/DefiHome/DefiHome.vue';
 
 export const routes = [
     {
@@ -90,6 +91,13 @@ export const routes = [
                 name: 'defi',
                 path: '/defi/:address',
                 component: Defi,
+                children: [
+                    {
+                        name: 'defi-home',
+                        path: '',
+                        component: DefiHome,
+                    },
+                ],
             },
             {
                 name: 'settings',

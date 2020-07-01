@@ -6,7 +6,6 @@
         <template v-else>
             <address-info-box />
             <main class="main">
-                DEFI
                 <router-view></router-view>
             </main>
         </template>
