@@ -16,6 +16,7 @@ import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
+import DefiMint from './views/DefiMint/DefiMint.vue';
 
 export const routes = [
     {
@@ -96,6 +97,11 @@ export const routes = [
                         name: 'defi-home',
                         path: '',
                         component: DefiHome,
+                    },
+                    {
+                        name: 'defi-mint',
+                        path: 'mint',
+                        component: DefiMint,
                     },
                 ],
             },
