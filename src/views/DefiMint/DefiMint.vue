@@ -7,6 +7,8 @@
 <script>
 export default {
     name: 'DefiMint',
+
+    mounted() {},
 };
 </script>
 

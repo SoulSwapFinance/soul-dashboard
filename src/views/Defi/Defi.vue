@@ -6,7 +6,9 @@
         <template v-else>
             <address-info-box />
             <main class="main">
-                <router-view></router-view>
+                <f-view-transition watch-route>
+                    <router-view></router-view>
+                </f-view-transition>
             </main>
         </template>
     </div>
@@ -16,11 +18,12 @@
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
 import { mapGetters } from 'vuex';
+import FViewTransition from '../../components/core/FViewTransition/FViewTransition.vue';
 
 export default {
     name: 'Defi',
 
-    components: { AddressInfoBox, FMessage },
+    components: { FViewTransition, AddressInfoBox, FMessage },
 
     computed: {
         ...mapGetters(['currentAccount']),

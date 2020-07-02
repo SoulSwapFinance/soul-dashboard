@@ -1,17 +1,5 @@
 $vue-transition-duration: 250ms !default;
 
-.animation-container {
-    &.children-absolute {
-        position: relative;
-
-        > *[class*="-enter-active"], > *[class*="-leave-active"] {
-            position: absolute;
-            left: 0;
-            width: 100%;
-        }
-    }
-}
-
 @include fade-animation('in-vue', 0, 1);
 @include fade-animation('out-vue', 1, 0);
 @include scale-center-fade-in-animation('vue', 0.75, 1);
