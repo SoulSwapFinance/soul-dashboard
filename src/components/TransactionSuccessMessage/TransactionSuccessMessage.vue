@@ -1,20 +1,29 @@
 <template>
-    <f-card class="transaction-success-message f-card-double-padding">
-        <h2>{{ title }}</h2>
+    <f-card class="transaction-success-message f-card-double-padding" :class="{ loading: loading }">
+        <template v-if="loading">
+            <h2>Verifying Transaction</h2>
+            <pulse-loader color="#1969ff"></pulse-loader>
+        </template>
+        <template v-else>
+            <h2>{{ dTitle }}</h2>
 
-        <h3 class="break-word">
-            <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">
-                <f-ellipsis :text="tx" overflow="middle" />
-            </a>
-        </h3>
+            <h3 class="break-word">
+                <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">
+                    <f-ellipsis :text="tx" overflow="middle" />
+                </a>
+            </h3>
 
-        <div class="success-icon">
-            <icon data="@/assets/svg/message/check-circle.svg" width="96" height="96" aria-hidden="true" />
-        </div>
+            <div v-if="transactionSuccess" class="success-icon">
+                <icon data="@/assets/svg/message/check-circle.svg" width="96" height="96" aria-hidden="true" />
+            </div>
+            <div v-else class="error-icon">
+                <icon data="@/assets/svg/message/times-circle.svg" width="96" height="96" aria-hidden="true" />
+            </div>
 
-        <div v-if="continueTo">
-            <button class="btn large" @click="onContinueBtnClick">Continue</button>
-        </div>
+            <div v-if="continueTo && transactionSuccess">
+                <button class="btn large" @click="onContinueBtnClick">Continue</button>
+            </div>
+        </template>
     </f-card>
 </template>
 
@@ -22,9 +31,11 @@
 import FCard from '../core/FCard/FCard.vue';
 import appConfig from '../../../app.config.js';
 import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import gql from 'graphql-tag';
 
 export default {
-    components: { FEllipsis, FCard },
+    components: { FEllipsis, FCard, PulseLoader },
 
     props: {
         /** Transaction hash */
@@ -46,10 +57,51 @@ export default {
     data() {
         return {
             explorerUrl: appConfig.explorerUrl,
+            loading: true,
+            transactionSuccess: true,
+            dTitle: this.title,
         };
     },
 
+    mounted() {
+        this.verifyTransaction();
+    },
+
     methods: {
+        verifyTransaction() {
+            setTimeout(() => {
+                this._verifyTransaction();
+            }, 400);
+        },
+
+        async _verifyTransaction() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query TransactionByHash($hash: Hash!) {
+                        transaction(hash: $hash) {
+                            status
+                        }
+                    }
+                `,
+                variables: {
+                    hash: this.tx,
+                },
+                fetchPolicy: 'no-cache',
+            });
+
+            if (data.data.transaction.status === null) {
+                this.verifyTransaction();
+            } else {
+                this.transactionSuccess = parseInt(data.data.transaction.status, 16) === 1;
+
+                if (!this.transactionSuccess) {
+                    this.dTitle = 'Transaction Error';
+                }
+
+                this.loading = false;
+            }
+        },
+
         onContinueBtnClick() {
             if (this.continueTo === 'account-history') {
                 this.$router.replace({ name: this.continueTo });

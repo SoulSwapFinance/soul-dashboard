@@ -5,13 +5,22 @@
     max-width: 600px;
     text-align: center;
 
+    &.loading {
+        min-height: 346px;
+        @include center-v;
+    }
+
     h2, h3 {
         text-align: center;
         margin-bottom: 32px;
     }
 
-    .success-icon {
+    .success-icon, .error-icon {
         color: $f-message-success-color;
         margin-bottom: 32px;
+    }
+
+    .error-icon {
+        color: $f-message-error-color;
     }
 }
