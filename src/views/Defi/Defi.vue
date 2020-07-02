@@ -6,7 +6,7 @@
         <template v-else>
             <address-info-box />
             <main class="main">
-                <f-view-transition watch-route>
+                <f-view-transition watch-route :views-structure="viewsStructure">
                     <router-view></router-view>
                 </f-view-transition>
             </main>
@@ -19,6 +19,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
 import { mapGetters } from 'vuex';
 import FViewTransition from '../../components/core/FViewTransition/FViewTransition.vue';
+import { appStructureTree } from '../../app-structure.js';
 
 export default {
     name: 'Defi',
@@ -27,6 +28,12 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        viewsStructure() {
+            const defiHomeNode = appStructureTree.serialize(appStructureTree.get('defi-home'));
+
+            return defiHomeNode ? [JSON.parse(defiHomeNode)] : [];
+        },
     },
 };
 </script>

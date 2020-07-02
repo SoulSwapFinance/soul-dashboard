@@ -1,4 +1,4 @@
-import { isArray, inArray, getUniqueId } from './index.js';
+import { isArray, inArray, getUniqueId, serializeObject } from './index.js';
 
 export class Tree {
     constructor(_data, _options) {
@@ -67,6 +67,8 @@ export class Tree {
             onDataWrap() {},
             onBeforeDataNode: options.onBeforeDataNodeRemove || null,
         };
+        /** Which properties will be removed during serialization. */
+        this.dontSerializeRE = /^(?!(_c)$)_[^\W_]+/;
 
         if (options.addId) {
             options._addId = true;
@@ -487,6 +489,18 @@ export class Tree {
         this.remove(this.root);
         this.root._c = [];
         this._cursor = this.root;
+    }
+
+    /**
+     * Serialize node or all tree.
+     *
+     * @param [_node]
+     * @return {string}
+     */
+    serialize(_node) {
+        let node = _node || this.root;
+
+        return node ? serializeObject(node, this.dontSerializeRE) : '';
     }
 
     /**

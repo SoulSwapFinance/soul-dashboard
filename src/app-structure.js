@@ -24,4 +24,5 @@ const appStructure = [
     },
 ];
 
+/** @type {Tree} */
 export const appStructureTree = new Tree(appStructure);
