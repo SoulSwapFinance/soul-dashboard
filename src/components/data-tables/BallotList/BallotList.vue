@@ -221,7 +221,7 @@ export default {
                         const { proposals } = _item.ballot;
 
                         if (_item.ballot.isFinalized && proposals && proposals.length) {
-                            return this.getProposalById(_value, proposals).name || '-';
+                            return this.getProposalById(parseInt(_value, 16), proposals).name || '-';
                         }
 
                         return '-';
@@ -300,7 +300,7 @@ export default {
                                 edge = _edges[i];
                                 if (edge.ballot.address.toLowerCase() === _item.ballot.toLowerCase()) {
                                     edge.ballot._proposal = this.getProposalById(
-                                        _item.vote,
+                                        parseInt(_item.vote, 16),
                                         edge.ballot.proposals
                                     ).name;
                                     break;
