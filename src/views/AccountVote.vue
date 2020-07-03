@@ -17,6 +17,7 @@ import BallotList from '../components/data-tables/BallotList/BallotList.vue';
 import BallotForm from '../components/forms/BallotForm/BallotForm.vue';
 import BallotConfirmation from '../components/BallotConfirmation/BallotConfirmation.vue';
 import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import { eventBusMixin } from '../mixins/event-bus.js';
 
 const DEFAULT_COMPONENT = 'ballot-list';
 
@@ -29,6 +30,8 @@ export default {
         BallotConfirmation,
         TransactionSuccessMessage,
     },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -57,6 +60,8 @@ export default {
     created() {
         // temporary data
         this._data_ = null;
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -91,6 +96,18 @@ export default {
             this.$nextTick(() => {
                 this._data_ = null;
             });
+        },
+
+        onAccountPicked() {
+            if (this.currentComponent !== DEFAULT_COMPONENT) {
+                this.currentComponent = DEFAULT_COMPONENT;
+            } else {
+                // to reset send-transaction-form properly
+                this.currentComponent = '';
+                this.$nextTick(() => {
+                    this.currentComponent = DEFAULT_COMPONENT;
+                });
+            }
         },
     },
 };
