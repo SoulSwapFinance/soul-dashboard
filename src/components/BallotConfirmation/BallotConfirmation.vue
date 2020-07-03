@@ -30,7 +30,7 @@
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Vote</div>
                     <div class="col break-word">
-                        {{ ballot.proposals[proposal] }}
+                        {{ getProposalById(proposal, ballot.proposals).name }}
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@ export default {
             },
             required: true,
         },
-        /** Index into `ballot.proposals` array. */
+        /** Id of `ballot.proposals` array item. */
         proposal: {
             type: Number,
             default: -1,
@@ -120,6 +120,15 @@ export default {
                     this.gasLimit
                 );
             }
+        },
+
+        /**
+         * @param {int} _id
+         * @param {array} _proposals
+         * @return {Object}
+         */
+        getProposalById(_id, _proposals) {
+            return _proposals.find((_item) => _item.id === _id) || {};
         },
 
         onSendTransactionSuccess(_data) {

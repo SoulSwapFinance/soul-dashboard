@@ -136,7 +136,10 @@ export default {
                                 isOpen
                                 isFinalized
                                 winner
-                                proposals
+                                proposals {
+                                    id
+                                    name
+                                }
                             }
                             cursor
                         }
@@ -218,7 +221,7 @@ export default {
                         const { proposals } = _item.ballot;
 
                         if (_item.ballot.isFinalized && proposals && proposals.length) {
-                            return proposals[parseInt(_value, 16)];
+                            return this.getProposalById(_value, proposals).name || '-';
                         }
 
                         return '-';
@@ -296,7 +299,10 @@ export default {
                             for (let i = 0, len1 = _edges.length; i < len1; i++) {
                                 edge = _edges[i];
                                 if (edge.ballot.address.toLowerCase() === _item.ballot.toLowerCase()) {
-                                    edge.ballot._proposal = edge.ballot.proposals[parseInt(_item.vote, 16)];
+                                    edge.ballot._proposal = this.getProposalById(
+                                        _item.vote,
+                                        edge.ballot.proposals
+                                    ).name;
                                     break;
                                 }
                             }
@@ -324,6 +330,15 @@ export default {
                     },
                 });
             }
+        },
+
+        /**
+         * @param {int} _id
+         * @param {array} _proposals
+         * @return {Object}
+         */
+        getProposalById(_id, _proposals) {
+            return _proposals.find((_item) => _item.id === _id) || {};
         },
 
         /**

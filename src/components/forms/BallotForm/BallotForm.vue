@@ -19,8 +19,8 @@
                             <ul class="no-markers" aria-label="list of proposals">
                                 <li v-for="(item, index) in ballot.proposals" :key="`bltprop${index}`">
                                     <label class="option small">
-                                        <input v-model="proposal" type="radio" name="proposal" :value="index" />
-                                        <span class="radio"></span> {{ item }}
+                                        <input v-model="proposal" type="radio" name="proposal" :value="item.id" />
+                                        <span class="radio"></span> {{ item.name }}
                                     </label>
                                 </li>
                             </ul>
