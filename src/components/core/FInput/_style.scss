@@ -4,7 +4,7 @@
     display: inline-block;
     vertical-align: middle;
 
-    .inp {
+    .f-inp {
         display: flex;
         align-items: center;
         align-content: center;
@@ -17,11 +17,6 @@
             padding: 0;
             border: none;
 
-            &:focus {
-                box-shadow: none;
-                outline: none;
-            }
-
             &:invalid {
                 box-shadow: none;
                 outline: none;
@@ -31,13 +26,13 @@
     }
 
     &.is-textarea {
-        .inp {
+        .f-inp {
             height: auto;
         }
     }
 
     &.prefix-slot {
-        .inp {
+        .f-inp {
             padding-left: 0.25rem;
 
             input {
@@ -47,11 +42,22 @@
     }
 
     &.suffix-slot {
-        .inp {
+        .f-inp {
             padding-right: 0.25rem;
 
             input {
                 padding-right: 0.5rem;
+            }
+        }
+    }
+
+    &:not(.no-input-style) {
+        .f-inp {
+            input, textarea {
+                &:focus {
+                    box-shadow: none;
+                    outline: none;
+                }
             }
         }
     }

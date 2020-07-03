@@ -6,7 +6,7 @@
         <template v-if="disabledAsText && disabled">
             {{ val }}
         </template>
-        <span v-else class="inp" :class="inpClasses">
+        <span v-else class="f-inp" :class="inpClasses">
             <slot name="prefix"></slot>
             <template v-if="isTextarea">
                 <textarea
@@ -84,6 +84,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Don't style f-input as input field */
+        noInputStyle: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -104,6 +109,7 @@ export default {
                 'suffix-slot': this.hasSlot('suffix'),
                 'bottom-slot': this.hasSlot('bottom'),
                 'is-textarea': this.isTextarea,
+                'no-input-style': this.noInputStyle,
             };
         },
 
@@ -115,6 +121,7 @@ export default {
                 small: this.fieldSize === 'small',
                 readonly: this.readonly,
                 disabled: this.disabled,
+                inp: !this.noInputStyle,
             };
         },
 

@@ -1,3 +1,12 @@
 .view-defi-mint {
+    .tmp-cont {
+        width: 60%;
+        margin: 0 auto;
+        text-align: center;
 
+        > span {
+            font-size: 80px;
+            opacity: 0.75;
+        }
+    }
 }
