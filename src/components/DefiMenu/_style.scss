@@ -1,6 +1,8 @@
 @import "../../assets/scss/vars";
 
 .defi-menu {
+    padding-top: 32px;
+
     ul {
 
         li {
@@ -84,5 +86,11 @@
             width: 64px !important;
             height: 64px !important;;
         }
+    }
+}
+
+@include media-max($bp-small) {
+    .defi-menu {
+        padding-top: 0;
     }
 }

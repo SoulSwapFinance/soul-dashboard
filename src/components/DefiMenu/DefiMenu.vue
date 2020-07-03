@@ -1,9 +1,9 @@
 <template>
     <div class="defi-menu">
-        <ul class="no-markers row no-collapse">
-            <li class="col-6">
+        <ul class="no-markers row justify-content-center">
+            <li class="col-4 col-6-lg">
                 <div class="menu-item">
-                    <h2 class="h1">Mint</h2>
+                    <h2 class="h1">fMint</h2>
                     <div class="icon">
                         <icon data="@/assets/svg/defi/mint.svg" width="96" height="96" />
                     </div>
@@ -13,17 +13,7 @@
                     </router-link>
                 </div>
             </li>
-            <li class="col-6">
-                <div class="menu-item disabled" tabindex="0">
-                    <h2 class="h1">Repay</h2>
-                    <div class="icon">
-                        <icon data="@/assets/svg/defi/repay.svg" width="96" height="96" />
-                    </div>
-                    <p class="description">Repay the fUSD you minted and unlock your FTM</p>
-                    <div class="title">Coming Soon</div>
-                </div>
-            </li>
-            <li class="col-6">
+            <li class="col-4 col-6-lg">
                 <div class="menu-item disabled" tabindex="0">
                     <h2 class="h1">fTrade</h2>
                     <div class="icon">
@@ -33,7 +23,7 @@
                     <div class="title">Coming Soon</div>
                 </div>
             </li>
-            <li class="col-6">
+            <li class="col-4 col-6-lg">
                 <div class="menu-item disabled" tabindex="0">
                     <h2 class="h1">fLend</h2>
                     <div class="icon">
