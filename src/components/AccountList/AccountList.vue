@@ -192,7 +192,10 @@ export default {
 
     mounted() {
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
-        this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+
+        if (this.$route.name === 'dashboard') {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+        }
 
         /*
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES).then(() => {
