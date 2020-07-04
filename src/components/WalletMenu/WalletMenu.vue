@@ -118,7 +118,7 @@ export default {
 
         ...mapState(['breakpoints']),
 
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'accounts']),
     },
 
     watch: {
@@ -192,6 +192,7 @@ export default {
         setWalletUrl(_account) {
             const { navigation } = this;
             const account = _account || this.currentAccount;
+            const accounts = this.accounts;
             let walletNavItemIdx = -1;
 
             navigation.find((_item, _idx) => {
@@ -205,6 +206,17 @@ export default {
 
             if (walletNavItemIdx > -1) {
                 if (account) {
+                    this.$set(navigation, walletNavItemIdx, {
+                        ...navigation[walletNavItemIdx],
+                        url: {
+                            name: ACCOUNT_DEFAULT_VIEW,
+                            params: { address: account.address },
+                        },
+                        linkTitle: account.name || account.address,
+                        disabled: false,
+                    });
+                } else if (accounts.length > 0) {
+                    let account = this.accounts[0];
                     this.$set(navigation, walletNavItemIdx, {
                         ...navigation[walletNavItemIdx],
                         url: {

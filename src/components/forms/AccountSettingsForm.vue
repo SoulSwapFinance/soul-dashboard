@@ -94,6 +94,7 @@ import FInput from '../core/FInput/FInput.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
 import { UPDATE_ACCOUNT } from '../../store/actions.type.js';
+import { DEACTIVATE_ACTIVE_ACCOUNT } from '../../store/mutations.type.js';
 import { helpersMixin } from '../../mixins/helpers.js';
 import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
@@ -160,6 +161,10 @@ export default {
 
     mounted() {
         this.account = this.getAccountByAddress(this.accountData.address);
+    },
+
+    beforeDestroy() {
+        this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
     },
 
     methods: {
