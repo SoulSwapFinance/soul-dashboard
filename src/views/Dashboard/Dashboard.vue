@@ -11,7 +11,6 @@
             Contacts <span class="f-records-count">({{ contacts.length }})</span>
         </h2>
 
-        <h3 class="h1">{{ currentAccount }}</h3>
         <contact-list edit-mode />
     </div>
 </template>
@@ -28,7 +27,7 @@ export default {
     components: { ContactList, AccountList, DashboardHeader },
 
     computed: {
-        ...mapGetters(['accounts', 'contacts', 'currentAccount']),
+        ...mapGetters(['accounts', 'contacts']),
     },
 };
 </script>
