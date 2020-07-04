@@ -164,7 +164,11 @@ export default {
     },
 
     beforeDestroy() {
-        this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+        const routeName = this.$route.name;
+
+        if (routeName.indexOf('account-') === -1) {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+        }
     },
 
     methods: {
