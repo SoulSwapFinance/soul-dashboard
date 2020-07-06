@@ -1,6 +1,12 @@
 <template>
     <div class="f-slider" :class="classes">
-        <f-input ref="input" v-model="value" type="range" v-bind="fInputProps" no-input-style @input="onInput">
+        <f-input ref="input" v-model="val" type="range" v-bind="fInputProps" no-input-style @input="onInput">
+            <template #top="sProps">
+                <slot name="top" v-bind="sProps"></slot>
+            </template>
+            <template #bottom="sProps">
+                <slot name="bottom" v-bind="sProps"></slot>
+            </template>
         </f-input>
     </div>
 </template>
@@ -49,6 +55,12 @@ export default {
         },
     },
 
+    data() {
+        return {
+            val: this.value,
+        };
+    },
+
     computed: {
         fInputProps() {
             return {
@@ -61,6 +73,13 @@ export default {
                 'use-lower-fill-bar': this.useLowerFillBar,
                 'use-upper-fill-bar': this.useUpperFillBar,
             };
+        },
+    },
+
+    watch: {
+        value(_value) {
+            this.val = this.getCorrectValue(_value);
+            this.updateFills(this.val);
         },
     },
 
@@ -98,6 +117,26 @@ export default {
                 max: parseFloat(this.max),
                 step: parseFloat(this.step),
             };
+        },
+
+        /**
+         *
+         * @param {*} _value
+         */
+        getCorrectValue(_value) {
+            const dValue = this.getDetailedValue(_value);
+
+            if (isNaN(dValue.value)) {
+                dValue.value = dValue.min;
+            }
+            // Clamp value
+            else if (dValue.value < dValue.min) {
+                dValue.value = dValue.min;
+            } else if (dValue.value > dValue.max) {
+                dValue.value = dValue.max;
+            }
+
+            return dValue.value.toString();
         },
 
         onInput(_value) {
