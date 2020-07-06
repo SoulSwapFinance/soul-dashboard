@@ -51,6 +51,8 @@ export default {
          * @param {object} _data
          */
         onWindowHide(_data) {
+            this.setDefaultComponent();
+
             this.$emit('window-hide', _data);
         },
     },
