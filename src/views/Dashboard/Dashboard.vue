@@ -10,6 +10,7 @@
         <h2 class="h1">
             Contacts <span class="f-records-count">({{ contacts.length }})</span>
         </h2>
+
         <contact-list edit-mode />
     </div>
 </template>

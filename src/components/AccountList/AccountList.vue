@@ -192,6 +192,11 @@ export default {
 
     mounted() {
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES);
+
+        if (this.$route.name === 'dashboard') {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+        }
+
         /*
         this.$store.dispatch(UPDATE_ACCOUNTS_BALANCES).then(() => {
             this.$emit('accounts-updated');
@@ -250,6 +255,7 @@ export default {
 
             if (address && !isNaN(index) && index > -1) {
                 this.accountData = { address, order: index + 1 };
+                this.pickAccount(address);
                 this.$refs.accountSettingsWindow.show();
 
                 return true;
