@@ -43,13 +43,30 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
+    watch: {
+        $route(_value) {
+            const { address } = _value.params;
+
+            if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
+                this.setActiveAccount(address);
+            }
+        },
+    },
+
     created() {
-        this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
-        this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, this.$route.params.address);
-        this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, this.$route.params.address);
+        this.setActiveAccount(this.$route.params.address);
     },
 
     methods: {
+        /**
+         * @param {string} _address
+         */
+        setActiveAccount(_address) {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, _address);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, _address);
+        },
+
         // tmp
         onRemoveAccountButClick() {
             this.$store.commit(REMOVE_ACTIVE_ACCOUNT);
