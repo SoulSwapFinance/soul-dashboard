@@ -1,0 +1,40 @@
+@import "../../assets/scss/vars";
+
+.defi-price-input {
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+
+    > span {
+        font-size: 80px;
+        opacity: 0.65;
+    }
+
+    input.text-input {
+        font-family: $font-family-proxima;
+        font-size: 160px;
+        font-weight: 300;
+        width: 2em;
+        text-align: center;
+        padding: 0;
+        margin-bottom: 24px;
+        background: none;
+        border: none;
+        outline: none;
+        color: inherit;
+
+        &:invalid {
+            box-shadow: none;
+            outline: none;
+            border: none;
+        }
+
+        -moz-appearance: textfield;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+}

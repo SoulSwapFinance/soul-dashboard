@@ -2,24 +2,28 @@
     <div class="view-defi-mint">
         DeFi Mint
 
-        <div class="tmp-cont">
-            <span>{{ tmp }}</span>
-            <f-slider v-model="tmp" min="1" max="100" use-lower-fill-bar />
-        </div>
+        <defi-price-input :value="tmp" @defi-price-input-change="onDefiPriceInputChange" />
     </div>
 </template>
 
 <script>
-import FSlider from '../../components/core/FSlider/FSlider.vue';
+import DefiPriceInput from '../../components/DefiPriceInput/DefiPriceInput.vue';
+
 export default {
     name: 'DefiMint',
 
-    components: { FSlider },
+    components: { DefiPriceInput },
 
     data() {
         return {
-            tmp: 25,
+            tmp: '25',
         };
+    },
+
+    methods: {
+        onDefiPriceInputChange(_data) {
+            console.log('onDefiPriceInputChange', _data);
+        },
     },
 };
 </script>
