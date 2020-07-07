@@ -9,7 +9,6 @@
             :min="min"
             :max="max"
             :step="step"
-            maxlength="3"
             class="text-input no-style"
         />
         <f-slider ref="slider" v-model="dValue" :min="min" :max="max" :step="step" use-lower-fill-bar>

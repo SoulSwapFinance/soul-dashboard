@@ -31,6 +31,10 @@
 
 body {
     letter-spacing: -0.5px;
+
+    .f-circle-progress {
+        --f-circle-progress-circle-color: #{$theme-color};
+    }
 }
 
 main {
