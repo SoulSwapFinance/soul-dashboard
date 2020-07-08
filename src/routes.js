@@ -103,13 +103,11 @@ export const routes = [
                         name: 'defi-fmint',
                         path: 'fmint',
                         component: DefiFMint,
-                        children: [
-                            {
-                                name: 'defi-mint',
-                                path: 'mint',
-                                component: DefiMint,
-                            },
-                        ],
+                    },
+                    {
+                        name: 'defi-mint',
+                        path: 'fmint/mint',
+                        component: DefiMint,
                     },
                 ],
             },
