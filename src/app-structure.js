@@ -15,8 +15,14 @@ const appStructure = [
                 route: 'defi-home',
                 _c: [
                     {
-                        id: 'defi-mint',
-                        route: 'defi-mint',
+                        id: 'defi-fmint',
+                        route: 'defi-fmint',
+                        _c: [
+                            {
+                                id: 'defi-mint',
+                                route: 'defi-mint',
+                            },
+                        ],
                     },
                 ],
             },

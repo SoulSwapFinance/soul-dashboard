@@ -8,7 +8,7 @@
                         <icon data="@/assets/svg/defi/mint.svg" width="96" height="96" />
                     </div>
                     <p class="description">Mint fUSD by locking your FTM</p>
-                    <router-link :to="{ name: 'defi-mint' }" class="clickable title">
+                    <router-link :to="{ name: 'defi-fmint' }" class="clickable title">
                         Mint fUSD
                     </router-link>
                 </div>

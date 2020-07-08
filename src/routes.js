@@ -17,6 +17,7 @@ import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
 import DefiMint from './views/DefiMint/DefiMint.vue';
+import DefiFMint from './views/DefiFMint/DefiFMint.vue';
 
 export const routes = [
     {
@@ -99,9 +100,16 @@ export const routes = [
                         component: DefiHome,
                     },
                     {
-                        name: 'defi-mint',
-                        path: 'mint',
-                        component: DefiMint,
+                        name: 'defi-fmint',
+                        path: 'fmint',
+                        component: DefiFMint,
+                        children: [
+                            {
+                                name: 'defi-mint',
+                                path: 'mint',
+                                component: DefiMint,
+                            },
+                        ],
                     },
                 ],
             },
