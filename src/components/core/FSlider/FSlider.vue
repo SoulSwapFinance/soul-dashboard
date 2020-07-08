@@ -5,7 +5,27 @@
                 <slot name="top" v-bind="sProps"></slot>
             </template>
             <template #bottom="sProps">
-                <slot name="bottom" v-bind="sProps"></slot>
+                <slot name="bottom" v-bind="sProps">
+                    <div v-if="labels.length" class="labels">
+                        <div @click="onLabelsClick">
+                            <template v-if="clickableLabels">
+                                <button
+                                    v-for="(item, index) in labels"
+                                    :key="`btn${id}${index}`"
+                                    class="no-style"
+                                    :data-idx="index"
+                                >
+                                    <span>{{ item }}</span>
+                                </button>
+                            </template>
+                            <template v-else>
+                                <span v-for="(item, index) in labels" :key="`btn${id}${index}`">
+                                    <span>{{ item }}</span>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+                </slot>
             </template>
         </f-input>
     </div>
@@ -42,6 +62,21 @@ export default {
         step: {
             type: String,
             default: '1',
+        },
+        /** Use and display labels for range. */
+        labels: {
+            type: Array,
+            default() {
+                return [];
+            },
+            validator(_value) {
+                return _value.length === 0 || _value.length >= 2;
+            },
+        },
+        /** Clicking on label will set value. */
+        clickableLabels: {
+            type: Boolean,
+            default: false,
         },
         /** Use fill bar from left corner to thumb. */
         useLowerFillBar: {
@@ -83,7 +118,19 @@ export default {
         },
     },
 
+    created() {
+        if (parseFloat(this.max) < parseFloat(this.min)) {
+            throw new Error("'max' must be bigger than 'min'");
+        }
+    },
+
     mounted() {
+        const labelsLen = this.labels.length;
+
+        if (labelsLen > 0) {
+            this.$el.style.setProperty('--f-slider-labels-num', labelsLen);
+        }
+
         this.updateFills();
     },
 
@@ -128,15 +175,38 @@ export default {
 
             if (isNaN(dValue.value)) {
                 dValue.value = dValue.min;
-            }
-            // Clamp value
-            else if (dValue.value < dValue.min) {
-                dValue.value = dValue.min;
-            } else if (dValue.value > dValue.max) {
-                dValue.value = dValue.max;
+            } else {
+                // Clamp value
+                dValue.value = Math.min(Math.max(dValue.value, dValue.min), dValue.max);
             }
 
             return dValue.value.toString();
+        },
+
+        /**
+         * Set slider value by label button index.
+         *
+         * @param {number} _buttonIdx Button index.
+         */
+        setValueByLabelButton(_buttonIdx) {
+            const labelsLen = this.labels.length;
+            const min = parseFloat(this.min);
+            const max = parseFloat(this.max);
+            let r;
+
+            if (_buttonIdx >= 0 && _buttonIdx < labelsLen) {
+                r = _buttonIdx * (1 / (labelsLen - 1));
+                this.val = (min + r * (max - min)).toString();
+                this.onInput(this.val);
+            }
+        },
+
+        onLabelsClick(_event) {
+            const eBtn = _event.target.closest('button');
+
+            if (eBtn) {
+                this.setValueByLabelButton(parseInt(eBtn.getAttribute('data-idx')));
+            }
         },
 
         onInput(_value) {

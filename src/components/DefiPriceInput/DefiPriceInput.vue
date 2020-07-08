@@ -11,7 +11,16 @@
             :step="step"
             class="text-input no-style"
         />
-        <f-slider ref="slider" v-model="dValue" :min="min" :max="max" :step="step" use-lower-fill-bar>
+        <f-slider
+            ref="slider"
+            v-model="dValue"
+            :min="min"
+            :max="max"
+            :step="step"
+            :labels="labels"
+            clickable-labels
+            use-lower-fill-bar
+        >
             <template #top="sProps">
                 <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
             </template>
@@ -37,7 +46,7 @@ export default {
         /** Minimal value. */
         min: {
             type: String,
-            default: '1',
+            default: '0',
         },
         /** Maximal value. */
         max: {
@@ -60,6 +69,7 @@ export default {
         return {
             dValue: this.value,
             id: getUniqueId(),
+            labels: ['0%', '50%', '100%'],
         };
     },
 

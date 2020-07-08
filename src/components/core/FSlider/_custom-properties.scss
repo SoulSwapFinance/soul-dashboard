@@ -1,0 +1,22 @@
+@import "../variables";
+
+.f-slider {
+    --f-slider-value: 10; /* Currect slider value in percentage */
+    --f-slider-labels-num: 0; /* Number of labels */
+
+    --f-slider-border-radius: 12px;
+
+    --f-slider-thumb-width: 24px;
+    --f-slider-thumb-height: 24px;
+    --f-slider-thumb-background-color: #fff;
+    --f-slider-thumb-border-radius: 50%;
+
+    --f-slider-track-color: #e6e6e6;
+    --f-slider-track-height: 8px;
+
+    --f-slider-fill-bar-background-color: #{$theme-color};
+
+    --f-slider-label-color: inherit;
+    --f-slider-label-font-size: inherit;
+    --f-slider-label-font-weight: normal;
+}

@@ -1,12 +1,12 @@
-@import "variables";
+@import "custom-properties";
 
 @mixin f-slider-thumb() {
     //position: relative;
     //z-index: 2;
-    width: $f-slider-thumb-width;
-    height: $f-slider-thumb-height;
-    background: $f-slider-thumb-background-color;
-    border-radius: $f-slider-thumb-border-radius;
+    width: var(--f-slider-thumb-width);
+    height: var(--f-slider-thumb-height);
+    background: var(--f-slider-thumb-background-color);
+    border-radius: var(--f-slider-thumb-border-radius);
     border: none;
     cursor: pointer;
     @include elevation(4);
@@ -20,8 +20,8 @@
 @mixin f-slider-fill-bar() {
     position: absolute;
     height: 100%;
-    background-color: $f-slider-fill-bar-backgrond-color;
-    border-radius: $f-slider-border-radius;
+    background-color: var(--f-slider-fill-bar-background-color);
+    border-radius: var(--f-slider-border-radius);
     content: '';
     pointer-events: none;
 }
@@ -32,21 +32,19 @@
     vertical-align: middle;
 
     .f-input {
-        --f-slider-value: 10; /* Currect slider value in percentage */
-
         width: 100%;
 
         .f-inp {
             position: relative;
-            background: $f-slider-track-color;
-            border-radius: $f-slider-border-radius;
+            background: var(--f-slider-track-color);
+            border-radius: var(--f-slider-border-radius);
 
             input[type="range"] {
                 -webkit-appearance: none;
                 //outline: none;
 
                 width: 100%;
-                height: $f-slider-track-height;
+                height: var(--f-slider-track-height);
                 background: none;
                 z-index: 1;
 
@@ -94,6 +92,35 @@
 
         .f-input .f-inp input[type="range"]::-ms-thumb {
             @include f-slider-thumb-hover;
+        }
+    }
+
+    .labels {
+        width: 100%;
+        //overflow: hidden;
+        //height: 20px;
+        margin-top: 16px;
+        padding: 0 calc(var(--f-slider-thumb-width) * 0.5);
+
+        > div {
+            display: flex;
+
+            > * {
+                //flex: 1 0 25%;
+                flex: 1 0 calc(100% / (var(--f-slider-labels-num) - 1));
+                position: relative;
+                text-align: left;
+
+                > span {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    transform: translateX(-50%);
+                    color: var(--f-slider-label-color);
+                    font-size: var(--f-slider-label-font-size);
+                    font-weight: var(--f-slider-label-font-weight);
+                }
+            }
         }
     }
 }
