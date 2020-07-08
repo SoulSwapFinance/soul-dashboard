@@ -80,6 +80,18 @@
     }
 }
 
+@include media-max($bp-medium) {
+    .defi-menu {
+        h2 {
+            font-size: 24px;
+        }
+
+        .menu-item {
+            padding: 8px;
+        }
+    }
+}
+
 @include media-max($bp-menu) {
     .defi-menu {
         svg {

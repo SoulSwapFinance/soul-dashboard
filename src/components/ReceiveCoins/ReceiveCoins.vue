@@ -1,6 +1,6 @@
 <template>
     <f-card class="receive-coins f-card-double-padding">
-        <h2>Receive Opera FTM</h2>
+        <h2 class="align-left">Receive Opera FTM</h2>
 
         <h3 class="align-center h2">Which blockchain are you receiving FTM from?</h3>
 

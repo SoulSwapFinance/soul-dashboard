@@ -1,6 +1,7 @@
 @import 'custom-properties';
 
 .f-circle-progress {
+    display: inline-block;
     width: var(--f-circle-progress-width);
     height: var(--f-circle-progress-height);
 
@@ -29,7 +30,7 @@
         fill: var(--f-circle-progress-text-color);
         font-size: var(--f-circle-progress-text-font-size);
         font-weight: var(--f-circle-progress-text-font-weight);
-        letter-spacing: -2px;
+        letter-spacing: -3px;
     }
 
     .text-percentage {

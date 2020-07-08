@@ -20,6 +20,11 @@ import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
 import { mapGetters } from 'vuex';
 import FViewTransition from '../../components/core/FViewTransition/FViewTransition.vue';
 import { appStructureTree } from '../../app-structure.js';
+import {
+    DEACTIVATE_ACTIVE_ACCOUNT,
+    SET_ACTIVE_ACCOUNT_ADDRESS,
+    SET_ACTIVE_ACCOUNT_BY_ADDRESS,
+} from '../../store/mutations.type.js';
 
 export default {
     name: 'Defi',
@@ -33,6 +38,30 @@ export default {
             const defiHomeNode = appStructureTree.serialize(appStructureTree.get('defi-home'));
 
             return defiHomeNode ? [JSON.parse(defiHomeNode)] : [];
+        },
+    },
+
+    watch: {
+        $route(_value) {
+            const { address } = _value.params;
+            if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
+                this.setActiveAccount(address);
+            }
+        },
+    },
+
+    created() {
+        this.setActiveAccount(this.$route.params.address);
+    },
+
+    methods: {
+        /**
+         * @param {string} _address
+         */
+        setActiveAccount(_address) {
+            this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, _address);
+            this.$store.commit(SET_ACTIVE_ACCOUNT_ADDRESS, _address);
         },
     },
 };

@@ -2,10 +2,67 @@
 
 .view-defi {
     .main {
-        padding-top: 0;
+        padding-top: 32px;
     }
 
     .address-info-box {
         margin-bottom: 16px;
+    }
+
+    h1, .h1 {
+        font-size: 48px;
+        font-weight: normal;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 48px;
+    }
+
+    h2, .h2 {
+        font-size: 31px;
+        font-weight: normal;
+    }
+
+    .df-data-item {
+        font-weight: bold;
+        margin-bottom: 24px;
+
+        .label {
+            font-size: 16px;
+            color: $light-gray-color;
+            margin-bottom: 0;
+        }
+
+        .value {
+            font-size: 37px;
+            margin-top: -2px;
+
+            .currency {
+                font-size: 26px;
+                color: $light-gray-color;
+            }
+        }
+    }
+
+    .df-message {
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1.23;
+
+        &.error {
+            color: #ff1716;
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .view-defi {
+        .main {
+            padding-top: 0;
+        }
+
+        h1, .h1 {
+            font-size: 38px;
+        }
     }
 }
