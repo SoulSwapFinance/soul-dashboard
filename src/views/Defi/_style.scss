@@ -23,21 +23,22 @@
     }
 
     .df-data-item {
+        font-size: 16px;
         font-weight: bold;
         margin-bottom: 24px;
 
         .label {
-            font-size: 16px;
             color: $light-gray-color;
+            font-size: 1em;
             margin-bottom: 0;
         }
 
         .value {
-            font-size: 37px;
+            font-size: 2.31em;
             margin-top: -2px;
 
             .currency {
-                font-size: 26px;
+                font-size: 0.7em;
                 color: $light-gray-color;
             }
         }
@@ -62,7 +63,27 @@
         }
 
         h1, .h1 {
-            font-size: 38px;
+            font-size: 28px;
+            margin-bottom: 24px;
+        }
+
+        h2, .h2 {
+            font-size: 20px;
+        }
+
+        .df-data-item {
+            font-weight: normal;
+            font-size: 11px;
+            margin-bottom: 16px;
+
+            .label {
+                font-size: 14px;
+            }
+        }
+
+        .df-message {
+            font-size: 18px;
+            padding-bottom: 16px;
         }
     }
 }

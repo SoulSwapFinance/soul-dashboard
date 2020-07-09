@@ -2,8 +2,8 @@
     <div class="view-defi-fmint">
         <h1 class="">Mint and repay fUSD</h1>
 
-        <div class="row">
-            <div class="col-4 align-center-sm">
+        <div class="grid">
+            <div>
                 <div class="df-data-item">
                     <h3 class="label">Minted fUSD</h3>
                     <div class="value">{{ mintedFUSD }} <span class="currency">fUSD</span></div>
@@ -17,7 +17,7 @@
                     <div class="value">{{ availableFTM }} <span class="currency">FTM</span></div>
                 </div>
             </div>
-            <div class="col-4 align-center">
+            <div class="limit-col align-center">
                 <h2>Minting limit</h2>
                 <f-circle-progress
                     show-percentage
@@ -27,7 +27,7 @@
                     :value="90"
                 />
             </div>
-            <div class="col-4 align-right align-center-sm">
+            <div class="align-right">
                 <div class="df-data-item">
                     <h3 class="label">Current price</h3>
                     <div class="value">{{ currentPrice }}</div>
@@ -41,12 +41,11 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
+            <p class="df-message error">
+                You're getting close to your liquidation price. <br />
+                Please rebalance your collateral.
+            </p>
         </div>
-
-        <p class="df-message error">
-            You're getting close to your liquidation price. <br />
-            Please rebalance your collateral.
-        </p>
 
         <defi-menu>
             <li class="col-4">
