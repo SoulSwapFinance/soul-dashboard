@@ -47,7 +47,16 @@
             </f-message>
         </div>
 
-        <defi-menu>
+        <div v-if="smallView" class="buttons">
+            <button class="btn large" disabled>Manage collateral</button>
+            <br />
+            <router-link :to="{ name: 'defi-mint' }" class="btn large">
+                Mint fUSD
+            </router-link>
+            <br />
+            <button class="btn large" disabled>Repay</button>
+        </div>
+        <defi-menu v-else>
             <li class="col-4">
                 <div class="menu-item disabled">
                     <h2>Manage collateral</h2>
@@ -149,6 +158,17 @@ export default {
 
         tokenPrice() {
             return this.$store.state.tokenPrice;
+        },
+
+        /**
+         * Property is set to `true`, if 'small' breakpoint is reached.
+         *
+         * @return {Boolean}
+         */
+        smallView() {
+            const breakpoint = this.$store.state.breakpoints['small'];
+
+            return breakpoint && breakpoint.matches;
         },
     },
 };

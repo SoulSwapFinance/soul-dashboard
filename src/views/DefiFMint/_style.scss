@@ -16,6 +16,15 @@
     .f-circle-progress {
         margin-bottom: 24px;
     }
+
+    .buttons {
+        padding: 16px 5% 0 5%;
+
+        .btn {
+            width: 100%;
+            margin-bottom: 32px;
+        }
+    }
 }
 
 @include media-max($bp-small) {
