@@ -41,10 +41,10 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
-            <p class="df-message error">
+            <f-message v-if="showErrorMsg" type="error" role="alert">
                 You're getting close to your liquidation price. <br />
                 Please rebalance your collateral.
-            </p>
+            </f-message>
         </div>
 
         <defi-menu>
@@ -90,14 +90,16 @@ import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgre
 import { filtersOptions, formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
+import FMessage from '../../components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FCircleProgress, DefiMenu },
+    components: { FMessage, FCircleProgress, DefiMenu },
 
     data() {
         return {
+            showErrorMsg: true,
             circleColors: [
                 {
                     value: 23,
