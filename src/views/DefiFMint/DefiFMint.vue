@@ -47,7 +47,7 @@
             </f-message>
         </div>
 
-        <div v-if="smallView" class="buttons">
+        <div class="buttons">
             <button class="btn large" disabled>Manage collateral</button>
             <br />
             <router-link :to="{ name: 'defi-mint' }" class="btn large">
@@ -56,6 +56,7 @@
             <br />
             <button class="btn large" disabled>Repay</button>
         </div>
+        <!--
         <defi-menu v-else>
             <li class="col-4">
                 <div class="menu-item disabled">
@@ -90,11 +91,11 @@
                 </div>
             </li>
         </defi-menu>
+        -->
     </div>
 </template>
 
 <script>
-import DefiMenu from '../../components/DefiMenu/DefiMenu.vue';
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { filtersOptions, formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
@@ -104,7 +105,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 export default {
     name: 'DefiFMint',
 
-    components: { FMessage, FCircleProgress, DefiMenu },
+    components: { FMessage, FCircleProgress },
 
     data() {
         return {
@@ -165,11 +166,13 @@ export default {
          *
          * @return {Boolean}
          */
+        /*
         smallView() {
             const breakpoint = this.$store.state.breakpoints['small'];
 
             return breakpoint && breakpoint.matches;
         },
+        */
     },
 };
 </script>

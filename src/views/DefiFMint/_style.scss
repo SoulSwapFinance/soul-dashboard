@@ -18,11 +18,12 @@
     }
 
     .buttons {
-        padding: 16px 5% 0 5%;
+        padding-top: 48px;
+        text-align: center;
 
         .btn {
-            width: 100%;
-            margin-bottom: 32px;
+            min-width: 220px;
+            margin-bottom: 24px;
         }
     }
 }
@@ -44,6 +45,14 @@
         .f-circle-progress {
             --f-circle-progress-width: 120px;
             --f-circle-progress-height: 120px;
+        }
+    }
+
+    .buttons {
+        padding: 16px 5% 0 5%;
+
+        .btn {
+            width: 100%;
         }
     }
 }
