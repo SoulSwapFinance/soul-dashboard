@@ -1,0 +1,111 @@
+@import "../../assets/scss/vars";
+
+.view-defi-manage-collateral {
+    .grid {
+        display: grid;
+        //grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: auto 50% auto;
+        grid-template-rows: auto;
+        grid-gap: 16px 16px;
+        margin: 64px 8px 0 8px;
+
+        .f-message {
+            grid-area: 2 / 1 / 2 / 4;
+        }
+
+        .defi-price-input-col {
+            place-self: center;
+        }
+    }
+
+    .buttons {
+        padding-top: 48px;
+        text-align: center;
+
+        > .btn {
+            min-width: 200px;
+        }
+    }
+
+    .collateral-info {
+        position: absolute;
+        bottom: 64px;
+        width: 130px;
+        //color: $grey-color-semi;
+        color: #ddd;
+        z-index: 0;
+
+        &.increase {
+            right: 0;
+        }
+
+        .collateral-info-label {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    }
+
+    .defi-price-input {
+        input.text-input {
+            position: relative;
+            z-index: 1;
+            font-size: 72px;
+        }
+    }
+}
+
+.view-defi {
+    .view-defi-manage-collateral {
+        .df-data-item {
+            margin-bottom: 40px;
+        }
+    }
+}
+
+@include media-max($bp-medium) {
+    .view-defi-manage-collateral {
+        .collateral-info {
+            display: none;
+        }
+    }
+
+    .view-defi {
+        .perex {
+            display: none;
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .view-defi-manage-collateral {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+            margin-top: 24px;
+
+            .defi-price-input-col {
+                grid-area: 2 / 1 / 2 / 3;
+            }
+
+            .f-message {
+                grid-area: 3 / 1 / 3 / 3;
+            }
+        }
+
+        .buttons {
+            padding-top: 24px;
+        }
+
+        .f-circle-progress {
+            --f-circle-progress-width: 120px;
+            --f-circle-progress-height: 120px;
+        }
+    }
+
+    .view-defi {
+        .view-defi-manage-collateral {
+            .df-data-item {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}

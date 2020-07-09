@@ -2,19 +2,17 @@
     <div class="view-defi-mint">
         DeFi Mint
 
-        <defi-price-input :value="tmp" @defi-price-input-change="onDefiPriceInputChange" />
         <f-circle-progress show-percentage :animate="false" :colors="circleColor" :value="progress" />
     </div>
 </template>
 
 <script>
-import DefiPriceInput from '../../components/DefiPriceInput/DefiPriceInput.vue';
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 
 export default {
     name: 'DefiMint',
 
-    components: { FCircleProgress, DefiPriceInput },
+    components: { FCircleProgress },
 
     data() {
         return {

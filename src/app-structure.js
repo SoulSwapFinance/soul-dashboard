@@ -19,6 +19,10 @@ const appStructure = [
                         route: 'defi-fmint',
                         _c: [
                             {
+                                id: 'defi-manage-collateral',
+                                route: 'defi-manage-collateral',
+                            },
+                            {
                                 id: 'defi-mint',
                                 route: 'defi-mint',
                             },

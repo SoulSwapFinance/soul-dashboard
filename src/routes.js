@@ -18,6 +18,7 @@ import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
 import DefiMint from './views/DefiMint/DefiMint.vue';
 import DefiFMint from './views/DefiFMint/DefiFMint.vue';
+import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
 
 export const routes = [
     {
@@ -108,6 +109,11 @@ export const routes = [
                         name: 'defi-fmint',
                         path: 'fmint',
                         component: DefiFMint,
+                    },
+                    {
+                        name: 'defi-manage-collateral',
+                        path: 'fmint/manage-collateral',
+                        component: DefiManageCollateral,
                     },
                     {
                         name: 'defi-mint',

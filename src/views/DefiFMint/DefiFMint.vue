@@ -48,11 +48,11 @@
         </div>
 
         <div class="buttons">
-            <button class="btn large" disabled>Manage collateral</button>
-            <br />
-            <router-link :to="{ name: 'defi-mint' }" class="btn large">
-                Mint fUSD
+            <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
+                Manage collateral
             </router-link>
+            <br />
+            <button class="btn large" disabled>Mint fUSD</button>
             <br />
             <button class="btn large" disabled>Repay</button>
         </div>
