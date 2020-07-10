@@ -54,6 +54,27 @@
             <button class="btn large" disabled>Mint fUSD</button>
             <button class="btn large" disabled>Repay</button>
         </div>
+
+        <div style="margin-top: 32px; opacity: 0.75;">
+            <!--            {{ tmpValues }} <br />-->
+            <button class="btn small light break-word" @click="onTest1BtnClick">
+                Locked balance: 0, Minted fUSD: 0
+            </button>
+            <br />
+            <button class="btn small light break-word" @click="onTest2BtnClick">
+                Locked balance: 10000, Minted fUSD: 20
+            </button>
+            <br />
+            <button class="btn small light break-word" @click="onTest3BtnClick">
+                Locked balance: 5000, Minted fUSD: 20
+            </button>
+            <br />
+            <button class="btn small light break-word" @click="onTest4BtnClick">
+                Locked balance: 5000, Minted fUSD: 20, Current price: 0.008
+            </button>
+            <br />
+        </div>
+
         <!--
         <defi-menu v-else>
             <li class="col-4">
@@ -105,28 +126,29 @@ export default {
 
     components: { FMessage, FCircleProgress },
 
-    /*
     data() {
         return {
+            tmpValues: {
+                collateral: 0,
+                debt: 0,
+            },
         };
     },
-    */
 
     computed: {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return 20;
+            return this.tmpValues.debt;
         },
 
         collateral() {
-            return 10000;
+            return this.tmpValues.collateral;
         },
 
         availableFTM() {
             const available = this.currentAccount ? this.currentAccount.balance : 0;
 
-            // return '200,743';
             return toFTM(available);
         },
 
@@ -194,7 +216,38 @@ export default {
 
     asyncComputed: {
         async tokenPrice() {
-            return await this.$defi.getTokenPrice('USD');
+            return this.tmpValues.tokenPrice || (await this.$defi.getTokenPrice('USD'));
+        },
+    },
+
+    methods: {
+        onTest1BtnClick() {
+            this.tmpValues = {
+                collateral: 0,
+                debt: 0,
+            };
+        },
+
+        onTest2BtnClick() {
+            this.tmpValues = {
+                collateral: 10000,
+                debt: 20,
+            };
+        },
+
+        onTest3BtnClick() {
+            this.tmpValues = {
+                collateral: 5000,
+                debt: 20,
+            };
+        },
+
+        onTest4BtnClick() {
+            this.tmpValues = {
+                collateral: 5000,
+                debt: 20,
+                tokenPrice: 0.008,
+            };
         },
     },
 };

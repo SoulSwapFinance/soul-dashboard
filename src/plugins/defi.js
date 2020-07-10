@@ -63,12 +63,13 @@ export class DeFi {
     }
 
     getMintingLimit(_debt, _collateral, _tokenPrice) {
-        console.log(this.getCollateralRatio(_debt, _collateral, _tokenPrice));
-        return this.getRatioMintingLimit(this.getCollateralRatio(_debt, _collateral, _tokenPrice));
+        return _debt > 0 ? this.getRatioMintingLimit(this.getCollateralRatio(_debt, _collateral, _tokenPrice)) : 0;
     }
 
     getRatioMintingLimit(_ratio) {
-        return 100 - ((_ratio - this.liqCollateralRatio) / (this.noLimitRatio - this.liqCollateralRatio)) * 100;
+        return _ratio > 0
+            ? 100 - ((_ratio - this.liqCollateralRatio) / (this.noLimitRatio - this.liqCollateralRatio)) * 100
+            : 0;
     }
 
     getCollateralRatio(_debt, _collateral, _tokenPrice) {

@@ -140,9 +140,9 @@ export default {
             decreasedCollateral: 0,
             label: 'tmp',
             tmpValues: {
-                debt: 0,
-                collateral: 0,
                 availableFTM: 10000,
+                collateral: 0,
+                debt: 0,
             },
             circleColors: [
                 {
@@ -179,7 +179,7 @@ export default {
 
             return parseFloat(toFTM(available));
             */
-            // tmp
+
             return this.tmpValues.availableFTM;
         },
 
@@ -273,20 +273,18 @@ export default {
                 this.message = '';
             }
 
+            this.increasedCollateral = 0;
+            this.decreasedCollateral = 0;
+
             if (this.collateral > 0) {
                 const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
 
                 if (collateralDiff > 0) {
                     this.increasedCollateral = collateralDiff;
-                    this.decreasedCollateral = 0;
                     this.message = '';
                 } else if (collateralDiff < 0) {
-                    this.increasedCollateral = 0;
                     this.decreasedCollateral = -collateralDiff;
                     this.message = '';
-                } else {
-                    this.increasedCollateral = 0;
-                    this.decreasedCollateral = 0;
                 }
             }
         },
