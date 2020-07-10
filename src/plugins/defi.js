@@ -89,6 +89,35 @@ export class DeFi {
     }
 
     /**
+     * @return {Promise<Object>}
+     */
+    async getSettings() {
+        /*
+        const data = await this.apolloClient.query({
+            query: gql`
+                query DefiSettings {
+                    defiSettings {
+                        tradeFee4
+                        loanFee4
+                        minCollateralRatio4
+                        liqCollateralRatio4
+                    }
+                }
+            `,
+            fetchPolicy: 'no-cache',
+        });
+
+        return data.data.defiSettings || {};
+        */
+
+        // temporary data
+        return {
+            minCollateralRatio4: 25000,
+            liqCollateralRatio4: 15000,
+        };
+    }
+
+    /**
      * @param {string} [_to]
      * @return {Promise<Number>}
      */

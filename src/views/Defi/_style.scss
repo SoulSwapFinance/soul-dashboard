@@ -133,6 +133,11 @@
     .f-slider-wrap {
         padding: 8px 16px 16px 16px;
         overflow: hidden;
+
+        .reset-btn {
+            margin-top: 4px;
+            text-align: left;
+        }
     }
 }
 

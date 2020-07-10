@@ -14,11 +14,11 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked balance</h3>
-                    <div class="value">{{ lockedFTM }} <span class="currency">FTM</span></div>
+                    <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
                 </div>
                 <div v-if="!mediumView" class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ mintedFUSD }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
             <div class="defi-price-input-col align-center">
@@ -39,7 +39,7 @@
                     <div class="f-slider-wrap">
                         <f-slider
                             ref="slider"
-                            v-model="currLocked"
+                            v-model="currCollateral"
                             step="any"
                             :min="minLocked.toString()"
                             :max="maxLocked.toString()"
@@ -49,6 +49,9 @@
                                 <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
                             </template>
                         </f-slider>
+                        <div class="reset-btn" @click="onResetBtnClick">
+                            <button class="btn small light">Reset</button>
+                        </div>
                     </div>
 
                     <div class="collateral-info">
@@ -77,13 +80,40 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
-            <f-message v-if="showErrorMsg" type="info" role="alert">
-                Deposit more FTM to increase your collateral
+            <f-message v-if="message" type="info" role="alert">
+                {{ message }}
+            </f-message>
+            <f-message v-else-if="increasedCollateral > 0" type="info" role="alert">
+                You’re adding <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} FTM</span> to your
+                collateral
+            </f-message>
+            <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert">
+                You’re removing <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} FTM</span> from
+                your collateral
             </f-message>
         </div>
 
         <div class="buttons">
-            <button class="btn large" disabled>Rebalance now</button>
+            <button class="btn large" :disabled="parseFloat(currCollateral) === parseFloat(collateral)">
+                <template v-if="collateral > 0">Rebalance now</template>
+                <template v-else>Add collateral</template>
+            </button>
+        </div>
+
+        <div style="margin-top: 32px; opacity: 0.75;">
+            <!--            {{ tmpValues }} <br />-->
+            <button class="btn small light break-word" @click="onTest1BtnClick">
+                Available balance: 10000, Locked balance: 0, Minted fUSD: 0
+            </button>
+            <br />
+            <button class="btn small light break-word" @click="onTest2BtnClick">
+                Available balance: 0, Locked balance: 4000, Minted fUSD: 0
+            </button>
+            <br />
+            <button class="btn small light break-word" @click="onTest3BtnClick">
+                Available balance: 10000, Locked balance: 5000, Minted fUSD: 0
+            </button>
+            <br />
         </div>
     </div>
 </template>
@@ -92,7 +122,7 @@
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { filtersOptions, formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
-import { toFTM } from '../../utils/transactions.js';
+// import { toFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
@@ -104,9 +134,16 @@ export default {
 
     data() {
         return {
-            showErrorMsg: true,
-            currLocked: '0',
+            currCollateral: '0',
+            message: '',
+            increasedCollateral: 0,
+            decreasedCollateral: 0,
             label: 'tmp',
+            tmpValues: {
+                debt: 0,
+                collateral: 0,
+                availableFTM: 10000,
+            },
             circleColors: [
                 {
                     value: 23,
@@ -128,19 +165,22 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
-        mintedFUSD() {
-            return 0;
+        debt() {
+            return this.tmpValues.debt;
         },
 
-        lockedFTM() {
-            return 0;
+        collateral() {
+            return this.tmpValues.collateral;
         },
 
         availableFTM() {
+            /*
             const available = this.currentAccount ? this.currentAccount.balance : 0;
 
-            // return '200,743';
-            return toFTM(available);
+            return parseFloat(toFTM(available));
+            */
+            // tmp
+            return this.tmpValues.availableFTM;
         },
 
         currentPrice() {
@@ -152,11 +192,7 @@ export default {
         },
 
         maxMintable() {
-            return 0;
-        },
-
-        tokenPrice() {
-            return this.$store.state.tokenPrice;
+            return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
         },
 
         minLocked() {
@@ -164,11 +200,11 @@ export default {
         },
 
         maxLocked() {
-            return this.lockedFTM + this.availableFTM;
+            return this.collateral + this.availableFTM;
         },
 
         inputValue() {
-            return this.formatInputValue(this.currLocked);
+            return this.formatInputValue(this.currCollateral);
         },
 
         /**
@@ -194,25 +230,35 @@ export default {
         },
     },
 
+    asyncComputed: {
+        async tokenPrice() {
+            return await this.$defi.getTokenPrice('USD');
+        },
+    },
+
     watch: {
-        currLocked(_value, _oldValue) {
+        currCollateral(_value, _oldValue) {
             let cValue;
+
+            console.log(_value, _oldValue);
 
             if (_value !== _oldValue) {
                 cValue = this.$refs.slider.getCorrectValue(_value);
 
                 if (cValue !== _value && cValue === this.maxLocked.toString()) {
-                    this.currLocked = cValue;
+                    this.currCollateral = cValue;
                     // this.$refs.input.select();
                 }
 
-                console.log(cValue, parseFloat(this.currLocked));
+                // const currCollateral = parseFloat(this.currCollateral);
+                this.updateMessage();
             }
         },
     },
 
     created() {
-        this.currLocked = this.minLocked.toString();
+        this.currCollateral = this.collateral.toString();
+        this.updateMessage();
     },
 
     methods: {
@@ -220,9 +266,75 @@ export default {
             return parseFloat(_value).toFixed(2);
         },
 
+        updateMessage() {
+            if (this.availableFTM <= 0.01) {
+                this.message = 'Deposit more FTM to increase your collateral';
+            } else {
+                this.message = '';
+            }
+
+            if (this.collateral > 0) {
+                const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
+
+                if (collateralDiff > 0) {
+                    this.increasedCollateral = collateralDiff;
+                    this.decreasedCollateral = 0;
+                    this.message = '';
+                } else if (collateralDiff < 0) {
+                    this.increasedCollateral = 0;
+                    this.decreasedCollateral = -collateralDiff;
+                    this.message = '';
+                } else {
+                    this.increasedCollateral = 0;
+                    this.decreasedCollateral = 0;
+                }
+            }
+        },
+
+        updateCurrCollateral() {
+            this.currCollateral = this.collateral.toString();
+        },
+
         onInput(_event) {
-            this.currLocked = this.$refs.slider.getCorrectValue(_event.target.value);
-            _event.target.value = this.formatInputValue(this.currLocked);
+            this.currCollateral = this.$refs.slider.getCorrectValue(_event.target.value);
+            _event.target.value = this.formatInputValue(this.currCollateral);
+        },
+
+        onResetBtnClick() {
+            this.updateCurrCollateral();
+        },
+
+        onTest1BtnClick() {
+            this.tmpValues = {
+                availableFTM: 10000,
+                collateral: 0,
+                debt: 0,
+            };
+
+            this.updateCurrCollateral();
+            this.updateMessage();
+        },
+
+        onTest2BtnClick() {
+            this.tmpValues = {
+                availableFTM: 0,
+                collateral: 4000,
+                debt: 0,
+            };
+
+            this.updateCurrCollateral();
+            this.updateMessage();
+        },
+
+        onTest3BtnClick() {
+            this.tmpValues = {
+                availableFTM: 10000,
+                collateral: 5000,
+                debt: 0,
+            };
+
+            this.updateCurrCollateral();
+            this.updateMessage();
         },
     },
 };

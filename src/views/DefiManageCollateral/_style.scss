@@ -4,7 +4,8 @@
     .grid {
         display: grid;
         //grid-template-columns: 1fr 1fr 1fr;
-        grid-template-columns: auto 50% auto;
+        //grid-template-columns: auto 50% auto;
+        grid-template-columns: 220px auto 220px;
         grid-template-rows: auto;
         grid-gap: 16px 16px;
         margin: 64px 8px 0 8px;
@@ -29,7 +30,7 @@
 
     .collateral-info {
         position: absolute;
-        bottom: 64px;
+        bottom: 96px;
         width: 130px;
         //color: $grey-color-semi;
         color: #ddd;
@@ -49,8 +50,12 @@
         input.text-input {
             position: relative;
             z-index: 1;
-            font-size: 72px;
+            font-size: 64px;
         }
+    }
+
+    .inc-desc-collateral {
+        color: $theme-color;
     }
 }
 
