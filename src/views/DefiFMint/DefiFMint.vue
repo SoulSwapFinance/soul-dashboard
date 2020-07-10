@@ -4,15 +4,15 @@
 
         <div class="grid">
             <div>
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
                     <div class="value">{{ mintedFUSD }} <span class="currency">fUSD</span></div>
                 </div>
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
                     <div class="value">{{ lockedFTM }} <span class="currency">FTM</span></div>
                 </div>
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
                     <div class="value">{{ availableFTM }} <span class="currency">FTM</span></div>
                 </div>
@@ -28,15 +28,15 @@
                 />
             </div>
             <div class="align-right">
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Current price</h3>
                     <div class="value">{{ currentPrice }}</div>
                 </div>
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Liquidation price</h3>
                     <div class="value">{{ liquidationPrice }}</div>
                 </div>
-                <div class="df-data-item">
+                <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
@@ -47,13 +47,11 @@
             </f-message>
         </div>
 
-        <div class="buttons">
+        <div class="form-buttons">
             <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
                 Manage collateral
             </router-link>
-            <br />
             <button class="btn large" disabled>Mint fUSD</button>
-            <br />
             <button class="btn large" disabled>Repay</button>
         </div>
         <!--
