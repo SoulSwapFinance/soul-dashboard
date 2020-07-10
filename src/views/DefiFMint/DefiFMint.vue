@@ -6,11 +6,11 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ mintedFUSD }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
-                    <div class="value">{{ lockedFTM }} <span class="currency">FTM</span></div>
+                    <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
@@ -24,7 +24,7 @@
                     :stroke-width="6"
                     :animate="false"
                     :colors="circleColors"
-                    :value="90"
+                    :value="mintingLimit"
                 />
             </div>
             <div class="align-right">
@@ -41,7 +41,7 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
-            <f-message v-if="showErrorMsg" type="error" role="alert">
+            <f-message v-if="closeToLiquidation" type="error" role="alert">
                 You're getting close to your liquidation price. <br />
                 Please rebalance your collateral.
             </f-message>
@@ -95,7 +95,7 @@
 
 <script>
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
-import { filtersOptions, formatNumberByLocale } from '../../filters.js';
+import { formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
@@ -105,35 +105,22 @@ export default {
 
     components: { FMessage, FCircleProgress },
 
+    /*
     data() {
         return {
-            showErrorMsg: true,
-            circleColors: [
-                {
-                    value: 23,
-                    color: '#15cd72',
-                },
-                {
-                    value: 40,
-                    color: '#ffaf19',
-                },
-                {
-                    value: 75,
-                    color: '#ff1716',
-                },
-            ],
         };
     },
+    */
 
     computed: {
         ...mapGetters(['currentAccount']),
 
-        mintedFUSD() {
-            return 0;
+        debt() {
+            return 20;
         },
 
-        lockedFTM() {
-            return 0;
+        collateral() {
+            return 10000;
         },
 
         availableFTM() {
@@ -144,19 +131,51 @@ export default {
         },
 
         currentPrice() {
-            return formatNumberByLocale(this.tokenPrice, 5, filtersOptions.currency);
+            return formatNumberByLocale(this.tokenPrice, 5, 'USD');
         },
 
         liquidationPrice() {
-            return '-';
+            const liqPrice = this.$defi.getLiquidationPrice(this.debt, this.collateral);
+
+            return liqPrice > 0 ? formatNumberByLocale(liqPrice, 5, 'USD') : '-';
         },
 
         maxMintable() {
-            return 0;
+            return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
         },
 
-        tokenPrice() {
-            return this.$store.state.tokenPrice;
+        mintingLimit() {
+            return this.$defi.getMintingLimit(this.debt, this.collateral, this.tokenPrice);
+        },
+
+        closeToLiquidation() {
+            const { $defi } = this;
+
+            return (
+                $defi.getRatioMintingLimit($defi.getCollateralRatio(this.debt, this.collateral, this.tokenPrice)) >
+                $defi.getRatioMintingLimit($defi.minCollateralRatio)
+            );
+        },
+
+        circleColors() {
+            const { $defi } = this;
+
+            return [
+                /*
+                {
+                    value: 23,
+                    color: '#15cd72',
+                },
+                */
+                {
+                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio + $defi.liqCollateralRatio),
+                    color: '#ffaf19',
+                },
+                {
+                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio),
+                    color: '#ff1716',
+                },
+            ];
         },
 
         /**
@@ -171,6 +190,12 @@ export default {
             return breakpoint && breakpoint.matches;
         },
         */
+    },
+
+    asyncComputed: {
+        async tokenPrice() {
+            return await this.$defi.getTokenPrice('USD');
+        },
     },
 };
 </script>
