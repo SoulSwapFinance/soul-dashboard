@@ -85,7 +85,7 @@ export class BNBridgeExchange {
         this._fstInProgress = false;
 
         if (!this.bnbridgeApiUrl) {
-            throw new Error('Need bnbridge api url.');
+            // throw new Error('Need bnbridge api url.');
         } else {
             this.bnbridgeApiPath = this.getApiUrlPath(this.bnbridgeApiUrl);
             if (!this.bnbridgeApiPath) {
