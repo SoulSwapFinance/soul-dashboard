@@ -116,6 +116,14 @@ export default {
             this.val = this.getCorrectValue(_value);
             this.updateFills(this.val);
         },
+
+        min() {
+            this.updateFills(this.val);
+        },
+
+        max() {
+            this.updateFills(this.val);
+        },
     },
 
     created() {

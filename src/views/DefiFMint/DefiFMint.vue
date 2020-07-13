@@ -55,24 +55,14 @@
             <button class="btn large" disabled>Repay</button>
         </div>
 
-        <div style="margin-top: 32px; opacity: 0.75;">
-            <!--            {{ tmpValues }} <br />-->
-            <button class="btn small light break-word" @click="onTest1BtnClick">
-                Locked balance: 0, Minted fUSD: 0
-            </button>
-            <br />
-            <button class="btn small light break-word" @click="onTest2BtnClick">
-                Locked balance: 10000, Minted fUSD: 20
-            </button>
-            <br />
-            <button class="btn small light break-word" @click="onTest3BtnClick">
-                Locked balance: 5000, Minted fUSD: 20
-            </button>
-            <br />
-            <button class="btn small light break-word" @click="onTest4BtnClick">
-                Locked balance: 5000, Minted fUSD: 20, Current price: 0.008
-            </button>
-            <br />
+        <div v-if="tmpShow" style="margin-top: 32px; opacity: 0.75;" @click="onTestBtnClick">
+            <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
+                <button :data-idx="index" class="btn small light break-word">
+                    Locked balance: {{ item.collateral }}, Minted fUSD: {{ item.debt }}
+                    <template v-if="item.tokenPrice"> , Current price: {{ item.tokenPrice }} </template>
+                </button>
+                <br />
+            </div>
         </div>
 
         <!--
@@ -120,6 +110,7 @@ import { formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import { getUniqueId } from '../../utils';
 
 export default {
     name: 'DefiFMint',
@@ -128,10 +119,20 @@ export default {
 
     data() {
         return {
+            tokenPrice: 0,
+            id: getUniqueId(),
+            tmpShow: true,
+            tmpTokenPrice: 0,
             tmpValues: {
                 collateral: 0,
                 debt: 0,
             },
+            tmpTestData: [
+                { collateral: 0, debt: 0 },
+                { collateral: 10000, debt: 20 },
+                { collateral: 5000, debt: 20 },
+                { collateral: 5000, debt: 20, tokenPrice: 0.008 },
+            ],
         };
     },
 
@@ -214,40 +215,40 @@ export default {
         */
     },
 
-    asyncComputed: {
-        async tokenPrice() {
-            return this.tmpValues.tokenPrice || (await this.$defi.getTokenPrice('USD'));
-        },
+    created() {
+        this.init();
     },
 
     methods: {
-        onTest1BtnClick() {
-            this.tmpValues = {
-                collateral: 0,
-                debt: 0,
-            };
+        async init() {
+            this.tokenPrice = await this.$defi.getTokenPrice('USD');
+            this.tmpTokenPrice = this.tokenPrice;
+            console.log('init', this.tokenPrice);
         },
 
-        onTest2BtnClick() {
+        _setTmpValues(_values) {
             this.tmpValues = {
-                collateral: 10000,
-                debt: 20,
+                collateral: _values.collateral,
+                debt: _values.debt,
             };
+
+            if (_values.tokenPrice) {
+                this.tokenPrice = _values.tokenPrice;
+            } else {
+                this.tokenPrice = this.tmpTokenPrice;
+            }
         },
 
-        onTest3BtnClick() {
-            this.tmpValues = {
-                collateral: 5000,
-                debt: 20,
-            };
-        },
+        onTestBtnClick(_event) {
+            const eBtn = _event.target.closest('button');
+            let idx = -1;
 
-        onTest4BtnClick() {
-            this.tmpValues = {
-                collateral: 5000,
-                debt: 20,
-                tokenPrice: 0.008,
-            };
+            if (eBtn) {
+                idx = parseInt(eBtn.getAttribute('data-idx'));
+                if (!isNaN(idx)) {
+                    this._setTmpValues(this.tmpTestData[idx]);
+                }
+            }
         },
     },
 };

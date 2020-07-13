@@ -28,8 +28,8 @@
                         :id="`text-input-${id}`"
                         ref="input"
                         :value="inputValue"
-                        :min="minLocked"
-                        :max="maxLocked"
+                        :min="minCollateral"
+                        :max="maxCollateral"
                         type="number"
                         step="any"
                         class="text-input no-style"
@@ -41,8 +41,8 @@
                             ref="slider"
                             v-model="currCollateral"
                             step="any"
-                            :min="minLocked.toString()"
-                            :max="maxLocked.toString()"
+                            :min="minCollateral.toString()"
+                            :max="maxCollateral.toString()"
                             use-lower-fill-bar
                         >
                             <template #top="sProps">
@@ -65,17 +65,17 @@
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col">
-                <template v-if="false">
+                <template v-if="debt > 0">
                     <h3>Minting limit</h3>
                     <f-circle-progress
                         show-percentage
                         :stroke-width="6"
                         :animate="false"
                         :colors="circleColors"
-                        :value="90"
+                        :value="mintingLimit"
                     />
                 </template>
-                <div class="df-data-item">
+                <div v-else class="df-data-item">
                     <h3 class="no-margin">Max mintable</h3>
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
@@ -111,20 +111,15 @@
             </button>
         </div>
 
-        <div style="margin-top: 32px; opacity: 0.75;">
-            <!--            {{ tmpValues }} <br />-->
-            <button class="btn small light break-word" @click="onTest1BtnClick">
-                Available balance: 10000, Locked balance: 0, Minted fUSD: 0
-            </button>
-            <br />
-            <button class="btn small light break-word" @click="onTest2BtnClick">
-                Available balance: 0, Locked balance: 4000, Minted fUSD: 0
-            </button>
-            <br />
-            <button class="btn small light break-word" @click="onTest3BtnClick">
-                Available balance: 10000, Locked balance: 5000, Minted fUSD: 0
-            </button>
-            <br />
+        <div v-if="tmpShow" style="margin-top: 32px; opacity: 0.75;" @click="onTestBtnClick">
+            <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
+                <button :data-idx="index" class="btn small light break-word">
+                    Available balance: {{ item.availableFTM }}, Locked balance: {{ item.collateral }}, Minted fUSD:
+                    {{ item.debt }}
+                    <template v-if="item.tokenPrice"> , Token price: {{ item.tokenPrice }} </template>
+                </button>
+                <br />
+            </div>
         </div>
     </div>
 </template>
@@ -147,29 +142,31 @@ export default {
         return {
             currCollateral: '0',
             message: '',
+            tokenPrice: 0,
             increasedCollateral: 0,
             decreasedCollateral: 0,
             label: 'tmp',
+            id: getUniqueId(),
+            tmpShow: true,
             tmpValues: {
                 availableFTM: 10000,
                 collateral: 0,
                 debt: 0,
+                /*
+                availableFTM: 5000,
+                collateral: 10000,
+                debt: 20,
+*/
             },
-            circleColors: [
-                {
-                    value: 23,
-                    color: '#15cd72',
-                },
-                {
-                    value: 40,
-                    color: '#ffaf19',
-                },
-                {
-                    value: 75,
-                    color: '#ff1716',
-                },
+            tmpTokenPrice: 0,
+            tmpTestData: [
+                { availableFTM: 10000, collateral: 0, debt: 0 },
+                { availableFTM: 0, collateral: 4000, debt: 0 },
+                { availableFTM: 10000, collateral: 5000, debt: 0 },
+                { availableFTM: 5000, collateral: 10000, debt: 20 },
+                { availableFTM: 10000, collateral: 5000, debt: 20 },
+                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.008 },
             ],
-            id: getUniqueId(),
         };
     },
 
@@ -206,16 +203,49 @@ export default {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
         },
 
-        minLocked() {
-            return 0;
+        mintingLimit() {
+            return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
         },
 
-        maxLocked() {
+        minCollateral() {
+            let minC = 0;
+
+            if (this.tokenPrice > 0) {
+                minC = this.$defi.getMinCollateral(this.debt, this.tokenPrice) + (this.debt > 0 ? 1 : 0);
+            }
+
+            console.log('wt', this.tokenPrice, minC, this.collateral, Math.min(minC, this.collateral));
+
+            return Math.min(minC, this.collateral);
+        },
+
+        maxCollateral() {
             return this.collateral + this.availableFTM;
         },
 
         inputValue() {
             return this.formatInputValue(this.currCollateral);
+        },
+
+        circleColors() {
+            const { $defi } = this;
+
+            return [
+                /*
+                {
+                    value: 23,
+                    color: '#15cd72',
+                },
+                */
+                {
+                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio + $defi.liqCollateralRatio),
+                    color: '#ffaf19',
+                },
+                {
+                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio),
+                    color: '#ff1716',
+                },
+            ];
         },
 
         /**
@@ -252,22 +282,16 @@ export default {
         },
     },
 
-    asyncComputed: {
-        async tokenPrice() {
-            return await this.$defi.getTokenPrice('USD');
-        },
-    },
-
     watch: {
         currCollateral(_value, _oldValue) {
             let cValue;
 
-            console.log(_value, _oldValue);
+            console.log('tf', _value, _oldValue);
 
             if (_value !== _oldValue) {
                 cValue = this.$refs.slider.getCorrectValue(_value);
 
-                if (cValue !== _value && cValue === this.maxLocked.toString()) {
+                if (cValue !== _value && cValue === this.maxCollateral.toString()) {
                     this.currCollateral = cValue;
                     // this.$refs.input.select();
                 }
@@ -281,9 +305,22 @@ export default {
     created() {
         this.currCollateral = this.collateral.toString();
         this.updateMessage();
+
+        this.init();
+        /*
+
+        console.log(this.debt, this.tokenPrice);
+        console.log(this.tmp);
+*/
     },
 
     methods: {
+        async init() {
+            this.tokenPrice = await this.$defi.getTokenPrice('USD');
+            this.tmpTokenPrice = this.tokenPrice;
+            console.log('init', this.tokenPrice);
+        },
+
         formatInputValue(_value) {
             return parseFloat(_value).toFixed(2);
         },
@@ -315,6 +352,35 @@ export default {
             this.currCollateral = this.collateral.toString();
         },
 
+        _setTmpValues(_values) {
+            this.tmpValues = {
+                availableFTM: _values.availableFTM,
+                collateral: _values.collateral,
+                debt: _values.debt,
+            };
+
+            if (_values.tokenPrice) {
+                this.tokenPrice = _values.tokenPrice;
+            } else {
+                this.tokenPrice = this.tmpTokenPrice;
+            }
+
+            this.updateCurrCollateral();
+            this.updateMessage();
+        },
+
+        onTestBtnClick(_event) {
+            const eBtn = _event.target.closest('button');
+            let idx = -1;
+
+            if (eBtn) {
+                idx = parseInt(eBtn.getAttribute('data-idx'));
+                if (!isNaN(idx)) {
+                    this._setTmpValues(this.tmpTestData[idx]);
+                }
+            }
+        },
+
         onInput(_event) {
             this.currCollateral = this.$refs.slider.getCorrectValue(_event.target.value);
             _event.target.value = this.formatInputValue(this.currCollateral);
@@ -322,39 +388,6 @@ export default {
 
         onResetBtnClick() {
             this.updateCurrCollateral();
-        },
-
-        onTest1BtnClick() {
-            this.tmpValues = {
-                availableFTM: 10000,
-                collateral: 0,
-                debt: 0,
-            };
-
-            this.updateCurrCollateral();
-            this.updateMessage();
-        },
-
-        onTest2BtnClick() {
-            this.tmpValues = {
-                availableFTM: 0,
-                collateral: 4000,
-                debt: 0,
-            };
-
-            this.updateCurrCollateral();
-            this.updateMessage();
-        },
-
-        onTest3BtnClick() {
-            this.tmpValues = {
-                availableFTM: 10000,
-                collateral: 5000,
-                debt: 0,
-            };
-
-            this.updateCurrCollateral();
-            this.updateMessage();
         },
     },
 };

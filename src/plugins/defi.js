@@ -86,7 +86,16 @@ export class DeFi {
      * @return {number}
      */
     getLiquidationCollateral(_debt, _tokenPrice) {
-        return (_debt * this.liqCollateralRatio) / _tokenPrice;
+        return (_debt * this.liqCollateralRatioCollateralRatio) / _tokenPrice;
+    }
+
+    /**
+     * @param {number} _debt
+     * @param {number} _tokenPrice
+     * @return {number}
+     */
+    getMinCollateral(_debt, _tokenPrice) {
+        return (_debt * this.minCollateralRatio) / _tokenPrice;
     }
 
     /**
