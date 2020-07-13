@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-fmint">
-        <h1 class="">Mint and repay fUSD</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Mint and repay fUSD</h1>
 
         <div class="grid">
             <div>
@@ -123,11 +123,13 @@ import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import { getUniqueId } from '../../utils';
+import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
+import { getAppParentNode } from '../../app-structure.js';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FMessage, FCircleProgress },
+    components: { FBackButton, FMessage, FCircleProgress },
 
     data() {
         return {
@@ -211,6 +213,12 @@ export default {
                     color: '#ff1716',
                 },
             ];
+        },
+
+        backButtonRoute() {
+            const parentNode = getAppParentNode('defi-fmint');
+
+            return parentNode ? parentNode.route : '';
         },
 
         /**

@@ -36,3 +36,9 @@ const appStructure = [
 
 /** @type {Tree} */
 export const appStructureTree = new Tree(appStructure);
+
+export function getAppParentNode(_id) {
+    const node = appStructureTree.get(_id);
+
+    return node ? node._p : null;
+}

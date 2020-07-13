@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-manage-collateral">
-        <h1 class="">Manage collateral</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Manage collateral</h1>
 
         <h2 class="perex">
             Lock FTM to increase the collateral ratio and mint fUSD, unlock FTM after you repaid fUSD.
@@ -153,11 +153,13 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
 import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColoredNumberRange.vue';
+import { getAppParentNode } from '../../app-structure.js';
+import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 
 export default {
     name: 'DefiManageCollateral',
 
-    components: { FColoredNumberRange, FSlider, FMessage, FCircleProgress },
+    components: { FBackButton, FColoredNumberRange, FSlider, FMessage, FCircleProgress },
 
     data() {
         return {
@@ -267,6 +269,12 @@ export default {
                     color: '#ff1716',
                 },
             ];
+        },
+
+        backButtonRoute() {
+            const parentNode = getAppParentNode('defi-manage-collateral');
+
+            return parentNode ? parentNode.route : '';
         },
 
         /**
