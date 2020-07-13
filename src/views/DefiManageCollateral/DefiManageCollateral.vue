@@ -16,7 +16,7 @@
                     <h3 class="label">Locked balance</h3>
                     <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
                 </div>
-                <div v-if="!mediumView" class="df-data-item smaller">
+                <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
                     <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
                 </div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="align-right">
+            <div v-if="!smallView" class="minting-limit-col">
                 <template v-if="false">
                     <h3>Minting limit</h3>
                     <f-circle-progress
@@ -80,6 +80,17 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
+            <div v-if="largeView" class="right-col">
+                <div class="df-data-item smaller">
+                    <h3 class="label">Minted fUSD</h3>
+                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
+                </div>
+                <div v-if="smallView" class="df-data-item smaller">
+                    <h3 class="label">Max mintable</h3>
+                    <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                </div>
+            </div>
+
             <f-message v-if="message" type="info" role="alert">
                 {{ message }}
             </f-message>
@@ -225,6 +236,17 @@ export default {
          */
         mediumView() {
             const breakpoint = this.$store.state.breakpoints['medium'];
+
+            return breakpoint && breakpoint.matches;
+        },
+
+        /**
+         * Property is set to `true`, if 'large' breakpoint is reached.
+         *
+         * @return {Boolean}
+         */
+        largeView() {
+            const breakpoint = this.$store.state.breakpoints['large'];
 
             return breakpoint && breakpoint.matches;
         },
