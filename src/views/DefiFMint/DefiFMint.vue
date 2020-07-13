@@ -55,7 +55,18 @@
             <button class="btn large" disabled>Repay</button>
         </div>
 
-        <div v-if="tmpShow" style="margin-top: 32px; opacity: 0.75;" @click="onTestBtnClick">
+        <div
+            v-if="tmpShow"
+            style="margin-top: 32px; padding-top: 16px; opacity: 0.75; border-top: 1px solid #ddd;"
+            @click="onTestBtnClick"
+        >
+            <h3>Test values</h3>
+            <h4>Common values</h4>
+            <p>
+                Liquidation collateral ratio: 1.5 <br />
+                Minimal collateral ratio: 2.5 <br />
+                Token price: {{ tokenPrice }}
+            </p>
             <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
                 <button :data-idx="index" class="btn small light break-word">
                     Locked balance: {{ item.collateral }}, Minted fUSD: {{ item.debt }}
