@@ -85,10 +85,18 @@
                     <h3 class="label">Minted fUSD</h3>
                     <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
                 </div>
-                <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Max mintable</h3>
-                    <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
-                </div>
+                <template v-if="smallView">
+                    <div v-if="debt > 0" class="df-data-item smaller">
+                        <h3 class="label">Minting limit</h3>
+                        <div class="value">
+                            <f-colored-number-range show-percentage :colors="circleColors" :value="mintingLimit" />
+                        </div>
+                    </div>
+                    <div v-else class="df-data-item smaller">
+                        <h3 class="label">Max mintable</h3>
+                        <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                    </div>
+                </template>
             </div>
 
             <f-message v-if="message" type="info" role="alert">
@@ -132,11 +140,12 @@ import { mapGetters } from 'vuex';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
+import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColoredNumberRange.vue';
 
 export default {
     name: 'DefiManageCollateral',
 
-    components: { FSlider, FMessage, FCircleProgress },
+    components: { FColoredNumberRange, FSlider, FMessage, FCircleProgress },
 
     data() {
         return {
@@ -286,7 +295,7 @@ export default {
         currCollateral(_value, _oldValue) {
             let cValue;
 
-            console.log('tf', _value, _oldValue);
+            // console.log('tf', _value, _oldValue);
 
             if (_value !== _oldValue) {
                 cValue = this.$refs.slider.getCorrectValue(_value);
