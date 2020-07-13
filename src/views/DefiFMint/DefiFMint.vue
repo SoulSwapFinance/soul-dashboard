@@ -57,7 +57,7 @@
 
         <div
             v-if="tmpShow"
-            style="margin-top: 32px; padding-top: 16px; opacity: 0.75; border-top: 1px solid #ddd;"
+            style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
             @click="onTestBtnClick"
         >
             <h3>Test values</h3>
@@ -67,6 +67,7 @@
                 Minimal collateral ratio: 2.5 <br />
                 Token price: {{ tokenPrice }}
             </p>
+            <h4>Set values</h4>
             <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
                 <button :data-idx="index" class="btn small light break-word">
                     Locked balance: {{ item.collateral }}, Minted fUSD: {{ item.debt }}
