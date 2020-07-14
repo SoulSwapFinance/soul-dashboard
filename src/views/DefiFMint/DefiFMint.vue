@@ -63,8 +63,8 @@
             <h3>Test values</h3>
             <h4>Common values</h4>
             <p>
-                Liquidation collateral ratio: 1.5 <br />
-                Minimal collateral ratio: 2.5 <br />
+                Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
+                Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>
@@ -241,9 +241,8 @@ export default {
 
     methods: {
         async init() {
-            this.tokenPrice = await this.$defi.getTokenPrice('USD');
+            this.tokenPrice = await this.$defi.init('USD');
             this.tmpTokenPrice = this.tokenPrice;
-            console.log('init', this.tokenPrice);
         },
 
         _setTmpValues(_values) {

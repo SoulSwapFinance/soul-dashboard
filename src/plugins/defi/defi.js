@@ -1,3 +1,4 @@
+import './defi.types.js';
 import gql from 'graphql-tag';
 
 /** @type {BNBridgeExchange} */
@@ -29,6 +30,42 @@ export class DeFi {
         this.minCollateralRatio = 2.5;
         /** What percentage represents minimal collateral ratio in minting limit. */
         // this.minCollateralRatioLimit = 0.75;
+        this.noLimitRatio = this.minCollateralRatio * 4;
+        /** DeFi settings was loaded. */
+        this.settingsLoaded = false;
+    }
+
+    /**
+     * Get token price and load settings if it's necessary.
+     *
+     * @param {string} _priceTo
+     * @return {Promise<number>} Token price.
+     */
+    async init(_priceTo = 'USD') {
+        const promises = [this.getTokenPrice(_priceTo)];
+
+        if (!this.settingsLoaded) {
+            promises.push(this.getSettings());
+        }
+
+        const res = await Promise.all(promises);
+
+        if (!this.settingsLoaded) {
+            this.settingsLoaded = true;
+            this.initProperties(res[1]);
+        }
+
+        return res[0];
+    }
+
+    /**
+     * Set properties.
+     *
+     * @param {DeFiSettings} _settings
+     */
+    initProperties(_settings) {
+        this.liqCollateralRatio = _settings.liqCollateralRatio4 / 10000;
+        this.minCollateralRatio = _settings.minCollateralRatio4 / 10000;
         this.noLimitRatio = this.minCollateralRatio * 4;
     }
 
@@ -99,7 +136,7 @@ export class DeFi {
     }
 
     /**
-     * @return {Promise<Object>}
+     * @return {Promise<DeFiSettings>}
      */
     async getSettings() {
         /*
@@ -121,10 +158,16 @@ export class DeFi {
         */
 
         // temporary data
-        return {
-            minCollateralRatio4: 25000,
-            liqCollateralRatio4: 15000,
-        };
+        return new Promise(function (_resolve) {
+            setTimeout(() => {
+                _resolve({
+                    minCollateralRatio4: 25000,
+                    liqCollateralRatio4: 15000,
+                    tradeFee4: 0,
+                    loanFee4: 0,
+                });
+            }, 200);
+        });
     }
 
     /**
