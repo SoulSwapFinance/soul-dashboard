@@ -2,7 +2,7 @@
     <div class="defi-mint-repay">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Mint or Repay fUSD
+            Manage fUSD
         </h1>
 
         <h2 class="perex">
@@ -126,6 +126,7 @@
             <p>
                 Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
                 Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
+                0% ratio: {{ $defi.noLimitRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>

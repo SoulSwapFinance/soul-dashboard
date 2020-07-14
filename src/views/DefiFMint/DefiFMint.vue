@@ -52,7 +52,7 @@
                 Manage collateral
             </router-link>
             <router-link :to="{ name: 'defi-mint-repay' }" class="btn large">
-                Mint or Repay fUSD
+                Manage fUSD
             </router-link>
         </div>
 
@@ -66,6 +66,7 @@
             <p>
                 Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
                 Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
+                0% ratio: {{ $defi.noLimitRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>

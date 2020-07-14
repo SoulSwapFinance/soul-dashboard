@@ -117,7 +117,7 @@ export const routes = [
                     },
                     {
                         name: 'defi-mint-repay',
-                        path: 'fmint/mint-repay',
+                        path: 'fmint/manage-fusd',
                         component: DefiMintRepay,
                     },
                 ],

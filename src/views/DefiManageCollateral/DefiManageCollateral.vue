@@ -129,6 +129,7 @@
             <p>
                 Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
                 Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
+                0% ratio: {{ $defi.noLimitRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>
