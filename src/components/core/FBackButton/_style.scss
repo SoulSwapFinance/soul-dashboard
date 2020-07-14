@@ -10,10 +10,15 @@
 
 .with-back-btn {
     position: relative;
-    padding-left: var(--f-back-button-parent-padding-left);
 
     .f-back-button {
         position: absolute;
         left: 0;
+    }
+}
+
+@include media-max($bp-small) {
+    .with-back-btn {
+        padding-left: var(--f-back-button-parent-padding-left);
     }
 }

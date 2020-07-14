@@ -16,9 +16,9 @@ import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
-import DefiMint from './views/DefiMint/DefiMint.vue';
 import DefiFMint from './views/DefiFMint/DefiFMint.vue';
 import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
+import DefiMintRepay from './views/DefiMintRepay/DefiMintRepay.vue';
 
 export const routes = [
     {
@@ -116,9 +116,9 @@ export const routes = [
                         component: DefiManageCollateral,
                     },
                     {
-                        name: 'defi-mint',
-                        path: 'fmint/mint',
-                        component: DefiMint,
+                        name: 'defi-mint-repay',
+                        path: 'fmint/mint-repay',
+                        component: DefiMintRepay,
                     },
                 ],
             },

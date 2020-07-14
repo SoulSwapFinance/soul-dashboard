@@ -51,8 +51,9 @@
             <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
                 Manage collateral
             </router-link>
-            <button class="btn large" disabled>Mint fUSD</button>
-            <button class="btn large" disabled>Repay</button>
+            <router-link :to="{ name: 'defi-mint-repay' }" class="btn large">
+                Mint or Repay fUSD
+            </router-link>
         </div>
 
         <div
@@ -96,7 +97,7 @@
                         <icon data="@/assets/svg/defi/mint.svg" width="96" height="96" />
                     </div>
                     <p class="description">Mint fUSD by locking your FTM</p>
-                    <router-link :to="{ name: 'defi-mint' }" class="clickable title">
+                    <router-link :to="{ name: 'defi-mint-repay' }" class="clickable title">
                         Mint fUSD
                     </router-link>
                 </div>

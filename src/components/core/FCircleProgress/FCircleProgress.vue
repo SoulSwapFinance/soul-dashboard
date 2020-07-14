@@ -55,7 +55,7 @@ export default {
         },
         /**
          * Colors of circle stroke by value.
-         * If current value is equal or bigger than value from array, color from array will be used.
+         * If current value is bigger than value from array, color from array will be used.
          * @type {{color: string, value: number}[]}
          */
         colors: {
@@ -141,7 +141,7 @@ export default {
                 let color = 'default';
 
                 for (let i = colors.length - 1; i >= 0; i--) {
-                    if (_value >= colors[i].value) {
+                    if (_value > colors[i].value) {
                         color = colors[i].color;
                         break;
                     }
