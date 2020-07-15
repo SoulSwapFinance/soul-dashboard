@@ -16,6 +16,12 @@
 
         .defi-price-input-col {
             place-self: center;
+
+            .defi-price-input {
+                > input {
+                    margin-bottom: 0;
+                }
+            }
         }
 
         .minting-limit-col {
