@@ -1,6 +1,8 @@
 <template>
     <div class="view-defi-fmint">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Mint and repay fUSD</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fMint</h1>
+
+        <h2 class="perex">Manage your collateral and minted fUSD</h2>
 
         <div class="grid">
             <div>
@@ -18,7 +20,7 @@
                 </div>
             </div>
             <div class="limit-col align-center">
-                <h2>Minting limit</h2>
+                <h2>Debt Limit</h2>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"

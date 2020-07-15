@@ -71,10 +71,20 @@
                             <button class="btn small light">Reset</button>
                         </div>
                     </div>
+
+                    <div class="token-label">fUSD</div>
+                    <div class="token-info">
+                        <div class="token-info-label">Decrease fUSD</div>
+                        <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
+                    </div>
+                    <div class="token-info increase">
+                        <div class="token-info-label">Increase fUSD</div>
+                        <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
+                    </div>
                 </div>
             </div>
-            <div v-if="!smallView" class="minting-limit-col">
-                <h3>Minting limit</h3>
+            <div v-if="!smallView" class="minting-limit-col align-center">
+                <h3>Debt Limit</h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -93,7 +103,7 @@
                     <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Minting limit</h3>
+                    <h3 class="label">Debt Limit</h3>
                     <div class="value">
                         <f-colored-number-range show-percentage :colors="circleColors" :value="mintingLimit" />
                     </div>

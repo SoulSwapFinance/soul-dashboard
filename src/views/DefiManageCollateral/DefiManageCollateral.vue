@@ -64,9 +64,9 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!smallView" class="minting-limit-col">
+            <div v-if="!smallView" class="minting-limit-col align-center">
                 <template v-if="debt > 0">
-                    <h3>Minting limit</h3>
+                    <h3>Debt Limit</h3>
                     <f-circle-progress
                         show-percentage
                         :stroke-width="6"
@@ -87,7 +87,7 @@
                 </div>
                 <template v-if="smallView">
                     <div v-if="debt > 0" class="df-data-item smaller">
-                        <h3 class="label">Minting limit</h3>
+                        <h3 class="label">Debt Limit</h3>
                         <div class="value">
                             <f-colored-number-range show-percentage :colors="circleColors" :value="mintingLimit" />
                         </div>

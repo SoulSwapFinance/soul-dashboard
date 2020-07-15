@@ -36,6 +36,34 @@
         }
     }
 
+    .token-info {
+        position: absolute;
+        bottom: 96px;
+        width: 100px;
+        //color: $grey-color-semi;
+        color: #ddd;
+        z-index: 0;
+
+        &.increase {
+            right: 0;
+        }
+
+        .token-info-label {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    }
+
+    .token-label {
+        position: absolute;
+        top: -32px;
+        width: 100%;
+        text-align: center;
+        color: $light-gray-color;
+        font-size: 18px;
+        z-index: 0;
+    }
+
     .defi-price-input {
         input.text-input {
             position: relative;
@@ -54,6 +82,7 @@
     }
 }
 
+/*
 .view-defi {
     .defi-mint-repay {
         .df-data-item {
@@ -61,6 +90,7 @@
         }
     }
 }
+*/
 
 /* Tablet breakpoint */
 @include media-max($bp-large) {
@@ -109,8 +139,12 @@
 
         .defi-price-input {
             input.text-input {
-                font-size: 64px;
+                font-size: 72px;
             }
+        }
+
+        .token-info {
+            display: none;
         }
 
         .buttons {
