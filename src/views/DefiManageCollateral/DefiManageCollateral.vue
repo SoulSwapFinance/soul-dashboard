@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-manage-collateral">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Manage collateral</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Collateral</h1>
 
         <h2 class="perex">
             Lock FTM to increase the collateral ratio and mint fUSD, unlock FTM after you repaid fUSD.
@@ -54,6 +54,7 @@
                         </div>
                     </div>
 
+                    <div class="token-label">FTM</div>
                     <div class="collateral-info">
                         <div class="collateral-info-label">Decrease collateral</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />

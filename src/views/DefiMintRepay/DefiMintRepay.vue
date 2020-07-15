@@ -2,7 +2,7 @@
     <div class="defi-mint-repay">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Manage fUSD
+            fUSD
         </h1>
 
         <h2 class="perex">
