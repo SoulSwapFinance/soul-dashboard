@@ -21,6 +21,12 @@ const appStructure = [
                             {
                                 id: 'defi-manage-collateral',
                                 route: 'defi-manage-collateral',
+                                _c: [
+                                    {
+                                        id: 'defi-manage-collateral-confirmation',
+                                        route: 'defi-manage-collateral-confirmation',
+                                    },
+                                ],
                             },
                             {
                                 id: 'defi-mint-repay',

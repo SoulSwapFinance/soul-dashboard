@@ -34,6 +34,7 @@
                         </div>
 
                         <a
+                            v-if="!noPreviousButton"
                             href="#"
                             class="btn light large break-word"
                             style="max-width: 100%;"
@@ -88,6 +89,11 @@ export default {
         gasLimit: {
             type: String,
             default: GAS_LIMITS.default,
+        },
+        /** Don't show 'previous' button */
+        noPreviousButton: {
+            type: Boolean,
+            default: false,
         },
     },
 

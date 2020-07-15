@@ -100,21 +100,21 @@
                 </template>
             </div>
 
-            <f-message v-if="message" type="info" role="alert">
+            <f-message v-if="message" type="info" role="alert" class="big">
                 {{ message }}
             </f-message>
-            <f-message v-else-if="increasedCollateral > 0" type="info" role="alert">
+            <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
                 You’re adding <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} FTM</span> to your
                 collateral
             </f-message>
-            <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert">
+            <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
                 You’re removing <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} FTM</span> from
                 your collateral
             </f-message>
         </div>
 
         <div class="buttons">
-            <button class="btn large" :disabled="parseFloat(currCollateral) === parseFloat(collateral)">
+            <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="collateral > 0">Rebalance now</template>
                 <template v-else>Add collateral</template>
             </button>
@@ -251,6 +251,10 @@ export default {
             return this.formatInputValue(this.currCollateral);
         },
 
+        submitDisabled() {
+            return parseFloat(this.currCollateral) === parseFloat(this.collateral);
+        },
+
         colors() {
             return this.$defi.getColors();
         },
@@ -364,6 +368,24 @@ export default {
             this.currCollateral = this.collateral.toString();
         },
 
+        onSubmit() {
+            if (!this.submitDisabled) {
+                this.$router.push({
+                    name: 'defi-manage-collateral-confirmation',
+                    params: { currCollateral: parseFloat(this.currCollateral), collateral: this.collateral },
+                });
+            }
+        },
+
+        onInput(_event) {
+            this.currCollateral = this.$refs.slider.getCorrectValue(_event.target.value);
+            _event.target.value = this.formatInputValue(this.currCollateral);
+        },
+
+        onResetBtnClick() {
+            this.updateCurrCollateral();
+        },
+
         _setTmpValues(_values) {
             this.tmpValues = {
                 availableFTM: _values.availableFTM,
@@ -391,15 +413,6 @@ export default {
                     this._setTmpValues(this.tmpTestData[idx]);
                 }
             }
-        },
-
-        onInput(_event) {
-            this.currCollateral = this.$refs.slider.getCorrectValue(_event.target.value);
-            _event.target.value = this.formatInputValue(this.currCollateral);
-        },
-
-        onResetBtnClick() {
-            this.updateCurrCollateral();
         },
     },
 };

@@ -1,0 +1,14 @@
+@import "../../assets/scss/vars";
+
+.view-defi-manage-collateral-confirmation {
+    .info {
+        padding: 32px 0;
+        text-align: center;
+        font-size: 21px;
+        line-height: 1.23;
+    }
+
+    .inc-desc-collateral {
+        color: $theme-color;
+    }
+}

@@ -110,10 +110,10 @@
                 </div>
             </div>
 
-            <f-message v-if="increasedDebt > 0" type="info" role="alert">
+            <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
                 You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} fUSD</span>
             </f-message>
-            <f-message v-else-if="decreasedDebt > 0" type="info" role="alert">
+            <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
                 You’re removing <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(2) }} fUSD</span>
             </f-message>
         </div>

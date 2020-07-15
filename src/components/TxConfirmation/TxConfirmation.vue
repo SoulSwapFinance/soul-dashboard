@@ -1,6 +1,6 @@
 <template>
     <div class="tx-confirmation">
-        <f-card class="f-card-double-padding f-data-layout">
+        <f-card class="f-card-double-padding f-data-layout" :off="cardOff">
             <slot></slot>
 
             <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
@@ -10,6 +10,7 @@
                 :show-password-field="!currentAccount.isLedgerAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
+                :no-previous-button="noPreviousButton"
                 @f-form-submit="onFFormSubmit"
                 @go-back="_onGoBack"
             />
@@ -99,6 +100,16 @@ export default {
         onGoBack: {
             type: Function,
             default: null,
+        },
+        /** Don't render card */
+        cardOff: {
+            type: Boolean,
+            default: false,
+        },
+        /** Don't show 'previous' button */
+        noPreviousButton: {
+            type: Boolean,
+            default: false,
         },
     },
 

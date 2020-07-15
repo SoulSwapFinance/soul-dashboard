@@ -43,7 +43,7 @@
                     <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
-            <f-message v-if="closeToLiquidation" type="error" role="alert">
+            <f-message v-if="closeToLiquidation" type="error" role="alert" class="big">
                 You're getting close to your liquidation price. <br />
                 Please rebalance your collateral.
             </f-message>
