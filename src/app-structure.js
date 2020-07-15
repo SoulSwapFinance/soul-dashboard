@@ -25,6 +25,16 @@ const appStructure = [
                                     {
                                         id: 'defi-manage-collateral-confirmation',
                                         route: 'defi-manage-collateral-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-manage-collateral-transaction-success-message',
+                                                route: 'defi-manage-collateral-transaction-success-message',
+                                            },
+                                            {
+                                                id: 'defi-manage-collateral-transaction-reject-message',
+                                                route: 'defi-manage-collateral-transaction-reject-message',
+                                            },
+                                        ],
                                     },
                                 ],
                             },

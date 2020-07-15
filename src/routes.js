@@ -20,6 +20,7 @@ import DefiFMint from './views/DefiFMint/DefiFMint.vue';
 import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
 import DefiMintRepay from './views/DefiMintRepay/DefiMintRepay.vue';
 import DefiManageCollateralConfirmation from './views/DefiManageCollateralConfirmation/DefiManageCollateralConfirmation.vue';
+import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
 
 export const routes = [
     {
@@ -120,6 +121,11 @@ export const routes = [
                         name: 'defi-manage-collateral-confirmation',
                         path: 'fmint/manage-collateral/confirmation',
                         component: DefiManageCollateralConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-collateral-transaction-success-message',
+                        path: 'fmint/manage-collateral/confirmation/success',
+                        component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'defi-mint-repay',

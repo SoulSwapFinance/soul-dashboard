@@ -1,5 +1,5 @@
 <template>
-    <f-card class="transaction-success-message f-card-double-padding">
+    <f-card class="transaction-success-message f-card-double-padding" :off="cardOff">
         <h2>{{ title }}</h2>
 
         <h3 class="break-word">
@@ -41,6 +41,16 @@ export default {
             type: String,
             default: '',
         },
+        /** `continueTo` is name of route. */
+        continueToIsRoute: {
+            type: Boolean,
+            default: false,
+        },
+        /** Don't render card */
+        cardOff: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -51,7 +61,7 @@ export default {
 
     methods: {
         onContinueBtnClick() {
-            if (this.continueTo === 'account-history') {
+            if (this.continueTo === 'account-history' || this.continueToIsRoute) {
                 this.$router.replace({ name: this.continueTo });
             } else {
                 this.$emit('change-component', {
