@@ -25,7 +25,7 @@
                     show-percentage
                     :stroke-width="6"
                     :animate="false"
-                    :colors="circleColors"
+                    :colors="colors"
                     :value="mintingLimit"
                 />
             </div>
@@ -68,7 +68,6 @@
             <p>
                 Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
                 Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
-                0% ratio: {{ $defi.noLimitRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>
@@ -150,6 +149,7 @@ export default {
                 { collateral: 10000, debt: 20 },
                 { collateral: 5000, debt: 20 },
                 { collateral: 5000, debt: 20, tokenPrice: 0.008 },
+                { collateral: 5000, debt: 20, tokenPrice: 0.007 },
             ],
         };
     },
@@ -192,31 +192,11 @@ export default {
         closeToLiquidation() {
             const { $defi } = this;
 
-            return (
-                $defi.getRatioMintingLimit($defi.getCollateralRatio(this.debt, this.collateral, this.tokenPrice)) >
-                $defi.getRatioMintingLimit($defi.minCollateralRatio)
-            );
+            return this.mintingLimit > ($defi.dangerRatio / $defi.minCollateralRatio) * 100;
         },
 
-        circleColors() {
-            const { $defi } = this;
-
-            return [
-                /*
-                {
-                    value: 23,
-                    color: '#15cd72',
-                },
-                */
-                {
-                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio + $defi.liqCollateralRatio),
-                    color: '#ffaf19',
-                },
-                {
-                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio),
-                    color: '#ff1716',
-                },
-            ];
+        colors() {
+            return this.$defi.getColors();
         },
 
         backButtonRoute() {

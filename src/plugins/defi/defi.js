@@ -28,9 +28,7 @@ export class DeFi {
         this.liqCollateralRatio = 1.5;
         /** Minimal collateral ratio. */
         this.minCollateralRatio = 2.5;
-        /** What percentage represents minimal collateral ratio in minting limit. */
-        // this.minCollateralRatioLimit = 0.75;
-        this.noLimitRatio = this.minCollateralRatio * 4;
+        this.dangerRatio = (this.liqCollateralRatio + this.minCollateralRatio) / 2;
         /** DeFi settings was loaded. */
         this.settingsLoaded = false;
     }
@@ -66,7 +64,7 @@ export class DeFi {
     initProperties(_settings) {
         this.liqCollateralRatio = _settings.liqCollateralRatio4 / 10000;
         this.minCollateralRatio = _settings.minCollateralRatio4 / 10000;
-        this.noLimitRatio = this.minCollateralRatio * 4;
+        this.dangerRatio = (this.liqCollateralRatio + this.minCollateralRatio) / 2;
     }
 
     /**
@@ -100,21 +98,28 @@ export class DeFi {
     }
 
     getMintingLimit(_debt, _collateral, _tokenPrice) {
-        return _debt > 0 ? this.getRatioMintingLimit(this.getCollateralRatio(_debt, _collateral, _tokenPrice)) : 0;
-    }
-
-    getRatioMintingLimit(_ratio) {
-        return _ratio > 0
-            ? 100 - ((_ratio - this.liqCollateralRatio) / (this.noLimitRatio - this.liqCollateralRatio)) * 100
+        // ratio between actual debt and liquidation debt
+        return _collateral > 0
+            ? (_debt / ((parseFloat(_collateral) * _tokenPrice) / this.liqCollateralRatio)) * 100
             : 0;
     }
 
-    getCollateralRatio(_debt, _collateral, _tokenPrice) {
-        if (_debt > 0) {
-            return (_collateral * _tokenPrice) / _debt;
-        }
-
-        return 0;
+    /**
+     * Get color values for f-circle-progress and f-colored-number-range components
+     *
+     * @return {{color: string, value: number}[]}
+     */
+    getColors() {
+        return [
+            {
+                value: (this.liqCollateralRatio / this.minCollateralRatio) * 100,
+                color: '#ffaf19',
+            },
+            {
+                value: (this.dangerRatio / this.minCollateralRatio) * 100,
+                color: '#ff1716',
+            },
+        ];
     }
 
     /**
@@ -161,7 +166,7 @@ export class DeFi {
         return new Promise(function (_resolve) {
             setTimeout(() => {
                 _resolve({
-                    minCollateralRatio4: 25000,
+                    minCollateralRatio4: 30000,
                     liqCollateralRatio4: 15000,
                     tradeFee4: 0,
                     loanFee4: 0,

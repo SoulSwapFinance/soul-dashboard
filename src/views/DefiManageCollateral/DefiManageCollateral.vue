@@ -71,7 +71,7 @@
                         show-percentage
                         :stroke-width="6"
                         :animate="false"
-                        :colors="circleColors"
+                        :colors="colors"
                         :value="mintingLimit"
                     />
                 </template>
@@ -89,7 +89,7 @@
                     <div v-if="debt > 0" class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
-                            <f-colored-number-range show-percentage :colors="circleColors" :value="mintingLimit" />
+                            <f-colored-number-range show-percentage :colors="colors" :value="mintingLimit" />
                         </div>
                     </div>
                     <div v-else class="df-data-item smaller">
@@ -129,7 +129,6 @@
             <p>
                 Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
                 Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
-                0% ratio: {{ $defi.noLimitRatio }} <br />
                 Token price: {{ tokenPrice }}
             </p>
             <h4>Set values</h4>
@@ -190,6 +189,8 @@ export default {
                 { availableFTM: 5000, collateral: 10000, debt: 20 },
                 { availableFTM: 10000, collateral: 5000, debt: 20 },
                 { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.008 },
+                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.007 },
+                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.0065 },
             ],
         };
     },
@@ -238,8 +239,6 @@ export default {
                 minC = this.$defi.getMinCollateral(this.debt, this.tokenPrice) + (this.debt > 0 ? 1 : 0);
             }
 
-            console.log('wt', this.tokenPrice, minC, this.collateral, Math.min(minC, this.collateral));
-
             return Math.min(minC, this.collateral);
         },
 
@@ -251,25 +250,8 @@ export default {
             return this.formatInputValue(this.currCollateral);
         },
 
-        circleColors() {
-            const { $defi } = this;
-
-            return [
-                /*
-                {
-                    value: 23,
-                    color: '#15cd72',
-                },
-                */
-                {
-                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio + $defi.liqCollateralRatio),
-                    color: '#ffaf19',
-                },
-                {
-                    value: $defi.getRatioMintingLimit($defi.minCollateralRatio),
-                    color: '#ff1716',
-                },
-            ];
+        colors() {
+            return this.$defi.getColors();
         },
 
         backButtonRoute() {
