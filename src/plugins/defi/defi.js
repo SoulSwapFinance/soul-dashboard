@@ -59,7 +59,7 @@ export class DeFi {
     /**
      * Set properties.
      *
-     * @param {DeFiSettings} _settings
+     * @param {DefiSettings} _settings
      */
     initProperties(_settings) {
         this.liqCollateralRatio = _settings.liqCollateralRatio4 / 10000;
@@ -141,7 +141,7 @@ export class DeFi {
     }
 
     /**
-     * @return {Promise<DeFiSettings>}
+     * @return {Promise<DefiSettings>}
      */
     async getSettings() {
         /*
@@ -171,6 +171,81 @@ export class DeFi {
                     tradeFee4: 0,
                     loanFee4: 0,
                 });
+            }, 200);
+        });
+    }
+
+    /**
+     * @return {Promise<DefiTokens[]>}
+     */
+    async getTokens() {
+        /*
+        const data = await this.apolloClient.query({
+            query: gql`
+                query DefiTokens {
+                    defiTokens {
+                        address
+                        name
+                        symbol
+                        decimals
+                        isActive
+                        canDeposit
+                        canBorrow
+                        canTrade
+                    }
+                }
+            `,
+            fetchPolicy: 'no-cache',
+        });
+
+        return data.data.defiTokens || [];
+        */
+
+        // temporary data
+        return new Promise(function (_resolve) {
+            setTimeout(() => {
+                _resolve([
+                    {
+                        address: '0xffffffffffffffffffffffffffffffffffffffff',
+                        name: 'Native Fantom',
+                        symbol: 'FTM',
+                        decimals: 8,
+                        isActive: true,
+                        canDeposit: true,
+                        canBorrow: false,
+                        canTrade: false,
+                    },
+                    {
+                        address: '0x8019db8a3ff1887d047f2dc1c7265ea8dab1ca80',
+                        name: 'Fantom USD',
+                        symbol: 'FUSD',
+                        decimals: 8,
+                        isActive: true,
+                        canDeposit: true,
+                        canBorrow: true,
+                        canTrade: false,
+                    },
+                    {
+                        address: '0x7c64609b1b1d787a207b76632bcb97082dbd990d',
+                        name: 'Fantom ETH Synth',
+                        symbol: 'FETH',
+                        decimals: 8,
+                        isActive: true,
+                        canDeposit: true,
+                        canBorrow: true,
+                        canTrade: true,
+                    },
+                    {
+                        address: '0x05d3cf8bed38aa08f6e2a62d6ebb01317176e422',
+                        name: 'Fantom BTC Synth',
+                        symbol: 'FBTC',
+                        decimals: 8,
+                        isActive: true,
+                        canDeposit: true,
+                        canBorrow: true,
+                        canTrade: true,
+                    },
+                ]);
             }, 200);
         });
     }
