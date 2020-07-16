@@ -22,6 +22,7 @@ import DefiMintRepay from './views/DefiMintRepay/DefiMintRepay.vue';
 import DefiManageCollateralConfirmation from './views/DefiManageCollateralConfirmation/DefiManageCollateralConfirmation.vue';
 import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
 import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
+import DefiMintRepayConfirmation from './views/DefiMintRepayConfirmation/DefiMintRepayConfirmation.vue';
 
 export const routes = [
     {
@@ -137,6 +138,21 @@ export const routes = [
                         name: 'defi-mint-repay',
                         path: 'fmint/manage-fusd',
                         component: DefiMintRepay,
+                    },
+                    {
+                        name: 'defi-mint-repay-confirmation',
+                        path: 'fmint/manage-fusd/confirmation',
+                        component: DefiMintRepayConfirmation,
+                    },
+                    {
+                        name: 'defi-mint-repay-transaction-success-message',
+                        path: 'fmint/manage-fusd/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-mint-repay-transaction-reject-message',
+                        path: 'fmint/manage-fusd/confirmation/reject',
+                        component: TransactionRejectMessageView,
                     },
                 ],
             },

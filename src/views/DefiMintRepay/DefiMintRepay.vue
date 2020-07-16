@@ -119,7 +119,7 @@
         </div>
 
         <div class="buttons">
-            <button class="btn large" :disabled="submitDisabled">
+            <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="submitDisabled">Mint or Repay now</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">Mint {{ increasedDebt.toFixed(2) }} now</template>
                 <template v-else>Repay {{ decreasedDebt.toFixed(2) }} now</template>
@@ -326,6 +326,24 @@ export default {
             this.currDebt = this.debt.toString();
         },
 
+        onSubmit() {
+            if (!this.submitDisabled) {
+                this.$router.push({
+                    name: 'defi-mint-repay-confirmation',
+                    params: { currDebt: parseFloat(this.currDebt), debt: this.debt },
+                });
+            }
+        },
+
+        onInput(_event) {
+            this.currDebt = this.$refs.slider.getCorrectValue(_event.target.value);
+            _event.target.value = this.formatInputValue(this.currDebt);
+        },
+
+        onResetBtnClick() {
+            this.updateCurrDebt();
+        },
+
         _setTmpValues(_values) {
             this.tmpValues = {
                 collateral: _values.collateral,
@@ -352,15 +370,6 @@ export default {
                     this._setTmpValues(this.tmpTestData[idx]);
                 }
             }
-        },
-
-        onInput(_event) {
-            this.currDebt = this.$refs.slider.getCorrectValue(_event.target.value);
-            _event.target.value = this.formatInputValue(this.currDebt);
-        },
-
-        onResetBtnClick() {
-            this.updateCurrDebt();
         },
     },
 };

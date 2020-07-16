@@ -1,5 +1,5 @@
 <template>
-    <div class="view-defi-manage-collateral-confirmation">
+    <div class="view-defi-mint-repay-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -15,14 +15,11 @@
             <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Confirmation</h1>
 
             <div class="info">
-                <div v-if="increasedCollateral > 0">
-                    You’re adding <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} FTM</span> to
-                    your collateral
+                <div v-if="increasedDebt > 0">
+                    You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} fUSD</span>
                 </div>
-                <div v-else-if="decreasedCollateral > 0">
-                    You’re removing
-                    <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} FTM</span> from your
-                    collateral
+                <div v-else-if="decreasedDebt > 0">
+                    You’re removing <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(2) }} fUSD</span>
                 </div>
             </div>
 
@@ -32,7 +29,7 @@
         </tx-confirmation>
         <template v-else>
             <f-message type="info" role="alert" class="big">
-                Adjust collateral first, please.
+                Adjust fUSD first, please.
             </f-message>
         </template>
     </div>
@@ -50,7 +47,7 @@ import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 
 export default {
-    name: 'DefiManageCollateralConfirmation',
+    name: 'DefiMintRepayConfirmation',
 
     components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
@@ -71,29 +68,29 @@ export default {
         },
 
         hasCorrectParams() {
-            return this.params.currCollateral !== this.params.collateral;
+            return this.params.currDebt !== this.params.debt;
         },
 
-        increasedCollateral() {
-            return this.params.currCollateral - this.params.collateral;
+        increasedDebt() {
+            return this.params.currDebt - this.params.debt;
         },
 
-        decreasedCollateral() {
-            return this.params.collateral - this.params.currCollateral;
+        decreasedDebt() {
+            return this.params.debt - this.params.currDebt;
         },
 
         sendButtonLabel() {
-            return this.params.collateral > 0 ? 'Rebalance now' : 'Add collateral';
+            return this.increasedDebt > 0 ? 'Mint now' : 'Repay now';
         },
 
         passwordLabel() {
-            return this.params.collateral > 0
-                ? 'Please enter your wallet password to rebalance your collateral'
-                : 'Please enter your wallet password to add your collateral';
+            return this.params.debt > 0
+                ? 'Please enter your wallet password to rebalance your debt'
+                : 'Please enter your wallet password to add your debt';
         },
 
         backButtonRoute() {
-            const parentNode = getAppParentNode('defi-manage-collateral-confirmation');
+            const parentNode = getAppParentNode('defi-mint-repay-confirmation');
 
             return parentNode ? parentNode.route : '';
         },
@@ -103,9 +100,9 @@ export default {
         this.setTx();
 
         if (!this.hasCorrectParams) {
-            // redirect to <defi-manage-collateral>
+            // redirect to <defi-mint-repay>
             setTimeout(() => {
-                this.$router.replace({ name: 'defi-manage-collateral' });
+                this.$router.replace({ name: 'defi-mint-repay' });
             }, 3000);
         }
     },
@@ -114,25 +111,25 @@ export default {
         async setTx() {
             console.log('setTx');
             /*
-            const { withdrawRequest } = this;
+                const { withdrawRequest } = this;
 
-            this.tx = await this.$fWallet.getSFCTransactionToSign(
-                withdrawRequest.withdrawRequestID
-                    ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                    : sfcUtils.withdrawDelegationTx(),
-                this.currentAccount.address,
-                GAS_LIMITS.withdraw
-            );
-*/
+                this.tx = await this.$fWallet.getSFCTransactionToSign(
+                    withdrawRequest.withdrawRequestID
+                        ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
+                        : sfcUtils.withdrawDelegationTx(),
+                    this.currentAccount.address,
+                    GAS_LIMITS.withdraw
+                );
+    */
         },
 
         onSendTransactionSuccess(_data) {
             this.$router.replace({
-                name: 'defi-manage-collateral-transaction-success-message',
+                name: 'defi-mint-repay-transaction-success-message',
                 params: {
                     tx: _data.data.sendTransaction.hash,
                     title: 'Success',
-                    continueTo: 'defi-manage-collateral',
+                    continueTo: 'defi-mint-repay',
                 },
             });
         },
@@ -145,9 +142,9 @@ export default {
         onChangeComponent(_data) {
             if (_data.to === 'transaction-reject-message') {
                 this.$router.replace({
-                    name: 'defi-manage-collateral-transaction-reject-message',
+                    name: 'defi-mint-repay-transaction-reject-message',
                     params: {
-                        continueTo: 'defi-manage-collateral',
+                        continueTo: 'defi-mint-repay',
                     },
                 });
             }
