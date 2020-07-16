@@ -25,13 +25,17 @@
                     </div>
                 </li>
                 <li class="col-4 col-6-lg">
-                    <div class="menu-item disabled" tabindex="0">
+                    <div class="menu-item" tabindex="0">
                         <h2>fLend</h2>
                         <div class="icon">
                             <icon data="@/assets/svg/defi/flend.svg" width="96" height="96" />
                         </div>
                         <p class="description">Loan your tokens and borrow synths</p>
-                        <div class="title">Coming Soon</div>
+                        <div class="title">
+                            <router-link :to="{ name: 'defi-flend' }" class="clickable title">
+                                Access DeFi
+                            </router-link>
+                        </div>
                     </div>
                 </li>
             </slot>

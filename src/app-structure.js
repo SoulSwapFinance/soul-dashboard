@@ -60,6 +60,16 @@ const appStructure = [
                             },
                         ],
                     },
+                    {
+                        id: 'defi-flend',
+                        route: 'defi-flend',
+                        _c: [
+                            {
+                                id: 'defi-manage-borrow-view',
+                                route: 'defi-manage-borrow-view',
+                            },
+                        ],
+                    },
                 ],
             },
         ],
