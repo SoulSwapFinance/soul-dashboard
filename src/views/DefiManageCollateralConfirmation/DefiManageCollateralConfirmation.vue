@@ -1,7 +1,7 @@
 <template>
     <div class="view-defi-manage-collateral-confirmation">
         <tx-confirmation
-            v-if="params.currCollateral !== params.collateral"
+            v-if="hasCorrectParams"
             :tx="tx"
             card-off
             no-previous-button
@@ -30,7 +30,11 @@
                 <ledger-confirmation-content :to="tx.to" :amount="0" />
             </template>
         </tx-confirmation>
-        <template v-else>Adjust collateral first, please.</template>
+        <template v-else>
+            <f-message type="info" role="alert" class="big">
+                Adjust collateral first, please.
+            </f-message>
+        </template>
     </div>
 </template>
 
@@ -43,11 +47,12 @@ import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
+import FMessage from '../../components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'DefiManageCollateralConfirmation',
 
-    components: { FBackButton, LedgerConfirmationContent, TxConfirmation },
+    components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
     data() {
         return {
@@ -63,6 +68,10 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        hasCorrectParams() {
+            return this.params.currCollateral !== this.params.collateral;
         },
 
         increasedCollateral() {
@@ -92,6 +101,13 @@ export default {
 
     created() {
         this.setTx();
+
+        if (!this.hasCorrectParams) {
+            // redirect to <defi-manage-collateral>
+            setTimeout(() => {
+                this.$router.replace({ name: 'defi-manage-collateral' });
+            }, 3000);
+        }
     },
 
     methods: {
@@ -115,7 +131,7 @@ export default {
                 name: 'defi-manage-collateral-transaction-success-message',
                 params: {
                     tx: _data.data.sendTransaction.hash,
-                    successMessage: 'Successful',
+                    title: 'Successful',
                     continueTo: 'defi-manage-collateral',
                 },
             });
