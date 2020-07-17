@@ -62,7 +62,7 @@
 
     .token-label {
         position: absolute;
-        top: -48px;
+        top: -56px;
         width: 100%;
         text-align: center;
         color: $light-gray-color;
@@ -73,13 +73,19 @@
     .token-selector {
         color: $theme-color;
         cursor: pointer;
+
+        .crypto-logo {
+            width: 32px;
+            height: 32px;
+        }
     }
 
     .defi-price-input {
         input.text-input {
             position: relative;
             z-index: 1;
-            font-size: 96px;
+            //font-size: 96px;
+            font-size: 80px;
         }
     }
 

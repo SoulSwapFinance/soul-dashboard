@@ -240,13 +240,13 @@ form {
     }
 }
 
-.validator-img {
+.inline-img {
     display: inline-block;
     vertical-align: middle;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
     overflow: hidden;
+    margin-right: 4px;
 
     img {
         width: auto;

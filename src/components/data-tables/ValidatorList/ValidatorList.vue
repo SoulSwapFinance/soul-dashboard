@@ -14,14 +14,14 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-6 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
-                            <div class="validator-img">
+                            <div class="inline-img validator-img">
                                 <img v-if="value" :src="value" :alt="item.stakerInfo.name" class="not-fluid" />
                                 <img v-else src="img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
                             </div>
                         </div>
                     </div>
                     <template v-else>
-                        <div class="validator-img">
+                        <div class="inline-img validator-img">
                             <img v-if="value" :src="value" :alt="item.stakerInfo.name" class="not-fluid" />
                             <img v-else src="img/fantom-logo.png" alt="fantom logo" class="not-fluid" />
                         </div>

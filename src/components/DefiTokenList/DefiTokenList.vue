@@ -2,7 +2,7 @@
     <div class="defi-token-list">
         <ul class="no-markers" @click="onTokenListClick" @keyup="onTokenListKeyup">
             <li v-for="token in dTokens" :key="token.address" :data-token-address="token.address" tabindex="0">
-                <span class="crypto-logo">
+                <span class="inline-img crypto-logo">
                     <img
                         v-if="token.logoUrl"
                         :src="token.logoUrl"

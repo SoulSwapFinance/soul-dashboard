@@ -40,9 +40,29 @@
                             aria-label="pick a token"
                             @click="onTokenSelectorClick"
                         >
+                            <span class="inline-img crypto-logo">
+                                <img
+                                    v-if="dToken.logoUrl"
+                                    :src="dToken.logoUrl"
+                                    class="not-fluid"
+                                    :alt="$defi.getTokenSymbol(dToken)"
+                                />
+                            </span>
+
                             {{ tokenSymbol }} <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </button>
-                        <template v-else>{{ tokenSymbol }}</template>
+                        <template v-else>
+                            <span class="inline-img crypto-logo">
+                                <img
+                                    v-if="dToken.logoUrl"
+                                    :src="dToken.logoUrl"
+                                    class="not-fluid"
+                                    :alt="$defi.getTokenSymbol(dToken)"
+                                />
+                            </span>
+
+                            {{ tokenSymbol }}
+                        </template>
                     </div>
 
                     <label :for="`text-input-${id}`" class="not-visible">{{ label }}</label>
@@ -130,13 +150,13 @@
             </button>
         </div>
 
+        <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
+
         <div
             v-if="tmpShow"
             style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
             @click="onTestBtnClick"
         >
-            <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
-
             <h3>Test values</h3>
             <h4>Common values</h4>
             <p>
@@ -200,7 +220,7 @@ export default {
             decreasedDebt: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: true,
+            tmpShow: false,
             tmpValues: {
                 collateral: 0,
                 debt: 0,
@@ -224,7 +244,8 @@ export default {
         },
 
         collateral() {
-            return this.tmpValues.collateral;
+            // return this.tmpValues.collateral;
+            return 0;
         },
 
         collateralInFUSD() {
@@ -232,7 +253,8 @@ export default {
         },
 
         currentPrice() {
-            return formatNumberByLocale(this.tokenPrice, 5, 'USD');
+            // return formatNumberByLocale(this.tokenPrice, 5, 'USD');
+            return formatNumberByLocale(this.$defi.getTokenPrice(this.dToken), 2, 'USD');
         },
 
         borrowLimit() {
@@ -349,8 +371,8 @@ export default {
             }
 
             if (this.token === null) {
-                // get fUSD token
-                this.dToken = tokens.find((_item) => _item.symbol === 'FUSD');
+                // get first token that can be borrowed
+                this.dToken = tokens.find((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
             }
         },
 
@@ -394,6 +416,7 @@ export default {
         },
 
         onDefiTokenPicked(_token) {
+            this.dToken = _token;
             console.log('picked token', _token);
         },
 
