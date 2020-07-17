@@ -203,6 +203,50 @@ export class DeFi {
     }
 
     /**
+     * @param {string} _owner
+     * @return {Promise<Object>}
+     */
+    async getDefiAccount(_owner = '') {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query DefiAccount($owner: Address!) {
+                    defiAccount(owner: $owner) {
+                        address
+                        collateral {
+                            type
+                            tokenAddress
+                            balance
+                            value
+                            token {
+                                symbol
+                            }
+                        }
+                        collateralValue
+                        collateralList
+                        debt {
+                            type
+                            tokenAddress
+                            balance
+                            value
+                            token {
+                                symbol
+                            }
+                        }
+                        debtValue
+                        debtList
+                    }
+                }
+            `,
+            variables: {
+                owner: _owner,
+            },
+            fetchPolicy: 'no-cache',
+        });
+
+        return data.data.defiAccount;
+    }
+
+    /**
      * @param {string} [_to]
      * @return {Promise<Number>}
      */

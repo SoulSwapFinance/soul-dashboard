@@ -345,8 +345,7 @@ export default {
 
             if (!this.singleToken) {
                 // get tokens that are possible to borrow
-                // this.tokens = tokens.filter((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
-                this.tokens = tokens;
+                this.tokens = tokens.filter((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
             }
 
             if (this.token === null) {
