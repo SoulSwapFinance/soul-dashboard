@@ -192,7 +192,7 @@ export default {
         closeToLiquidation() {
             const { $defi } = this;
 
-            return this.mintingLimit > ($defi.dangerRatio / $defi.minCollateralRatio) * 100;
+            return this.mintingLimit > ($defi.warningCollateralRatio / $defi.minCollateralRatio) * 100;
         },
 
         colors() {

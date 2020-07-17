@@ -28,8 +28,9 @@ export class DeFi {
         /** Liquidation collateral ratio. */
         this.liqCollateralRatio = 1.5;
         /** Minimal collateral ratio. */
-        this.minCollateralRatio = 2.5;
-        this.dangerRatio = (this.liqCollateralRatio + this.minCollateralRatio) / 2;
+        this.minCollateralRatio = 3;
+        /** Warning collateral ratio. */
+        this.warningCollateralRatio = 2.25; // (this.liqCollateralRatio + this.minCollateralRatio) / 2;
         /** DeFi settings was loaded. */
         this.settingsLoaded = false;
     }
@@ -41,7 +42,7 @@ export class DeFi {
      * @return {Promise<number>} Token price.
      */
     async init(_priceTo = 'USD') {
-        const promises = [this.getTokenPrice(_priceTo)];
+        const promises = [this.getFTMTokenPrice(_priceTo)];
 
         if (!this.settingsLoaded) {
             promises.push(this.getSettings());
@@ -63,9 +64,11 @@ export class DeFi {
      * @param {DefiSettings} _settings
      */
     initProperties(_settings) {
-        this.liqCollateralRatio = _settings.liqCollateralRatio4 / 10000;
-        this.minCollateralRatio = _settings.minCollateralRatio4 / 10000;
-        this.dangerRatio = (this.liqCollateralRatio + this.minCollateralRatio) / 2;
+        const dec = Math.pow(10, _settings.decimals);
+
+        this.liqCollateralRatio = parseInt(_settings.liqCollateralRatio4, 16) / dec;
+        this.minCollateralRatio = parseInt(_settings.minCollateralRatio4, 16) / dec;
+        this.warningCollateralRatio = parseInt(_settings.warningCollateralRatio4, 16) / dec;
     }
 
     /**
@@ -117,19 +120,10 @@ export class DeFi {
                 color: '#ffaf19',
             },
             {
-                value: (this.dangerRatio / this.minCollateralRatio) * 100,
+                value: (this.warningCollateralRatio / this.minCollateralRatio) * 100,
                 color: '#ff1716',
             },
         ];
-    }
-
-    /**
-     * @param {number} _debt
-     * @param {number} _tokenPrice
-     * @return {number}
-     */
-    getLiquidationCollateral(_debt, _tokenPrice) {
-        return (_debt * this.liqCollateralRatioCollateralRatio) / _tokenPrice;
     }
 
     /**
@@ -150,38 +144,34 @@ export class DeFi {
     }
 
     /**
+     * @param {DefiToken} _token
+     * @return {number}
+     */
+    getTokenPrice(_token) {
+        return _token && 'price' in _token ? parseInt(_token.price, 16) / Math.pow(10, _token.priceDecimals) : 0;
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async getSettings() {
-        /*
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiSettings {
-                    defiSettings {
+                    defiConfiguration {
                         tradeFee4
                         loanFee4
                         minCollateralRatio4
+                        warningCollateralRatio4
                         liqCollateralRatio4
+                        decimals
                     }
                 }
             `,
             fetchPolicy: 'no-cache',
         });
 
-        return data.data.defiSettings || {};
-        */
-
-        // temporary data
-        return new Promise(function (_resolve) {
-            setTimeout(() => {
-                _resolve({
-                    minCollateralRatio4: 30000,
-                    liqCollateralRatio4: 15000,
-                    tradeFee4: 0,
-                    loanFee4: 0,
-                });
-            }, 200);
-        });
+        return data.data.defiConfiguration || {};
     }
 
     /**
@@ -210,63 +200,13 @@ export class DeFi {
         });
 
         return data.data.defiTokens || [];
-
-        // temporary data
-        /*
-        return new Promise(function (_resolve) {
-            setTimeout(() => {
-                _resolve([
-                    {
-                        address: '0xffffffffffffffffffffffffffffffffffffffff',
-                        name: 'Native Fantom',
-                        symbol: 'FTM',
-                        decimals: 8,
-                        isActive: true,
-                        canDeposit: true,
-                        canBorrow: false,
-                        canTrade: false,
-                    },
-                    {
-                        address: '0x8019db8a3ff1887d047f2dc1c7265ea8dab1ca80',
-                        name: 'Fantom USD',
-                        symbol: 'FUSD',
-                        decimals: 8,
-                        isActive: true,
-                        canDeposit: true,
-                        canBorrow: true,
-                        canTrade: false,
-                    },
-                    {
-                        address: '0x7c64609b1b1d787a207b76632bcb97082dbd990d',
-                        name: 'Fantom ETH Synth',
-                        symbol: 'FETH',
-                        decimals: 8,
-                        isActive: true,
-                        canDeposit: true,
-                        canBorrow: true,
-                        canTrade: true,
-                    },
-                    {
-                        address: '0x05d3cf8bed38aa08f6e2a62d6ebb01317176e422',
-                        name: 'Fantom BTC Synth',
-                        symbol: 'FBTC',
-                        decimals: 8,
-                        isActive: true,
-                        canDeposit: true,
-                        canBorrow: true,
-                        canTrade: true,
-                    },
-                ]);
-            }, 200);
-        });
-*/
     }
 
     /**
      * @param {string} [_to]
      * @return {Promise<Number>}
      */
-    async getTokenPrice(_to = 'USD') {
+    async getFTMTokenPrice(_to = 'USD') {
         const data = await this.apolloClient.query({
             query: gql`
                 query Price($to: String!) {
