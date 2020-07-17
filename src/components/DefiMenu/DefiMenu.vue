@@ -15,16 +15,6 @@
                     </div>
                 </li>
                 <li class="col-4 col-6-lg">
-                    <div class="menu-item disabled" tabindex="0">
-                        <h2>fTrade</h2>
-                        <div class="icon">
-                            <icon data="@/assets/svg/defi/ftrade.svg" width="96" height="96" />
-                        </div>
-                        <p class="description">Trade synthetic assets to FTM and fUSD</p>
-                        <div class="title">Coming Soon</div>
-                    </div>
-                </li>
-                <li class="col-4 col-6-lg">
                     <div class="menu-item" tabindex="0">
                         <h2>fLend</h2>
                         <div class="icon">
@@ -36,6 +26,16 @@
                                 Access DeFi
                             </router-link>
                         </div>
+                    </div>
+                </li>
+                <li class="col-4 col-6-lg">
+                    <div class="menu-item disabled" tabindex="0">
+                        <h2>fTrade</h2>
+                        <div class="icon">
+                            <icon data="@/assets/svg/defi/ftrade.svg" width="96" height="96" />
+                        </div>
+                        <p class="description">Trade synthetic assets to FTM and fUSD</p>
+                        <div class="title">Coming Soon</div>
                     </div>
                 </li>
             </slot>

@@ -1,5 +1,6 @@
 import './defi.types.js';
 import gql from 'graphql-tag';
+import { lowercaseFirstChar } from '../../utils';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -141,6 +142,14 @@ export class DeFi {
     }
 
     /**
+     * @param {DefiToken} _token
+     * @return {string}
+     */
+    getTokenSymbol(_token) {
+        return _token && _token.symbol ? lowercaseFirstChar(_token.symbol) : '';
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async getSettings() {
@@ -176,7 +185,7 @@ export class DeFi {
     }
 
     /**
-     * @return {Promise<DefiTokens[]>}
+     * @return {Promise<DefiToken[]>}
      */
     async getTokens() {
         /*

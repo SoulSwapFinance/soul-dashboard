@@ -4,7 +4,7 @@
 
         <h2 class="perex">Earn interest on loans. Borrow tokens to trade.</h2>
 
-        <button class="btn large" @click="onBorrowClick">Borrow</button>
+        <button class="btn large" @click="onBorrowClick">Borrow assets</button>
     </div>
 </template>
 

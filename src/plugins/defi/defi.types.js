@@ -9,7 +9,7 @@
 
 /**
  * DeFi tokens object.
- * @typedef {Object} DefiTokens
+ * @typedef {Object} DefiToken
  * @property {string} address Address of the token is used as the token's unique identifier.
  * @property {string} name Name of the token.
  * @property {string} symbol Symbol used as an abbreviation for the token.
