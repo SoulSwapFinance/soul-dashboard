@@ -1,15 +1,15 @@
 <template>
     <div class="defi-token-list">
-        <ul class="no-markers" @click="onTokenListClick">
+        <ul class="no-markers" @click="onTokenListClick" @keyup="onTokenListKeyup">
             <li v-for="token in dTokens" :key="token.address" :data-token-address="token.address" tabindex="0">
-                <icon
-                    v-if="cryptoLogos[token.symbol]"
-                    :data="cryptoLogos[token.symbol]"
-                    width="24"
-                    height="24"
-                    original
-                    aria-hidden="true"
-                />
+                <span class="crypto-logo">
+                    <img
+                        v-if="token.logoUrl"
+                        :src="token.logoUrl"
+                        class="not-fluid"
+                        :alt="$defi.getTokenSymbol(token)"
+                    />
+                </span>
                 {{ $defi.getTokenSymbol(token) }}
             </li>
         </ul>
@@ -18,8 +18,7 @@
 
 <script>
 import { cloneObject } from '../../utils';
-import ethIcon from '../../assets/svg/crypto-logos/eth.svg';
-import btcIcon from '../../assets/svg/crypto-logos/btc.svg';
+import { isAriaAction } from '../../utils/aria.js';
 
 export default {
     name: 'DefiTokenList',
@@ -37,18 +36,12 @@ export default {
     data() {
         return {
             dTokens: [],
-            /** Keys are token symbols. */
-            cryptoLogos: {
-                FETH: ethIcon,
-                FBTC: btcIcon,
-            },
         };
     },
 
     watch: {
         tokens(_value) {
             this.setDTokens(_value);
-            console.log(_value);
         },
     },
 
@@ -74,6 +67,15 @@ export default {
 
             if (token) {
                 this.$emit('defi-token-picked', cloneObject(token));
+            }
+        },
+
+        /**
+         * @param {KeyboardEvent} _event
+         */
+        onTokenListKeyup(_event) {
+            if (isAriaAction(_event)) {
+                this.onTokenListClick(_event);
             }
         },
     },

@@ -33,6 +33,18 @@
             </div>
             <div class="defi-price-input-col align-center">
                 <div class="defi-price-input">
+                    <div class="token-label">
+                        <button
+                            v-if="!singleToken"
+                            class="token-selector no-style"
+                            aria-label="pick a token"
+                            @click="onTokenSelectorClick"
+                        >
+                            {{ tokenSymbol }} <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
+                        </button>
+                        <template v-else>{{ tokenSymbol }}</template>
+                    </div>
+
                     <label :for="`text-input-${id}`" class="not-visible">{{ label }}</label>
                     <input
                         :id="`text-input-${id}`"
@@ -64,12 +76,6 @@
                         </div>
                     </div>
 
-                    <div class="token-label">
-                        <div v-if="!singleToken" class="token-selector" @click="onTokenSelectorClick">
-                            {{ tokenSymbol }} <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
-                        </div>
-                        <template v-else>{{ tokenSymbol }}</template>
-                    </div>
                     <div class="token-info">
                         <div class="token-info-label">Decrease {{ tokenSymbol }}</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
@@ -129,6 +135,8 @@
             style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
             @click="onTestBtnClick"
         >
+            <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
+
             <h3>Test values</h3>
             <h4>Common values</h4>
             <p>
@@ -157,6 +165,7 @@ import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '../../filters.js';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -164,7 +173,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 export default {
     name: 'DefiManageBorrow',
 
-    components: { FMessage, FColoredNumberRange, FSlider, FCircleProgress },
+    components: { DefiTokenPickerWindow, FMessage, FColoredNumberRange, FSlider, FCircleProgress },
 
     props: {
         /** @type {DefiToken} */
@@ -184,6 +193,7 @@ export default {
     data() {
         return {
             dToken: {},
+            tokens: [],
             currDebt: '0',
             tokenPrice: 0,
             increasedDebt: 0,
@@ -331,14 +341,18 @@ export default {
 
     methods: {
         async init() {
-            if (this.token === null) {
-                this.dToken = await this.getFUSDToken();
-            }
-        },
-
-        async getFUSDToken() {
             const tokens = await this.$defi.getTokens();
-            return tokens.find((_item) => _item.symbol === 'FUSD');
+
+            if (!this.singleToken) {
+                // get tokens that are possible to borrow
+                // this.tokens = tokens.filter((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
+                this.tokens = tokens;
+            }
+
+            if (this.token === null) {
+                // get fUSD token
+                this.dToken = tokens.find((_item) => _item.symbol === 'FUSD');
+            }
         },
 
         formatInputValue(_value) {
@@ -377,7 +391,11 @@ export default {
         },
 
         onTokenSelectorClick() {
-            alert('not implemented yet');
+            this.$refs.pickTokenWindow.show();
+        },
+
+        onDefiTokenPicked(_token) {
+            console.log('picked token', _token);
         },
 
         onResetBtnClick() {

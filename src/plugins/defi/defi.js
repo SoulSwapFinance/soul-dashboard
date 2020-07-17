@@ -188,7 +188,6 @@ export class DeFi {
      * @return {Promise<DefiToken[]>}
      */
     async getTokens() {
-        /*
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiTokens {
@@ -196,7 +195,10 @@ export class DeFi {
                         address
                         name
                         symbol
+                        logoUrl
                         decimals
+                        price
+                        priceDecimals
                         isActive
                         canDeposit
                         canBorrow
@@ -208,9 +210,9 @@ export class DeFi {
         });
 
         return data.data.defiTokens || [];
-        */
 
         // temporary data
+        /*
         return new Promise(function (_resolve) {
             setTimeout(() => {
                 _resolve([
@@ -257,6 +259,7 @@ export class DeFi {
                 ]);
             }, 200);
         });
+*/
     }
 
     /**

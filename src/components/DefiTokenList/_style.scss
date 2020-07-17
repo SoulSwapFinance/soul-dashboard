@@ -8,12 +8,22 @@
         font-weight: bold;
         border-radius: $input-border-radius;
 
-        > svg {
-            margin-right: 4px;
-        }
-
         &:hover {
             background-color: #ccddff;
+        }
+    }
+
+    .crypto-logo {
+        display: inline-block;
+        vertical-align: middle;
+        width: 40px;
+        height: 40px;
+        overflow: hidden;
+        margin-right: 8px;
+
+        img {
+            width: auto;
+            max-height: 100%;
         }
     }
 }
