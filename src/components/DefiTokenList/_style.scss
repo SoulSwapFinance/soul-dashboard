@@ -1,0 +1,19 @@
+@import "../../assets/scss/vars";
+
+.defi-token-list {
+    ul > li {
+        padding: 8px;
+        margin-bottom: 2px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: $input-border-radius;
+
+        > svg {
+            margin-right: 4px;
+        }
+
+        &:hover {
+            background-color: #ccddff;
+        }
+    }
+}
