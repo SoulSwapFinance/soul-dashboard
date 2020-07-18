@@ -4,7 +4,7 @@
             ref="win"
             modal
             style="max-width: 400px;"
-            title="Select Token"
+            title="Select"
             class="account-picker-f-window"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"

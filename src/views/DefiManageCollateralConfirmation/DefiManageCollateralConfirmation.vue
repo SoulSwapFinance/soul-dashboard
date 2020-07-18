@@ -41,13 +41,13 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
-// import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
-import { toFTM } from '../../utils/transactions.js';
+import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'DefiManageCollateralConfirmation',
@@ -64,6 +64,9 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
+        /**
+         * @return {{collateral: number, currCollateral: number, address: string}}
+         */
         params() {
             const { $route } = this;
 
@@ -100,30 +103,47 @@ export default {
     },
 
     created() {
-        this.setTx();
-
         if (!this.hasCorrectParams) {
             // redirect to <defi-manage-collateral>
             setTimeout(() => {
                 this.$router.replace({ name: 'defi-manage-collateral' });
             }, 3000);
+        } else {
+            this.setTx();
         }
     },
 
     methods: {
         async setTx() {
-            console.log('setTx');
-            /*
-            const { withdrawRequest } = this;
+            /** @type {DefiToken} */
+            const token = await this.$defi.getTokens('FTM');
+            const contractAddress = appConfig.liquidityPoolContract;
+            let txToSign;
 
-            this.tx = await this.$fWallet.getSFCTransactionToSign(
-                withdrawRequest.withdrawRequestID
-                    ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                    : sfcUtils.withdrawDelegationTx(),
+            if (!token) {
+                return;
+            }
+
+            if (this.increasedCollateral > 0) {
+                txToSign = defiUtils.defiDepositTokenTx(
+                    contractAddress,
+                    token.address,
+                    Web3.utils.toHex(Web3.utils.toWei(this.increasedCollateral.toString()))
+                );
+            } else {
+                txToSign = defiUtils.defiWithdrawDepositedTokenTx(
+                    contractAddress,
+                    token.address,
+                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedCollateral.toString()))
+                    // parseInt(this.decreasedCollateral * Math.pow(10, token.decimals))
+                );
+            }
+
+            this.tx = await this.$fWallet.getDefiTransactionToSign(
+                txToSign,
                 this.currentAccount.address,
-                GAS_LIMITS.withdraw
+                GAS_LIMITS.defi
             );
-*/
         },
 
         onSendTransactionSuccess(_data) {
@@ -153,7 +173,7 @@ export default {
             }
         },
 
-        toFTM,
+        // toFTM,
     },
 };
 </script>

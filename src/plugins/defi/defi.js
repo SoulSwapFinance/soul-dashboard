@@ -175,9 +175,10 @@ export class DeFi {
     }
 
     /**
+     * @param {string} [_symbol]
      * @return {Promise<DefiToken[]>}
      */
-    async getTokens() {
+    async getTokens(_symbol) {
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiTokens {
@@ -198,8 +199,9 @@ export class DeFi {
             `,
             fetchPolicy: 'no-cache',
         });
+        const tokens = data.data.defiTokens || [];
 
-        return data.data.defiTokens || [];
+        return _symbol ? tokens.find((_item) => _item.symbol === _symbol) : tokens;
     }
 
     /**

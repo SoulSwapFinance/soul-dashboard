@@ -144,7 +144,7 @@
 
         <div class="buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                <template v-if="submitDisabled">Mint or Repay now</template>
+                <template v-if="submitDisabled">Submit</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">Mint {{ increasedDebt.toFixed(2) }} now</template>
                 <template v-else>Repay {{ decreasedDebt.toFixed(2) }} now</template>
             </button>

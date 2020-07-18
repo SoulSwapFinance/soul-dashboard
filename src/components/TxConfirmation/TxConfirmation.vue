@@ -45,6 +45,7 @@ import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import appConfig from '../../../app.config.js';
 
 /**
  * Base component for other 'transaction confirmation and send' components.
@@ -163,7 +164,11 @@ export default {
 
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
-                // console.log('tx', this.tx);
+                if (appConfig.useTestnet) {
+                    this.tx.chainId = appConfig.testnet.chainId;
+                }
+
+                console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;
