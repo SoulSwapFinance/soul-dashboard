@@ -10,7 +10,7 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available balance</h3>
-                    <div class="value">{{ availableFTM }} <span class="currency">FTM</span></div>
+                    <div class="value">{{ formatNumberByLocale(availableFTM) }} <span class="currency">FTM</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked balance</h3>
@@ -147,15 +147,15 @@
 
 <script>
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
-import { filtersOptions, formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
-// import { toFTM } from '../../utils/transactions.js';
+import { WEIToFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
 import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
+import { formatNumberByLocale } from '../../filters.js';
 
 export default {
     name: 'DefiManageCollateral',
@@ -164,6 +164,11 @@ export default {
 
     data() {
         return {
+            defiAccount: {
+                collateral: [],
+                debt: [],
+            },
+            token: null,
             currCollateral: '0',
             message: '',
             tokenPrice: 0,
@@ -171,7 +176,7 @@ export default {
             decreasedCollateral: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: true,
+            tmpShow: false,
             tmpValues: {
                 availableFTM: 10000,
                 collateral: 0,
@@ -200,6 +205,21 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
+            return this.$defi.getDefiAccountDebt(this.defiAccount, this.token);
+        },
+
+        collateral() {
+            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.token);
+        },
+
+        availableFTM() {
+            const available = this.currentAccount ? this.currentAccount.balance : 0;
+
+            return WEIToFTM(available);
+        },
+
+        /*
+        debt() {
             return this.tmpValues.debt;
         },
 
@@ -208,22 +228,9 @@ export default {
         },
 
         availableFTM() {
-            /*
-            const available = this.currentAccount ? this.currentAccount.balance : 0;
-
-            return parseFloat(toFTM(available));
-            */
-
             return this.tmpValues.availableFTM;
         },
-
-        currentPrice() {
-            return formatNumberByLocale(this.tokenPrice, 5, filtersOptions.currency);
-        },
-
-        liquidationPrice() {
-            return '-';
-        },
+        */
 
         maxMintable() {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
@@ -340,7 +347,10 @@ export default {
                 $defi.init(),
             ]);
 
-            this.tokenPrice = $defi.getTokenPrice(result[1]);
+            this.defiAccount = result[0];
+            this.token = result[1];
+            this.tokenPrice = $defi.getTokenPrice(this.token);
+
             this.tmpTokenPrice = this.tokenPrice;
         },
 
@@ -392,6 +402,8 @@ export default {
         onResetBtnClick() {
             this.updateCurrCollateral();
         },
+
+        formatNumberByLocale,
 
         _setTmpValues(_values) {
             this.tmpValues = {
