@@ -333,7 +333,14 @@ export default {
 
     methods: {
         async init() {
-            this.tokenPrice = await this.$defi.init('USD');
+            const { $defi } = this;
+            const result = await Promise.all([
+                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchTokens('FTM'),
+                $defi.init(),
+            ]);
+
+            this.tokenPrice = $defi.getTokenPrice(result[1]);
             this.tmpTokenPrice = this.tokenPrice;
         },
 

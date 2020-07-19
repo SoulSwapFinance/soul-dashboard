@@ -241,13 +241,16 @@ export default {
     methods: {
         async init() {
             const { $defi } = this;
+            const result = await Promise.all([
+                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchTokens('FTM'),
+                $defi.init(),
+            ]);
 
-            this.tokenPrice = await $defi.init('USD');
-
-            this.defiAccount = await $defi.getDefiAccount(this.currentAccount.address);
-            this.ftmToken = await $defi.getTokens('FTM');
+            this.defiAccount = result[0];
+            this.ftmToken = result[1];
             this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
-            // console.log('deif', this.defiAccount, this.ftmToken, this.tokenPrice);
+            console.log('deif!', this.defiAccount, this.ftmToken, this.tokenPrice);
 
             this.tmpTokenPrice = this.tokenPrice;
         },

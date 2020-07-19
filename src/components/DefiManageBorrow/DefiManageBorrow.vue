@@ -346,15 +346,18 @@ export default {
 
         async dToken(_value) {
             if (_value) {
-                // TMP
-                this.tokenPrice = await this.$defi.init('USD');
+                this.tokenPrice = this.$defi.getTokenPrice(_value);
+
                 this.tmpTokenPrice = this.tokenPrice;
             }
         },
     },
 
     async created() {
-        this.dToken = this.token;
+        if (this.token) {
+            this.dToken = this.token;
+        }
+
         this.currDebt = this.debt.toString();
         this.updateMessage();
 
@@ -363,16 +366,22 @@ export default {
 
     methods: {
         async init() {
-            const tokens = await this.$defi.getTokens();
+            const { $defi } = this;
+            const result = await Promise.all([
+                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchTokens(),
+                $defi.init(),
+            ]);
+            const tokens = result[1];
 
             if (!this.singleToken) {
                 // get tokens that are possible to borrow
-                this.tokens = tokens.filter((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
+                this.tokens = tokens.filter($defi.canTokenBeBorrowed);
             }
 
             if (this.token === null) {
                 // get first token that can be borrowed
-                this.dToken = tokens.find((_item) => _item.isActive && _item.canBorrow && _item.symbol !== 'FUSD');
+                this.dToken = tokens.find($defi.canTokenBeBorrowed);
             }
         },
 

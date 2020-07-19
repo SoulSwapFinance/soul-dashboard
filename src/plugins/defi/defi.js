@@ -36,26 +36,15 @@ export class DeFi {
     }
 
     /**
-     * Get token price and load settings if it's necessary.
+     * Load settings if it's necessary.
      *
-     * @param {string} _priceTo
-     * @return {Promise<number>} Token price.
+     * @return {Promise}
      */
-    async init(_priceTo = 'USD') {
-        const promises = [this.getFTMTokenPrice(_priceTo)];
-
-        if (!this.settingsLoaded) {
-            promises.push(this.getSettings());
-        }
-
-        const res = await Promise.all(promises);
-
+    async init() {
         if (!this.settingsLoaded) {
             this.settingsLoaded = true;
-            this.initProperties(res[1]);
+            this.initProperties(await this.fetchSettings());
         }
-
-        return res[0];
     }
 
     /**
@@ -194,9 +183,17 @@ export class DeFi {
     }
 
     /**
+     * @param {DefiToken} _token
+     * @return {boolean}
+     */
+    canTokenBeBorrowed(_token) {
+        return _token && _token.isActive && _token.canBorrow && _token.symbol !== 'FUSD';
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
-    async getSettings() {
+    async fetchSettings() {
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiSettings {
@@ -220,7 +217,7 @@ export class DeFi {
      * @param {string} [_symbol]
      * @return {Promise<DefiToken[]>}
      */
-    async getTokens(_symbol) {
+    async fetchTokens(_symbol) {
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiTokens {
@@ -250,7 +247,7 @@ export class DeFi {
      * @param {string} _owner
      * @return {Promise<Object>}
      */
-    async getDefiAccount(_owner = '') {
+    async fetchDefiAccount(_owner = '') {
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiAccount($owner: Address!) {
@@ -294,7 +291,7 @@ export class DeFi {
      * @param {string} [_to]
      * @return {Promise<Number>}
      */
-    async getFTMTokenPrice(_to = 'USD') {
+    async fetchFTMTokenPrice(_to = 'USD') {
         const data = await this.apolloClient.query({
             query: gql`
                 query Price($to: String!) {
