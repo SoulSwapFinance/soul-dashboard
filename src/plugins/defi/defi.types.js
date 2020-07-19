@@ -10,7 +10,7 @@
  */
 
 /**
- * DeFi tokens object.
+ * DeFi token object.
  * @typedef {Object} DefiToken
  * @property {string} address Address of the token is used as the token's unique identifier.
  * @property {string} name Name of the token.
@@ -23,4 +23,25 @@
  * @property {boolean} canDeposit Signals if the token can be used in deposit as a collateral asset.
  * @property {boolean} canBorrow Signals if the token is available for FLend borrow operations.
  * @property {boolean} canTrade Signals if the token is available for FTrade direct trading operations.
+ */
+
+/**
+ * DeFi token balance object.
+ * @typedef {Object} DefiTokenBalance
+ * @property {string} tokenAddress Unique identifier of the token.
+ * @property {DefiToken} token
+ * @property {string} balance Balance of the token on the account.
+ * @property {string} value value of the current balance of the token on the account in ref. denomination (fUSD).
+ */
+
+/**
+ * DeFi account object.
+ * @typedef {Object} DefiAccount
+ * @property {string} address Address of the DeFi account.
+ * @property {DefiTokenBalance[]} collateral List of all collateral assets.
+ * @property {string} collateralValue Current collateral value in ref. denomination (fUSD).
+ * @property {string[]} collateralList List of all collateral tokens linked with the account.
+ * @property {DefiTokenBalance[]} debt List of all the current borrowed tokens.
+ * @property {string} debtValue Current debt value in ref. denomination (fUSD).
+ * @property {string[]} debtList List of all debt tokens linked with the account.
  */

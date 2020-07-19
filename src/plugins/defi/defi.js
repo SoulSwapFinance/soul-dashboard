@@ -152,6 +152,48 @@ export class DeFi {
     }
 
     /**
+     * Get defi account debt by token.
+     *
+     * @param {DefiAccount} _account
+     * @param {DefiToken} _token
+     * @return {number}
+     */
+    getDefiAccountDebt(_account, _token) {
+        let debt = 0;
+        let acountDebt;
+
+        if (_token && _account && _account.debt && _account.debt.length > 0) {
+            acountDebt = _account.debt.find((_item) => _item.tokenAddress === _token.address);
+            if (acountDebt) {
+                debt = acountDebt.value;
+            }
+        }
+
+        return debt;
+    }
+
+    /**
+     * Get defi account collateral by token.
+     *
+     * @param {DefiAccount} _account
+     * @param {DefiToken} _token
+     * @return {number}
+     */
+    getDefiAccountCollateral(_account, _token) {
+        let collateral = 0;
+        let acountCollateral;
+
+        if (_token && _account && _account.collateral && _account.collateral.length > 0) {
+            acountCollateral = _account.collateral.find((_item) => _item.tokenAddress === _token.address);
+            if (acountCollateral) {
+                collateral = acountCollateral.value;
+            }
+        }
+
+        return collateral;
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async getSettings() {
