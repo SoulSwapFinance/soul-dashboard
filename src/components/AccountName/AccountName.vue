@@ -5,10 +5,23 @@
             <!--            <span class="an-address">{{ account.address | formatHash }}</span>-->
             <slot name="suffix"></slot>
 
-            <a v-if="addressAsLink" :href="addressUrl" target="_blank">
-                <f-ellipsis :text="account.address" overflow="middle" :align-right="alignRight" class="an-address" />
-            </a>
-            <f-ellipsis v-else :text="account.address" overflow="middle" :align-right="alignRight" class="an-address" />
+            <template v-if="!hideAddress">
+                <a v-if="addressAsLink" :href="addressUrl" target="_blank">
+                    <f-ellipsis
+                        :text="account.address"
+                        overflow="middle"
+                        :align-right="alignRight"
+                        class="an-address"
+                    />
+                </a>
+                <f-ellipsis
+                    v-else
+                    :text="account.address"
+                    overflow="middle"
+                    :align-right="alignRight"
+                    class="an-address"
+                />
+            </template>
         </template>
         <template v-else>
             <a v-if="addressAsLink" :href="addressUrl" target="_blank">
@@ -48,6 +61,11 @@ export default {
         },
         /** Use link to address detail. */
         addressAsLink: {
+            type: Boolean,
+            default: false,
+        },
+        /** Hide address when account name exists. */
+        hideAddress: {
             type: Boolean,
             default: false,
         },
