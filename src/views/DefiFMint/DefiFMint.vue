@@ -137,8 +137,13 @@ export default {
     data() {
         return {
             tokenPrice: 0,
+            defiAccount: {
+                collateral: [],
+                debt: [],
+            },
+            ftmToken: null,
             id: getUniqueId(),
-            tmpShow: true,
+            tmpShow: false,
             tmpTokenPrice: 0,
             tmpValues: {
                 collateral: 0,
@@ -158,12 +163,22 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
+            return this.$defi.getDefiAccountDebt(this.defiAccount, this.ftmToken);
+        },
+
+        collateral() {
+            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+        },
+
+        /*
+        debt() {
             return this.tmpValues.debt;
         },
 
         collateral() {
             return this.tmpValues.collateral;
         },
+        */
 
         availableFTM() {
             const available = this.currentAccount ? this.currentAccount.balance : 0;
@@ -225,7 +240,15 @@ export default {
 
     methods: {
         async init() {
-            this.tokenPrice = await this.$defi.init('USD');
+            const { $defi } = this;
+
+            this.tokenPrice = await $defi.init('USD');
+
+            this.defiAccount = await $defi.getDefiAccount(this.currentAccount.address);
+            this.ftmToken = await $defi.getTokens('FTM');
+            this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
+            // console.log('deif', this.defiAccount, this.ftmToken, this.tokenPrice);
+
             this.tmpTokenPrice = this.tokenPrice;
         },
 
