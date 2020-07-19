@@ -137,10 +137,12 @@ export default {
     data() {
         return {
             tokenPrice: 0,
+            /** @type {DefiAccount} */
             defiAccount: {
                 collateral: [],
                 debt: [],
             },
+            /** @type {DefiToken} */
             ftmToken: null,
             id: getUniqueId(),
             tmpShow: false,
@@ -163,7 +165,8 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return this.$defi.getDefiAccountDebt(this.defiAccount, this.ftmToken).value || 0;
+            // overall debt
+            return this.defiAccount.debtValue;
         },
 
         collateral() {
@@ -250,7 +253,6 @@ export default {
             this.defiAccount = result[0];
             this.ftmToken = result[1];
             this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
-            console.log('deif!', this.defiAccount, this.ftmToken, this.tokenPrice);
 
             this.tmpTokenPrice = this.tokenPrice;
         },

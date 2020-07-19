@@ -245,7 +245,7 @@ export class DeFi {
 
     /**
      * @param {string} _owner
-     * @return {Promise<Object>}
+     * @return {Promise<DefiAccount>}
      */
     async fetchDefiAccount(_owner = '') {
         const data = await this.apolloClient.query({
@@ -283,8 +283,14 @@ export class DeFi {
             },
             fetchPolicy: 'no-cache',
         });
+        /** @type {DefiAccount} */
+        const { defiAccount } = data.data;
 
-        return data.data.defiAccount;
+        // tmp
+        defiAccount.debtValue = parseInt(defiAccount.debtValue, 16);
+        defiAccount.collateralValue = parseInt(defiAccount.collateralValue, 16);
+
+        return defiAccount;
     }
 
     /**

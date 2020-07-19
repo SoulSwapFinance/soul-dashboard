@@ -164,11 +164,15 @@ export default {
 
     data() {
         return {
+            /** @type {DefiAccount} */
             defiAccount: {
                 collateral: [],
                 debt: [],
             },
+            /** @type {DefiToken} */
             token: null,
+            /** @type {DefiToken[]} */
+            tokens: [],
             currCollateral: '0',
             message: '',
             tokenPrice: 0,
@@ -205,7 +209,12 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return this.$defi.getDefiAccountDebt(this.defiAccount, this.token).value || 0;
+            return (
+                this.$defi.getDefiAccountDebt(
+                    this.defiAccount,
+                    this.tokens.find((_item) => _item.symbol === 'FUSD')
+                ).value || 0
+            );
         },
 
         collateral() {
@@ -343,12 +352,13 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchDefiAccount(this.currentAccount.address),
-                $defi.fetchTokens('FTM'),
+                $defi.fetchTokens(),
                 $defi.init(),
             ]);
 
             this.defiAccount = result[0];
-            this.token = result[1];
+            this.tokens = result[1];
+            this.token = this.tokens.find((_item) => _item.symbol === 'FTM');
             this.tokenPrice = $defi.getTokenPrice(this.token);
 
             this.tmpTokenPrice = this.tokenPrice;
