@@ -205,11 +205,11 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return this.$defi.getDefiAccountDebt(this.defiAccount, this.token);
+            return this.$defi.getDefiAccountDebt(this.defiAccount, this.token).value || 0;
         },
 
         collateral() {
-            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.token);
+            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.token).balance || 0;
         },
 
         availableFTM() {

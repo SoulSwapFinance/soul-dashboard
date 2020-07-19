@@ -163,11 +163,11 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return this.$defi.getDefiAccountDebt(this.defiAccount, this.ftmToken);
+            return this.$defi.getDefiAccountDebt(this.defiAccount, this.ftmToken).value || 0;
         },
 
         collateral() {
-            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken).balance || 0;
         },
 
         /*

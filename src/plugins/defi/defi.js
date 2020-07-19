@@ -145,7 +145,7 @@ export class DeFi {
      *
      * @param {DefiAccount} _account
      * @param {DefiToken} _token
-     * @return {number}
+     * @return {DefiTokenBalance|{}}
      */
     getDefiAccountDebt(_account, _token) {
         let debt = 0;
@@ -154,7 +154,7 @@ export class DeFi {
         if (_token && _account && _account.debt && _account.debt.length > 0) {
             acountDebt = _account.debt.find((_item) => _item.tokenAddress === _token.address);
             if (acountDebt) {
-                debt = acountDebt.value;
+                debt = acountDebt;
             }
         }
 
@@ -166,7 +166,7 @@ export class DeFi {
      *
      * @param {DefiAccount} _account
      * @param {DefiToken} _token
-     * @return {number}
+     * @return {DefiTokenBalance|{}}
      */
     getDefiAccountCollateral(_account, _token) {
         let collateral = 0;
@@ -175,7 +175,7 @@ export class DeFi {
         if (_token && _account && _account.collateral && _account.collateral.length > 0) {
             acountCollateral = _account.collateral.find((_item) => _item.tokenAddress === _token.address);
             if (acountCollateral) {
-                collateral = acountCollateral.value;
+                collateral = acountCollateral;
             }
         }
 

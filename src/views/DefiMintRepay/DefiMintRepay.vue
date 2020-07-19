@@ -171,13 +171,18 @@ export default {
 
     data() {
         return {
+            defiAccount: {
+                collateral: [],
+                debt: [],
+            },
+            token: null,
             currDebt: '0',
             tokenPrice: 0,
             increasedDebt: 0,
             decreasedDebt: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: true,
+            tmpShow: false,
             tmpValues: {
                 collateral: 0,
                 debt: 0,
@@ -197,12 +202,22 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
+            return this.$defi.getDefiAccountDebt(this.defiAccount, this.token).value || 0;
+        },
+
+        collateral() {
+            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.token).balance || 0;
+        },
+
+        /*
+        debt() {
             return this.tmpValues.debt;
         },
 
         collateral() {
             return this.tmpValues.collateral;
         },
+        */
 
         currentPrice() {
             return formatNumberByLocale(this.tokenPrice, 5, 'USD');
@@ -308,7 +323,10 @@ export default {
                 $defi.init(),
             ]);
 
-            this.tokenPrice = $defi.getTokenPrice(result[1]);
+            this.defiAccount = result[0];
+            this.token = result[1];
+            this.tokenPrice = $defi.getTokenPrice(this.token);
+
             this.tmpTokenPrice = this.tokenPrice;
         },
 
