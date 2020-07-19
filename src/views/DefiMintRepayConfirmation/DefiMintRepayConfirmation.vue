@@ -38,13 +38,14 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
-// import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import appConfig from '../../../app.config.js';
+import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 
 export default {
     name: 'DefiMintRepayConfirmation',
@@ -61,6 +62,9 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
+        /**
+         * @return {{debt: number, currDebt: number, address: string}}
+         */
         params() {
             const { $route } = this;
 
@@ -97,30 +101,47 @@ export default {
     },
 
     created() {
-        this.setTx();
-
         if (!this.hasCorrectParams) {
             // redirect to <defi-mint-repay>
             setTimeout(() => {
                 this.$router.replace({ name: 'defi-mint-repay' });
             }, 3000);
+        } else {
+            this.setTx();
         }
     },
 
     methods: {
         async setTx() {
-            console.log('setTx');
-            /*
-                const { withdrawRequest } = this;
+            /** @type {DefiToken} */
+            const token = await this.$defi.fetchTokens('FUSD');
+            const contractAddress = appConfig.liquidityPoolContract;
+            let txToSign;
 
-                this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    withdrawRequest.withdrawRequestID
-                        ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                        : sfcUtils.withdrawDelegationTx(),
-                    this.currentAccount.address,
-                    GAS_LIMITS.withdraw
+            if (!token) {
+                return;
+            }
+
+            if (this.increasedDebt > 0) {
+                txToSign = defiUtils.defiBorrowTokenTx(
+                    contractAddress,
+                    token.address,
+                    Web3.utils.toHex(Web3.utils.toWei(this.increasedDebt.toString()))
                 );
-    */
+            } else {
+                txToSign = defiUtils.defiRepayTokenTx(
+                    contractAddress,
+                    token.address,
+                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString()))
+                    // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
+                );
+            }
+
+            this.tx = await this.$fWallet.getDefiTransactionToSign(
+                txToSign,
+                this.currentAccount.address,
+                GAS_LIMITS.defi
+            );
         },
 
         onSendTransactionSuccess(_data) {
