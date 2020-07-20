@@ -222,9 +222,11 @@ export default {
                             const data = await this.$bnb.getBNBBalances(value);
                             this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${data.balance} FTM`;
                         } catch (_error) {
-                            // validAddress = false;
+                            validAddress = false;
 
-                            if (_error.code !== BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS) {
+                            if (_error.code === BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN) {
+                                this.sendToErrorMsg = 'Bridge is down';
+                            } else if (_error.code !== BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS) {
                                 this.sendToErrorMsg = _error;
                             }
                         }
@@ -239,9 +241,11 @@ export default {
                         const balance = await this.$bnb.getETHBalance(value);
                         this.ETHOrBNBAccountBalance = `Current Fantom Balance: ${balance} FTM`;
                     } catch (_error) {
-                        // validAddress = false;
+                        validAddress = false;
 
-                        if (_error.code !== BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS) {
+                        if (_error.code === BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN) {
+                            this.sendToErrorMsg = 'Bridge is down';
+                        } else if (_error.code !== BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS) {
                             this.sendToErrorMsg = _error;
                         }
                     }

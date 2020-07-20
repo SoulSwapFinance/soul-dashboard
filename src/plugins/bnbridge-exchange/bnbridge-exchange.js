@@ -16,12 +16,14 @@ export const BNBridgeExchangeErrorCodes = {
     SWAP_TOKEN_API_ERROR: 3,
     FINALIZE_SWAP_TOKEN_API_ERROR: 4,
     BAD_PARAMETERS: 5,
+    BRIDGE_IS_DOWN: 6,
 };
 
 export const BNBridgeExchangeErrorMessages = {
     [BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS]: 'Ethereum address is invalid',
     [BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS]: 'Binance address is invalid',
     [BNBridgeExchangeErrorCodes.BAD_PARAMETERS]: 'Bad parameters',
+    [BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN]: 'Bridge is down',
 };
 
 export class BNBridgeExchangeError extends Error {
@@ -142,10 +144,17 @@ export class BNBridgeExchange {
                 if (data.success) {
                     balance = data.result.balance;
                 } else {
-                    throw new BNBridgeExchangeError(
-                        BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS],
-                        BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS
-                    );
+                    if (data.status === 500) {
+                        throw new BNBridgeExchangeError(
+                            BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN],
+                            BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN
+                        );
+                    } else {
+                        throw new BNBridgeExchangeError(
+                            BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS],
+                            BNBridgeExchangeErrorCodes.BAD_ETH_ADDRESS
+                        );
+                    }
                 }
             }
         } else {
@@ -181,10 +190,17 @@ export class BNBridgeExchange {
                 if (data.success) {
                     balances = { ...data.result };
                 } else {
-                    throw new BNBridgeExchangeError(
-                        BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS],
-                        BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS
-                    );
+                    if (data.status === 500) {
+                        throw new BNBridgeExchangeError(
+                            BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN],
+                            BNBridgeExchangeErrorCodes.BRIDGE_IS_DOWN
+                        );
+                    } else {
+                        throw new BNBridgeExchangeError(
+                            BNBridgeExchangeErrorMessages[BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS],
+                            BNBridgeExchangeErrorCodes.BAD_BNB_ADDRESS
+                        );
+                    }
                 }
             }
         } else {
