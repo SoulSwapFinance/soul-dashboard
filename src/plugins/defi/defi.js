@@ -1,6 +1,7 @@
 import './defi.types.js';
 import gql from 'graphql-tag';
 import { lowercaseFirstChar } from '../../utils';
+import web3utils from 'web3-utils';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -139,6 +140,32 @@ export class DeFi {
     getTokenPrice(_token) {
         return _token && 'price' in _token ? parseInt(_token.price, 16) / Math.pow(10, _token.priceDecimals) : 0;
     }
+
+    /**
+     * Convert given value from token decimals space.
+     *
+     * @param {string} _value Hex value.
+     * @param {DefiToken} _token
+     * @param {boolean} [_isPrice]
+     */
+    fromTokenValue(_value, _token, _isPrice = false) {
+        let value = 0;
+
+        if (_value !== undefined) {
+            value = parseFloat(this.fromWei(_value, _isPrice ? _token.priceDecimals : _token.decimals));
+        }
+
+        return value;
+    }
+
+    fromWei(_value, _dec = 0) {
+        const value = web3utils.toBN(_value).toString(10);
+        const idx = value.length - _dec;
+
+        return value.slice(0, idx) + '.' + value.slice(idx);
+    }
+
+    // toTokenValue() {}
 
     /**
      * Get defi account debt by token.

@@ -35,7 +35,7 @@
                     </div>
                     <div class="df-data-item smaller">
                         <h3 class="label">Locked balance</h3>
-                        <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
+                        <div class="value">{{ collateral.toFixed(2) }} <span class="currency">FTM</span></div>
                     </div>
                 </template>
             </div>
@@ -206,16 +206,19 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
-            return (
-                this.$defi.getDefiAccountDebt(
-                    this.defiAccount,
-                    this.tokens.find((_item) => _item.symbol === 'FUSD')
-                ).value || 0
-            );
+            /** @type {DefiToken} */
+            const token = this.tokens.find((_item) => _item.symbol === 'FUSD');
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, token);
+
+            return this.$defi.fromTokenValue(tokenBalance.value, token) || 0;
         },
 
         collateral() {
-            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.token).balance || 0;
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.token) || 0;
         },
 
         /*
@@ -317,7 +320,6 @@ export default {
     },
 
     created() {
-        this.currDebt = this.debt.toString();
         this.updateMessage();
 
         this.init();
@@ -336,6 +338,7 @@ export default {
             this.tokens = result[1];
             this.token = this.tokens.find((_item) => _item.symbol === 'FTM');
             this.tokenPrice = $defi.getTokenPrice(this.token);
+            this.currDebt = this.debt.toString();
 
             this.tmpTokenPrice = this.tokenPrice;
         },

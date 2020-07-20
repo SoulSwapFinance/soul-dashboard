@@ -12,7 +12,7 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
-                    <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
+                    <div class="value">{{ collateral.toFixed(2) }} <span class="currency">FTM</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
@@ -170,7 +170,10 @@ export default {
         },
 
         collateral() {
-            return this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken).balance || 0;
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
         },
 
         /*
