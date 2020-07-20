@@ -123,6 +123,7 @@ export default {
 
         onAddressPicked(_address) {
             this.inputValue = _address;
+            this.$refs.input.$refs.input.focus();
             this.setAddAddressBtnVisibility(_address);
         },
 
