@@ -40,28 +40,11 @@
                             aria-label="pick a token"
                             @click="onTokenSelectorClick"
                         >
-                            <span class="inline-img crypto-logo">
-                                <img
-                                    v-if="dToken.logoUrl"
-                                    :src="dToken.logoUrl"
-                                    class="not-fluid"
-                                    :alt="$defi.getTokenSymbol(dToken)"
-                                />
-                            </span>
-
-                            {{ tokenSymbol }} <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
+                            <f-crypto-symbol :token="dToken" />
+                            <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </button>
                         <template v-else>
-                            <span class="inline-img crypto-logo">
-                                <img
-                                    v-if="dToken.logoUrl"
-                                    :src="dToken.logoUrl"
-                                    class="not-fluid"
-                                    :alt="$defi.getTokenSymbol(dToken)"
-                                />
-                            </span>
-
-                            {{ tokenSymbol }}
+                            <f-crypto-symbol :token="dToken" />
                         </template>
                     </div>
 
@@ -186,6 +169,7 @@ import { formatNumberByLocale } from '../../filters.js';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
+import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -193,7 +177,7 @@ import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPic
 export default {
     name: 'DefiManageBorrow',
 
-    components: { DefiTokenPickerWindow, FMessage, FColoredNumberRange, FSlider, FCircleProgress },
+    components: { FCryptoSymbol, DefiTokenPickerWindow, FMessage, FColoredNumberRange, FSlider, FCircleProgress },
 
     props: {
         /** @type {DefiToken} */

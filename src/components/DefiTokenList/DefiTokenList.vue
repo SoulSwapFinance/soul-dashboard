@@ -2,15 +2,7 @@
     <div class="defi-token-list">
         <ul class="no-markers" @click="onTokenListClick" @keyup="onTokenListKeyup">
             <li v-for="token in dTokens" :key="token.address" :data-token-address="token.address" tabindex="0">
-                <span class="inline-img crypto-logo">
-                    <img
-                        v-if="token.logoUrl"
-                        :src="token.logoUrl"
-                        class="not-fluid"
-                        :alt="$defi.getTokenSymbol(token)"
-                    />
-                </span>
-                {{ $defi.getTokenSymbol(token) }}
+                <f-crypto-symbol :token="token" img-width="40px" img-height="40px" />
             </li>
         </ul>
     </div>
@@ -19,10 +11,11 @@
 <script>
 import { cloneObject } from '../../utils';
 import { isAriaAction } from '../../utils/aria.js';
+import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 
 export default {
     name: 'DefiTokenList',
-
+    components: { FCryptoSymbol },
     props: {
         /** @type {DefiToken[]} */
         tokens: {
