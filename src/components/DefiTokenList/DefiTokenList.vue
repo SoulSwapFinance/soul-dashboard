@@ -1,7 +1,13 @@
 <template>
     <div class="defi-token-list">
         <ul class="no-markers" @click="onTokenListClick" @keyup="onTokenListKeyup">
-            <li v-for="token in dTokens" :key="token.address" :data-token-address="token.address" tabindex="0">
+            <li
+                v-for="token in dTokens"
+                :key="token.address"
+                :data-token-address="!token._disabled ? token.address : ''"
+                :tabindex="token._disabled ? -1 : 0"
+                :class="{ disabled: token._disabled }"
+            >
                 <f-crypto-symbol :token="token" img-width="40px" img-height="40px" />
             </li>
         </ul>

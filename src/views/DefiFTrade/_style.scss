@@ -1,0 +1,46 @@
+@import "../../assets/scss/vars";
+
+.view-defi-ftrade {
+    .grid {
+        width: 100%;
+        max-width: 800px;
+        margin: 32px auto 0 auto;
+    }
+
+    .swap-col {
+        text-align: center;
+        padding: 32px 0;
+
+        .btn {
+            color: #9299a6;
+            border: 1px solid $grey-color-semi;
+
+            &.same-size {
+                min-width: 48px;
+                min-height: 48px;
+            }
+        }
+    }
+
+    .defi-price-input {
+        margin-top: 16px;
+    }
+}
+
+@include media-max($bp-small) {
+    .view-defi-ftrade {
+        .defi-price-input {
+            input.text-input {
+                font-size: 72px;
+            }
+        }
+    }
+
+    .view-defi {
+        .defi-manage-borrow {
+            .df-data-item {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}

@@ -70,6 +70,10 @@ const appStructure = [
                             },
                         ],
                     },
+                    {
+                        id: 'defi-ftrade',
+                        route: 'defi-ftrade',
+                    },
                 ],
             },
         ],

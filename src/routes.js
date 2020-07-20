@@ -25,6 +25,7 @@ import TransactionRejectMessageView from './views/TransactionRejectMessageView/T
 import DefiMintRepayConfirmation from './views/DefiMintRepayConfirmation/DefiMintRepayConfirmation.vue';
 import DefiFLend from './views/DefiFLend/DefiFLend.vue';
 import DefiManageBorrowView from './views/DefiManageBorrowView/DefiManageBorrowView.vue';
+import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
 
 export const routes = [
     {
@@ -120,6 +121,11 @@ export const routes = [
                         name: 'defi-flend',
                         path: 'flend',
                         component: DefiFLend,
+                    },
+                    {
+                        name: 'defi-ftrade',
+                        path: 'ftrade',
+                        component: DefiFTrade,
                     },
                     {
                         name: 'defi-manage-collateral',

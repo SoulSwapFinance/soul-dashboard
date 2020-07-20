@@ -191,6 +191,14 @@ export class DeFi {
     }
 
     /**
+     * @param {DefiToken} _token
+     * @return {boolean}
+     */
+    canTokenBeTraded(_token) {
+        return _token && _token.isActive && _token.canTrade;
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async fetchSettings() {

@@ -4,12 +4,19 @@
     ul > li {
         padding: 8px;
         margin-bottom: 2px;
-        cursor: pointer;
         font-weight: bold;
         border-radius: $input-border-radius;
 
-        &:hover {
-            background-color: #ccddff;
+        &:not(.disabled) {
+            cursor: pointer;
+
+            &:hover {
+                background-color: #ccddff;
+            }
+        }
+
+        &.disabled {
+            opacity: 0.3;
         }
     }
 }
