@@ -34,15 +34,14 @@
             <div class="defi-price-input-col align-center">
                 <div class="defi-price-input">
                     <div class="token-label">
-                        <button
+                        <f-select-button
                             v-if="!singleToken"
-                            class="token-selector no-style"
+                            collapsed
                             aria-label="pick a token"
-                            @click="onTokenSelectorClick"
+                            @click.native="onTokenSelectorClick"
                         >
-                            <f-crypto-symbol :token="dToken" />
-                            <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
-                        </button>
+                            <f-crypto-symbol :token="dToken" img-width="24px" img-height="24px" />
+                        </f-select-button>
                         <template v-else>
                             <f-crypto-symbol :token="dToken" />
                         </template>
@@ -170,6 +169,7 @@ import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
+import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -177,7 +177,15 @@ import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 export default {
     name: 'DefiManageBorrow',
 
-    components: { FCryptoSymbol, DefiTokenPickerWindow, FMessage, FColoredNumberRange, FSlider, FCircleProgress },
+    components: {
+        FSelectButton,
+        FCryptoSymbol,
+        DefiTokenPickerWindow,
+        FMessage,
+        FColoredNumberRange,
+        FSlider,
+        FCircleProgress,
+    },
 
     props: {
         /** @type {DefiToken} */
