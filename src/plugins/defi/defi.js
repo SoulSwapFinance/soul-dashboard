@@ -249,13 +249,14 @@ export class DeFi {
     }
 
     /**
+     * @param {string} _ownerAddress
      * @param {string} [_symbol]
      * @return {Promise<DefiToken[]>}
      */
-    async fetchTokens(_symbol) {
+    async fetchTokens(_ownerAddress, _symbol) {
         const data = await this.apolloClient.query({
             query: gql`
-                query DefiTokens {
+                query DefiTokens($owner: Address!) {
                     defiTokens {
                         address
                         name
@@ -268,9 +269,13 @@ export class DeFi {
                         canDeposit
                         canBorrow
                         canTrade
+                        availableBalance(owner: $owner)
                     }
                 }
             `,
+            variables: {
+                owner: _ownerAddress,
+            },
             fetchPolicy: 'no-cache',
         });
         const tokens = data.data.defiTokens || [];
@@ -279,10 +284,10 @@ export class DeFi {
     }
 
     /**
-     * @param {string} _owner
+     * @param {string} _ownerAddress
      * @return {Promise<DefiAccount>}
      */
-    async fetchDefiAccount(_owner = '') {
+    async fetchDefiAccount(_ownerAddress = '') {
         const data = await this.apolloClient.query({
             query: gql`
                 query DefiAccount($owner: Address!) {
@@ -314,7 +319,7 @@ export class DeFi {
                 }
             `,
             variables: {
-                owner: _owner,
+                owner: _ownerAddress,
             },
             fetchPolicy: 'no-cache',
         });

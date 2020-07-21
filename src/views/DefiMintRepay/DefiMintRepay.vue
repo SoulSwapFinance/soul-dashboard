@@ -330,7 +330,7 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchDefiAccount(this.currentAccount.address),
-                $defi.fetchTokens(),
+                $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 

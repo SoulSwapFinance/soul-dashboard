@@ -116,7 +116,7 @@ export default {
     methods: {
         async setTx() {
             /** @type {DefiToken} */
-            const token = await this.$defi.fetchTokens('FTM');
+            const token = await this.$defi.fetchTokens(this.currentAccount.address, 'FTM');
             const contractAddress = appConfig.liquidityPoolContract;
             let txToSign;
 
