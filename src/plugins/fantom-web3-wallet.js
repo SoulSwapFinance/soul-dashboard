@@ -21,7 +21,7 @@ export const GAS_LIMITS = {
     withdraw: '0x30D40',
     delegate: '0x30D40',
     ballot: '0x3D0900',
-    defi: '0x30D40',
+    defi: '0x7A120',
 };
 
 /** @type {FantomWeb3Wallet} */
