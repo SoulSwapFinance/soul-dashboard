@@ -299,6 +299,7 @@ export class DeFi {
                             balance
                             value
                             token {
+                                address
                                 symbol
                             }
                         }
@@ -310,6 +311,7 @@ export class DeFi {
                             balance
                             value
                             token {
+                                address
                                 symbol
                             }
                         }
@@ -325,10 +327,6 @@ export class DeFi {
         });
         /** @type {DefiAccount} */
         const { defiAccount } = data.data;
-
-        // tmp
-        defiAccount.debtValue = parseInt(defiAccount.debtValue, 16);
-        defiAccount.collateralValue = parseInt(defiAccount.collateralValue, 16);
 
         return defiAccount;
     }

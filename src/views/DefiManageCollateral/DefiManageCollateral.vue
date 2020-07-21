@@ -18,7 +18,7 @@
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debt.toFixed(3) }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
             <div class="defi-price-input-col align-center">
@@ -212,9 +212,9 @@ export default {
             /** @type {DefiToken} */
             const token = this.tokens.find((_item) => _item.symbol === 'FUSD');
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, token);
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, token);
 
-            return this.$defi.fromTokenValue(tokenBalance.value, token) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, token) || 0;
         },
 
         collateral() {

@@ -8,7 +8,7 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debt.toFixed(3) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
@@ -144,6 +144,8 @@ export default {
             },
             /** @type {DefiToken} */
             ftmToken: null,
+            /** @type {DefiToken[]} */
+            tokens: [],
             id: getUniqueId(),
             tmpShow: false,
             tmpTokenPrice: 0,
@@ -166,7 +168,10 @@ export default {
 
         debt() {
             // overall debt
-            return this.defiAccount.debtValue;
+            return this.$defi.fromTokenValue(
+                this.defiAccount.debtValue,
+                this.tokens.find((_item) => _item.symbol === 'FUSD')
+            );
         },
 
         collateral() {
@@ -249,12 +254,13 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchDefiAccount(this.currentAccount.address),
-                $defi.fetchTokens(this.currentAccount.address, 'FTM'),
+                $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
             this.defiAccount = result[0];
-            this.ftmToken = result[1];
+            this.tokens = result[1];
+            this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
             this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
 
             this.tmpTokenPrice = this.tokenPrice;
