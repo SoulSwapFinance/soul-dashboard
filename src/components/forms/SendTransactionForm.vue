@@ -266,8 +266,8 @@ export default {
 
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
-                    if (operatToEthereum && value > maxFTMToETH) {
-                        this.amountErrMsg = `You can transfer max ${maxFTMToETH} FTM`;
+                    if (operatToEthereum && value < maxFTMToETH) {
+                        this.amountErrMsg = `You must transfer at least ${maxFTMToETH} FTM`;
                     } else {
                         ok = true;
                     }
