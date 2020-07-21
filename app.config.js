@@ -37,7 +37,7 @@ const appConfig = {
         token: '',
     },
     // address of liquidity pool contract
-    liquidityPoolContract: '0xb0860633cb84d8290b67638992a68772728d8acb',
+    liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
     //
     useTestnet: true,
     // testnet config
