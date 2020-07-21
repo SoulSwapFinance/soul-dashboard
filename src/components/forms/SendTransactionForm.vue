@@ -258,17 +258,25 @@ export default {
         checkAmount(_value) {
             const remainingBalance = parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
+            const maxFTMToETH = 5000;
+            const operatToEthereum = this.sendDirection === 'OperaToEthereum';
             let ok = false;
 
             this.amountErrMsg = 'Invalid amount';
 
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
-                    ok = true;
+                    if (operatToEthereum && value > maxFTMToETH) {
+                        this.amountErrMsg = `You can transfer max ${maxFTMToETH} FTM`;
+                    } else {
+                        ok = true;
+                    }
                 } else if (remainingBalance < 0) {
-                    this.amountErrMsg = `You have no balance left`;
+                    this.amountErrMsg = 'You have no balance left';
                 } else if (value > 0) {
-                    this.amountErrMsg = `You can transfer max ${remainingBalance} FTM`;
+                    this.amountErrMsg = `You can transfer max ${
+                        operatToEthereum ? Math.min(maxFTMToETH, remainingBalance) : remainingBalance
+                    } FTM`;
                 }
             }
 
