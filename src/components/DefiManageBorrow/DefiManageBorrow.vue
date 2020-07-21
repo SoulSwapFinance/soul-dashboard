@@ -5,7 +5,7 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow Limit</h3>
                     <div class="value">
-                        {{ borrowLimit }} <span class="currency">{{ tokenSymbol }}</span>
+                        {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
                 <!--
@@ -116,19 +116,22 @@
             </div>
 
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
-                You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} {{ tokenSymbol }}</span>
+                You're adding
+                <span class="inc-desc-collateral">{{ increasedDebt.toFixed(decimals) }} {{ tokenSymbol }}</span>
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
-                You’re removing
-                <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(2) }} {{ tokenSymbol }}</span>
+                You're removing
+                <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(decimals) }} {{ tokenSymbol }}</span>
             </f-message>
         </div>
 
         <div class="buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="submitDisabled">Submit</template>
-                <template v-else-if="increasedDebt > 0 || debt === 0">Mint {{ increasedDebt.toFixed(2) }} now</template>
-                <template v-else>Repay {{ decreasedDebt.toFixed(2) }} now</template>
+                <template v-else-if="increasedDebt > 0 || debt === 0">
+                    Mint {{ increasedDebt.toFixed(decimals) }} {{ tokenSymbol }} now
+                </template>
+                <template v-else>Repay {{ decreasedDebt.toFixed(decimals) }} {{ tokenSymbol }} now</template>
             </button>
         </div>
 
@@ -200,11 +203,24 @@ export default {
             type: Boolean,
             default: false,
         },
+        decimals: {
+            type: Number,
+            default: 5,
+        },
     },
 
     data() {
         return {
+            /** @type {DefiAccount} */
+            defiAccount: {
+                collateral: [],
+                debt: [],
+            },
+            /** @type {DefiToken} */
             dToken: {},
+            /** @type {DefiToken} */
+            ftmToken: {},
+            /** @type {DefiToken[]} */
             tokens: [],
             currDebt: '0',
             tokenPrice: 0,
@@ -232,16 +248,37 @@ export default {
         ...mapGetters(['currentAccount']),
 
         debt() {
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
+
+            return this.$defi.fromTokenValue(tokenBalance.value, this.dToken) || 0;
+        },
+
+        /**
+         * Temporarily take FTM as collateral.
+         *
+         * @return {number}
+         */
+        collateral() {
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
+        },
+
+        /*
+        debt() {
             return this.tmpValues.debt;
         },
 
         collateral() {
-            // return this.tmpValues.collateral;
-            return 0;
+            return this.tmpValues.collateral;
         },
+*/
 
         collateralInFUSD() {
-            return (this.collateral * this.tokenPrice).toFixed(2);
+            return (this.collateral * this.$defi.getTokenPrice(this.ftmToken)).toFixed(2);
+            // return formatNumberByLocale(this.collateral * this.$defi.getTokenPrice(token), 2, 'USD');
         },
 
         currentPrice() {
@@ -250,7 +287,7 @@ export default {
         },
 
         borrowLimit() {
-            return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
+            return this.$defi.getMaxDebt(this.collateral, this.$defi.getTokenPrice(this.ftmToken) / this.tokenPrice);
         },
 
         mintingLimit() {
@@ -339,6 +376,9 @@ export default {
         async dToken(_value) {
             if (_value) {
                 this.tokenPrice = this.$defi.getTokenPrice(_value);
+                this.$nextTick(() => {
+                    this.currDebt = this.debt.toString();
+                });
 
                 this.tmpTokenPrice = this.tokenPrice;
             }
@@ -366,6 +406,9 @@ export default {
             ]);
             const tokens = result[1];
 
+            this.defiAccount = result[0];
+            this.ftmToken = tokens.find((_item) => _item.symbol === 'FTM');
+
             if (!this.singleToken) {
                 // get tokens that are possible to borrow
                 this.tokens = tokens.filter($defi.canTokenBeBorrowed);
@@ -375,10 +418,12 @@ export default {
                 // get first token that can be borrowed
                 this.dToken = tokens.find($defi.canTokenBeBorrowed);
             }
+
+            console.log(this.defiAccount);
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(2);
+            return parseFloat(_value).toFixed(this.decimals);
         },
 
         updateMessage() {
@@ -400,9 +445,9 @@ export default {
 
         onSubmit() {
             if (!this.submitDisabled) {
-                this.$emit('defi-manage-borrow-submit', {
-                    currDebt: parseFloat(this.currDebt),
-                    debt: this.debt,
+                this.$router.push({
+                    name: 'defi-manage-borrow-confirmation',
+                    params: { currDebt: parseFloat(this.currDebt), debt: this.debt, tokenAddress: this.dToken.address },
                 });
             }
         },

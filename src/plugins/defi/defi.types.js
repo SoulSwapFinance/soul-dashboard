@@ -31,7 +31,7 @@
  * @property {string} tokenAddress Unique identifier of the token.
  * @property {DefiToken} token
  * @property {string} balance Balance of the token on the account.
- * @property {string} value value of the current balance of the token on the account in ref. denomination (fUSD).
+ * @property {string} value Value of the current balance of the token on the account in ref. denomination (fUSD).
  */
 
 /**
