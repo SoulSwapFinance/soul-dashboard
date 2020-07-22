@@ -258,7 +258,7 @@ export default {
         checkAmount(_value) {
             const remainingBalance = parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
-            const maxFTMToETH = 5000;
+            const minFTMToETH = 5000;
             const operatToEthereum = this.sendDirection === 'OperaToEthereum';
             let ok = false;
 
@@ -266,17 +266,15 @@ export default {
 
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
-                    if (operatToEthereum && value < maxFTMToETH) {
-                        this.amountErrMsg = `You must transfer at least ${maxFTMToETH} FTM`;
+                    if (operatToEthereum && value < minFTMToETH) {
+                        this.amountErrMsg = `You must transfer at least ${minFTMToETH} FTM`;
                     } else {
                         ok = true;
                     }
                 } else if (remainingBalance < 0) {
                     this.amountErrMsg = 'You have no balance left';
                 } else if (value > 0) {
-                    this.amountErrMsg = `You can transfer max ${
-                        operatToEthereum ? Math.min(maxFTMToETH, remainingBalance) : remainingBalance
-                    } FTM`;
+                    this.amountErrMsg = `You can transfer max ${remainingBalance} FTM`;
                 }
             }
 
