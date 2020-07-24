@@ -76,6 +76,10 @@ export class DeFi {
         return max;
     }
 
+    getMaxDebtFUSD(_collateralFUSD) {
+        return _collateralFUSD > 0 ? _collateralFUSD / this.minCollateralRatio : 0;
+    }
+
     /**
      * @param {number} _debt
      * @param {number} _collateral
@@ -96,6 +100,11 @@ export class DeFi {
         return _collateral > 0
             ? (_debt / ((parseFloat(_collateral) * _tokenPrice) / this.liqCollateralRatio)) * 100
             : 0;
+    }
+
+    getMintingLimitFUSD(_debt, _collateralFUSD) {
+        // ratio between actual debt and liquidation debt
+        return _collateralFUSD > 0 ? (_debt / (_collateralFUSD / this.liqCollateralRatio)) * 100 : 0;
     }
 
     /**

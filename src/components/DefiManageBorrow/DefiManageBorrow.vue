@@ -220,6 +220,8 @@ export default {
             dToken: {},
             /** @type {DefiToken} */
             ftmToken: {},
+            /** @type {DefiToken} */
+            fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             currDebt: '0',
@@ -249,9 +251,19 @@ export default {
 
         debt() {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.value, this.dToken) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
+            // return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+        },
+
+        tokenDebt() {
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
+            // console.log(this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken));
+            // return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
         },
 
         /**
@@ -287,11 +299,29 @@ export default {
         },
 
         borrowLimit() {
-            return this.$defi.getMaxDebt(this.collateral, this.$defi.getTokenPrice(this.ftmToken) / this.tokenPrice);
+            const { $defi } = this;
+            const totalDebtFUSD = $defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+            const totalCollateralFUSD = $defi.fromTokenValue(this.defiAccount.collateralValue, this.fusdToken);
+            const borrowLimitFUSD = $defi.getMaxDebtFUSD(totalCollateralFUSD) - totalDebtFUSD;
+
+            return borrowLimitFUSD / this.tokenPrice;
+            // return this.$defi.getMaxDebt(this.collateral, this.$defi.getTokenPrice(this.ftmToken) / this.tokenPrice);
         },
 
         mintingLimit() {
-            return this.$defi.getMintingLimit(this.currDebt, this.collateral, this.tokenPrice);
+            const { $defi } = this;
+            const totalDebtFUSD = $defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+            const totalCollateralFUSD = $defi.fromTokenValue(this.defiAccount.collateralValue, this.fusdToken);
+            const currDebtFUSD = parseFloat(this.currDebt) * this.tokenPrice;
+
+            return this.$defi.getMintingLimitFUSD(currDebtFUSD + totalDebtFUSD, totalCollateralFUSD);
+            /*
+            return this.$defi.getMintingLimit(
+                this.currDebt,
+                this.collateral,
+                this.$defi.getTokenPrice(this.ftmToken) / this.tokenPrice
+            );
+*/
         },
 
         minDebt() {
@@ -300,6 +330,10 @@ export default {
 
         maxDebt() {
             return Math.max(this.borrowLimit, this.debt);
+        },
+
+        maxMintable() {
+            return this.$defi.getMaxDebt(this.collateral, this.$defi.getTokenPrice(this.ftmToken));
         },
 
         inputValue() {
@@ -408,6 +442,7 @@ export default {
 
             this.defiAccount = result[0];
             this.ftmToken = tokens.find((_item) => _item.symbol === 'FTM');
+            this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {
                 // get tokens that are possible to borrow
