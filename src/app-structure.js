@@ -49,6 +49,22 @@ const appStructure = [
                                             {
                                                 id: 'defi-mint-repay-transaction-success-message',
                                                 route: 'defi-mint-repay-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-mint-repay-confirmation2',
+                                                        route: 'defi-mint-repay-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-success-message',
+                                                                route: 'defi-mint-repay-transaction-success-message',
+                                                            },
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-reject-message',
+                                                                route: 'defi-mint-repay-transaction-reject-message',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
                                             },
                                             {
                                                 id: 'defi-mint-repay-transaction-reject-message',

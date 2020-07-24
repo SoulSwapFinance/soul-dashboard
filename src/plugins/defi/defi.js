@@ -279,6 +279,7 @@ export class DeFi {
                         canBorrow
                         canTrade
                         availableBalance(owner: $owner)
+                        allowance(owner: $owner)
                     }
                 }
             `,

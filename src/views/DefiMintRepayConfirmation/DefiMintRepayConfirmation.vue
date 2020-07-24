@@ -5,21 +5,25 @@
             :tx="tx"
             card-off
             no-previous-button
-            confirmation-comp-name="withdraw-ftm-confirmation"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
-            <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Confirmation</h1>
+            <h1 class="with-back-btn">
+                <f-back-button :route-name="backButtonRoute" /> Confirmation
+                <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
+            </h1>
 
             <div class="info">
                 <div v-if="increasedDebt > 0">
                     You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} fUSD</span>
                 </div>
                 <div v-else-if="decreasedDebt > 0">
-                    You’re removing <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(2) }} fUSD</span>
+                    <template v-if="params.step === 1">You’re allowing</template>
+                    <template v-else>You’re removing</template>
+                    <span class="inc-desc-collateral"> {{ decreasedDebt.toFixed(2) }} fUSD</span>
                 </div>
             </div>
 
@@ -63,7 +67,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         /**
-         * @return {{debt: number, currDebt: number, address: string}}
+         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number}}
          */
         params() {
             const { $route } = this;
@@ -84,13 +88,31 @@ export default {
         },
 
         sendButtonLabel() {
-            return this.increasedDebt > 0 ? 'Mint now' : 'Repay now';
+            let label = '';
+
+            if (this.params.step === 1) {
+                label = 'Continue to the next step';
+            } else if (this.increasedDebt > 0) {
+                label = 'Mint now';
+            } else {
+                label = 'Repay now';
+            }
+
+            return label;
         },
 
         passwordLabel() {
-            return this.params.debt > 0
-                ? 'Please enter your wallet password to rebalance your debt'
-                : 'Please enter your wallet password to add your debt';
+            let label = '';
+
+            if (this.params.step === 1) {
+                label = 'Please enter your wallet password to allow your tokens';
+            } else if (this.params.debt > 0) {
+                label = 'Please enter your wallet password to rebalance your debt';
+            } else {
+                label = 'Please enter your wallet password to add your debt';
+            }
+
+            return label;
         },
 
         backButtonRoute() {
@@ -128,6 +150,12 @@ export default {
                     token.address,
                     Web3.utils.toHex(Web3.utils.toWei(this.increasedDebt.toString()))
                 );
+            } else if (this.params.step === 1) {
+                txToSign = defiUtils.erc20ApproveAmountTx(
+                    token.address,
+                    contractAddress,
+                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString()))
+                );
             } else {
                 txToSign = defiUtils.defiRepayTokenTx(
                     contractAddress,
@@ -145,13 +173,21 @@ export default {
         },
 
         onSendTransactionSuccess(_data) {
+            const params = {
+                tx: _data.data.sendTransaction.hash,
+                title: 'Success',
+                continueTo: 'defi-mint-repay',
+            };
+
+            if (this.params.step === 1) {
+                params.continueTo = 'defi-mint-repay-confirmation2';
+                params.continueToParams = { ...this.params, step: 2 };
+                params.autoContinueToAfter = 2000;
+            }
+
             this.$router.replace({
                 name: 'defi-mint-repay-transaction-success-message',
-                params: {
-                    tx: _data.data.sendTransaction.hash,
-                    title: 'Success',
-                    continueTo: 'defi-mint-repay',
-                },
+                params,
             });
         },
 

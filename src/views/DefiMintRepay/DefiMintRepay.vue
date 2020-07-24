@@ -365,10 +365,20 @@ export default {
         },
 
         onSubmit() {
+            const params = {
+                currDebt: parseFloat(this.currDebt),
+                debt: this.debt,
+            };
+
+            if (this.decreasedDebt > 0) {
+                params.steps = 2;
+                params.step = 1;
+            }
+
             if (!this.submitDisabled) {
                 this.$router.push({
                     name: 'defi-mint-repay-confirmation',
-                    params: { currDebt: parseFloat(this.currDebt), debt: this.debt },
+                    params,
                 });
             }
         },

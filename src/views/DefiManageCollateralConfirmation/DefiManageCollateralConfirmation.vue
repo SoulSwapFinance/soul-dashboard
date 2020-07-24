@@ -5,7 +5,6 @@
             :tx="tx"
             card-off
             no-previous-button
-            confirmation-comp-name="withdraw-ftm-confirmation"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"

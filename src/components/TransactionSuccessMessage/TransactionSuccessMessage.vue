@@ -41,10 +41,22 @@ export default {
             type: String,
             default: '',
         },
+        /** Parameters to be passed to `continueTo`. */
+        continueToParams: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
         /** `continueTo` is name of route. */
         continueToIsRoute: {
             type: Boolean,
             default: false,
+        },
+        /** Continue to `continueTo` automatically after this number of milliseconds. */
+        autoContinueToAfter: {
+            type: Number,
+            default: 0,
         },
         /** Don't render card */
         cardOff: {
@@ -59,14 +71,32 @@ export default {
         };
     },
 
+    created() {
+        /** Timeout id. */
+        this._tId = -1;
+
+        if (this.autoContinueToAfter > 0) {
+            this._tId = setTimeout(() => {
+                this.onContinueBtnClick();
+            }, this.autoContinueToAfter);
+        }
+    },
+
+    beforeDestroy() {
+        if (this._tId > -1) {
+            clearTimeout(this._tId);
+        }
+    },
+
     methods: {
         onContinueBtnClick() {
             if (this.continueTo === 'account-history' || this.continueToIsRoute) {
-                this.$router.replace({ name: this.continueTo });
+                this.$router.replace({ name: this.continueTo, params: this.continueToParams });
             } else {
                 this.$emit('change-component', {
                     to: this.continueTo,
                     from: 'transaction-success-message',
+                    params: this.continueToParams,
                 });
             }
         },
