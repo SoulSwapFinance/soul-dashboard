@@ -24,7 +24,7 @@ import TransactionSuccessMessageView from './views/TransactionSuccessMessageView
 import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
 import DefiBorrowFUSDConfirmation from './views/DefiBorrowFUSDConfirmation/DefiBorrowFUSDConfirmation.vue';
 import DefiFLend from './views/DefiFLend/DefiFLend.vue';
-import DefiManageBorrowView from './views/DefiManageBorrowView/DefiManageBorrowView.vue';
+import DefiManageBorrow from './views/DefiManageBorrow/DefiManageBorrow.vue';
 import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
 import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
 
@@ -184,9 +184,9 @@ export const routes = [
                         component: TransactionRejectMessageView,
                     },
                     {
-                        name: 'defi-manage-borrow-view',
+                        name: 'defi-manage-borrow',
                         path: 'flend/manage-borrow',
-                        component: DefiManageBorrowView,
+                        component: DefiManageBorrow,
                     },
                     {
                         name: 'defi-manage-borrow-confirmation',

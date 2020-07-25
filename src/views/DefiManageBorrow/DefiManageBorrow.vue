@@ -5,23 +5,23 @@
             Borrow
         </h1>
 
-        <defi-manage-borrow @defi-manage-borrow-submit="onDefiManageBorrowSubmit" />
+        <defi-borrow @defi-manage-borrow-submit="onDefiManageBorrowSubmit" />
     </div>
 </template>
 
 <script>
 import { getAppParentNode } from '../../app-structure.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
-import DefiManageBorrow from '../../components/DefiManageBorrow/DefiManageBorrow.vue';
+import DefiBorrow from '../../components/DefiBorrow/DefiBorrow.vue';
 
 export default {
-    name: 'DefiManageBorrowView',
+    name: 'DefiManageBorrow',
 
-    components: { DefiManageBorrow, FBackButton },
+    components: { DefiBorrow, FBackButton },
 
     computed: {
         backButtonRoute() {
-            const parentNode = getAppParentNode('defi-manage-borrow-view');
+            const parentNode = getAppParentNode('defi-manage-borrow');
 
             return parentNode ? parentNode.route : '';
         },

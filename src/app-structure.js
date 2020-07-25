@@ -81,8 +81,8 @@ const appStructure = [
                         route: 'defi-flend',
                         _c: [
                             {
-                                id: 'defi-manage-borrow-view',
-                                route: 'defi-manage-borrow-view',
+                                id: 'defi-manage-borrow',
+                                route: 'defi-manage-borrow',
                                 _c: [
                                     {
                                         id: 'defi-manage-borrow-confirmation',

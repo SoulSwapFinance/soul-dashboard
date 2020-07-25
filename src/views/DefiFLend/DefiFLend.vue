@@ -27,7 +27,7 @@ export default {
 
     methods: {
         onBorrowClick() {
-            this.$router.push({ name: 'defi-manage-borrow-view' });
+            this.$router.push({ name: 'defi-manage-borrow' });
         },
     },
 };

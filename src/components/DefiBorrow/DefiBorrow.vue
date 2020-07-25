@@ -178,7 +178,7 @@ import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
  * Common component for defi mint and repay.
  */
 export default {
-    name: 'DefiManageBorrow',
+    name: 'DefiBorrow',
 
     components: {
         FSelectButton,
