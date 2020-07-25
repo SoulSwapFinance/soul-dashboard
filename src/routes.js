@@ -168,8 +168,18 @@ export const routes = [
                         component: TransactionSuccessMessageView,
                     },
                     {
+                        name: 'defi-mint-repay-transaction-success-message2',
+                        path: 'fmint/manage-fusd/confirmation/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
                         name: 'defi-mint-repay-transaction-reject-message',
                         path: 'fmint/manage-fusd/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-mint-repay-transaction-reject-message2',
+                        path: 'fmint/manage-fusd/confirmation/reject2',
                         component: TransactionRejectMessageView,
                     },
                     {

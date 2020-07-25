@@ -178,15 +178,18 @@ export default {
                 title: 'Success',
                 continueTo: 'defi-mint-repay',
             };
+            let transactionSuccessComp = 'defi-mint-repay-transaction-success-message';
 
             if (this.params.step === 1) {
                 params.continueTo = 'defi-mint-repay-confirmation2';
                 params.continueToParams = { ...this.params, step: 2 };
                 params.autoContinueToAfter = 2000;
+            } else if (this.params.step === 2) {
+                transactionSuccessComp = 'defi-mint-repay-transaction-success-message2';
             }
 
             this.$router.replace({
-                name: 'defi-mint-repay-transaction-success-message',
+                name: transactionSuccessComp,
                 params,
             });
         },
@@ -197,9 +200,15 @@ export default {
          * @param {object} _data
          */
         onChangeComponent(_data) {
+            let transactionRejectComp = 'defi-mint-repay-transaction-reject-message';
+
             if (_data.to === 'transaction-reject-message') {
+                if (this.params.step === 2) {
+                    transactionRejectComp = 'defi-mint-repay-transaction-reject-message2';
+                }
+
                 this.$router.replace({
-                    name: 'defi-mint-repay-transaction-reject-message',
+                    name: transactionRejectComp,
                     params: {
                         continueTo: 'defi-mint-repay',
                     },
