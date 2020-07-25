@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-mint-repay">
+    <div class="defi-borrow-fusd">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
             fUSD
@@ -165,7 +165,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
  * Common component for defi mint and repay.
  */
 export default {
-    name: 'DefiMintRepay',
+    name: 'DefiBorrowFUSD',
 
     components: { FMessage, FBackButton, FColoredNumberRange, FSlider, FCircleProgress },
 
@@ -264,7 +264,7 @@ export default {
         },
 
         backButtonRoute() {
-            const parentNode = getAppParentNode('defi-mint-repay');
+            const parentNode = getAppParentNode('defi-borrow-fusd');
 
             return parentNode ? parentNode.route : '';
         },
@@ -377,7 +377,7 @@ export default {
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'defi-mint-repay-confirmation',
+                    name: 'defi-borrow-fusd-confirmation',
                     params,
                 });
             }

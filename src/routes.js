@@ -18,14 +18,15 @@ import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
 import DefiFMint from './views/DefiFMint/DefiFMint.vue';
 import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
-import DefiMintRepay from './views/DefiMintRepay/DefiMintRepay.vue';
+import DefiBorrowFUSD from './views/DefiBorrowFUSD/DefiBorrowFUSD.vue';
 import DefiManageCollateralConfirmation from './views/DefiManageCollateralConfirmation/DefiManageCollateralConfirmation.vue';
 import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
 import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
-import DefiMintRepayConfirmation from './views/DefiMintRepayConfirmation/DefiMintRepayConfirmation.vue';
+import DefiBorrowFUSDConfirmation from './views/DefiBorrowFUSDConfirmation/DefiBorrowFUSDConfirmation.vue';
 import DefiFLend from './views/DefiFLend/DefiFLend.vue';
 import DefiManageBorrowView from './views/DefiManageBorrowView/DefiManageBorrowView.vue';
 import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
+import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
 
 export const routes = [
     {
@@ -148,37 +149,37 @@ export const routes = [
                         component: TransactionRejectMessageView,
                     },
                     {
-                        name: 'defi-mint-repay',
+                        name: 'defi-borrow-fusd',
                         path: 'fmint/manage-fusd',
-                        component: DefiMintRepay,
+                        component: DefiBorrowFUSD,
                     },
                     {
-                        name: 'defi-mint-repay-confirmation',
+                        name: 'defi-borrow-fusd-confirmation',
                         path: 'fmint/manage-fusd/confirmation',
-                        component: DefiMintRepayConfirmation,
+                        component: DefiBorrowFUSDConfirmation,
                     },
                     {
-                        name: 'defi-mint-repay-confirmation2',
+                        name: 'defi-borrow-fusd-confirmation2',
                         path: 'fmint/manage-fusd/confirmation2',
-                        component: DefiMintRepayConfirmation,
+                        component: DefiBorrowFUSDConfirmation,
                     },
                     {
-                        name: 'defi-mint-repay-transaction-success-message',
+                        name: 'defi-borrow-fusd-transaction-success-message',
                         path: 'fmint/manage-fusd/confirmation/success',
                         component: TransactionSuccessMessageView,
                     },
                     {
-                        name: 'defi-mint-repay-transaction-success-message2',
+                        name: 'defi-borrow-fusd-transaction-success-message2',
                         path: 'fmint/manage-fusd/confirmation/success2',
                         component: TransactionSuccessMessageView,
                     },
                     {
-                        name: 'defi-mint-repay-transaction-reject-message',
+                        name: 'defi-borrow-fusd-transaction-reject-message',
                         path: 'fmint/manage-fusd/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
                     {
-                        name: 'defi-mint-repay-transaction-reject-message2',
+                        name: 'defi-borrow-fusd-transaction-reject-message2',
                         path: 'fmint/manage-fusd/confirmation/reject2',
                         component: TransactionRejectMessageView,
                     },

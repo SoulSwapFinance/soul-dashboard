@@ -68,7 +68,7 @@ export default {
         /**  */
         compName: {
             type: String,
-            default: 'defi-mint-repay',
+            default: 'defi-borrow-fusd',
         },
         /** Router params */
         params: {

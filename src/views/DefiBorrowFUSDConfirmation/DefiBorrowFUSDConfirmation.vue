@@ -1,5 +1,5 @@
 <template>
-    <div class="view-defi-mint-repay-confirmation">
+    <div class="view-defi-borrow-fusd-confirmation">
         <defi-borrow-confirmation :params="params" />
     </div>
 </template>
@@ -8,7 +8,7 @@
 import DefiBorrowConfirmation from '../../components/DefiBorrowConfirmation/DefiBorrowConfirmation.vue';
 
 export default {
-    name: 'DefiMintRepayConfirmation',
+    name: 'DefiBorrowFUSDConfirmation',
 
     components: { DefiBorrowConfirmation },
 

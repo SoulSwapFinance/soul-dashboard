@@ -53,7 +53,7 @@
             <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
                 Manage collateral
             </router-link>
-            <router-link :to="{ name: 'defi-mint-repay' }" class="btn large">
+            <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">
                 Manage fUSD
             </router-link>
         </div>
@@ -99,7 +99,7 @@
                         <icon data="@/assets/svg/defi/mint.svg" width="96" height="96" />
                     </div>
                     <p class="description">Mint fUSD by locking your FTM</p>
-                    <router-link :to="{ name: 'defi-mint-repay' }" class="clickable title">
+                    <router-link :to="{ name: 'defi-borrow-fusd' }" class="clickable title">
                         Mint fUSD
                     </router-link>
                 </div>

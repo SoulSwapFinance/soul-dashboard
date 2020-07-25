@@ -39,36 +39,36 @@ const appStructure = [
                                 ],
                             },
                             {
-                                id: 'defi-mint-repay',
-                                route: 'defi-mint-repay',
+                                id: 'defi-borrow-fusd',
+                                route: 'defi-borrow-fusd',
                                 _c: [
                                     {
-                                        id: 'defi-mint-repay-confirmation',
-                                        route: 'defi-mint-repay-confirmation',
+                                        id: 'defi-borrow-fusd-confirmation',
+                                        route: 'defi-borrow-fusd-confirmation',
                                         _c: [
                                             {
-                                                id: 'defi-mint-repay-transaction-success-message',
-                                                route: 'defi-mint-repay-transaction-success-message',
+                                                id: 'defi-borrow-fusd-transaction-success-message',
+                                                route: 'defi-borrow-fusd-transaction-success-message',
                                                 _c: [
                                                     {
-                                                        id: 'defi-mint-repay-confirmation2',
-                                                        route: 'defi-mint-repay-confirmation2',
+                                                        id: 'defi-borrow-fusd-confirmation2',
+                                                        route: 'defi-borrow-fusd-confirmation2',
                                                         _c: [
                                                             {
-                                                                id: 'defi-mint-repay-transaction-success-message2',
-                                                                route: 'defi-mint-repay-transaction-success-message2',
+                                                                id: 'defi-borrow-fusd-transaction-success-message2',
+                                                                route: 'defi-borrow-fusd-transaction-success-message2',
                                                             },
                                                             {
-                                                                id: 'defi-mint-repay-transaction-reject-message2',
-                                                                route: 'defi-mint-repay-transaction-reject-message2',
+                                                                id: 'defi-borrow-fusd-transaction-reject-message2',
+                                                                route: 'defi-borrow-fusd-transaction-reject-message2',
                                                             },
                                                         ],
                                                     },
                                                 ],
                                             },
                                             {
-                                                id: 'defi-mint-repay-transaction-reject-message',
-                                                route: 'defi-mint-repay-transaction-reject-message',
+                                                id: 'defi-borrow-fusd-transaction-reject-message',
+                                                route: 'defi-borrow-fusd-transaction-reject-message',
                                             },
                                         ],
                                     },
