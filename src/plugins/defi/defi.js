@@ -161,13 +161,18 @@ export class DeFi {
         let value = 0;
 
         if (_value !== undefined) {
-            value = parseFloat(this.fromWei(_value, _isPrice ? _token.priceDecimals : _token.decimals));
+            value = parseFloat(this.shiftDecPointLeft(_value, _isPrice ? _token.priceDecimals : _token.decimals));
         }
 
         return value;
     }
 
-    fromWei(_value, _dec = 0) {
+    /**
+     * @param {string} _value
+     * @param {number} _dec Number of decimals.
+     * @return {string}
+     */
+    shiftDecPointLeft(_value, _dec = 0) {
         const value = web3utils.toBN(_value).toString(10);
         const idx = value.length - _dec;
 
@@ -176,6 +181,48 @@ export class DeFi {
         } else {
             return value.slice(0, idx) + '.' + value.slice(idx);
         }
+    }
+
+    /**
+     * @param {string} _value
+     * @param {number} _dec Number of decimals.
+     * @param {boolean} [_float] Don't remove decimals.
+     * @return {string}
+     */
+    shiftDecPointRight(_value, _dec = 0, _float = false) {
+        let idx = _value.indexOf('.');
+        let left;
+        let right;
+        let res = '';
+
+        if (idx > -1) {
+            left = _value.slice(0, idx);
+            right = _value.slice(idx + 1);
+
+            if (_dec < right.length) {
+                res = left + right.slice(0, _dec) + '.' + right.slice(_dec);
+            } else if (_dec === right.length) {
+                res = left + right;
+            } else {
+                res = left + web3utils.padRight(right, _dec, '0');
+            }
+        } else {
+            res = _value + web3utils.padRight('', _dec, '0');
+        }
+
+        // remove leading zeros
+        while (res.length > 0 && res.charAt(0) === '0') {
+            res = res.slice(1);
+        }
+
+        if (!_float) {
+            idx = res.indexOf('.');
+            if (idx > -1) {
+                res = res.slice(0, idx);
+            }
+        }
+
+        return res;
     }
 
     // toTokenValue() {}

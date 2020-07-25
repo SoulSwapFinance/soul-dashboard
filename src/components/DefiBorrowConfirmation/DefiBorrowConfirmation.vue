@@ -180,19 +180,19 @@ export default {
                 txToSign = defiUtils.defiBorrowTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(Web3.utils.toWei(this.increasedDebt.toString(), 'ether'))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals))
                 );
             } else if (this.params.step === 1) {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
-                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString(), 'ether'))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
                 );
             } else {
                 txToSign = defiUtils.defiRepayTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString(), 'ether'))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
                     // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
                 );
             }
