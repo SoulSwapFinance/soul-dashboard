@@ -171,7 +171,11 @@ export class DeFi {
         const value = web3utils.toBN(_value).toString(10);
         const idx = value.length - _dec;
 
-        return value.slice(0, idx) + '.' + value.slice(idx);
+        if (idx < 0) {
+            return `0.${web3utils.padLeft(value, _dec, '0')}`;
+        } else {
+            return value.slice(0, idx) + '.' + value.slice(idx);
+        }
     }
 
     // toTokenValue() {}

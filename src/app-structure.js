@@ -83,6 +83,39 @@ const appStructure = [
                             {
                                 id: 'defi-manage-borrow-view',
                                 route: 'defi-manage-borrow-view',
+                                _c: [
+                                    {
+                                        id: 'defi-manage-borrow-confirmation',
+                                        route: 'defi-manage-borrow-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-manage-borrow-transaction-success-message',
+                                                route: 'defi-manage-borrow-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-manage-borrow-confirmation2',
+                                                        route: 'defi-manage-borrow-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-manage-borrow-transaction-success-message2',
+                                                                route:
+                                                                    'defi-manage-borrow-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-manage-borrow-transaction-reject-message2',
+                                                                route: 'defi-manage-borrow-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-manage-borrow-transaction-reject-message',
+                                                route: 'defi-manage-borrow-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
                             },
                         ],
                     },

@@ -23,7 +23,7 @@
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
                         <h3 class="label">Borrowed {{ tokenSymbol }}</h3>
-                        <div class="value">{{ debt }}</div>
+                        <div class="value">{{ debt.toFixed(decimals) }}</div>
                     </div>
                     <div class="df-data-item smaller">
                         <h3 class="label">Collateral</h3>
@@ -479,6 +479,26 @@ export default {
         },
 
         onSubmit() {
+            const params = {
+                currDebt: parseFloat(this.currDebt),
+                debt: this.debt,
+                tokenSymbol: this.dToken.symbol,
+            };
+
+            if (this.decreasedDebt > 0) {
+                params.steps = 2;
+                params.step = 1;
+            }
+
+            if (!this.submitDisabled) {
+                this.$router.push({
+                    name: 'defi-manage-borrow-confirmation',
+                    params,
+                });
+            }
+        },
+
+        onSubmit_() {
             if (!this.submitDisabled) {
                 this.$router.push({
                     name: 'defi-manage-borrow-confirmation',

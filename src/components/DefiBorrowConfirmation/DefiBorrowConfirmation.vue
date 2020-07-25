@@ -18,12 +18,17 @@
 
             <div class="info">
                 <div v-if="increasedDebt > 0">
-                    You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} fUSD</span>
+                    You’re adding
+                    <span class="inc-desc-collateral"
+                        >{{ increasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}</span
+                    >
                 </div>
                 <div v-else-if="decreasedDebt > 0">
                     <template v-if="params.step === 1">You’re allowing</template>
                     <template v-else>You’re removing</template>
-                    <span class="inc-desc-collateral"> {{ decreasedDebt.toFixed(2) }} fUSD</span>
+                    <span class="inc-desc-collateral">
+                        {{ decreasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}</span
+                    >
                 </div>
             </div>
 
@@ -32,9 +37,7 @@
             </template>
         </tx-confirmation>
         <template v-else>
-            <f-message type="info" role="alert" class="big">
-                Adjust fUSD first, please.
-            </f-message>
+            <f-message type="info" role="alert" class="big"> Adjust {{ cTokenSymbol }} first, please. </f-message>
         </template>
     </div>
 </template>
@@ -69,6 +72,16 @@ export default {
         compName: {
             type: String,
             default: 'defi-borrow-fusd',
+        },
+        /** Tells which token to use in confirmation process. */
+        tokenSymbol: {
+            type: String,
+            default: 'FUSD',
+        },
+        /** Number of decimals of debt. */
+        debtDecimals: {
+            type: Number,
+            default: 2,
         },
         /** Router params */
         params: {
@@ -135,6 +148,10 @@ export default {
 
             return parentNode ? parentNode.route : '';
         },
+
+        cTokenSymbol() {
+            return this.$defi.getTokenSymbol({ symbol: this.tokenSymbol });
+        },
     },
 
     created() {
@@ -151,7 +168,7 @@ export default {
     methods: {
         async setTx() {
             /** @type {DefiToken} */
-            const token = await this.$defi.fetchTokens(this.currentAccount.address, 'FUSD');
+            const token = await this.$defi.fetchTokens(this.currentAccount.address, this.tokenSymbol);
             const { contractAddress } = this;
             let txToSign;
 
@@ -163,19 +180,19 @@ export default {
                 txToSign = defiUtils.defiBorrowTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(Web3.utils.toWei(this.increasedDebt.toString()))
+                    Web3.utils.toHex(Web3.utils.toWei(this.increasedDebt.toString(), 'ether'))
                 );
             } else if (this.params.step === 1) {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
-                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString()))
+                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString(), 'ether'))
                 );
             } else {
                 txToSign = defiUtils.defiRepayTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString()))
+                    Web3.utils.toHex(Web3.utils.toWei(this.decreasedDebt.toString(), 'ether'))
                     // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
                 );
             }

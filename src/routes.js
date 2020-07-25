@@ -188,6 +188,36 @@ export const routes = [
                         path: 'flend/manage-borrow',
                         component: DefiManageBorrowView,
                     },
+                    {
+                        name: 'defi-manage-borrow-confirmation',
+                        path: 'flend/manage-borrow/confirmation',
+                        component: DefiManageBorrowConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-borrow-confirmation2',
+                        path: 'flend/manage-borrow/confirmation2',
+                        component: DefiManageBorrowConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-success-message',
+                        path: 'fmint/manage-fusd/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-success-message2',
+                        path: 'fmint/manage-fusd/confirmation/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-reject-message',
+                        path: 'fmint/manage-fusd/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-reject-message2',
+                        path: 'fmint/manage-fusd/confirmation/reject2',
+                        component: TransactionRejectMessageView,
+                    },
                 ],
             },
             {
