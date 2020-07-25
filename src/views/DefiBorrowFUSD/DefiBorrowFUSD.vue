@@ -124,6 +124,10 @@
                 <template v-else-if="increasedDebt > 0 || debt === 0">Mint {{ increasedDebt.toFixed(2) }} now</template>
                 <template v-else>Repay {{ decreasedDebt.toFixed(2) }} now</template>
             </button>
+            <br /><br />
+            <router-link :to="{ name: 'defi-manage-collateral' }">
+                Manage Collateral
+            </router-link>
         </div>
 
         <div
