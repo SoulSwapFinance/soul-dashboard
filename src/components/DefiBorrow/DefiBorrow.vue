@@ -173,6 +173,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 /**
  * Common component for defi mint and repay.
@@ -189,6 +190,8 @@ export default {
         FSlider,
         FCircleProgress,
     },
+
+    mixins: [eventBusMixin],
 
     props: {
         /** @type {DefiToken} */
@@ -428,6 +431,8 @@ export default {
         this.updateMessage();
 
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -523,6 +528,10 @@ export default {
 
         onResetBtnClick() {
             this.updateCurrDebt();
+        },
+
+        onAccountPicked() {
+            this.init();
         },
 
         _setTmpValues(_values) {

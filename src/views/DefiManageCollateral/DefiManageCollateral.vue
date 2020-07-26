@@ -160,11 +160,14 @@ import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColo
 import { getAppParentNode } from '../../app-structure.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { formatNumberByLocale } from '../../filters.js';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
     name: 'DefiManageCollateral',
 
     components: { FBackButton, FColoredNumberRange, FSlider, FMessage, FCircleProgress },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -346,11 +349,8 @@ export default {
         this.updateMessage();
 
         this.init();
-        /*
 
-        console.log(this.debt, this.tokenPrice);
-        console.log(this.tmp);
-*/
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -418,6 +418,10 @@ export default {
 
         onResetBtnClick() {
             this.updateCurrCollateral();
+        },
+
+        onAccountPicked() {
+            this.init();
         },
 
         formatNumberByLocale,

@@ -128,11 +128,14 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import { getUniqueId } from '../../utils';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
     name: 'DefiFMint',
 
     components: { FBackButton, FMessage, FCircleProgress },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -247,6 +250,8 @@ export default {
 
     created() {
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -264,6 +269,10 @@ export default {
             this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
 
             this.tmpTokenPrice = this.tokenPrice;
+        },
+
+        onAccountPicked() {
+            this.init();
         },
 
         _setTmpValues(_values) {

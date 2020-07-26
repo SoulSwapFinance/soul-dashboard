@@ -164,6 +164,7 @@ import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '../../filters.js';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 /**
  * Common component for defi mint and repay.
@@ -172,6 +173,8 @@ export default {
     name: 'DefiBorrowFUSD',
 
     components: { FMessage, FBackButton, FColoredNumberRange, FSlider, FCircleProgress },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -327,6 +330,8 @@ export default {
         this.updateMessage();
 
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -394,6 +399,10 @@ export default {
 
         onResetBtnClick() {
             this.updateCurrDebt();
+        },
+
+        onAccountPicked() {
+            this.init();
         },
 
         _setTmpValues(_values) {

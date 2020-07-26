@@ -59,11 +59,14 @@ import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import { getUniqueId } from '../../utils';
+import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
     name: 'DefiFTrade',
 
     components: { DefiTokenPickerWindow, FSelectButton, FCryptoSymbol, FBackButton },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -112,6 +115,8 @@ export default {
 
     created() {
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -192,12 +197,17 @@ export default {
             }
         },
 
-        onFromInputChange() {
+        onFromInputChange(_event) {
+            console.log(_event.target.value, this.fromInputValue);
             // _event.target.value = this.formatInputValue(this.currDebt);
         },
 
         onToInputChange() {
             // _event.target.value = this.formatInputValue(this.currDebt);
+        },
+
+        onAccountPicked() {
+            this.init();
         },
     },
 };
