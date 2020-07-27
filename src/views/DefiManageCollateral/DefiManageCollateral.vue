@@ -113,7 +113,7 @@
             </f-message>
         </div>
 
-        <div class="buttons">
+        <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="collateral > 0">Rebalance now</template>
                 <template v-else>Add collateral</template>

@@ -125,7 +125,7 @@
             </f-message>
         </div>
 
-        <div class="buttons">
+        <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="submitDisabled">Submit</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">
@@ -499,15 +499,6 @@ export default {
                 this.$router.push({
                     name: 'defi-manage-borrow-confirmation',
                     params,
-                });
-            }
-        },
-
-        onSubmit_() {
-            if (!this.submitDisabled) {
-                this.$router.push({
-                    name: 'defi-manage-borrow-confirmation',
-                    params: { currDebt: parseFloat(this.currDebt), debt: this.debt, tokenAddress: this.dToken.address },
                 });
             }
         },

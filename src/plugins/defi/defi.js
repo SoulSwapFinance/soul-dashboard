@@ -1,6 +1,6 @@
 import './defi.types.js';
 import gql from 'graphql-tag';
-import { lowercaseFirstChar } from '../../utils';
+import { isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 
 /** @type {BNBridgeExchange} */
@@ -160,8 +160,27 @@ export class DeFi {
     fromTokenValue(_value, _token, _isPrice = false) {
         let value = 0;
 
-        if (_value !== undefined) {
+        if (_value !== undefined && !isNaN(_value)) {
             value = parseFloat(this.shiftDecPointLeft(_value, _isPrice ? _token.priceDecimals : _token.decimals));
+        }
+
+        return value;
+    }
+
+    /**
+     * Convert given value to token decimals space.
+     *
+     * @param {string} _value
+     * @param {DefiToken} _token
+     * @param {boolean} [_isPrice]
+     */
+    toTokenValue(_value, _token, _isPrice = false) {
+        let value = 0;
+
+        if (_value !== undefined && !isNaN(_value)) {
+            value = parseFloat(
+                this.shiftDecPointRight(_value.toString(), _isPrice ? _token.priceDecimals : _token.decimals)
+            );
         }
 
         return value;
@@ -190,14 +209,15 @@ export class DeFi {
      * @return {string}
      */
     shiftDecPointRight(_value, _dec = 0, _float = false) {
-        let idx = _value.indexOf('.');
+        const value = _value.toString();
+        let idx = value.indexOf('.');
         let left;
         let right;
         let res = '';
 
         if (idx > -1) {
-            left = _value.slice(0, idx);
-            right = _value.slice(idx + 1);
+            left = value.slice(0, idx);
+            right = value.slice(idx + 1);
 
             if (_dec < right.length) {
                 res = left + right.slice(0, _dec) + '.' + right.slice(_dec);
@@ -207,7 +227,7 @@ export class DeFi {
                 res = left + web3utils.padRight(right, _dec, '0');
             }
         } else {
-            res = _value + web3utils.padRight('', _dec, '0');
+            res = value + web3utils.padRight('', _dec, '0');
         }
 
         // remove leading zeros
@@ -220,12 +240,68 @@ export class DeFi {
             if (idx > -1) {
                 res = res.slice(0, idx);
             }
+
+            if (!res) {
+                res = '0';
+            }
         }
 
         return res;
     }
 
-    // toTokenValue() {}
+    /**
+     * @param {string} _value
+     * @param {number} _decimals
+     * @return {string}
+     */
+    shiftDecPoint(_value, _decimals) {
+        const value = _value.toString();
+
+        if (_decimals === 0) {
+            return value;
+        } else if (_decimals < 0) {
+            return this.shiftDecPointLeft(value, -_decimals);
+        } else {
+            return this.shiftDecPointRight(value, _decimals);
+        }
+    }
+
+    /**
+     * Value and result value are both in "WEI".
+     *
+     * @param {string|number} _value Value in `_token` decimal space.
+     * @param {DefiToken} _token
+     * @param {DefiToken} _toToken
+     * @return {string}
+     */
+    convertTokenValueWEI(_value, _token, _toToken) {
+        if (isObjectEmpty(_token) || isObjectEmpty(_toToken)) {
+            return '';
+        }
+
+        const value = web3utils.toBN(_value);
+        const tokenPrice = web3utils.toBN(_token.price);
+        const toTokenPrice = web3utils.toBN(_toToken.price);
+        const result = value.mul(tokenPrice).div(toTokenPrice).toString(10);
+        const resultDecimals = _toToken.decimals - (_token.decimals + _token.priceDecimals - _toToken.priceDecimals);
+
+        return this.shiftDecPoint(result, resultDecimals);
+    }
+
+    /**
+     * Value and result value are converted from "WEI".
+     *
+     * @param {string|number} _value Value in `_token` decimal space.
+     * @param {DefiToken} _token
+     * @param {DefiToken} _toToken
+     * @return {string}
+     */
+    convertTokenValue(_value, _token, _toToken) {
+        return this.fromTokenValue(
+            this.convertTokenValueWEI(this.toTokenValue(_value, _token), _token, _toToken),
+            _toToken
+        );
+    }
 
     /**
      * Get defi account debt by token.

@@ -33,15 +33,6 @@
         }
     }
 
-    .buttons {
-        padding-top: 48px;
-        text-align: center;
-
-        > .btn {
-            min-width: 200px;
-        }
-    }
-
     .token-info {
         position: absolute;
         bottom: 96px;
@@ -153,10 +144,6 @@
 
         .token-info {
             display: none;
-        }
-
-        .buttons {
-            padding-top: 24px;
         }
 
         .f-circle-progress {

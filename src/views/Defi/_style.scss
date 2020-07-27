@@ -129,16 +129,34 @@
             margin: 0;
         }
     }
+}
 
-    .f-slider-wrap {
-        padding: 8px 16px 16px 16px;
-        overflow: hidden;
+.f-slider-wrap {
+    padding: 8px 16px 16px 16px;
+    overflow: hidden;
 
-        .reset-btn {
-            margin-top: 4px;
-            text-align: left;
-        }
+    .reset-btn {
+        margin-top: 4px;
+        text-align: left;
     }
+}
+
+
+.defi-buttons {
+    padding-top: 48px;
+    text-align: center;
+
+    > .btn {
+        min-width: 200px;
+    }
+}
+
+.defi-label {
+    font-family: $font-family-proxima;
+    color: $light-gray-color;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
 }
 
 @include media-max($bp-small) {
@@ -164,5 +182,9 @@
             font-size: 18px;
             padding-bottom: 16px;
         }
+    }
+
+    .defi-buttons {
+        padding-top: 24px;
     }
 }
