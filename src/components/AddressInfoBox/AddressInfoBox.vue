@@ -3,7 +3,7 @@
         <div class="row align-items-center collapse-md">
             <div class="col-8 align-center-md address-col">
                 <button class="no-style pick-account-btn" title="Select Wallet" @click="onPickAccountBtn">
-                    <account-name :account="currentAccount" class="address">
+                    <account-name :account="currentAccount" class="address" hide-address>
                         <template v-if="accountsLen > 1" #suffix>
                             <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </template>
@@ -19,7 +19,7 @@
                 <button
                     v-if="mobileView"
                     id="address-more-actions-btn"
-                    class="btn large light same-size round"
+                    class="btn light same-size round"
                     title="More Actions"
                     @click="$refs.addressActionsPopover.show()"
                 >

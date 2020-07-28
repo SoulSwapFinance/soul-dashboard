@@ -31,6 +31,11 @@
 
 body {
     letter-spacing: -0.5px;
+
+    .f-slider {
+        --f-slider-label-color: #{$theme-color};
+        --f-slider-label-font-size: 14px;
+    }
 }
 
 main {
@@ -235,13 +240,13 @@ form {
     }
 }
 
-.validator-img {
+.inline-img {
     display: inline-block;
     vertical-align: middle;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
     overflow: hidden;
+    margin-right: 4px;
 
     img {
         width: auto;

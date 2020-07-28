@@ -1,0 +1,22 @@
+@import "../../assets/scss/vars";
+
+.defi-token-list {
+    ul > li {
+        padding: 8px;
+        margin-bottom: 2px;
+        font-weight: bold;
+        border-radius: $input-border-radius;
+
+        &:not(.disabled) {
+            cursor: pointer;
+
+            &:hover {
+                background-color: #ccddff;
+            }
+        }
+
+        &.disabled {
+            opacity: 0.3;
+        }
+    }
+}

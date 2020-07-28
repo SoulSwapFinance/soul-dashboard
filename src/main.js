@@ -15,6 +15,7 @@ import './registerServiceWorker';
 import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
 import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.js';
 import { FNano } from './plugins/fantom-nano.js';
+import { DeFi } from './plugins/defi/defi.js';
 import 'focus-visible';
 
 import './wallet.types.js';
@@ -22,13 +23,14 @@ import './wallet.types.js';
 Vue.use(FantomWeb3Wallet, {
     apolloClient,
 });
-
 Vue.use(BNBridgeExchange, {
     apiUrl: appConfig.bnbridgeApi.url,
     apiToken: appConfig.bnbridgeApi.token,
 });
-
 Vue.use(FNano);
+Vue.use(DeFi, {
+    apolloClient,
+});
 
 Vue.config.productionTip = false;
 

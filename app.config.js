@@ -36,6 +36,25 @@ const appConfig = {
         // auth token
         token: '',
     },
+    // address of liquidity pool contract
+    liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
+    //
+    useTestnet: true,
+    // testnet config
+    testnet: {
+        // list of providers. if one of them is unavailable, another is randomly picked
+        providers: [
+            {
+                http: 'https://xapi5.testnet.fantom.network/graphql',
+                // for subscriptions
+                ws: '',
+            },
+        ],
+        // used in links pointing to fantom explorer
+        explorerUrl: 'https://explorer.testnet.fantom.network/',
+        // chain id for testnet
+        chainId: '0xfa2',
+    },
     // progressive web application
     usePWA: true,
     // pwa settings
@@ -65,6 +84,11 @@ const appConfig = {
         currencies: ['USD', 'EUR'],
     },
 };
+
+if (appConfig.useTestnet) {
+    appConfig.apollo.providers = appConfig.testnet.providers;
+    appConfig.explorerUrl = appConfig.testnet.explorerUrl;
+}
 
 //
 if (appConfig.isChromeExtension) {

@@ -75,6 +75,7 @@
                             <div class="col break-word">
                                 {{ currentAccount.address }}
                                 <span class="f-row-label">
+                                    <template v-if="currentAccount.name"><br /></template>
                                     ( {{ toFTM(currentAccount.balance) }} FTM
                                     <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
                                 </span>

@@ -38,42 +38,7 @@
             </div>
 
             <template #window-content>
-                <ol class="f-data-layout">
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Send To</div>
-                            <div class="col break-word">
-                                {{ stakeData.tx.to }}
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Send From</div>
-                            <div class="col break-word">
-                                {{ currentAccount.address }}
-                                <span class="f-row-label">
-                                    ( {{ toFTM(currentAccount.balance) }} FTM
-                                    <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
-                                </span>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Amount</div>
-                            <div class="col">{{ stakeData.amount }}</div>
-                        </div>
-                    </li>
-                    <!--
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Max Fee</div>
-                            <div class="col">{{ stakeData.tx.fee }}</div>
-                        </div>
-                    </li>
-                    -->
-                </ol>
+                <ledger-confirmation-content :to="stakeData.tx.to" :amount="stakeData.amount" />
             </template>
         </tx-confirmation>
     </div>
@@ -84,11 +49,12 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
     name: 'StakeConfirmation',
 
-    components: { TxConfirmation },
+    components: { LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Data sent from StakeForm component. Info about transaction, validator and amount of FTM. */

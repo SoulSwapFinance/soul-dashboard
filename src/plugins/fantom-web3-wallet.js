@@ -21,6 +21,7 @@ export const GAS_LIMITS = {
     withdraw: '0x30D40',
     delegate: '0x30D40',
     ballot: '0x3D0900',
+    defi: '0x7A120',
 };
 
 /** @type {FantomWeb3Wallet} */
@@ -436,6 +437,25 @@ export class FantomWeb3Wallet {
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
     async getSFCTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
+        const nonce = await this.getTransactionCount(_from);
+        const gasPrice = await this.getGasPrice(true);
+
+        return {
+            ..._tx,
+            gasPrice,
+            gas: _gasLimit,
+            gasLimit: _gasLimit,
+            nonce,
+        };
+    }
+
+    /**
+     * @param {Object} _tx Defi transaction object.
+     * @param {String} _from Address.
+     * @param {String} [_gasLimit] Hex.
+     * @return {Promise<{nonce: string, gasPrice: *}>}
+     */
+    async getDefiTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
 

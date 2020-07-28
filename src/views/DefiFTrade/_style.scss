@@ -1,0 +1,101 @@
+@import "../../assets/scss/vars";
+
+.view-defi-ftrade {
+    .grid {
+        width: 100%;
+        max-width: 800px;
+        margin: 32px auto 0 auto;
+    }
+
+    .swap-cont {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        > * {
+            flex: 1;
+        }
+
+        &::after {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #f2f2f2;
+            content: '';
+        }
+
+        .swap-col {
+            text-align: center;
+            padding: 32px 0;
+
+            .btn {
+                color: $light-gray-color;
+                border: 1px solid $grey-color-semi;
+                position: relative;
+                z-index: 2;
+                background-color: $body-bg-color;
+
+                &.same-size {
+                    min-width: 48px;
+                    min-height: 48px;
+                }
+            }
+        }
+
+        .value {
+            font-size: 21px;
+            line-height: 1;
+            padding-top: 4px;
+        }
+
+        .defi-label {
+            margin-bottom: 0;
+        }
+    }
+
+    .defi-price-input {
+        margin-top: 16px;
+    }
+
+    .sb-content {
+        display: flex;
+        align-items: center;
+
+        > :first-child {
+            width: 100%;
+        }
+
+        > :last-child {
+            color: $light-gray-color;
+            padding-right: 8px;
+        }
+    }
+
+    .f-slider-wrap {
+        margin-top: 40px;
+    }
+}
+
+@include media-max($bp-small) {
+    .view-defi-ftrade {
+        .defi-price-input {
+            input.text-input {
+                font-size: 72px;
+            }
+        }
+
+        .f-slider-wrap {
+            margin-top: 24px;
+        }
+    }
+
+    .view-defi {
+        .defi-manage-borrow {
+            .df-data-item {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}

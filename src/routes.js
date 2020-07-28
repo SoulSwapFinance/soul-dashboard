@@ -14,6 +14,20 @@ import AccountHistory from './views/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';
+import Defi from './views/Defi/Defi.vue';
+import DefiHome from './views/DefiHome/DefiHome.vue';
+import DefiFMint from './views/DefiFMint/DefiFMint.vue';
+import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
+import DefiBorrowFUSD from './views/DefiBorrowFUSD/DefiBorrowFUSD.vue';
+import DefiManageCollateralConfirmation from './views/DefiManageCollateralConfirmation/DefiManageCollateralConfirmation.vue';
+import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
+import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
+import DefiBorrowFUSDConfirmation from './views/DefiBorrowFUSDConfirmation/DefiBorrowFUSDConfirmation.vue';
+import DefiFLend from './views/DefiFLend/DefiFLend.vue';
+import DefiManageBorrow from './views/DefiManageBorrow/DefiManageBorrow.vue';
+import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
+import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
+import DefiFTradeConfirmation from './views/DefiFTradeConfirmation/DefiFTradeConfirmation.vue';
 
 export const routes = [
     {
@@ -57,26 +71,31 @@ export const routes = [
                         name: 'account-history',
                         path: '',
                         component: AccountHistory,
+                        meta: { dontScrollToTop: true },
                     },
                     {
                         name: 'account-send',
                         path: 'send',
                         component: AccountSend,
+                        meta: { dontScrollToTop: true },
                     },
                     {
                         name: 'account-receive',
                         path: 'receive',
                         component: AccountReceive,
+                        meta: { dontScrollToTop: true },
                     },
                     {
                         name: 'account-stake',
                         path: 'stake',
                         component: AccountStake,
+                        meta: { dontScrollToTop: true },
                     },
                     {
                         name: 'account-vote',
                         path: 'vote',
                         component: AccountVote,
+                        meta: { dontScrollToTop: true },
                     },
                 ],
             },
@@ -84,6 +103,153 @@ export const routes = [
                 name: 'dashboard',
                 path: '/dashboard',
                 component: Dashboard,
+            },
+            {
+                name: 'defi',
+                path: '/defi/:address',
+                component: Defi,
+                children: [
+                    {
+                        name: 'defi-home',
+                        path: '',
+                        component: DefiHome,
+                    },
+                    {
+                        name: 'defi-fmint',
+                        path: 'fmint',
+                        component: DefiFMint,
+                    },
+                    {
+                        name: 'defi-flend',
+                        path: 'flend',
+                        component: DefiFLend,
+                    },
+                    {
+                        name: 'defi-ftrade',
+                        path: 'ftrade',
+                        component: DefiFTrade,
+                    },
+                    {
+                        name: 'defi-manage-collateral',
+                        path: 'fmint/manage-collateral',
+                        component: DefiManageCollateral,
+                    },
+                    {
+                        name: 'defi-manage-collateral-confirmation',
+                        path: 'fmint/manage-collateral/confirmation',
+                        component: DefiManageCollateralConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-collateral-transaction-success-message',
+                        path: 'fmint/manage-collateral/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-collateral-transaction-reject-message',
+                        path: 'fmint/manage-collateral/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-borrow-fusd',
+                        path: 'fmint/manage-fusd',
+                        component: DefiBorrowFUSD,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-confirmation',
+                        path: 'fmint/manage-fusd/confirmation',
+                        component: DefiBorrowFUSDConfirmation,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-confirmation2',
+                        path: 'fmint/manage-fusd/confirmation2',
+                        component: DefiBorrowFUSDConfirmation,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-transaction-success-message',
+                        path: 'fmint/manage-fusd/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-transaction-success-message2',
+                        path: 'fmint/manage-fusd/confirmation/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-transaction-reject-message',
+                        path: 'fmint/manage-fusd/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-borrow-fusd-transaction-reject-message2',
+                        path: 'fmint/manage-fusd/confirmation/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow',
+                        path: 'flend/manage-borrow',
+                        component: DefiManageBorrow,
+                    },
+                    {
+                        name: 'defi-manage-borrow-confirmation',
+                        path: 'flend/manage-borrow/confirmation',
+                        component: DefiManageBorrowConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-borrow-confirmation2',
+                        path: 'flend/manage-borrow/confirmation2',
+                        component: DefiManageBorrowConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-success-message',
+                        path: 'fmint/manage-fusd/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-success-message2',
+                        path: 'fmint/manage-fusd/confirmation/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-reject-message',
+                        path: 'fmint/manage-fusd/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-manage-borrow-transaction-reject-message2',
+                        path: 'fmint/manage-fusd/confirmation/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-confirmation',
+                        path: 'ftrade/confirmation',
+                        component: DefiFTradeConfirmation,
+                    },
+                    {
+                        name: 'defi-ftrade-confirmation2',
+                        path: 'ftrade/confirmation2',
+                        component: DefiFTradeConfirmation,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-success-message',
+                        path: 'ftrade/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-success-message2',
+                        path: 'ftrade/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-reject-message',
+                        path: 'ftrade/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-reject-message2',
+                        path: 'ftrade/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+                ],
             },
             {
                 name: 'settings',

@@ -1,0 +1,190 @@
+@import "../../assets/scss/vars";
+
+@mixin df-data-item-smaller {
+    font-weight: normal;
+    font-size: 11px;
+    margin-bottom: 16px;
+
+    .label {
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+.view-defi {
+    .main {
+        padding-top: 32px;
+    }
+
+    .address-info-box {
+        margin-bottom: 16px;
+    }
+
+    h1, .h1 {
+        font-size: 48px;
+        font-weight: normal;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    h2, .h2 {
+        font-size: 31px;
+        font-weight: normal;
+    }
+
+    h3, .h3 {
+        font-size: 26px;
+        font-weight: normal;
+    }
+
+    .df-data-item {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 24px;
+
+        .label {
+            color: $light-gray-color;
+            font-size: 1em;
+            margin-bottom: 0;
+        }
+
+        .value {
+            font-size: 2.36em;
+            margin-top: -2px;
+
+            .currency {
+                font-size: 0.7em;
+                color: $light-gray-color;
+            }
+        }
+
+        &.smaller {
+            @include df-data-item-smaller;
+        }
+    }
+
+    .perex {
+        font-size: 16px;
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+        color: $light-gray-color;
+    }
+
+    .f-message.big {
+        //font-size: 26px;
+        font-size: 21px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1.23;
+
+        &.error {
+            color: #ff1716;
+        }
+
+        &.info {
+            font-weight: normal;
+            color: $body-color;
+        }
+    }
+}
+
+.defi-price-input {
+    position: relative;
+    //width: 60%;
+    margin: 0 auto;
+    text-align: center;
+
+    > span {
+        font-size: 80px;
+        opacity: 0.65;
+    }
+
+    input.text-input {
+        font-family: $font-family-proxima;
+        //font-size: 160px;
+        font-size: 120px;
+        font-weight: 300;
+        width: 100%;
+        text-align: center;
+        padding: 0;
+        margin-bottom: 24px;
+        background: none;
+        border: none;
+        outline: none;
+        color: inherit;
+
+        &:invalid {
+            box-shadow: none;
+            outline: none;
+            border: none;
+        }
+
+        -moz-appearance: textfield;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+}
+
+.f-slider-wrap {
+    padding: 8px 16px 16px 16px;
+    overflow: hidden;
+
+    .reset-btn {
+        margin-top: 4px;
+        text-align: left;
+    }
+}
+
+
+.defi-buttons {
+    padding-top: 48px;
+    text-align: center;
+
+    > .btn {
+        min-width: 200px;
+    }
+}
+
+.defi-label {
+    font-family: $font-family-proxima;
+    color: $light-gray-color;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+@include media-max($bp-small) {
+    .view-defi {
+        .main {
+            padding-top: 0;
+        }
+
+        h1, .h1 {
+            font-size: 36px;
+            //margin-bottom: 24px;
+        }
+
+        h2, .h2 {
+            font-size: 20px;
+        }
+
+        .df-data-item {
+            @include df-data-item-smaller;
+        }
+
+        .f-message {
+            font-size: 18px;
+            padding-bottom: 16px;
+        }
+    }
+
+    .defi-buttons {
+        padding-top: 24px;
+    }
+}

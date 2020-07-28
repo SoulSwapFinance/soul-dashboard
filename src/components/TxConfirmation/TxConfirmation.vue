@@ -1,6 +1,6 @@
 <template>
     <div class="tx-confirmation">
-        <f-card class="f-card-double-padding f-data-layout">
+        <f-card class="f-card-double-padding f-data-layout" :off="cardOff">
             <slot></slot>
 
             <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
@@ -10,6 +10,7 @@
                 :show-password-field="!currentAccount.isLedgerAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
+                :no-previous-button="noPreviousButton"
                 @f-form-submit="onFFormSubmit"
                 @go-back="_onGoBack"
             />
@@ -44,6 +45,7 @@ import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import appConfig from '../../../app.config.js';
 
 /**
  * Base component for other 'transaction confirmation and send' components.
@@ -100,6 +102,16 @@ export default {
             type: Function,
             default: null,
         },
+        /** Don't render card */
+        cardOff: {
+            type: Boolean,
+            default: false,
+        },
+        /** Don't show 'previous' button */
+        noPreviousButton: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -152,7 +164,11 @@ export default {
 
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
-                // console.log('tx', this.tx);
+                if (appConfig.useTestnet) {
+                    this.tx.chainId = appConfig.testnet.chainId;
+                }
+
+                console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;

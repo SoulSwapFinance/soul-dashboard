@@ -36,33 +36,7 @@
             </div>
 
             <template #window-content>
-                <ol class="f-data-layout">
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Send To</div>
-                            <div class="col break-word">
-                                {{ tx.to }}
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">From</div>
-                            <div class="col break-word">
-                                {{ currentAccount.address }}
-                                <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="row no-collapse">
-                            <div class="col-3 f-row-label">Amount</div>
-                            <div class="col">
-                                0
-                            </div>
-                        </div>
-                    </li>
-                </ol>
+                <ledger-confirmation-content :to="tx.to" :amount="0" />
             </template>
         </tx-confirmation>
     </div>
@@ -74,11 +48,12 @@ import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import { toFTM } from '../../utils/transactions.js';
+import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
     name: 'BallotConfirmation',
 
-    components: { TxConfirmation },
+    components: { LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Ballot data object. */
