@@ -92,12 +92,6 @@ export default {
     created() {
         /** Timeout id. */
         this._tId = -1;
-
-        if (this.autoContinueToAfter > 0) {
-            this._tId = setTimeout(() => {
-                this.onContinueBtnClick();
-            }, this.autoContinueToAfter);
-        }
     },
 
     beforeDestroy() {
@@ -138,6 +132,12 @@ export default {
                 }
 
                 this.loading = false;
+
+                if (this.autoContinueToAfter > 0) {
+                    this._tId = setTimeout(() => {
+                        this.onContinueBtnClick();
+                    }, this.autoContinueToAfter);
+                }
             }
         },
 
