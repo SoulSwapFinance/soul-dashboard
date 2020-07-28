@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-borrow-confirmation">
+    <div class="defi-ftrade-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -17,19 +17,15 @@
             </h1>
 
             <div class="info">
-                <div v-if="increasedDebt > 0">
-                    You’re adding
-                    <span class="inc-desc-collateral">
-                        {{ increasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}
-                    </span>
-                </div>
-                <div v-else-if="decreasedDebt > 0">
-                    <template v-if="params.step === 1">You’re allowing</template>
-                    <template v-else>You’re removing</template>
-                    <span class="inc-desc-collateral">
-                        {{ decreasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}
-                    </span>
-                </div>
+                <template v-if="params.step === 1">
+                    You’re allowing
+                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span>
+                </template>
+                <template v-else>
+                    You're trading
+                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span> ->
+                    <span class="price">{{ params.toValue.toFixed(priceDecimals) }} {{ toTokenSymbol }}</span>
+                </template>
             </div>
 
             <template #window-content>
@@ -37,7 +33,7 @@
             </template>
         </tx-confirmation>
         <template v-else>
-            <f-message type="info" role="alert" class="big"> Adjust {{ cTokenSymbol }} first, please. </f-message>
+            <f-message type="info" role="alert" class="big"> Trade tokens first, please. </f-message>
         </template>
     </div>
 </template>
@@ -58,7 +54,7 @@ import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
  */
 export default {
-    name: 'DefiBorrowConfirmation',
+    name: 'DefiFTradeConfirmation',
 
     components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
@@ -68,33 +64,17 @@ export default {
             type: String,
             default: appConfig.liquidityPoolContract,
         },
-        /**  */
-        compName: {
-            type: String,
-            default: 'defi-borrow-fusd',
-        },
         /** Tells which token to use in confirmation process. */
         tokenSymbol: {
             type: String,
             default: 'FUSD',
         },
-        /** Number of decimals of debt. */
-        debtDecimals: {
-            type: Number,
-            default: 2,
-        },
-        /** Router params */
-        params: {
-            type: Object,
-            default() {
-                return {};
-            },
-            required: true,
-        },
     },
 
     data() {
         return {
+            compName: 'defi-ftrade',
+            priceDecimals: 6,
             tx: {},
             gasLimit: GAS_LIMITS.default,
         };
@@ -103,8 +83,17 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
+        /**
+         * @return {{fromValue: number, toValue: number, fromTokenSymbol: string, toTokenSymbol: string}}
+         */
+        params() {
+            const { $route } = this;
+
+            return $route && $route.params ? $route.params : {};
+        },
+
         hasCorrectParams() {
-            return this.params.currDebt !== this.params.debt;
+            return !!this.params.fromValue;
         },
 
         increasedDebt() {
@@ -120,14 +109,8 @@ export default {
 
             if (this.params.step === 1) {
                 label = 'Continue to the next step';
-            } else if (this.increasedDebt > 0) {
-                if (this.compName === 'defi-borrow-fusd') {
-                    label = 'Mint now';
-                } else {
-                    label = 'Borrow now';
-                }
             } else {
-                label = 'Repay now';
+                label = 'Trade now';
             }
 
             return label;
@@ -138,23 +121,25 @@ export default {
 
             if (this.params.step === 1) {
                 label = 'Please enter your wallet password to allow your tokens';
-            } else if (this.params.debt > 0) {
-                label = 'Please enter your wallet password to rebalance your debt';
             } else {
-                label = 'Please enter your wallet password to add your debt';
+                label = 'Please enter your wallet password to trade your tokens';
             }
 
             return label;
+        },
+
+        fromTokenSymbol() {
+            return this.$defi.getTokenSymbol({ symbol: this.params.fromTokenSymbol });
+        },
+
+        toTokenSymbol() {
+            return this.$defi.getTokenSymbol({ symbol: this.params.toTokenSymbol });
         },
 
         backButtonRoute() {
             const parentNode = getAppParentNode(`${this.compName}-confirmation`);
 
             return parentNode ? parentNode.route : '';
-        },
-
-        cTokenSymbol() {
-            return this.$defi.getTokenSymbol({ symbol: this.tokenSymbol });
         },
     },
 
@@ -172,31 +157,40 @@ export default {
     methods: {
         async setTx() {
             /** @type {DefiToken} */
-            const token = await this.$defi.fetchTokens(this.currentAccount.address, this.tokenSymbol);
             const { contractAddress } = this;
+
+            const { params } = this;
+            const tokens = await this.$defi.fetchTokens(this.currentAccount.address, [
+                params.fromTokenSymbol,
+                params.toTokenSymbol,
+            ]);
+            const fromToken = tokens.find((_item) => _item.symbol === params.fromTokenSymbol);
+            const toToken = tokens.find((_item) => _item.symbol === params.toTokenSymbol);
             let txToSign;
 
-            if (!token) {
+            console.log(
+                fromToken,
+                toToken,
+                this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals),
+                Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+            );
+
+            if (!fromToken || !toToken) {
                 return;
             }
 
-            if (this.increasedDebt > 0) {
-                txToSign = defiUtils.defiBorrowTokenTx(
-                    contractAddress,
-                    token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals))
-                );
-            } else if (this.params.step === 1) {
+            if (this.params.step === 1) {
                 txToSign = defiUtils.erc20ApproveAmountTx(
-                    token.address,
+                    fromToken.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                 );
             } else {
-                txToSign = defiUtils.defiRepayTokenTx(
+                txToSign = defiUtils.defiTradeTokenTx(
                     contractAddress,
-                    token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    fromToken.address,
+                    toToken.address,
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                     // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
                 );
             }

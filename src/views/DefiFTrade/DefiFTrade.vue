@@ -332,26 +332,21 @@ export default {
         },
 
         onSubmit() {
-            alert('not implemented yet');
-            /*
             const params = {
-                currDebt: parseFloat(this.currDebt),
-                debt: this.debt,
-                tokenSymbol: this.dToken.symbol,
+                fromValue: this.fromValue,
+                toValue: this.toValue,
+                fromTokenSymbol: this.fromToken.symbol,
+                toTokenSymbol: this.toToken.symbol,
+                steps: 2,
+                step: 1,
             };
-
-            if (this.decreasedDebt > 0) {
-                params.steps = 2;
-                params.step = 1;
-            }
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'defi-manage-borrow-confirmation',
+                    name: 'defi-ftrade-confirmation',
                     params,
                 });
             }
-*/
         },
 
         onAccountPicked() {

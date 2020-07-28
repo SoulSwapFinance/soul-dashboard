@@ -122,6 +122,38 @@ const appStructure = [
                     {
                         id: 'defi-ftrade',
                         route: 'defi-ftrade',
+                        _c: [
+                            {
+                                id: 'defi-ftrade-confirmation',
+                                route: 'defi-ftrade-confirmation',
+                                _c: [
+                                    {
+                                        id: 'defi-ftrade-transaction-success-message',
+                                        route: 'defi-ftrade-transaction-success-message',
+                                        _c: [
+                                            {
+                                                id: 'defi-ftrade-confirmation2',
+                                                route: 'defi-ftrade-confirmation2',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-ftrade-transaction-success-message2',
+                                                        route: 'defi-ftrade-transaction-success-message2',
+                                                    },
+                                                    {
+                                                        id: 'defi-ftrade-transaction-reject-message2',
+                                                        route: 'defi-ftrade-transaction-reject-message2',
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        id: 'defi-ftrade-transaction-reject-message',
+                                        route: 'defi-ftrade-transaction-reject-message',
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 ],
             },

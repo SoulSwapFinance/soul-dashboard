@@ -27,6 +27,7 @@ import DefiFLend from './views/DefiFLend/DefiFLend.vue';
 import DefiManageBorrow from './views/DefiManageBorrow/DefiManageBorrow.vue';
 import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
 import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
+import DefiFTradeConfirmation from './views/DefiFTradeConfirmation/DefiFTradeConfirmation.vue';
 
 export const routes = [
     {
@@ -216,6 +217,36 @@ export const routes = [
                     {
                         name: 'defi-manage-borrow-transaction-reject-message2',
                         path: 'fmint/manage-fusd/confirmation/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-confirmation',
+                        path: 'ftrade/confirmation',
+                        component: DefiFTradeConfirmation,
+                    },
+                    {
+                        name: 'defi-ftrade-confirmation2',
+                        path: 'ftrade/confirmation2',
+                        component: DefiFTradeConfirmation,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-success-message',
+                        path: 'ftrade/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-success-message2',
+                        path: 'ftrade/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-reject-message',
+                        path: 'ftrade/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-ftrade-transaction-reject-message2',
+                        path: 'ftrade/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
                 ],

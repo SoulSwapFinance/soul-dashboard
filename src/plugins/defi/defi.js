@@ -386,7 +386,7 @@ export class DeFi {
 
     /**
      * @param {string} _ownerAddress
-     * @param {string} [_symbol]
+     * @param {string|array} [_symbol]
      * @return {Promise<DefiToken[]>}
      */
     async fetchTokens(_ownerAddress, _symbol) {
@@ -415,9 +415,20 @@ export class DeFi {
             },
             fetchPolicy: 'no-cache',
         });
-        const tokens = data.data.defiTokens || [];
+        const defiTokens = data.data.defiTokens || [];
+        let tokens = [];
 
-        return _symbol ? tokens.find((_item) => _item.symbol === _symbol) : tokens;
+        if (_symbol) {
+            if (typeof _symbol === 'string') {
+                tokens = defiTokens.find((_item) => _item.symbol === _symbol);
+            } else if (_symbol.length) {
+                tokens = defiTokens.filter((_item) => _symbol.indexOf(_item.symbol) > -1);
+            }
+        } else {
+            tokens = defiTokens;
+        }
+
+        return tokens;
     }
 
     /**
