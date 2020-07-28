@@ -212,8 +212,7 @@ export default {
          */
         setMenuItemUrl(_propName, _account, _routeName = ACCOUNT_DEFAULT_VIEW) {
             const { navigation } = this;
-            const accounts = this.accounts;
-            const account = _account || this.currentAccount || (accounts.length > 0 ? accounts[0] : null);
+            const account = _account || this.currentAccount;
             let navItemIdx = -1;
 
             navigation.find((_item, _idx) => {
