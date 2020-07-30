@@ -28,6 +28,7 @@ import DefiManageBorrow from './views/DefiManageBorrow/DefiManageBorrow.vue';
 import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
 import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
 import DefiFTradeConfirmation from './views/DefiFTradeConfirmation/DefiFTradeConfirmation.vue';
+import DefiManageDeposit from './views/DefiManageDeposit/DefiManageDeposit.vue';
 
 export const routes = [
     {
@@ -171,7 +172,7 @@ export const routes = [
                     },
                     {
                         name: 'defi-borrow-fusd-transaction-success-message2',
-                        path: 'fmint/manage-fusd/confirmation/success2',
+                        path: 'fmint/manage-fusd/confirmation2/success2',
                         component: TransactionSuccessMessageView,
                     },
                     {
@@ -181,7 +182,7 @@ export const routes = [
                     },
                     {
                         name: 'defi-borrow-fusd-transaction-reject-message2',
-                        path: 'fmint/manage-fusd/confirmation/reject2',
+                        path: 'fmint/manage-fusd/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
                     {
@@ -201,23 +202,28 @@ export const routes = [
                     },
                     {
                         name: 'defi-manage-borrow-transaction-success-message',
-                        path: 'fmint/manage-fusd/confirmation/success',
+                        path: 'fmint/manage-borrow/confirmation/success',
                         component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'defi-manage-borrow-transaction-success-message2',
-                        path: 'fmint/manage-fusd/confirmation/success2',
+                        path: 'flend/manage-borrow/confirmation2/success2',
                         component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'defi-manage-borrow-transaction-reject-message',
-                        path: 'fmint/manage-fusd/confirmation/reject',
+                        path: 'flend/manage-borrow/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
                     {
                         name: 'defi-manage-borrow-transaction-reject-message2',
-                        path: 'fmint/manage-fusd/confirmation/reject2',
+                        path: 'flend/manage-borrow/confirmation2/reject2',
                         component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-manage-deposit',
+                        path: 'flend/manage-deposit',
+                        component: DefiManageDeposit,
                     },
                     {
                         name: 'defi-ftrade-confirmation',

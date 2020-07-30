@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-manage-borrow">
+    <div class="defi-borrow">
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">

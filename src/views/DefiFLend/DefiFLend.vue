@@ -4,7 +4,10 @@
 
         <h2 class="perex">Earn interest on loans. Borrow tokens to trade.</h2>
 
-        <button class="btn large" @click="onBorrowClick">Borrow assets</button>
+        <div class="defi-buttons">
+            <button class="btn large" @click="onLendClick">Deposit assets</button> &nbsp;
+            <button class="btn large" @click="onBorrowClick">Borrow assets</button>
+        </div>
     </div>
 </template>
 
@@ -26,6 +29,10 @@ export default {
     },
 
     methods: {
+        onLendClick() {
+            this.$router.push({ name: 'defi-manage-deposit' });
+        },
+
         onBorrowClick() {
             this.$router.push({ name: 'defi-manage-borrow' });
         },

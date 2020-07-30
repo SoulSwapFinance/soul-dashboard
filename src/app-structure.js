@@ -117,6 +117,10 @@ const appStructure = [
                                     },
                                 ],
                             },
+                            {
+                                id: 'defi-manage-deposit',
+                                route: 'defi-manage-deposit',
+                            },
                         ],
                     },
                     {

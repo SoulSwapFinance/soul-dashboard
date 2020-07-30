@@ -1,27 +1,24 @@
 <template>
-    <div class="view-defi-manage-borrow">
+    <div class="view-defi-manage-deposit">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Borrow
+            Deposit
         </h1>
-
-        <defi-borrow />
     </div>
 </template>
 
 <script>
 import { getAppParentNode } from '../../app-structure.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
-import DefiBorrow from '../../components/DefiBorrow/DefiBorrow.vue';
 
 export default {
-    name: 'DefiManageBorrow',
+    name: 'DefiManageDeposit',
 
-    components: { DefiBorrow, FBackButton },
+    components: { FBackButton },
 
     computed: {
         backButtonRoute() {
-            const parentNode = getAppParentNode('defi-manage-borrow');
+            const parentNode = getAppParentNode('defi-manage-deposit');
 
             return parentNode ? parentNode.route : '';
         },
