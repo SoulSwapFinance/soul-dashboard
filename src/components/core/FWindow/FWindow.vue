@@ -88,6 +88,11 @@ export default {
             type: String,
             default: '',
         },
+        /** Has window a title? */
+        noTitle: {
+            type: Boolean,
+            default: false,
+        },
         /** Animation that starts when the window is just about to show. */
         animationIn: {
             type: String,
@@ -234,7 +239,7 @@ export default {
                 'pos-fixed': this.dPosition === 'fixed',
                 'with-header': this.withHeader,
                 'with-footer': this.withFooter,
-                'no-title': !this.title,
+                'no-title': this.noTitle,
                 modal: this.modal,
                 popover: this.popover,
             };

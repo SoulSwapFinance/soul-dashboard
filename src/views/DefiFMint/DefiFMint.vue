@@ -20,7 +20,14 @@
                 </div>
             </div>
             <div class="limit-col align-center">
-                <h2>Debt Limit</h2>
+                <h2>
+                    Debt Limit
+                    <f-info window-closeable window-class="light"
+                        >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam culpa dicta
+                        numquam, ratione repellat sequi voluptate! Accusamus accusantium corporis dolores enim quas rem
+                        sed voluptas? Animi atque labore obcaecati.</f-info
+                    >
+                </h2>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -129,11 +136,12 @@ import { getUniqueId } from '../../utils';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
+import FInfo from '../../components/core/FInfo/FInfo.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FBackButton, FMessage, FCircleProgress },
+    components: { FInfo, FBackButton, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 

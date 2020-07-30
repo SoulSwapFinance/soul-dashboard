@@ -45,7 +45,7 @@
             padding: 0 40px 40px 40px;
         }
 
-        &.colored-header {
+        &:not(.popover).colored-header {
             .body {
                 padding-top: var(--f-window-padding-with-header) !important;
             }
@@ -84,7 +84,7 @@
         line-height: 2;
     }
 
-    &.with-header {
+    &:not(.popover).with-header {
         .body {
             padding: var(--f-window-body-padding-with-header) !important;
         }

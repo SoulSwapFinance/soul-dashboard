@@ -37,6 +37,7 @@
             v-if="mobileView"
             ref="addressActionsPopover"
             popover
+            no-title
             hide-on-window-mousedown
             attach-to="#address-more-actions-btn"
             attach-position="auto"
