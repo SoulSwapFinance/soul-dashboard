@@ -1,5 +1,5 @@
 <template>
-    <div class="view-defi-deposit-confirmation">
+    <div class="defi-deposit-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -12,7 +12,7 @@
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
-                <f-back-button :route-name="backButtonRoute" /> Confirmation1
+                <f-back-button :route-name="backButtonRoute" /> Confirmation
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
@@ -187,17 +187,17 @@ export default {
                 return;
             }
 
-            if (this.increasedCollateral > 0) {
-                txToSign = defiUtils.defiDepositTokenTx(
-                    contractAddress,
-                    token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedCollateral.toString(), token.decimals))
-                );
-            } else if (this.params.step === 1) {
+            if (this.params.step === 1) {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals))
+                );
+            } else if (this.increasedCollateral > 0) {
+                txToSign = defiUtils.defiDepositTokenTx(
+                    contractAddress,
+                    token.address,
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedCollateral.toString(), token.decimals))
                 );
             } else {
                 txToSign = defiUtils.defiWithdrawDepositedTokenTx(
@@ -212,8 +212,6 @@ export default {
                 this.currentAccount.address,
                 GAS_LIMITS.defi
             );
-
-            console.log(token, this.tx, this.params.step);
         },
 
         onSendTransactionSuccess(_data) {

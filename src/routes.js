@@ -29,6 +29,7 @@ import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
 import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
 import DefiFTradeConfirmation from './views/DefiFTradeConfirmation/DefiFTradeConfirmation.vue';
 import DefiManageDeposit from './views/DefiManageDeposit/DefiManageDeposit.vue';
+import DefiManageDepositConfirmation from './views/DefiManageDepositConfirmation/DefiManageDepositConfirmation.vue';
 
 export const routes = [
     {
@@ -130,6 +131,7 @@ export const routes = [
                         path: 'ftrade',
                         component: DefiFTrade,
                     },
+
                     {
                         name: 'defi-manage-collateral',
                         path: 'fmint/manage-collateral',
@@ -150,6 +152,7 @@ export const routes = [
                         path: 'fmint/manage-collateral/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
+
                     {
                         name: 'defi-borrow-fusd',
                         path: 'fmint/manage-fusd',
@@ -185,6 +188,7 @@ export const routes = [
                         path: 'fmint/manage-fusd/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
+
                     {
                         name: 'defi-manage-borrow',
                         path: 'flend/manage-borrow',
@@ -220,11 +224,43 @@ export const routes = [
                         path: 'flend/manage-borrow/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
+
                     {
                         name: 'defi-manage-deposit',
                         path: 'flend/manage-deposit',
                         component: DefiManageDeposit,
                     },
+                    {
+                        name: 'defi-manage-deposit-confirmation',
+                        path: 'flend/manage-deposit/confirmation',
+                        component: DefiManageDepositConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-deposit-confirmation2',
+                        path: 'flend/manage-deposit/confirmation2',
+                        component: DefiManageDepositConfirmation,
+                    },
+                    {
+                        name: 'defi-manage-deposit-transaction-success-message',
+                        path: 'fmint/manage-deposit/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-deposit-transaction-success-message2',
+                        path: 'flend/manage-deposit/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-manage-deposit-transaction-reject-message',
+                        path: 'flend/manage-deposit/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-manage-deposit-transaction-reject-message2',
+                        path: 'flend/manage-deposit/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+
                     {
                         name: 'defi-ftrade-confirmation',
                         path: 'ftrade/confirmation',

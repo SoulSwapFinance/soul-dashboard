@@ -11,7 +11,7 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked balance</h3>
                     <div class="value">
-                        {{ collateral.toFixed(2) }} <span class="currency">{{ tokenSymbol }}</span>
+                        {{ collateral.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
@@ -89,13 +89,16 @@
                 </template>
                 <div v-else class="df-data-item">
                     <h3 class="no-margin">Max mintable</h3>
-                    <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                    <div class="value">
+                        ---
+                        <!--{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>-->
+                    </div>
                 </div>
             </div>
             <div v-if="largeView" class="right-col">
                 <div class="df-data-item smaller">
-                    <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
+                    <h3 class="label">Minted {{ tokenSymbol }}</h3>
+                    <div class="value">{{ debt.toFixed(5) }}</div>
                 </div>
                 <template v-if="smallView">
                     <div v-if="debt > 0" class="df-data-item smaller">
@@ -106,7 +109,10 @@
                     </div>
                     <div v-else class="df-data-item smaller">
                         <h3 class="label">Max mintable</h3>
-                        <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                        <div class="value">
+                            ---
+                            <!--{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>-->
+                        </div>
                     </div>
                 </template>
             </div>
@@ -115,11 +121,13 @@
                 {{ message }}
             </f-message>
             <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
-                You’re adding <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} FTM</span> to your
+                You’re adding
+                <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} {{ tokenSymbol }}</span> to your
                 collateral
             </f-message>
             <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
-                You’re removing <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} FTM</span> from
+                You’re removing
+                <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} {{ tokenSymbol }}</span> from
                 your collateral
             </f-message>
         </div>
@@ -138,7 +146,6 @@
 <script>
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { mapGetters } from 'vuex';
-import { WEIToFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
@@ -248,30 +255,24 @@ export default {
             /** @type {DefiTokenBalance} */
             const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
 
+            console.log('ddddd', this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0);
+
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
         },
 
         // ------------
 
-        /*
-        debt() {
-            /!** @type {DefiToken} *!/
-            const token = this.tokens.find((_item) => _item.symbol === 'FUSD');
-            /!** @type {DefiTokenBalance} *!/
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, token);
-
-            return this.$defi.fromTokenValue(tokenBalance.balance, token) || 0;
-        },
-*/
-
-        availableFTM() {
-            const available = this.currentAccount ? this.currentAccount.balance : 0;
-
-            return WEIToFTM(available);
-        },
-
         maxMintable() {
-            return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
+            /*
+            const { $defi } = this;
+            const fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
+            const totalDebtFUSD = $defi.fromTokenValue(this.defiAccount.debtValue, fusdToken);
+            const totalCollateralFUSD = $defi.fromTokenValue(this.defiAccount.collateralValue, fusdToken);
+            const borrowLimitFUSD = $defi.getMaxDebtFUSD(totalCollateralFUSD) - totalDebtFUSD;
+
+            return borrowLimitFUSD / this.tokenPrice;
+*/
+            return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(5);
         },
 
         mintingLimit() {
@@ -343,26 +344,9 @@ export default {
             }
         },
 
-        /*
-        currDebt(_value, _oldValue) {
-            let cValue;
-
-            if (_value !== _oldValue) {
-                cValue = this.$refs.slider.getCorrectValue(_value);
-
-                if (cValue !== _value && cValue === this.maxDebt.toString()) {
-                    this.currDebt = cValue;
-                }
-
-                this.updateMessage();
-            }
-        },
-*/
         dToken(_value) {
             if (_value) {
                 this.tokenPrice = this.$defi.getTokenPrice(_value);
-
-                console.log('df', this.tokenPrice);
 
                 this.$nextTick(() => {
                     this.currCollateral = this.collateral.toString();
@@ -405,9 +389,9 @@ export default {
 
             if (this.token === null) {
                 // get first token that can be deposited
-                // this.dToken = this.tokens[0];
+                this.dToken = this.tokens[0];
                 // tmp
-                this.dToken = this.tokens[1];
+                // this.dToken = this.tokens[1];
             }
         },
 
@@ -416,11 +400,15 @@ export default {
         },
 
         updateMessage() {
+            /*
             if (this.availableFTM <= 0.01) {
                 this.message = 'Deposit more FTM to increase your collateral';
             } else {
                 this.message = '';
             }
+*/
+
+            this.message = '';
 
             this.increasedCollateral = 0;
             this.decreasedCollateral = 0;
@@ -443,10 +431,18 @@ export default {
         },
 
         onSubmit() {
+            const params = {
+                currCollateral: parseFloat(this.currCollateral),
+                collateral: this.collateral,
+                tokenSymbol: this.dToken.symbol,
+                steps: 2,
+                step: 1,
+            };
+
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'defi-manage-collateral-confirmation',
-                    params: { currCollateral: parseFloat(this.currCollateral), collateral: this.collateral },
+                    name: 'defi-manage-deposit-confirmation',
+                    params,
                 });
             }
         },

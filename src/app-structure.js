@@ -120,6 +120,40 @@ const appStructure = [
                             {
                                 id: 'defi-manage-deposit',
                                 route: 'defi-manage-deposit',
+                                _c: [
+                                    {
+                                        id: 'defi-manage-deposit-confirmation',
+                                        route: 'defi-manage-deposit-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-manage-deposit-transaction-success-message',
+                                                route: 'defi-manage-deposit-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-manage-deposit-confirmation2',
+                                                        route: 'defi-manage-deposit-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-manage-deposit-transaction-success-message2',
+                                                                route:
+                                                                    'defi-manage-deposit-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-manage-deposit-transaction-reject-message2',
+                                                                route:
+                                                                    'defi-manage-deposit-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-manage-deposit-transaction-reject-message',
+                                                route: 'defi-manage-deposit-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
                             },
                         ],
                     },
