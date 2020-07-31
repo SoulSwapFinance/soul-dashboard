@@ -168,7 +168,6 @@ import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgre
 import { getUniqueId } from '../../utils';
 import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '../../filters.js';
-import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
@@ -335,10 +334,6 @@ export default {
             return Math.max(this.borrowLimit, this.debt);
         },
 
-        maxMintable() {
-            return this.$defi.getMaxDebt(this.collateral, this.$defi.getTokenPrice(this.ftmToken));
-        },
-
         inputValue() {
             return this.formatInputValue(this.currDebt);
         },
@@ -353,12 +348,6 @@ export default {
 
         tokenSymbol() {
             return this.$defi.getTokenSymbol(this.dToken);
-        },
-
-        backButtonRoute() {
-            const parentNode = getAppParentNode('defi-manage-borrow');
-
-            return parentNode ? parentNode.route : '';
         },
 
         /**

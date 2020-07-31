@@ -139,7 +139,11 @@ export class DeFi {
      * @return {string}
      */
     getTokenSymbol(_token) {
-        return _token && _token.symbol ? lowercaseFirstChar(_token.symbol) : '';
+        return _token && _token.symbol
+            ? _token.symbol !== 'FTM'
+                ? lowercaseFirstChar(_token.symbol)
+                : _token.symbol
+            : '';
     }
 
     /**
@@ -311,7 +315,7 @@ export class DeFi {
      * @return {DefiTokenBalance|{}}
      */
     getDefiAccountDebt(_account, _token) {
-        let debt = 0;
+        let debt = {};
         let acountDebt;
 
         if (_token && _account && _account.debt && _account.debt.length > 0) {
@@ -332,7 +336,7 @@ export class DeFi {
      * @return {DefiTokenBalance|{}}
      */
     getDefiAccountCollateral(_account, _token) {
-        let collateral = 0;
+        let collateral = {};
         let acountCollateral;
 
         if (_token && _account && _account.collateral && _account.collateral.length > 0) {
@@ -351,6 +355,14 @@ export class DeFi {
      */
     canTokenBeBorrowed(_token) {
         return _token && _token.isActive && _token.canBorrow && _token.symbol !== 'FUSD';
+    }
+
+    /**
+     * @param {DefiToken} _token
+     * @return {boolean}
+     */
+    canTokenBeDeposited(_token) {
+        return _token && _token.isActive && _token.canDeposit && _token.symbol !== 'FTM';
     }
 
     /**
