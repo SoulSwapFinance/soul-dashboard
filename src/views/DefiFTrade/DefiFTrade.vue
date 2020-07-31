@@ -15,13 +15,14 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="input"
-                        :value="fromInputValue !== 0 ? fromInputValue.toFixed(6) : fromInputValue"
+                        :value="fromInputValue"
                         type="number"
                         step="any"
                         min="0"
                         :max="maxFromInputValue"
                         class="text-input no-style"
                         @change="onFromInputChange"
+                        @keydown="onInputKeydown"
                     />
                 </div>
             </div>
@@ -43,7 +44,7 @@
             </div>
             <div class="swap-col">
                 <button class="btn large round same-size light" title="Swap Tokens" @click="swapTokens">
-                    <icon data="@/assets/svg/exchange-alt.svg" width="24" height="24" aria-hidden="true" />
+                    <icon data="@/assets/svg/defi/ftrade.svg" width="24" height="24" aria-hidden="true" />
                 </button>
             </div>
             <div class="to-col">
@@ -58,13 +59,14 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="input"
-                        :value="toInputValue !== 0 ? toInputValue.toFixed(6) : toInputValue"
+                        :value="toInputValue"
                         type="number"
                         step="any"
                         min="0"
                         :max="maxToInputValue"
                         class="text-input no-style"
                         @change="onToInputChange"
+                        @keydown="onInputKeydown"
                     />
                 </div>
             </div>
@@ -76,7 +78,7 @@
                 <div class="swap-col">
                     <button class="btn large round same-size light" title="Swap Tokens" @click="swapTokens">
                         <icon
-                            data="@/assets/svg/exchange-alt.svg"
+                            data="@/assets/svg/defi/ftrade.svg"
                             width="24"
                             height="24"
                             dir="right"
@@ -156,11 +158,15 @@ export default {
         },
 
         fromInputValue() {
-            return this.formatInputValue(this.fromValue);
+            const fromValue = this.formatInputValue(this.fromValue);
+
+            return fromValue !== 0 ? '-' + fromValue.toFixed(6) : fromValue;
         },
 
         toInputValue() {
-            return this.formatInputValue(this.toValue);
+            const toValue = this.formatInputValue(this.toValue);
+
+            return toValue !== 0 ? toValue.toFixed(6) : toValue;
         },
 
         fromTokens() {
@@ -334,6 +340,16 @@ export default {
         onToInputChange(_event) {
             this.toValue = this.correctToInputValue(_event.target.value);
             this.fromValue = this.convertTo2From(this.toValue);
+        },
+
+        /**
+         * Prevent typing '+' or '-'.
+         * @param {KeyboardEvent} _event
+         */
+        onInputKeydown(_event) {
+            if (_event.key === '+' || _event.key === '-') {
+                _event.preventDefault();
+            }
         },
 
         onSubmit() {
