@@ -17,9 +17,9 @@ import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
 import DefiFMint from './views/DefiFMint/DefiFMint.vue';
-import DefiManageCollateral from './views/DefiManageCollateral/DefiManageCollateral.vue';
+import DefiDepositFTM from './views/DefiDepositFTM/DefiDepositFTM.vue';
 import DefiBorrowFUSD from './views/DefiBorrowFUSD/DefiBorrowFUSD.vue';
-import DefiManageCollateralConfirmation from './views/DefiManageCollateralConfirmation/DefiManageCollateralConfirmation.vue';
+import DefiDepositFTMConfirmation from './views/DefiDepositFTMConfirmation/DefiDepositFTMConfirmation.vue';
 import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
 import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
 import DefiBorrowFUSDConfirmation from './views/DefiBorrowFUSDConfirmation/DefiBorrowFUSDConfirmation.vue';
@@ -135,12 +135,12 @@ export const routes = [
                     {
                         name: 'defi-manage-collateral',
                         path: 'fmint/manage-collateral',
-                        component: DefiManageCollateral,
+                        component: DefiDepositFTM,
                     },
                     {
                         name: 'defi-manage-collateral-confirmation',
                         path: 'fmint/manage-collateral/confirmation',
-                        component: DefiManageCollateralConfirmation,
+                        component: DefiDepositFTMConfirmation,
                     },
                     {
                         name: 'defi-manage-collateral-transaction-success-message',

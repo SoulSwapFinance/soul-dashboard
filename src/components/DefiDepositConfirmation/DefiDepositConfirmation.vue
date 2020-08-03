@@ -17,7 +17,16 @@
             </h1>
 
             <div class="info">
-                <div v-if="increasedCollateral > 0">
+                <template v-if="params.step === 1">
+                    You’re allowing
+                    <span v-if="increasedCollateral > 0" class="inc-desc-collateral">
+                        {{ increasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                    </span>
+                    <span v-else class="inc-desc-collateral">
+                        {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                    </span>
+                </template>
+                <div v-else-if="increasedCollateral > 0">
                     You’re adding
                     <span class="inc-desc-collateral">
                         {{ increasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
@@ -25,16 +34,11 @@
                     to your collateral
                 </div>
                 <div v-else-if="decreasedCollateral > 0">
-                    <template v-if="params.step === 1">
-                        You’re allowing {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
-                    </template>
-                    <template v-else>
-                        You’re removing
-                        <span class="inc-desc-collateral">
-                            {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
-                        </span>
-                        from your collateral
-                    </template>
+                    You’re removing
+                    <span class="inc-desc-collateral">
+                        {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                    </span>
+                    from your collateral
                 </div>
             </div>
 
@@ -62,7 +66,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import appConfig from '../../../app.config.js';
 
 /**
- * Common component for DefiManageCollateralConfirmation a DefiManageDepositConfirmation
+ * Common component for DefiDepositFTMConfirmation a DefiManageDepositConfirmation
  */
 export default {
     name: 'DefiDepositConfirmation',

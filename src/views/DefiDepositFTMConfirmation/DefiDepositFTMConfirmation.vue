@@ -7,7 +7,7 @@
 <script>
 import DefiDepositConfirmation from '../../components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
 export default {
-    name: 'DefiManageCollateralConfirmation',
+    name: 'DefiDepositFTMConfirmation',
 
     components: { DefiDepositConfirmation },
 

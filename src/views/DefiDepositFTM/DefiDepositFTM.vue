@@ -163,7 +163,7 @@ import { formatNumberByLocale } from '../../filters.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 
 export default {
-    name: 'DefiManageCollateral',
+    name: 'DefiDepositFTM',
 
     components: { FBackButton, FColoredNumberRange, FSlider, FMessage, FCircleProgress },
 
