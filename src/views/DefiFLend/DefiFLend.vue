@@ -1,8 +1,68 @@
 <template>
-    <div class="defi-flend">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fLend</h1>
+    <div class="view-defi-flend">
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fLend (WIP)</h1>
 
         <h2 class="perex">Earn interest on loans. Borrow tokens to trade.</h2>
+
+        <div class="grid">
+            <div>
+                <h2>Deposit</h2>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Supply balance</h3>
+                    <div class="value">{{ supplyBalance }} <span class="currency">fUSD</span></div>
+                </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Earnings</h3>
+                    <div class="value">{{ earnings }} <span class="currency">fUSD</span></div>
+                </div>
+            </div>
+            <div class="limit-col align-center">
+                <h2>
+                    Collateral
+                    <!--
+                    <f-info window-closeable window-class="light">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    </f-info>
+                    -->
+                </h2>
+                <f-circle-progress
+                    show-percentage
+                    :stroke-width="6"
+                    :animate="false"
+                    :colors="colors"
+                    :value="mintingLimit"
+                />
+            </div>
+            <div class="align-right">
+                <h2>Borrow</h2>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Borrow balance</h3>
+                    <div class="value">{{ borrowBalance }} <span class="currency">fUSD</span></div>
+                </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Borrow limit</h3>
+                    <div class="value">{{ borrowLimit }} <span class="currency">fUSD</span></div>
+                </div>
+            </div>
+            <!--
+            <f-message v-if="closeToLiquidation" type="error" role="alert" class="big">
+                You're getting close to your liquidation price. <br />
+                Please rebalance your collateral.
+            </f-message>
+            -->
+        </div>
+
+        <div class="defi-tabs">
+            <f-tabs>
+                <f-tab title="Supply to liquidity">
+                    Supply to liquidity - content
+                </f-tab>
+                <f-tab title="Available to borrow">
+                    Available to borrow - content
+                </f-tab>
+                <!--                <f-tab title="Open positions" disabled />-->
+            </f-tabs>
+        </div>
 
         <div class="defi-buttons">
             <button class="btn large" @click="onLendClick">Deposit assets</button> &nbsp;
@@ -14,13 +74,62 @@
 <script>
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
+import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
+import { getUniqueId } from '../../utils';
+import { mapGetters } from 'vuex';
+import { eventBusMixin } from '../../mixins/event-bus.js';
+import FTabs from '../../components/core/FTabs/FTabs.vue';
+import FTab from '../../components/core/FTabs/FTab.vue';
 
 export default {
     name: 'DefiFLend',
 
-    components: { FBackButton },
+    components: { FTab, FTabs, FCircleProgress, FBackButton },
+
+    mixins: [eventBusMixin],
+
+    data() {
+        return {
+            /** @type {DefiAccount} */
+            defiAccount: {
+                collateral: [],
+                debt: [],
+            },
+            /** @type {DefiToken} */
+            ftmToken: null,
+            /** @type {DefiToken[]} */
+            tokens: [],
+            id: getUniqueId(),
+        };
+    },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
+        supplyBalance() {
+            return 0;
+        },
+
+        earnings() {
+            return 0;
+        },
+
+        borrowBalance() {
+            return 0;
+        },
+
+        borrowLimit() {
+            return 0;
+        },
+
+        mintingLimit() {
+            return 0;
+        },
+
+        colors() {
+            return this.$defi.getColors();
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-flend');
 
@@ -28,7 +137,31 @@ export default {
         },
     },
 
+    created() {
+        this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
+    },
+
     methods: {
+        async init() {
+            const { $defi } = this;
+            const result = await Promise.all([
+                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchTokens(this.currentAccount.address),
+                $defi.init(),
+            ]);
+
+            this.defiAccount = result[0];
+            this.tokens = result[1];
+            // this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
+            // this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
+        },
+
+        onAccountPicked() {
+            this.init();
+        },
+
         onLendClick() {
             this.$router.push({ name: 'defi-manage-deposit' });
         },
