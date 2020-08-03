@@ -15,8 +15,9 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="input"
-                        :value="fromInputValue"
+                        :value="fromInputValue === 0 ? '' : fromInputValue"
                         type="number"
+                        placeholder="0"
                         step="any"
                         min="0"
                         :max="maxFromInputValue"
@@ -59,8 +60,9 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="input"
-                        :value="toInputValue"
+                        :value="toInputValue === 0 ? '' : toInputValue"
                         type="number"
+                        placeholder="0"
                         step="any"
                         min="0"
                         :max="maxToInputValue"
@@ -71,24 +73,37 @@
                 </div>
             </div>
             <div class="swap-cont">
+                <!--
                 <div>
                     <div class="defi-label">Current rate</div>
                     <div class="value">{{ toTokenPrice }}</div>
                 </div>
+-->
                 <div class="swap-col">
-                    <button class="btn large round same-size light" title="Swap Tokens" @click="swapTokens">
+                    <button class="btn round same-size light" title="Swap Tokens" @click="swapTokens">
                         <icon
                             data="@/assets/svg/defi/ftrade.svg"
-                            width="24"
-                            height="24"
+                            width="20"
+                            height="20"
                             dir="right"
                             aria-hidden="true"
                         />
                     </button>
                 </div>
+                <!--
                 <div class="align-right">
                     <div class="defi-label">Today's change</div>
                     <div class="value">2.38%</div>
+                </div>
+-->
+            </div>
+            <div class="exchange-price">
+                <div class="defi-label">Price</div>
+                <div class="value">{{ perPrice }}</div>
+                <div class="swap-price">
+                    <button class="btn light same-size round" @click="swapPrice">
+                        <icon data="@/assets/svg/exchange-alt.svg" />
+                    </button>
                 </div>
             </div>
         </div>
@@ -136,6 +151,9 @@ export default {
             },
             fromValue: 0,
             currFromValue: '0',
+            perPrice: 0,
+            /** Per price direction. true - from -> to, false - to -> from */
+            perPriceDirF2T: true,
             /** @type {DefiToken} */
             fromToken: {},
             toValue: 0,
@@ -206,6 +224,7 @@ export default {
         currFromValue(_value, _oldValue) {
             if (_value !== _oldValue) {
                 this.fromValue = parseFloat(_value);
+                this.setPerPrice();
             }
         },
 
@@ -213,6 +232,7 @@ export default {
             if (_value !== _oldValue) {
                 this.toValue = this.convertFrom2To(_value);
                 this.currFromValue = _value.toString();
+                this.setPerPrice();
             }
         },
     },
@@ -239,6 +259,8 @@ export default {
                 this.fromToken = this.tokens[0];
                 this.toToken = this.tokens[1];
             }
+
+            this.setPerPrice();
         },
 
         swapTokens() {
@@ -252,6 +274,7 @@ export default {
             this.toValue = hValue;
 
             // this.currFromValue = this.fromValue.toString();
+            this.setPerPrice();
         },
 
         formatInputValue(_value) {
@@ -299,6 +322,22 @@ export default {
             this.fromValue = 0;
             this.toValue = 0;
             this.currFromValue = '0';
+        },
+
+        setPerPrice() {
+            const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
+            const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
+            const perPrice = 1 / (this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1));
+            const { $defi } = this;
+
+            this.perPrice = `${perPrice.toFixed(6)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(
+                toToken
+            )}`;
+        },
+
+        swapPrice() {
+            this.perPriceDirF2T = !this.perPriceDirF2T;
+            this.setPerPrice();
         },
 
         onFromTokenSelectorClick() {

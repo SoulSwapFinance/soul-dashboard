@@ -75,6 +75,10 @@
 
     .defi-price-input {
         margin-top: 16px;
+
+        input.text-input {
+            font-size: 72px;
+        }
     }
 
     .sb-content {
@@ -94,6 +98,28 @@
     .f-slider-wrap {
         margin-top: 40px;
     }
+
+    .exchange-price {
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        > * {
+            flex: 1;
+        }
+
+        .value {
+            flex-basis: 100%;
+            text-align: right;
+            //background-color: red;
+            //padding-left: 8px;
+            //padding-right: 8px;
+            padding: 0 8px;
+        }
+
+        .swap-price {
+        }
+    }
 }
 
 @include media-min($bp-large) {
@@ -111,12 +137,17 @@
             }
 
             .swap-cont {
-                grid-area: 2 / 3 / 2 / 3;
+                //grid-area: 2 / 3 / 2 / 3;
+                display: none;
             }
 
             .f-slider-wrap {
                 margin-top: 0;
                 grid-area: initial;
+            }
+
+            .exchange-price {
+                grid-area: 2 / 3 / 2 / 3;
             }
         }
 
@@ -124,7 +155,7 @@
             margin-top: 56px;
 
             input.text-input {
-                font-size: 72px;
+                margin-bottom: 24px;
             }
         }
 
@@ -135,7 +166,7 @@
         }
 
         .swap-cont {
-            justify-content: space-evenly;
+            //justify-content: space-evenly;
 
             > * {
                 flex: initial;
@@ -151,16 +182,32 @@
         }
     }
 }
-@include media-max($bp-small) {
+@include media-max($bp-large) {
     .view-defi-ftrade {
         .defi-price-input {
             input.text-input {
-                font-size: 72px;
+                font-size: 40px;
+                margin-bottom: 0;
             }
         }
 
         .f-slider-wrap {
             margin-top: 24px;
+        }
+
+        .swap-col {
+            padding: 0;
+
+            .btn {
+                &.same-size {
+                    min-width: 40px;
+                    min-height: 40px;
+                }
+            }
+        }
+
+        .exchange-price {
+            padding: 0 12px;
         }
     }
 }
