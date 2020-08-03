@@ -36,6 +36,17 @@ body {
         --f-slider-label-color: #{$theme-color};
         --f-slider-label-font-size: 14px;
     }
+
+    .f-tabs {
+        --f-tabs-font-family: #{$font-family-proxima};
+        --f-tabs-color: #{$light-gray-color};
+        --f-tabs-font-size: 18px;
+        --f-tabs-font-weight: 600;
+        --f-tabs-border-width: 2px;
+        --f-tabs-border-color: #{$grey-color-semi};
+        --f-tabs-hover-color: inherit;
+        --f-tabs-hover-border-color: transparent;
+    }
 }
 
 main {
