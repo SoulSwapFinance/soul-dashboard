@@ -186,13 +186,29 @@ export default {
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                 );
             } else {
-                txToSign = defiUtils.defiTradeTokenTx(
-                    contractAddress,
-                    fromToken.address,
-                    toToken.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
-                    // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
-                );
+                if (fromToken.symbol === 'FUSD') {
+                    txToSign = defiUtils.defiBuyTokenTx(
+                        contractAddress,
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    );
+                    console.log('from - fUSD');
+                } else if (toToken.symbol === 'FUSD') {
+                    txToSign = defiUtils.defiSellTokenTx(
+                        contractAddress,
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    );
+                    console.log('to - fUSD');
+                } else {
+                    txToSign = defiUtils.defiTradeTokenTx(
+                        contractAddress,
+                        fromToken.address,
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                        // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
+                    );
+                }
             }
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(

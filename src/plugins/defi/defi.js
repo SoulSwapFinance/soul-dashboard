@@ -434,8 +434,8 @@ export class DeFi {
      * @return {boolean}
      */
     canTokenBeTraded(_token) {
-        return _token && _token.isActive && _token.canTrade;
-        // return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
+        // return _token && _token.isActive && _token.canTrade;
+        return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
     }
 
     /**
