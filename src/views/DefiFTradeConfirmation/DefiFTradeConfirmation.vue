@@ -190,7 +190,8 @@ export default {
                     txToSign = defiUtils.defiBuyTokenTx(
                         contractAddress,
                         toToken.address,
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                        // Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
                     );
                     console.log('from - fUSD');
                 } else if (toToken.symbol === 'FUSD') {
