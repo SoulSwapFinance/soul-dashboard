@@ -84,7 +84,7 @@
                         :stroke-width="6"
                         :animate="false"
                         :colors="colors"
-                        :value="mintingLimit"
+                        :value="debtLimit"
                     />
                 </template>
                 <div v-else class="df-data-item">
@@ -104,7 +104,7 @@
                     <div v-if="debt > 0" class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
-                            <f-colored-number-range show-percentage :colors="colors" :value="mintingLimit" />
+                            <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
                         </div>
                     </div>
                     <div v-else class="df-data-item smaller">
@@ -226,14 +226,7 @@ export default {
         },
 
         overallDebt() {
-            /** @type {DefiTokenBalance} */
-            // const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
-
-            // overall debt
-            return this.$defi.fromTokenValue(
-                this.defiAccount.debtValue,
-                this.tokens.find((_item) => _item.symbol === 'FUSD')
-            );
+            return this.$defi.getOverallDebt(this.defiAccount);
         },
 
         minCollateral() {
@@ -255,8 +248,6 @@ export default {
             /** @type {DefiTokenBalance} */
             const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
 
-            console.log('ddddd', this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0);
-
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
         },
 
@@ -275,8 +266,13 @@ export default {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(5);
         },
 
-        mintingLimit() {
-            return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
+        debtLimit() {
+            // const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice;
+            const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
+            const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice - collateralFUSD;
+
+            return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
+            // return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
         },
 
         inputValue() {

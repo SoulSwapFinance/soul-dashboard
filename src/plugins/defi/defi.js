@@ -34,6 +34,12 @@ export class DeFi {
         this.warningCollateralRatio = 2.25; // (this.liqCollateralRatio + this.minCollateralRatio) / 2;
         /** DeFi settings was loaded. */
         this.settingsLoaded = false;
+        /** @type {DefiToken[]} */
+        this.tokens = [];
+        /** @type {DefiToken} */
+        this.fusdToken = {};
+        /** @type {DefiToken} */
+        this.ftmToken = {};
     }
 
     /**
@@ -59,6 +65,16 @@ export class DeFi {
         this.liqCollateralRatio = parseInt(_settings.liqCollateralRatio4, 16) / dec;
         this.minCollateralRatio = parseInt(_settings.minCollateralRatio4, 16) / dec;
         this.warningCollateralRatio = parseInt(_settings.warningCollateralRatio4, 16) / dec;
+    }
+
+    /**
+     * @param {DefiToken[]} _tokens
+     * @private
+     */
+    _setTokens(_tokens) {
+        this.tokens = _tokens;
+        this.fusdToken = _tokens.find((_item) => _item.symbol === 'FUSD');
+        this.ftmToken = _tokens.find((_item) => _item.symbol === 'FTM');
     }
 
     /**
@@ -152,6 +168,54 @@ export class DeFi {
      */
     getTokenPrice(_token) {
         return _token && 'price' in _token ? parseInt(_token.price, 16) / Math.pow(10, _token.priceDecimals) : 0;
+    }
+
+    /**
+     * Get overall debt in FUSD.
+     *
+     * @param {DefiAccount} _defiAccount
+     * @return {number}
+     */
+    getOverallDebt(_defiAccount) {
+        return this.fromTokenValue(_defiAccount.debtValue, this.fusdToken);
+    }
+
+    /**
+     * Get overall collateral in FUSD.
+     *
+     * @param {DefiAccount} _defiAccount
+     * @return {number}
+     */
+    getOverallCollateral(_defiAccount) {
+        return this.fromTokenValue(_defiAccount.collateralValue, this.fusdToken);
+    }
+
+    /**
+     * Get overall borrow limit in FUSD.
+     *
+     * @param {DefiAccount} _defiAccount
+     * @return {number}
+     */
+    getBorrowLimit(_defiAccount) {
+        const overallDebt = this.getOverallDebt(_defiAccount);
+        const overallCollateral = this.getOverallCollateral(_defiAccount);
+
+        return this.getMaxDebtFUSD(overallCollateral) - overallDebt;
+    }
+
+    /**
+     * Get overall debt limit in FUSD.
+     *
+     * @param {DefiAccount} _defiAccount
+     * @param {number} [_currDebtFUSD] Current debt in FUSD.
+     * @param {number} [_currCollateralFUSD] Current corrateral in FUSD.
+     * @return {number}
+     */
+    getDebtLimit(_defiAccount, _currDebtFUSD = 0, _currCollateralFUSD = 0) {
+        const overallDebt = this.getOverallDebt(_defiAccount);
+        const overallCollateral = this.getOverallCollateral(_defiAccount);
+
+        return this.getMintingLimitFUSD(_currDebtFUSD + overallDebt, _currCollateralFUSD + overallCollateral);
     }
 
     /**
@@ -371,6 +435,7 @@ export class DeFi {
      */
     canTokenBeTraded(_token) {
         return _token && _token.isActive && _token.canTrade;
+        // return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
     }
 
     /**
@@ -429,6 +494,8 @@ export class DeFi {
         });
         const defiTokens = data.data.defiTokens || [];
         let tokens = [];
+
+        this._setTokens(defiTokens);
 
         if (_symbol) {
             if (typeof _symbol === 'string') {
