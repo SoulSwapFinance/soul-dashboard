@@ -33,7 +33,7 @@
                     :stroke-width="6"
                     :animate="false"
                     :colors="colors"
-                    :value="mintingLimit"
+                    :value="debtLimit"
                 />
             </div>
             <div class="align-right">
@@ -222,14 +222,14 @@ export default {
             return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
         },
 
-        mintingLimit() {
-            return this.$defi.getMintingLimit(this.debt, this.collateral, this.tokenPrice);
+        debtLimit() {
+            return this.$defi.getDebtLimit(this.defiAccount);
         },
 
         closeToLiquidation() {
             const { $defi } = this;
 
-            return this.mintingLimit > ($defi.warningCollateralRatio / $defi.minCollateralRatio) * 100;
+            return this.debtLimit > ($defi.warningCollateralRatio / $defi.minCollateralRatio) * 100;
         },
 
         colors() {

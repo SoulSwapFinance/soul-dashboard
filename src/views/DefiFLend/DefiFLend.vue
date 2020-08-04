@@ -9,7 +9,7 @@
                 <h2>Deposit</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Supply balance</h3>
-                    <div class="value">{{ supplyBalance }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ supplyBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Earnings</h3>
@@ -18,7 +18,7 @@
             </div>
             <div class="limit-col align-center">
                 <h2>
-                    Collateral
+                    Debt Limit
                     <!--
                     <f-info window-closeable window-class="light">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -30,18 +30,18 @@
                     :stroke-width="6"
                     :animate="false"
                     :colors="colors"
-                    :value="mintingLimit"
+                    :value="debtLimit"
                 />
             </div>
             <div class="align-right">
                 <h2>Borrow</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow balance</h3>
-                    <div class="value">{{ borrowBalance }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ borrowBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow limit</h3>
-                    <div class="value">{{ borrowLimit }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ borrowLimit.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
             <!--
@@ -51,6 +51,18 @@
             </f-message>
             -->
         </div>
+
+        <!--
+        <div class="tmp">
+            <div>Overall debt: {{ $defi.getOverallDebt(defiAccount) }}</div>
+            <div>Overall collateral: {{ $defi.getOverallCollateral(defiAccount) }}</div>
+            <div>
+                Overall collateral / debt:
+                {{ $defi.getOverallCollateral(defiAccount) / $defi.getOverallDebt(defiAccount) }}
+            </div>
+            <div>Borrow limit: {{ $defi.getBorrowLimit(defiAccount) }}</div>
+        </div>
+-->
 
         <div class="defi-tabs">
             <f-tabs>
@@ -107,23 +119,23 @@ export default {
         ...mapGetters(['currentAccount']),
 
         supplyBalance() {
-            return 0;
+            return this.$defi.getOverallCollateral(this.defiAccount);
         },
 
         earnings() {
-            return 0;
+            return '-';
         },
 
         borrowBalance() {
-            return 0;
+            return this.$defi.getOverallDebt(this.defiAccount);
         },
 
         borrowLimit() {
-            return 0;
+            return this.$defi.getBorrowLimit(this.defiAccount);
         },
 
-        mintingLimit() {
-            return 0;
+        debtLimit() {
+            return this.$defi.getDebtLimit(this.defiAccount);
         },
 
         colors() {
@@ -156,6 +168,9 @@ export default {
             this.tokens = result[1];
             // this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
             // this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
+
+            // tmp
+            console.log('defiAccount', this.defiAccount);
         },
 
         onAccountPicked() {

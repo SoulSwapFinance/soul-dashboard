@@ -73,7 +73,7 @@
                         :stroke-width="6"
                         :animate="false"
                         :colors="colors"
-                        :value="mintingLimit"
+                        :value="debtLimit"
                     />
                 </template>
                 <div v-else class="df-data-item">
@@ -90,7 +90,7 @@
                     <div v-if="debt > 0" class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
-                            <f-colored-number-range show-percentage :colors="colors" :value="mintingLimit" />
+                            <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
                         </div>
                     </div>
                     <div v-else class="df-data-item smaller">
@@ -255,8 +255,11 @@ export default {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
         },
 
-        mintingLimit() {
-            return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
+        debtLimit() {
+            const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
+            const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice - collateralFUSD;
+
+            return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
         },
 
         minCollateral() {
