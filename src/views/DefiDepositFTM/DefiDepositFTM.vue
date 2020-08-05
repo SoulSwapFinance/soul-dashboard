@@ -266,6 +266,34 @@ export default {
             return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
         },
 
+        overallCollateral() {
+            return this.$defi.getOverallCollateral(this.defiAccount);
+        },
+
+        overallDebt() {
+            return this.$defi.getOverallDebt(this.defiAccount);
+        },
+
+        minCollateral() {
+            const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
+            let minC = 0;
+
+            if (this.tokenPrice > 0) {
+                const overallCollateralLeft = this.overallCollateral - this.$defi.getMinCollateral(this.overallDebt, 1);
+
+                minC = collateralFUSD - overallCollateralLeft;
+                if (minC < 0) {
+                    minC = 0;
+                } else {
+                    // collateral minus rest in token currency
+                    minC = this.collateral - (collateralFUSD - minC) / this.tokenPrice;
+                }
+            }
+
+            return minC;
+        },
+
+        /*
         minCollateral() {
             let minC = 0;
 
@@ -275,6 +303,7 @@ export default {
 
             return Math.min(minC, this.collateral);
         },
+*/
 
         maxCollateral() {
             return this.collateral + this.availableFTM;

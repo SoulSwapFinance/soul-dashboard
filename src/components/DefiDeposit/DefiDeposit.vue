@@ -229,20 +229,58 @@ export default {
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
         },
 
+        overallCollateral() {
+            return this.$defi.getOverallCollateral(this.defiAccount);
+        },
+
         overallDebt() {
             return this.$defi.getOverallDebt(this.defiAccount);
         },
 
         minCollateral() {
+            const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
             let minC = 0;
 
             if (this.tokenPrice > 0) {
-                minC = this.$defi.getMinCollateral(this.debt, this.tokenPrice) + (this.debt > 0 ? 1 : 0);
-                console.log('minCollateral', minC, this.debt, this.tokenPrice, this.collateral);
+                /*
+                console.log(
+                    'overallCollateral ' + this.overallCollateral,
+                    'overallDebt ' + this.overallDebt,
+                    'collateral ' + this.collateral,
+                    'collateralFUSD ' + collateralFUSD,
+                    'tokenPrice ' + this.tokenPrice,
+                    'min collateral ' + this.$defi.getMinCollateral(this.overallDebt, 1)
+                );
+                */
+                const overallCollateralLeft = this.overallCollateral - this.$defi.getMinCollateral(this.overallDebt, 1);
+                minC = collateralFUSD - overallCollateralLeft;
+                if (minC < 0) {
+                    minC = 0;
+                } else {
+                    // collateral minus rest in token currency
+                    minC = this.collateral - (collateralFUSD - minC) / this.tokenPrice;
+                    // TMP!
+                    minC *= 1.005;
+                }
+
+                console.log('minc', minC);
+            }
+
+            return minC;
+        },
+
+        /*
+        minCollateral() {
+            let minC = 0;
+
+            if (this.tokenPrice > 0) {
+                // minC = this.$defi.getMinCollateral(this.debt, this.tokenPrice) + (this.debt > 0 ? 1 : 0);
+                minC = this.$defi.getMinCollateral(this.debt, this.tokenPrice);
             }
 
             return Math.min(minC, this.collateral);
         },
+*/
 
         maxCollateral() {
             return this.collateral + this.availableBalance;

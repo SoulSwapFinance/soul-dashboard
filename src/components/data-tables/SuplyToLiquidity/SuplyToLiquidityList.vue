@@ -5,7 +5,6 @@
             :items="items"
             action-on-row
             first-m-v-column-width="6"
-            fixed-header
             f-card-off
             class="f-data-table-body-bg-color"
             @row-action="onRowAction"

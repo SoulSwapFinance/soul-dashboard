@@ -37,7 +37,7 @@
                         <p class="description">Trade synthetic assets to FTM and fUSD</p>
                         <div class="title">
                             <router-link :to="{ name: 'defi-ftrade' }" class="clickable title">
-                                Coming Soon
+                                Start Trading
                             </router-link>
                         </div>
                     </div>
