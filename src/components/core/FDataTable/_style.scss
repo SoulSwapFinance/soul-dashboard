@@ -6,6 +6,9 @@
 }
 
 .f-data-table {
+    --f-data-table-cell-background-color: #fff;
+    --f-data-table-cell-hover-background-color: #ccddff;
+
     position: relative;
 
     .before-table {
@@ -37,7 +40,7 @@
         height: 48px;
 
         td {
-            background-color: #fff;
+            background-color: var(--f-data-table-cell-background-color);
             vertical-align: middle;
 
             &.f-col {
@@ -50,11 +53,23 @@
         }
     }
 
+    &.action-on-row {
+        tbody {
+            tr {
+                cursor: pointer;
+
+                &:hover td {
+                    background-color: var(--f-data-table-cell-hover-background-color);
+                }
+            }
+        }
+    }
+
     thead {
         th {
             font-family: $font-family-proxima;
             //background-color: $body-bg-color;
-            background-color: #fff;
+            background-color: var(--f-data-table-cell-background-color);
         }
     }
 
@@ -80,7 +95,7 @@
     .mobile-view {
         .mobile-item {
             //padding: 8px;
-            background-color: #fff;
+            background-color: var(--f-data-table-cell-background-color);
             //border-radius: 8px;
             //box-shadow: $elev2-shadow;
             margin-bottom: 16px;
