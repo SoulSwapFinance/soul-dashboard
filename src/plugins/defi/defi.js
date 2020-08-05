@@ -167,7 +167,7 @@ export class DeFi {
      * @return {number}
      */
     getTokenPrice(_token) {
-        return _token && 'price' in _token ? parseInt(_token.price, 16) / Math.pow(10, _token.priceDecimals) : 0;
+        return _token && 'price' in _token ? this.fromTokenValue(_token.price, _token, true) : 0;
     }
 
     /**
@@ -241,14 +241,13 @@ export class DeFi {
      * @param {string} _value
      * @param {DefiToken} _token
      * @param {boolean} [_isPrice]
+     * @return {string}
      */
     toTokenValue(_value, _token, _isPrice = false) {
         let value = 0;
 
         if (_value !== undefined && !isNaN(_value)) {
-            value = parseFloat(
-                this.shiftDecPointRight(_value.toString(), _isPrice ? _token.priceDecimals : _token.decimals)
-            );
+            value = this.shiftDecPointRight(_value.toString(), _isPrice ? _token.priceDecimals : _token.decimals);
         }
 
         return value;

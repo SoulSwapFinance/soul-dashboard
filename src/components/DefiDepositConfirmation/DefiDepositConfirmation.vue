@@ -195,7 +195,9 @@ export default {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals))
+                    Web3.utils.toHex(
+                        this.$defi.shiftDecPointRight(Math.abs(this.increasedCollateral).toString(), token.decimals)
+                    )
                 );
             } else if (this.increasedCollateral > 0) {
                 txToSign = defiUtils.defiDepositTokenTx(
