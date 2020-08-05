@@ -40,7 +40,7 @@
                             aria-label="pick a token"
                             @click.native="onTokenSelectorClick"
                         >
-                            <f-crypto-symbol :token="dToken" img-width="24px" img-height="24px" />
+                            <f-crypto-symbol :token="dToken" />
                         </f-select-button>
                         <template v-else>
                             <f-crypto-symbol :token="dToken" />

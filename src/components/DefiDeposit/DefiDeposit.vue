@@ -59,7 +59,7 @@
                             aria-label="pick a token"
                             @click.native="onTokenSelectorClick"
                         >
-                            <f-crypto-symbol :token="dToken" img-width="24px" img-height="24px" />
+                            <f-crypto-symbol :token="dToken" />
                         </f-select-button>
                         <template v-else>
                             <f-crypto-symbol :token="dToken" />
@@ -134,7 +134,11 @@
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                <template v-if="collateral > 0">Rebalance now</template>
+                <template v-if="collateral > 0">
+                    <template v-if="collateral === parseFloat(currCollateral)">Rebalance Now</template>
+                    <template v-else-if="increasedCollateral > 0">Deposit Now</template>
+                    <template v-else>Withdraw Deposit Now</template>
+                </template>
                 <template v-else>Add collateral</template>
             </button>
         </div>

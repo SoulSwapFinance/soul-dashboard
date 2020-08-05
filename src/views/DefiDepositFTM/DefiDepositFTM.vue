@@ -115,7 +115,11 @@
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                <template v-if="collateral > 0">Rebalance now</template>
+                <template v-if="collateral > 0">
+                    <template v-if="collateral === parseFloat(currCollateral)">Rebalance Now</template>
+                    <template v-else-if="increasedCollateral > 0">Deposit Now</template>
+                    <template v-else>Withdraw Deposit Now</template>
+                </template>
                 <template v-else>Add collateral</template>
             </button>
             <br /><br />

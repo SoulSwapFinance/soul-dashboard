@@ -6,7 +6,18 @@
 
         <div class="grid">
             <div>
-                <h2><router-link :to="{ name: 'defi-manage-deposit' }">Deposit</router-link></h2>
+                <h2>
+                    <router-link :to="{ name: 'defi-manage-deposit' }">
+                        Deposit
+                        <icon
+                            data="@/assets/svg/chevron-left.svg"
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                            dir="down"
+                        />
+                    </router-link>
+                </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Supply balance</h3>
                     <div class="value">{{ supplyBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
@@ -34,7 +45,18 @@
                 />
             </div>
             <div class="align-right">
-                <h2><router-link :to="{ name: 'defi-manage-borrow' }">Borrow</router-link></h2>
+                <h2>
+                    <router-link :to="{ name: 'defi-manage-borrow' }">
+                        Borrow
+                        <icon
+                            data="@/assets/svg/chevron-left.svg"
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                            dir="down"
+                        />
+                    </router-link>
+                </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow balance</h3>
                     <div class="value">{{ borrowBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
