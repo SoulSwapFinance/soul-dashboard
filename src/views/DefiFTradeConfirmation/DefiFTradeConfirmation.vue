@@ -167,23 +167,33 @@ export default {
             const fromToken = tokens.find((_item) => _item.symbol === params.fromTokenSymbol);
             const toToken = tokens.find((_item) => _item.symbol === params.toTokenSymbol);
             let txToSign;
+            let fromValue;
 
+            /*
             console.log(
                 fromToken,
                 toToken,
                 this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals),
                 Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
             );
+            */
 
             if (!fromToken || !toToken) {
                 return;
             }
 
             if (this.params.step === 1) {
+                fromValue = params.fromValue;
+
+                if (fromToken.symbol === 'FUSD') {
+                    // add 0.5% fee
+                    fromValue += fromValue * 0.005;
+                }
+
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     fromToken.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(fromValue.toString(), fromToken.decimals))
                 );
             } else {
                 if (fromToken.symbol === 'FUSD') {
@@ -193,14 +203,12 @@ export default {
                         // Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
                     );
-                    console.log('from - fUSD');
                 } else if (toToken.symbol === 'FUSD') {
                     txToSign = defiUtils.defiSellTokenTx(
                         contractAddress,
-                        toToken.address,
+                        fromToken.address,
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                     );
-                    console.log('to - fUSD');
                 } else {
                     txToSign = defiUtils.defiTradeTokenTx(
                         contractAddress,
