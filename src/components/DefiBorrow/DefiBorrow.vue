@@ -398,10 +398,6 @@ export default {
     },
 
     async created() {
-        if (this.token) {
-            this.dToken = this.token;
-        }
-
         this.currDebt = this.debt.toString();
         this.updateMessage();
 
@@ -432,6 +428,8 @@ export default {
             if (this.token === null) {
                 // get first token that can be borrowed
                 this.dToken = tokens.find($defi.canTokenBeBorrowed);
+            } else {
+                this.dToken = this.token;
             }
 
             console.log(this.defiAccount);

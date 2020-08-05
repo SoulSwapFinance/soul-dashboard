@@ -47,6 +47,12 @@ body {
         --f-tabs-hover-color: inherit;
         --f-tabs-hover-border-color: transparent;
     }
+
+    .f-data-table-body-bg-color {
+        .f-data-table {
+            --f-data-table-cell-background-color: #{$body-bg-color};
+        }
+    }
 }
 
 main {

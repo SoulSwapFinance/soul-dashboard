@@ -6,7 +6,7 @@
 
         <div class="grid">
             <div>
-                <h2>Deposit</h2>
+                <h2><router-link :to="{ name: 'defi-manage-deposit' }">Deposit</router-link></h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Supply balance</h3>
                     <div class="value">{{ supplyBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
@@ -34,7 +34,7 @@
                 />
             </div>
             <div class="align-right">
-                <h2>Borrow</h2>
+                <h2><router-link :to="{ name: 'defi-manage-borrow' }">Borrow</router-link></h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow balance</h3>
                     <div class="value">{{ borrowBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
@@ -67,18 +67,13 @@
         <div class="defi-tabs">
             <f-tabs>
                 <f-tab title="Supply to liquidity">
-                    Supply to liquidity - content
+                    <suply-to-liquidity-list :tokens="tokens" :defi-account="defiAccount" />
                 </f-tab>
-                <f-tab title="Available to borrow">
+                <f-tab title="Available to borrow" disabled>
                     Available to borrow - content
                 </f-tab>
-                <!--                <f-tab title="Open positions" disabled />-->
+                <f-tab title="Open positions" disabled>Open positions - content</f-tab>
             </f-tabs>
-        </div>
-
-        <div class="defi-buttons">
-            <button class="btn large" @click="onLendClick">Deposit assets</button> &nbsp;
-            <button class="btn large" @click="onBorrowClick">Borrow assets</button>
         </div>
     </div>
 </template>
@@ -92,11 +87,12 @@ import { mapGetters } from 'vuex';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTabs from '../../components/core/FTabs/FTabs.vue';
 import FTab from '../../components/core/FTabs/FTab.vue';
+import SuplyToLiquidityList from '@/components/data-tables/SuplyToLiquidity/SuplyToLiquidityList.vue';
 
 export default {
     name: 'DefiFLend',
 
-    components: { FTab, FTabs, FCircleProgress, FBackButton },
+    components: { SuplyToLiquidityList, FTab, FTabs, FCircleProgress, FBackButton },
 
     mixins: [eventBusMixin],
 
@@ -107,8 +103,6 @@ export default {
                 collateral: [],
                 debt: [],
             },
-            /** @type {DefiToken} */
-            ftmToken: null,
             /** @type {DefiToken[]} */
             tokens: [],
             id: getUniqueId(),
@@ -166,23 +160,10 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
-            // this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
-            // this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
-
-            // tmp
-            console.log('defiAccount', this.defiAccount);
         },
 
         onAccountPicked() {
             this.init();
-        },
-
-        onLendClick() {
-            this.$router.push({ name: 'defi-manage-deposit' });
-        },
-
-        onBorrowClick() {
-            this.$router.push({ name: 'defi-manage-borrow' });
         },
     },
 };

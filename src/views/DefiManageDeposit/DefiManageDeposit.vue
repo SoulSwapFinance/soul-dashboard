@@ -5,7 +5,7 @@
             Deposit
         </h1>
 
-        <defi-deposit />
+        <defi-deposit :token="params.token" />
     </div>
 </template>
 
@@ -20,6 +20,15 @@ export default {
     components: { DefiDeposit, FBackButton },
 
     computed: {
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        params() {
+            const { $route } = this;
+
+            return $route && $route.params ? $route.params : {};
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-manage-deposit');
 
