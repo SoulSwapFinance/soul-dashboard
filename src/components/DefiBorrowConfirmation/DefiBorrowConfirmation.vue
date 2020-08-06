@@ -178,7 +178,6 @@ export default {
 
     methods: {
         async setTx() {
-            console.log('eeee', this.token);
             const { token } = this;
             const { contractAddress } = this;
             let txToSign;
@@ -229,7 +228,7 @@ export default {
                 params.autoContinueToAfter = 2000;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
-                params.continueToParams = { token: this.token };
+                params.continueToParams = { token: { ...this.token } };
             }
 
             this.$router.replace({
@@ -255,7 +254,7 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.compName,
-                        continueToParams: { token: this.token },
+                        continueToParams: { token: { ...this.token } },
                     },
                 });
             }

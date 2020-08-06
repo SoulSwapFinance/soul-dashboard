@@ -76,8 +76,6 @@ export default {
 
     methods: {
         async setTx() {
-            console.log('eeeee');
-
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.unstashRewardsTx(),
                 this.currentAccount.address,

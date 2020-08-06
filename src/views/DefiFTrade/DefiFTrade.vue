@@ -169,6 +169,15 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
+        /**
+         * @return {{fromToken: DefiToken, toToken: DefiToken}}
+         */
+        params() {
+            const { $route } = this;
+
+            return $route && $route.params ? $route.params : {};
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-ftrade');
 
@@ -246,6 +255,7 @@ export default {
     methods: {
         async init() {
             const { $defi } = this;
+            const { params } = this;
             const result = await Promise.all([
                 $defi.fetchDefiAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
@@ -255,7 +265,10 @@ export default {
             this.defiAccount = result[0];
             this.tokens = result[1].filter($defi.canTokenBeTraded);
 
-            if (this.tokens.length >= 2) {
+            if (params.fromToken && params.toToken) {
+                this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
+                this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
+            } else if (this.tokens.length >= 2) {
                 this.fromToken = this.tokens[0];
                 this.toToken = this.tokens[1];
             }
@@ -397,6 +410,8 @@ export default {
                 toValue: this.toValue,
                 fromTokenSymbol: this.fromToken.symbol,
                 toTokenSymbol: this.toToken.symbol,
+                fromToken: { ...this.fromToken },
+                toToken: { ...this.toToken },
                 steps: 2,
                 step: 1,
             };
