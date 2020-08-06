@@ -19,8 +19,8 @@
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Supply balance</h3>
-                    <div class="value">{{ supplyBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <h3 class="label">Total Deposit</h3>
+                    <div class="value">{{ totalDeposit.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Earnings</h3>
@@ -58,8 +58,8 @@
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Borrow balance</h3>
-                    <div class="value">{{ borrowBalance.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <h3 class="label">Total Borrowed</h3>
+                    <div class="value">{{ totalBorrowed.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow limit</h3>
@@ -88,11 +88,11 @@
 
         <div class="defi-tabs">
             <f-tabs>
-                <f-tab title="Supply to liquidity">
+                <f-tab title="Deposit to Liquidity">
                     <suply-to-liquidity-list :tokens="tokens" :defi-account="defiAccount" />
                 </f-tab>
-                <f-tab title="Available to borrow" disabled>
-                    Available to borrow - content
+                <f-tab title="Available to borrow">
+                    <available-to-borrow-list :tokens="tokens" :defi-account="defiAccount" />
                 </f-tab>
                 <f-tab title="Open positions" disabled>Open positions - content</f-tab>
             </f-tabs>
@@ -110,11 +110,12 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTabs from '../../components/core/FTabs/FTabs.vue';
 import FTab from '../../components/core/FTabs/FTab.vue';
 import SuplyToLiquidityList from '@/components/data-tables/SuplyToLiquidity/SuplyToLiquidityList.vue';
+import AvailableToBorrowList from '@/components/data-tables/AvailableToBorrowList/AvailableToBorrowList.vue';
 
 export default {
     name: 'DefiFLend',
 
-    components: { SuplyToLiquidityList, FTab, FTabs, FCircleProgress, FBackButton },
+    components: { AvailableToBorrowList, SuplyToLiquidityList, FTab, FTabs, FCircleProgress, FBackButton },
 
     mixins: [eventBusMixin],
 
@@ -134,7 +135,7 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
-        supplyBalance() {
+        totalDeposit() {
             return this.$defi.getOverallCollateral(this.defiAccount);
         },
 
@@ -142,7 +143,7 @@ export default {
             return '-';
         },
 
-        borrowBalance() {
+        totalBorrowed() {
             return this.$defi.getOverallDebt(this.defiAccount);
         },
 

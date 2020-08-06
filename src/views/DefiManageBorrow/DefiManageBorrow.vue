@@ -5,7 +5,7 @@
             Borrow
         </h1>
 
-        <defi-borrow />
+        <defi-borrow :token="params.token" />
     </div>
 </template>
 
@@ -20,6 +20,15 @@ export default {
     components: { DefiBorrow, FBackButton },
 
     computed: {
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        params() {
+            const { $route } = this;
+
+            return $route && $route.params ? $route.params : {};
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-manage-borrow');
 

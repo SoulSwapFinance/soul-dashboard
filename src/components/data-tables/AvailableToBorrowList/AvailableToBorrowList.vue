@@ -1,5 +1,5 @@
 <template>
-    <div class="suply-to-liquidity-list-dt">
+    <div class="available-to-borrow-list-dt">
         <f-data-table
             :columns="columns"
             :items="items"
@@ -21,7 +21,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-balance="{ value, item, column }">
+            <template v-slot:column-borrowed="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -40,9 +40,10 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
-    name: 'SuplyToLiquidityList',
+    name: 'AvailableToBorrowList',
 
     components: { FCryptoSymbol, FDataTable },
 
@@ -87,37 +88,41 @@ export default {
                     width: '140px',
                 },
                 {
-                    name: 'balance',
-                    label: 'Balance',
-                    itemProp: 'availableBalance',
-                    formatter: (_availableBalance, _item) => {
-                        const collateral = this.getCollateral(_item);
-
-                        return collateral > 0 ? collateral.toFixed(5) : 0;
+                    name: 'price',
+                    label: 'Price',
+                    formatter: (_value, _item) => {
+                        return formatNumberByLocale(this.$defi.getTokenPrice(_item), 2, 'USD');
                     },
                     css: { textAlign: 'right' },
-                    // width: '100px',
                 },
                 {
-                    name: 'balance_fusd',
-                    label: 'Balance (fUSD)',
-                    itemProp: 'availableBalance',
-                    formatter: (_availableBalance, _item) => {
-                        const collateral = this.getCollateral(_item);
+                    name: 'borrowed',
+                    label: 'Borrowed',
+                    formatter: (_value, _item) => {
+                        const debt = this.getDebt(_item);
 
-                        return collateral > 0 ? (collateral * this.defi.getTokenPrice(_item)).toFixed(2) : 0;
+                        return debt > 0 ? debt.toFixed(5) : 0;
+                    },
+                    css: { textAlign: 'right' },
+                },
+                {
+                    name: 'borrowed_fusd',
+                    label: 'Borrowed (fUSD)',
+                    formatter: (_value, _item) => {
+                        const debt = this.getDebt(_item);
+
+                        return debt > 0 ? (debt * this.defi.getTokenPrice(_item)).toFixed(2) : 0;
                     },
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
-                            const a = this.getCollateral(_a) * this.defi.getTokenPrice(_a);
-                            const b = this.getCollateral(_b) * this.defi.getTokenPrice(_b);
+                            const a = this.getDebt(_a) * this.defi.getTokenPrice(_a);
+                            const b = this.getDebt(_b) * this.defi.getTokenPrice(_b);
 
                             return (_direction === 'desc' ? -1 : 1) * numberSort(a, b);
                         };
                     },
                     css: { textAlign: 'right' },
-                    // width: '100px',
                 },
             ],
         };
@@ -137,20 +142,20 @@ export default {
          * @param {DefiToken} _token
          * @return {*|number}
          */
-        getCollateral(_token) {
+        getDebt(_token) {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, _token);
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },
 
         onRowAction(_item) {
-            this.$router.push({ name: 'defi-manage-deposit', params: { token: _item } });
+            this.$router.push({ name: 'defi-manage-borrow', params: { token: _item } });
         },
     },
 };
 </script>
 
 <style lang="scss">
-@import 'style';
+//@import 'style';
 </style>
