@@ -1,9 +1,8 @@
 <template>
-    <div class="available-to-borrow-list-dt">
+    <div class="open-positions-list-dt">
         <f-data-table
             :columns="columns"
             :items="items"
-            action-on-row
             first-m-v-column-width="6"
             f-card-off
             class="f-data-table-body-bg-color"
@@ -25,11 +24,31 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        {{ value }} <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                        collateral: <b>{{ formatCollateral(item) }} </b>
+                        <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
+                        borrowed: <b>{{ formatDebt(item) }} </b>
+                        <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
                     </div>
                 </div>
                 <template v-else>
-                    {{ value }} <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                    collateral: <b>{{ formatCollateral(item) }} </b>
+                    <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
+                    borrowed: <b>{{ formatDebt(item) }} </b>
+                    <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                </template>
+            </template>
+
+            <template v-slot:column-borrowed_fusd="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        collateral: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                        borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                    </div>
+                </div>
+                <template v-else>
+                    collateral: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                    borrowed: <b>{{ formatDebtFUSD(item) }}</b>
                 </template>
             </template>
         </f-data-table>
@@ -40,10 +59,9 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
-import { formatNumberByLocale } from '@/filters.js';
 
 export default {
-    name: 'AvailableToBorrowList',
+    name: 'OpenPositionsList',
 
     components: { FCryptoSymbol, FDataTable },
 
@@ -88,41 +106,25 @@ export default {
                     width: '140px',
                 },
                 {
-                    name: 'price',
-                    label: 'Price',
-                    formatter: (_value, _item) => {
-                        return formatNumberByLocale(this.$defi.getTokenPrice(_item), 2, 'USD');
-                    },
-                    css: { textAlign: 'right' },
-                },
-                {
                     name: 'borrowed',
-                    label: 'Borrowed',
-                    formatter: (_value, _item) => {
-                        const debt = this.getDebt(_item);
-
-                        return debt > 0 ? debt.toFixed(5) : 0;
-                    },
-                    css: { textAlign: 'right' },
+                    label: '???',
+                    // css: { textAlign: 'right' },
                 },
                 {
                     name: 'borrowed_fusd',
-                    label: 'Borrowed (fUSD)',
-                    formatter: (_value, _item) => {
-                        const debt = this.getDebt(_item);
-
-                        return debt > 0 ? (debt * this.defi.getTokenPrice(_item)).toFixed(2) : 0;
-                    },
+                    label: '??? (fUSD)',
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
-                            const a = this.getDebt(_a) * this.defi.getTokenPrice(_a);
-                            const b = this.getDebt(_b) * this.defi.getTokenPrice(_b);
+                            const aTokenPrice = this.defi.getTokenPrice(_a);
+                            const a = this.getDebt(_a) * aTokenPrice + this.getCollateral(_a) * aTokenPrice;
+                            const bTokenPrice = this.defi.getTokenPrice(_b);
+                            const b = this.getDebt(_b) * bTokenPrice + this.getCollateral(_b) * bTokenPrice;
 
                             return (_direction === 'desc' ? -1 : 1) * numberSort(a, b);
                         };
                     },
-                    css: { textAlign: 'right' },
+                    // css: { textAlign: 'right' },
                 },
             ],
         };
@@ -147,6 +149,57 @@ export default {
             const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {*|number}
+         */
+        formatDebt(_token) {
+            const debt = this.getDebt(_token);
+
+            return debt > 0 ? debt.toFixed(5) : 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {*|number}
+         */
+        formatDebtFUSD(_token) {
+            const debt = this.getDebt(_token);
+
+            return debt > 0 ? (debt * this.defi.getTokenPrice(_token)).toFixed(2) : 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {*|number}
+         */
+        getCollateral(_token) {
+            /** @type {DefiTokenBalance} */
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {*|number}
+         */
+        formatCollateral(_token) {
+            const collateral = this.getCollateral(_token);
+
+            return collateral > 0 ? collateral.toFixed(5) : 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {*|number}
+         */
+        formatCollateralFUSD(_token) {
+            const collateral = this.getCollateral(_token);
+
+            return collateral > 0 ? (collateral * this.defi.getTokenPrice(_token)).toFixed(2) : 0;
         },
 
         onRowAction(_item) {

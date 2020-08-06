@@ -94,7 +94,9 @@
                 <f-tab title="Available to borrow">
                     <available-to-borrow-list :tokens="tokens" :defi-account="defiAccount" />
                 </f-tab>
-                <f-tab title="Open positions" disabled>Open positions - content</f-tab>
+                <f-tab title="Open positions">
+                    <open-positions-list :tokens="tokens" :defi-account="defiAccount" />
+                </f-tab>
             </f-tabs>
         </div>
     </div>
@@ -111,11 +113,20 @@ import FTabs from '../../components/core/FTabs/FTabs.vue';
 import FTab from '../../components/core/FTabs/FTab.vue';
 import SuplyToLiquidityList from '@/components/data-tables/SuplyToLiquidity/SuplyToLiquidityList.vue';
 import AvailableToBorrowList from '@/components/data-tables/AvailableToBorrowList/AvailableToBorrowList.vue';
+import OpenPositionsList from '@/components/data-tables/OpenPositionsList/OpenPositionsList.vue';
 
 export default {
     name: 'DefiFLend',
 
-    components: { AvailableToBorrowList, SuplyToLiquidityList, FTab, FTabs, FCircleProgress, FBackButton },
+    components: {
+        OpenPositionsList,
+        AvailableToBorrowList,
+        SuplyToLiquidityList,
+        FTab,
+        FTabs,
+        FCircleProgress,
+        FBackButton,
+    },
 
     mixins: [eventBusMixin],
 

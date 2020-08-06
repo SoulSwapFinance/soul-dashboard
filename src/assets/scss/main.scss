@@ -184,6 +184,10 @@ form {
     margin: 32px auto 16px auto;
 }
 
+.currency-light {
+    color: $light-gray-color;
+}
+
 @include buttons('.light:not([disabled]):not(.disabled):hover') {
     color: $theme-color;
     background-color: lighten($theme-color, 35);

@@ -38,7 +38,7 @@
                                 v-for="item in cItems"
                                 :key="item.id"
                                 :style="item.css ? obj2css(item.css) : ''"
-                                :data-id="actionOnRow ? item.id : undefined"
+                                :data-dt-item-id="actionOnRow ? item.id : undefined"
                                 :tabindex="actionOnRow ? 0 : -1"
                             >
                                 <td
@@ -94,6 +94,7 @@
                             v-for="item in cItems"
                             :key="item.id"
                             :style="item.css ? obj2css(item.css) : ''"
+                            :data-dt-item-id="actionOnRow ? item.id : undefined"
                             :tabindex="actionOnRow ? 0 : -1"
                             class="mobile-item"
                         >
@@ -624,9 +625,9 @@ export default {
             let elem;
 
             if (this.actionOnRow) {
-                elem = _event.target.closest('tr[data-id]');
+                elem = _event.target.closest('[data-dt-item-id]');
                 if (elem) {
-                    const id = elem.getAttribute('data-id');
+                    const id = elem.getAttribute('data-dt-item-id');
                     const item = this.items.find((_item) => _item.id === id);
 
                     if (item) {
