@@ -14,7 +14,7 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
-                    <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ maxMintable.toFixed(2) }} <span class="currency">fUSD</span></div>
                 </div>
                 <!--
                 <div v-else class="df-data-item smaller">
@@ -242,8 +242,19 @@ export default {
             return formatNumberByLocale(this.tokenPrice, 5, 'USD');
         },
 
+        availableBalance() {
+            return this.token ? this.$defi.fromTokenValue(this.token.availableBalance, this.token) || 0 : 0;
+        },
+
         maxMintable() {
-            return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
+            return (
+                this.debt +
+                Math.min(
+                    this.availableBalance * this.tokenPrice,
+                    this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice
+                )
+            );
+            // return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
         },
 
         debtLimit() {

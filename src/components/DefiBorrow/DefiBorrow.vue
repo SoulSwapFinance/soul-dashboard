@@ -29,6 +29,12 @@
                         <h3 class="label">Collateral</h3>
                         <div class="value">{{ collateralInFUSD }} <span class="currency">fUSD</span></div>
                     </div>
+                    <div class="df-data-item smaller">
+                        <h3 class="label">Available balance</h3>
+                        <div class="value">
+                            {{ availableBalance.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
+                        </div>
+                    </div>
                 </template>
             </div>
             <div class="defi-price-input-col align-center">
@@ -280,6 +286,10 @@ export default {
             return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
         },
 
+        availableBalance() {
+            return this.$defi.fromTokenValue(this.dToken.availableBalance, this.dToken) || 0;
+        },
+
         /*
         debt() {
             return this.tmpValues.debt;
@@ -301,7 +311,11 @@ export default {
         },
 
         borrowLimit() {
-            return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+            return (
+                this.debt +
+                Math.min(this.availableBalance, this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice)
+            );
+            // return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
         },
 
         debtLimit() {
@@ -525,6 +539,8 @@ export default {
                 }
             }
         },
+
+        formatNumberByLocale,
     },
 };
 </script>

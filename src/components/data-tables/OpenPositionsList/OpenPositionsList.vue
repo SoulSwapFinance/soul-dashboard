@@ -20,34 +20,34 @@
                 </template>
             </template>
 
-            <template v-slot:column-borrowed="{ value, item, column }">
+            <template v-slot:column-balance="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        collateral: <b>{{ formatCollateral(item) }} </b>
+                        deposit: <b>{{ formatCollateral(item) }} </b>
                         <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
                         borrowed: <b>{{ formatDebt(item) }} </b>
                         <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
                     </div>
                 </div>
                 <template v-else>
-                    collateral: <b>{{ formatCollateral(item) }} </b>
+                    deposit: <b>{{ formatCollateral(item) }} </b>
                     <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
                     borrowed: <b>{{ formatDebt(item) }} </b>
                     <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
                 </template>
             </template>
 
-            <template v-slot:column-borrowed_fusd="{ value, item, column }">
+            <template v-slot:column-balance_fusd="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        collateral: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                        deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
                         borrowed: <b>{{ formatDebtFUSD(item) }}</b>
                     </div>
                 </div>
                 <template v-else>
-                    collateral: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                    deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
                     borrowed: <b>{{ formatDebtFUSD(item) }}</b>
                 </template>
             </template>
@@ -106,13 +106,13 @@ export default {
                     width: '140px',
                 },
                 {
-                    name: 'borrowed',
-                    label: '???',
+                    name: 'balance',
+                    label: 'Balance',
                     // css: { textAlign: 'right' },
                 },
                 {
-                    name: 'borrowed_fusd',
-                    label: '??? (fUSD)',
+                    name: 'balance_fusd',
+                    label: 'Balance (fUSD)',
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
