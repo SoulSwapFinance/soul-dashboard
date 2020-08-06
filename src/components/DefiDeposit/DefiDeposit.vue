@@ -77,23 +77,25 @@
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
-                <template v-if="debt > 0">
-                    <h3>Debt Limit</h3>
-                    <f-circle-progress
-                        show-percentage
-                        :stroke-width="6"
-                        :animate="false"
-                        :colors="colors"
-                        :value="debtLimit"
-                    />
+                <!--                <template v-if="debt > 0">-->
+                <h3>Debt Limit</h3>
+                <f-circle-progress
+                    show-percentage
+                    :stroke-width="6"
+                    :animate="false"
+                    :colors="colors"
+                    :value="debtLimit"
+                />
+                <!--
                 </template>
                 <div v-else class="df-data-item">
                     <h3 class="no-margin">Max mintable</h3>
                     <div class="value">
-                        ---
-                        <!--{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>-->
+                        -&#45;&#45;
+                        &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>&ndash;&gt;
                     </div>
                 </div>
+                -->
             </div>
             <div v-if="largeView" class="right-col">
                 <div class="df-data-item smaller">
