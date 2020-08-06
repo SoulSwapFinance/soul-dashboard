@@ -468,7 +468,7 @@ export default {
             const params = {
                 currCollateral: parseFloat(this.currCollateral),
                 collateral: this.collateral,
-                tokenSymbol: this.dToken.symbol,
+                token: { ...this.dToken },
                 steps: 2,
                 step: 1,
             };

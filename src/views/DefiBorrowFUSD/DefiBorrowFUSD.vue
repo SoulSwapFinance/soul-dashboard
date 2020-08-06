@@ -380,6 +380,7 @@ export default {
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,
+                token: this.tokens.find((_item) => _item.symbol === 'FUSD'),
             };
 
             if (this.decreasedDebt > 0) {

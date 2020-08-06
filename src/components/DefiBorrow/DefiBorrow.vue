@@ -460,7 +460,7 @@ export default {
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,
-                tokenSymbol: this.dToken.symbol,
+                token: { ...this.dToken },
             };
 
             if (this.decreasedDebt > 0) {

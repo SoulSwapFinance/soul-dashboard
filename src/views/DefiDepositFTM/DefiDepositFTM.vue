@@ -442,7 +442,11 @@ export default {
             if (!this.submitDisabled) {
                 this.$router.push({
                     name: 'defi-manage-collateral-confirmation',
-                    params: { currCollateral: parseFloat(this.currCollateral), collateral: this.collateral },
+                    params: {
+                        currCollateral: parseFloat(this.currCollateral),
+                        collateral: this.collateral,
+                        token: this.token,
+                    },
                 });
             }
         },

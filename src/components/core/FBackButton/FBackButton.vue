@@ -13,12 +13,18 @@ export default {
             type: String,
             default: '',
         },
+        params: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
     },
 
     methods: {
         onClick() {
             if (this.routeName) {
-                this.$router.replace({ name: this.routeName });
+                this.$router.replace({ name: this.routeName, params: this.params });
             }
         },
     },

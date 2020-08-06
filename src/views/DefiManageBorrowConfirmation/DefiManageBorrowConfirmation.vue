@@ -3,7 +3,7 @@
         <defi-borrow-confirmation
             :params="params"
             comp-name="defi-manage-borrow"
-            :token-symbol="params.tokenSymbol"
+            :token="params.token"
             :debt-decimals="5"
         />
     </div>
@@ -19,7 +19,7 @@ export default {
 
     computed: {
         /**
-         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, tokenSymbol: string}}
+         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, token: DefiToken}}
          */
         params() {
             const { $route } = this;

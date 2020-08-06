@@ -1,10 +1,6 @@
 <template>
     <div class="view-defi-manage-deposit-confirmation">
-        <defi-deposit-confirmation
-            :params="params"
-            comp-name="defi-manage-deposit"
-            :token-symbol="params.tokenSymbol"
-        />
+        <defi-deposit-confirmation :params="params" comp-name="defi-manage-deposit" :token="params.token" />
     </div>
 </template>
 
@@ -18,7 +14,7 @@ export default {
 
     computed: {
         /**
-         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, tokenSymbol: string}}
+         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, token: DefiToken}}
          */
         params() {
             const { $route } = this;

@@ -1,11 +1,12 @@
 <template>
     <div class="view-defi-manage-collateral-confirmation">
-        <defi-deposit-confirmation :params="params" />
+        <defi-deposit-confirmation :params="params" :token="params.token" />
     </div>
 </template>
 
 <script>
 import DefiDepositConfirmation from '../../components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
+
 export default {
     name: 'DefiDepositFTMConfirmation',
 

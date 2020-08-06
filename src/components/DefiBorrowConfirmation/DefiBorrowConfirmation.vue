@@ -12,7 +12,12 @@
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
-                <f-back-button :route-name="backButtonRoute" /> Confirmation
+                <f-back-button
+                    v-if="!params.steps || params.step === 1"
+                    :route-name="backButtonRoute"
+                    :params="{ token }"
+                />
+                Confirmation
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
@@ -73,10 +78,12 @@ export default {
             type: String,
             default: 'defi-borrow-fusd',
         },
-        /** Tells which token to use in confirmation process. */
-        tokenSymbol: {
-            type: String,
-            default: 'FUSD',
+        /** @type {DefiToken} */
+        token: {
+            type: Object,
+            default() {
+                return {};
+            },
         },
         /** Number of decimals of debt. */
         debtDecimals: {
@@ -154,7 +161,7 @@ export default {
         },
 
         cTokenSymbol() {
-            return this.$defi.getTokenSymbol({ symbol: this.tokenSymbol });
+            return this.$defi.getTokenSymbol({ symbol: this.token.symbol });
         },
     },
 
@@ -171,8 +178,8 @@ export default {
 
     methods: {
         async setTx() {
-            /** @type {DefiToken} */
-            const token = await this.$defi.fetchTokens(this.currentAccount.address, this.tokenSymbol);
+            console.log('eeee', this.token);
+            const { token } = this;
             const { contractAddress } = this;
             let txToSign;
 
@@ -222,6 +229,7 @@ export default {
                 params.autoContinueToAfter = 2000;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
+                params.continueToParams = { token: this.token };
             }
 
             this.$router.replace({
@@ -247,6 +255,7 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.compName,
+                        continueToParams: { token: this.token },
                     },
                 });
             }
