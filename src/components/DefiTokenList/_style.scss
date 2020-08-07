@@ -18,5 +18,11 @@
         &.disabled {
             opacity: 0.3;
         }
+
+        .available-balance {
+            color: $light-gray-color;
+            font-weight: normal;
+            text-align: right;
+        }
     }
 }

@@ -8,7 +8,10 @@
                 :tabindex="token._disabled ? -1 : 0"
                 :class="{ disabled: token._disabled }"
             >
-                <f-crypto-symbol :token="token" img-width="40px" img-height="40px" />
+                <div class="row align-items-center">
+                    <div class="col"><f-crypto-symbol :token="token" img-width="40px" img-height="40px" /></div>
+                    <div class="col available-balance">{{ getAvailableBalance(token) }}</div>
+                </div>
             </li>
         </ul>
     </div>
@@ -49,11 +52,24 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {DefiToken[]} _tokens
+         */
         setDTokens(_tokens) {
             if (_tokens && _tokens.length > 0) {
                 // accept only active tokens
                 this.dTokens = _tokens.filter((_item) => _item.isActive);
             }
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {number}
+         */
+        getAvailableBalance(_token) {
+            const balance = this.$defi.fromTokenValue(_token.availableBalance, _token) || 0;
+
+            return balance > 0 ? balance.toFixed(5) : 0;
         },
 
         /**
