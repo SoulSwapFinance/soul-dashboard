@@ -3,18 +3,21 @@
         <div class="row align-items-center collapse-md">
             <div class="col-8 align-center-md address-col">
                 <button class="no-style pick-account-btn" title="Select Wallet" @click="onPickAccountBtn">
+                    <account-name :account="currentAccount" class="address" hide-address />
+                    <!--
                     <account-name :account="currentAccount" class="address" hide-address>
                         <template v-if="accountsLen > 1" #suffix>
                             <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </template>
                     </account-name>
+                    -->
                     <!--
                     <f-ellipsis :text="currentAccountAddress" overflow="middle" class="address">
                         <template #suffix>
                             <icon data="@/assets/svg/chevron-down.svg" width="20" height="20" />
                         </template>
                     </f-ellipsis>
--->
+                    -->
                 </button>
                 <button
                     v-if="mobileView"
