@@ -297,6 +297,10 @@ form {
 
 
 @include media-max($bp-small) {
+    .narrow-container {
+        padding-top: 8px;
+    }
+
     .dt-heading {
         padding-left: 0;
         padding-right: 0;

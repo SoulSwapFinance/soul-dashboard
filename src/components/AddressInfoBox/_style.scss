@@ -29,3 +29,23 @@
         }
     }
 }
+
+@include media-max($bp-menu) {
+    .address-info-box {
+        padding-left: 8px;
+
+        .address {
+            font-size: 22px;
+        }
+
+        .address-col {
+            display: flex;
+            //align-items: flex-start;
+
+            > button:first-child {
+                max-width: 84%;
+                margin-right: 4%;
+            }
+        }
+    }
+}
