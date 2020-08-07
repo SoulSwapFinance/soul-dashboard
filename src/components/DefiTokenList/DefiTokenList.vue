@@ -8,7 +8,7 @@
                 :tabindex="token._disabled ? -1 : 0"
                 :class="{ disabled: token._disabled }"
             >
-                <div class="row align-items-center">
+                <div class="row align-items-center no-collapse">
                     <div class="col"><f-crypto-symbol :token="token" img-width="40px" img-height="40px" /></div>
                     <div class="col available-balance">{{ getAvailableBalance(token) }}</div>
                 </div>

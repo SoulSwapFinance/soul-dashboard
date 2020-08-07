@@ -67,8 +67,14 @@
                                 <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
                             </template>
                         </f-slider>
-                        <div class="reset-btn" @click="onResetBtnClick">
-                            <button class="btn small light">Reset</button>
+                        <div class="slider-buttons">
+                            <button
+                                v-show="currDebt !== debt.toString()"
+                                class="btn small light"
+                                @click="onResetBtnClick"
+                            >
+                                Reset
+                            </button>
                         </div>
                     </div>
 
