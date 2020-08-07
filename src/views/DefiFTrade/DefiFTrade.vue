@@ -8,7 +8,7 @@
                 <f-select-button @click.native="onFromTokenSelectorClick">
                     <div class="sb-content">
                         <f-crypto-symbol :token="fromToken" />
-                        <span>{{ fromTokenBalance }}</span>
+                        <span>{{ fromTokenBalance.toFixed(5) }}</span>
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
@@ -53,7 +53,7 @@
                 <f-select-button @click.native="onToTokenSelectorClick">
                     <div class="sb-content">
                         <f-crypto-symbol :token="toToken" />
-                        <span>{{ toTokenBalance }}</span>
+                        <span>{{ toTokenBalance.toFixed(5) }}</span>
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
@@ -205,11 +205,11 @@ export default {
         },
 
         fromTokenBalance() {
-            return this.$defi.fromTokenValue(this.fromToken.availableBalance, this.fromToken).toFixed(5);
+            return this.$defi.fromTokenValue(this.fromToken.availableBalance, this.fromToken);
         },
 
         toTokenBalance() {
-            return this.$defi.fromTokenValue(this.toToken.availableBalance, this.toToken).toFixed(5);
+            return this.$defi.fromTokenValue(this.toToken.availableBalance, this.toToken);
         },
 
         toTokenPrice() {
@@ -217,7 +217,12 @@ export default {
         },
 
         maxFromInputValue() {
-            return this.fromTokenBalance;
+            if (this.fromToken.symbol === 'FUSD') {
+                // subtract 0.5% fee
+                return this.fromTokenBalance - this.fromTokenBalance * 0.005;
+            } else {
+                return this.fromTokenBalance;
+            }
         },
 
         maxToInputValue() {
@@ -408,8 +413,6 @@ export default {
             const params = {
                 fromValue: this.fromValue,
                 toValue: this.toValue,
-                fromTokenSymbol: this.fromToken.symbol,
-                toTokenSymbol: this.toToken.symbol,
                 fromToken: { ...this.fromToken },
                 toToken: { ...this.toToken },
                 steps: 2,
