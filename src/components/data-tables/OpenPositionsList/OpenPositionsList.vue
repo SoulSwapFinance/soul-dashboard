@@ -24,17 +24,25 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        deposit: <b>{{ formatCollateral(item) }} </b>
-                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
-                        borrowed: <b>{{ formatDebt(item) }} </b>
-                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
+                        <template v-if="item._collateral > 0">
+                            deposit: <b>{{ formatCollateral(item) }} </b>
+                            <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
+                        </template>
+                        <template v-if="item._debt > 0">
+                            borrowed: <b>{{ formatDebt(item) }} </b>
+                            <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
+                        </template>
                     </div>
                 </div>
                 <template v-else>
-                    deposit: <b>{{ formatCollateral(item) }} </b>
-                    <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
-                    borrowed: <b>{{ formatDebt(item) }} </b>
-                    <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
+                    <template v-if="item._collateral > 0">
+                        deposit: <b>{{ formatCollateral(item) }} </b>
+                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
+                    </template>
+                    <template v-if="item._debt > 0">
+                        borrowed: <b>{{ formatDebt(item) }} </b>
+                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
+                    </template>
                 </template>
             </template>
 
@@ -42,13 +50,21 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
-                        borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                        <template v-if="item._collateral > 0">
+                            deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                        </template>
+                        <template v-if="item._debt > 0">
+                            borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                        </template>
                     </div>
                 </div>
                 <template v-else>
-                    deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
-                    borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                    <template v-if="item._collateral > 0">
+                        deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                    </template>
+                    <template v-if="item._debt > 0">
+                        borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                    </template>
                 </template>
             </template>
         </f-data-table>
@@ -135,7 +151,20 @@ export default {
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
-            this.items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            const items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+
+            this.items = items.filter((_item) => {
+                const collateral = this.getCollateral(_item);
+                const debt = this.getDebt(_item);
+
+                // store collateral and debt for later use
+                _item._collateral = collateral;
+                _item._debt = debt;
+
+                return collateral !== 0 || debt !== 0;
+            });
+
+            // this.items = items;
         },
     },
 
@@ -156,7 +185,7 @@ export default {
          * @return {*|number}
          */
         formatDebt(_token) {
-            const debt = this.getDebt(_token);
+            const debt = '_debt' in _token ? _token._debt : this.getDebt(_token);
 
             return debt > 0 ? debt.toFixed(5) : 0;
         },
@@ -187,7 +216,7 @@ export default {
          * @return {*|number}
          */
         formatCollateral(_token) {
-            const collateral = this.getCollateral(_token);
+            const collateral = '_collateral' in _token ? _token._collateral : this.getCollateral(_token);
 
             return collateral > 0 ? collateral.toFixed(5) : 0;
         },
