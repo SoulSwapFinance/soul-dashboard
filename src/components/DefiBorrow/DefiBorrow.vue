@@ -82,6 +82,7 @@
                             </template>
                         </f-slider>
                         <div class="slider-buttons">
+                            <button class="btn small light" @click="onMinBtnClick">Min</button>
                             <button
                                 v-show="currDebt !== debt.toString()"
                                 class="btn small light"
@@ -89,6 +90,7 @@
                             >
                                 Reset
                             </button>
+                            <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
                     </div>
 
@@ -461,8 +463,6 @@ export default {
             } else {
                 this.dToken = this.token;
             }
-
-            console.log(this.defiAccount);
         },
 
         formatInputValue(_value) {
@@ -520,8 +520,16 @@ export default {
             console.log('picked token', _token);
         },
 
+        onMinBtnClick() {
+            this.currDebt = this.minDebt.toString();
+        },
+
         onResetBtnClick() {
             this.updateCurrDebt();
+        },
+
+        onMaxBtnClick() {
+            this.currDebt = this.maxDebt.toString();
         },
 
         onAccountPicked() {

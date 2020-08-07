@@ -136,6 +136,8 @@
     overflow: hidden;
 
     .slider-buttons {
+        display: flex;
+        justify-content: space-between;
         margin-top: 4px;
         text-align: left;
         height: 28px;

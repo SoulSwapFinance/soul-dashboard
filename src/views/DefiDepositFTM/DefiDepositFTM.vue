@@ -50,6 +50,7 @@
                             </template>
                         </f-slider>
                         <div class="slider-buttons">
+                            <button class="btn small light" @click="onMinBtnClick">Min</button>
                             <button
                                 v-show="currCollateral !== collateral.toString()"
                                 class="btn small light"
@@ -57,6 +58,7 @@
                             >
                                 Reset
                             </button>
+                            <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
                     </div>
 
@@ -464,8 +466,16 @@ export default {
             _event.target.value = this.formatInputValue(this.currCollateral);
         },
 
+        onMinBtnClick() {
+            this.currCollateral = this.minCollateral.toString();
+        },
+
         onResetBtnClick() {
             this.updateCurrCollateral();
+        },
+
+        onMaxBtnClick() {
+            this.currCollateral = this.maxCollateral.toString();
         },
 
         onAccountPicked() {
