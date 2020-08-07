@@ -7,7 +7,16 @@
         <div class="grid">
             <div>
                 <h2>
-                    <router-link :to="{ name: 'defi-manage-collateral' }">Lock FTM</router-link>
+                    <router-link :to="{ name: 'defi-manage-collateral' }">
+                        Lock FTM
+                        <icon
+                            data="@/assets/svg/chevron-left.svg"
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                            dir="down"
+                        />
+                    </router-link>
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
@@ -41,7 +50,16 @@
             </div>
             <div class="align-right">
                 <h2>
-                    <router-link :to="{ name: 'defi-borrow-fusd' }">Mint fUSD</router-link>
+                    <router-link :to="{ name: 'defi-borrow-fusd' }">
+                        Mint fUSD
+                        <icon
+                            data="@/assets/svg/chevron-left.svg"
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                            dir="down"
+                        />
+                    </router-link>
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
