@@ -131,6 +131,8 @@ export default {
          */
         tokens(_value) {
             this.items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+
+            this.$emit('records-count', this.items.length);
         },
     },
 

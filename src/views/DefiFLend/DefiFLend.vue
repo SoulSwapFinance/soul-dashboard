@@ -70,14 +70,45 @@
 
         <div class="defi-tabs">
             <f-tabs>
-                <f-tab title="Deposit to Liquidity">
-                    <suply-to-liquidity-list :tokens="tokens" :defi-account="defiAccount" />
+                <template #deposit>
+                    <b>
+                        Deposit to Liquidity
+                        <span class="f-records-count">({{ depositRecordsCount }})</span>
+                    </b>
+                </template>
+                <template #borrow>
+                    <b>
+                        Available to borrow
+                        <span class="f-records-count">({{ borrowRecordsCount }})</span>
+                    </b>
+                </template>
+                <template #positions>
+                    <b>
+                        Open positions
+                        <span class="f-records-count">({{ positionsRecordsCount }})</span>
+                    </b>
+                </template>
+
+                <f-tab title-slot="deposit">
+                    <suply-to-liquidity-list
+                        :tokens="tokens"
+                        :defi-account="defiAccount"
+                        @records-count="onDepositRecordsCount"
+                    />
                 </f-tab>
-                <f-tab title="Available to borrow">
-                    <available-to-borrow-list :tokens="tokens" :defi-account="defiAccount" />
+                <f-tab title-slot="borrow">
+                    <available-to-borrow-list
+                        :tokens="tokens"
+                        :defi-account="defiAccount"
+                        @records-count="onBorrowRecordsCount"
+                    />
                 </f-tab>
-                <f-tab title="Open positions">
-                    <open-positions-list :tokens="tokens" :defi-account="defiAccount" />
+                <f-tab title-slot="positions">
+                    <open-positions-list
+                        :tokens="tokens"
+                        :defi-account="defiAccount"
+                        @records-count="onPositionsRecordsCount"
+                    />
                 </f-tab>
             </f-tabs>
         </div>
@@ -121,6 +152,9 @@ export default {
             },
             /** @type {DefiToken[]} */
             tokens: [],
+            depositRecordsCount: 0,
+            borrowRecordsCount: 0,
+            positionsRecordsCount: 0,
             id: getUniqueId(),
         };
     },
@@ -176,6 +210,18 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
+        },
+
+        onDepositRecordsCount(_count) {
+            this.depositRecordsCount = _count;
+        },
+
+        onBorrowRecordsCount(_count) {
+            this.borrowRecordsCount = _count;
+        },
+
+        onPositionsRecordsCount(_count) {
+            this.positionsRecordsCount = _count;
         },
 
         onAccountPicked() {

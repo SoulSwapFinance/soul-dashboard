@@ -164,7 +164,7 @@ export default {
                 return collateral !== 0 || debt !== 0;
             });
 
-            // this.items = items;
+            this.$emit('records-count', this.items.length);
         },
     },
 

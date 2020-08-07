@@ -1,7 +1,7 @@
 <template>
     <span class="f-back-button" @click="onClick">
         <slot>
-            <icon data="@/assets/svg/chevron-left.svg" width="12" height="12" aria-hidden="true" />
+            <!--<icon data="@/assets/svg/chevron-left.svg" width="12" height="12" aria-hidden="true" />-->
             Back
         </slot>
     </span>
