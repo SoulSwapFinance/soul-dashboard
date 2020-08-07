@@ -2,7 +2,7 @@
     <div class="defi-borrow-fusd">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            fUSD
+            Mint fUSD
         </h1>
 
         <h2 class="perex">

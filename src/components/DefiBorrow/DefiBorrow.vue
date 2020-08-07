@@ -3,11 +3,23 @@
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Borrow Limit</h3>
+                    <h3 class="label">Available balance</h3>
                     <div class="value">
-                        {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
+                        {{ availableBalance.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Borrowed {{ tokenSymbol }}</h3>
+                    <div class="value">{{ debt.toFixed(decimals) }}</div>
+                </div>
+                <template v-if="!largeView">
+                    <div class="df-data-item smaller">
+                        <h3 class="label">Borrow Limit</h3>
+                        <div class="value">
+                            {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
+                        </div>
+                    </div>
+                </template>
                 <!--
                 <div v-else class="df-data-item smaller">
                     <h3 class="label">{{ tokenSymbol }} balance</h3>
@@ -22,18 +34,8 @@
 
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
-                        <h3 class="label">Borrowed {{ tokenSymbol }}</h3>
-                        <div class="value">{{ debt.toFixed(decimals) }}</div>
-                    </div>
-                    <div class="df-data-item smaller">
-                        <h3 class="label">Collateral</h3>
+                        <h3 class="label">Total Deposit</h3>
                         <div class="value">{{ collateralInFUSD }} <span class="currency">fUSD</span></div>
-                    </div>
-                    <div class="df-data-item smaller">
-                        <h3 class="label">Available balance</h3>
-                        <div class="value">
-                            {{ availableBalance.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
-                        </div>
                     </div>
                 </template>
             </div>
@@ -105,18 +107,26 @@
                 />
             </div>
             <div v-if="largeView" class="right-col">
+                <!--
                 <div v-if="!smallView" class="df-data-item smaller">
                     <h3 class="label">Today’s change</h3>
                     <div class="value">2.38%</div>
                 </div>
+-->
                 <div class="df-data-item smaller">
-                    <h3 class="label">Collateral</h3>
+                    <h3 class="label">Total Deposit</h3>
                     <div class="value">{{ collateralInFUSD }} <span class="currency">fUSD</span></div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
                     <h3 class="label">Debt Limit</h3>
                     <div class="value">
                         <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
+                    </div>
+                </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Borrow Limit</h3>
+                    <div class="value">
+                        {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
             </div>

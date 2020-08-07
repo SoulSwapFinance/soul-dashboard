@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-flend">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fLend (WIP)</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fLend</h1>
 
         <h2 class="perex">Earn interest on loans. Borrow tokens to trade.</h2>
 
@@ -159,7 +159,7 @@ export default {
         },
 
         borrowLimit() {
-            return this.$defi.getBorrowLimit(this.defiAccount);
+            return this.$defi.getBorrowLimit(this.defiAccount) + this.totalBorrowed;
         },
 
         debtLimit() {

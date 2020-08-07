@@ -3,19 +3,23 @@
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Available balance</h3>
+                    <h3 class="label">Available Balance</h3>
                     <div class="value">
                         {{ formatNumberByLocale(availableBalance) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked balance</h3>
+                    <h3 class="label">Deposit Balance</h3>
                     <div class="value">
                         {{ collateral.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
                     </div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
-                    <h3 class="label">Overall debt</h3>
+                    <h3 class="label">Total Deposit</h3>
+                    <div class="value">{{ overallCollateral.toFixed(3) }} <span class="currency">fUSD</span></div>
+                </div>
+                <div v-if="!largeView" class="df-data-item smaller">
+                    <h3 class="label">Total Borrowed</h3>
                     <div class="value">{{ overallDebt.toFixed(3) }} <span class="currency">fUSD</span></div>
                 </div>
             </div>
@@ -102,20 +106,32 @@
                     <h3 class="label">Minted {{ tokenSymbol }}</h3>
                     <div class="value">{{ debt.toFixed(5) }}</div>
                 </div>
+                <!--
+                <div class="df-data-item smaller">
+                    <h3 class="label">Total Deposit</h3>
+                    <div class="value">{{ overallCollateral.toFixed(3) }} <span class="currency">fUSD</span></div>
+                </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Total Borrowed</h3>
+                    <div class="value">{{ overallDebt.toFixed(3) }} <span class="currency">fUSD</span></div>
+                </div>
+                -->
                 <template v-if="smallView">
-                    <div v-if="debt > 0" class="df-data-item smaller">
+                    <div class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
                             <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
                         </div>
                     </div>
+                    <!--
                     <div v-else class="df-data-item smaller">
-                        <h3 class="label">Max mintable</h3>
+                        <h3 class="label">Max Mintable</h3>
                         <div class="value">
-                            ---
-                            <!--{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>-->
+                            -&#45;&#45;
+                            &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>&ndash;&gt;
                         </div>
                     </div>
+                    -->
                 </template>
             </div>
 

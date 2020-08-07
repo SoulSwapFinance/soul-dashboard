@@ -25,11 +25,13 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        {{ value }} <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                        {{ value }}
+                        <!-- <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                     </div>
                 </div>
                 <template v-else>
-                    {{ value }} <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                    {{ value }}
+                    <!-- <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                 </template>
             </template>
         </f-data-table>

@@ -25,16 +25,16 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         deposit: <b>{{ formatCollateral(item) }} </b>
-                        <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
+                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
                         borrowed: <b>{{ formatDebt(item) }} </b>
-                        <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                        <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                     </div>
                 </div>
                 <template v-else>
                     deposit: <b>{{ formatCollateral(item) }} </b>
-                    <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> <br />
+                    <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
                     borrowed: <b>{{ formatDebt(item) }} </b>
-                    <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>
+                    <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                 </template>
             </template>
 
