@@ -329,10 +329,13 @@ export default {
         },
 
         borrowLimit() {
+            /*
             return (
                 this.debt +
                 Math.min(this.availableBalance, this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice)
             );
+            */
+            return this.debt + this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
             // return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
         },
 
