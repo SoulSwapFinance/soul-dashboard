@@ -13,7 +13,7 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
-                    <div class="value">{{ availableFTM }} <span class="currency">FTM</span></div>
+                    <div class="value">{{ availableFTM.toFixed(1) }} <span class="currency">FTM</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
@@ -109,7 +109,6 @@
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
-import { toFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import { getUniqueId } from '../../utils';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -168,9 +167,7 @@ export default {
         },
 
         availableFTM() {
-            const available = this.currentAccount ? this.currentAccount.balance : 0;
-
-            return toFTM(available);
+            return this.ftmToken ? this.$defi.fromTokenValue(this.ftmToken.availableBalance, this.ftmToken) || 0 : 0;
         },
 
         currentPrice() {

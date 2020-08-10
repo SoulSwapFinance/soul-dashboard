@@ -166,7 +166,6 @@
 <script>
 import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { mapGetters } from 'vuex';
-import { WEIToFTM } from '../../utils/transactions.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
@@ -191,7 +190,7 @@ export default {
                 debt: [],
             },
             /** @type {DefiToken} */
-            token: null,
+            ftmToken: null,
             /** @type {DefiToken[]} */
             tokens: [],
             currCollateral: '0',
@@ -240,15 +239,13 @@ export default {
 
         collateral() {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.token);
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.token) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
         },
 
         availableFTM() {
-            const available = this.currentAccount ? this.currentAccount.balance : 0;
-
-            return WEIToFTM(available);
+            return this.ftmToken ? this.$defi.fromTokenValue(this.ftmToken.availableBalance, this.ftmToken) || 0 : 0;
         },
 
         /*
@@ -410,8 +407,8 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
-            this.token = this.tokens.find((_item) => _item.symbol === 'FTM');
-            this.tokenPrice = $defi.getTokenPrice(this.token);
+            this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
+            this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
             this.currCollateral = this.collateral.toString();
 
             this.tmpTokenPrice = this.tokenPrice;
@@ -455,7 +452,7 @@ export default {
                     params: {
                         currCollateral: parseFloat(this.currCollateral),
                         collateral: this.collateral,
-                        token: this.token,
+                        token: this.ftmToken,
                     },
                 });
             }
