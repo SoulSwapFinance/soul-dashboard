@@ -344,7 +344,7 @@ export class DeFi {
     removeSN(_value, _dec) {
         const value = typeof _value !== 'string' ? _value.toString() : _value;
 
-        if (value.indexOf('e') > -1 || value.indexOf('E') > -1) {
+        if (value.indexOf('0x') === -1 && (value.indexOf('e') > -1 || value.indexOf('E') > -1)) {
             return parseFloat(value).toFixed(_dec);
         }
 
