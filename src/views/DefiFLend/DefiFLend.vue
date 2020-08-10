@@ -7,15 +7,8 @@
         <div class="grid">
             <div>
                 <h2>
-                    <router-link :to="{ name: 'defi-manage-deposit' }">
+                    <router-link :to="{ name: 'defi-manage-deposit' }" class="btn secondary large btn-large-font">
                         Deposit
-                        <icon
-                            data="@/assets/svg/chevron-left.svg"
-                            width="20"
-                            height="20"
-                            aria-hidden="true"
-                            dir="down"
-                        />
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
@@ -46,15 +39,8 @@
             </div>
             <div class="align-right">
                 <h2>
-                    <router-link :to="{ name: 'defi-manage-borrow' }">
+                    <router-link :to="{ name: 'defi-manage-borrow' }" class="btn secondary large btn-large-font">
                         Borrow
-                        <icon
-                            data="@/assets/svg/chevron-left.svg"
-                            width="20"
-                            height="20"
-                            aria-hidden="true"
-                            dir="down"
-                        />
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">

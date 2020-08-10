@@ -28,6 +28,14 @@
             cursor: initial;
         }
     }
+
+    .account-name {
+        .an-name {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
 }
 
 @include media-max($bp-menu) {

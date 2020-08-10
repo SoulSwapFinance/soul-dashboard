@@ -8,6 +8,10 @@
     cursor: pointer;
     padding-left: 8px;
 
+    &:hover {
+        text-decoration: underline;
+    }
+
     svg {
         margin-top: -3px;
     }

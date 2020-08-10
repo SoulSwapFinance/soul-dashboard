@@ -7,15 +7,8 @@
         <div class="grid">
             <div>
                 <h2>
-                    <router-link :to="{ name: 'defi-manage-collateral' }">
+                    <router-link :to="{ name: 'defi-manage-collateral' }" class="btn secondary large btn-large-font">
                         Lock FTM
-                        <icon
-                            data="@/assets/svg/chevron-left.svg"
-                            width="20"
-                            height="20"
-                            aria-hidden="true"
-                            dir="down"
-                        />
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
@@ -50,15 +43,8 @@
             </div>
             <div class="align-right">
                 <h2>
-                    <router-link :to="{ name: 'defi-borrow-fusd' }">
+                    <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn secondary large btn-large-font">
                         Mint fUSD
-                        <icon
-                            data="@/assets/svg/chevron-left.svg"
-                            width="20"
-                            height="20"
-                            aria-hidden="true"
-                            dir="down"
-                        />
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">

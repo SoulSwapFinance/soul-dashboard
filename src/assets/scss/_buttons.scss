@@ -50,3 +50,18 @@
 @include buttons(':not(.same-size) svg') {
     margin-right: 8px;
 }
+
+.btn {
+    &.btn-large-font {
+        font-size: 23px;
+        font-weight: normal;
+    }
+}
+
+@include media-max($bp-small) {
+    .btn {
+        &.btn-large-font {
+            font-size: 20px;
+        }
+    }
+}
