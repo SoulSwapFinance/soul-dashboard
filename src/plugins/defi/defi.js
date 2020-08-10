@@ -259,7 +259,8 @@ export class DeFi {
      * @return {string}
      */
     shiftDecPointLeft(_value, _dec = 0) {
-        const value = web3utils.toBN(_value).toString(10);
+        // const value = web3utils.toBN(_value).toString(10);
+        const value = web3utils.toBN(this.removeSN(_value, _dec)).toString(10);
         const idx = value.length - _dec;
 
         if (idx < 0) {
@@ -276,7 +277,7 @@ export class DeFi {
      * @return {string}
      */
     shiftDecPointRight(_value, _dec = 0, _float = false) {
-        const value = _value.toString();
+        const value = this.removeSN(_value.toString(), _dec);
         let idx = value.indexOf('.');
         let left;
         let right;
@@ -331,6 +332,23 @@ export class DeFi {
         } else {
             return this.shiftDecPointRight(value, _decimals);
         }
+    }
+
+    /**
+     * Remove scientific notation.
+     *
+     * @param {string|number} _value
+     * @param {number} _dec
+     * @return {string|*}
+     */
+    removeSN(_value, _dec) {
+        const value = typeof _value !== 'string' ? _value.toString() : _value;
+
+        if (value.indexOf('e') > -1 || value.indexOf('E') > -1) {
+            return parseFloat(value).toFixed(_dec);
+        }
+
+        return _value;
     }
 
     /**
