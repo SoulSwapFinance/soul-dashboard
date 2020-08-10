@@ -451,7 +451,7 @@ export default {
                 // get first token that can be deposited
                 this.dToken = this.tokens[0];
             } else {
-                this.dToken = this.token;
+                this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 
@@ -491,9 +491,11 @@ export default {
         },
 
         onSubmit() {
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
             const params = {
                 currCollateral: parseFloat(this.currCollateral),
                 collateral: this.collateral,
+                collateralHex: tokenBalance.balance,
                 token: { ...this.dToken },
                 steps: 2,
                 step: 1,

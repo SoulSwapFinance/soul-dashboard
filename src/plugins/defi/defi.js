@@ -389,6 +389,20 @@ export class DeFi {
     }
 
     /**
+     * Compare big numbers, hex.
+     *
+     * @param {string} _a
+     * @param {string} _b
+     * @return {-1 | 0 | 1} -1 (_a < _b), 0 (_a == _b), or 1 (_a > _b)
+     */
+    compareBN(_a, _b) {
+        const hex1 = web3utils.toBN(_a);
+        const hex2 = web3utils.toBN(_b);
+
+        return hex1.cmp(hex2);
+    }
+
+    /**
      * Get defi account debt by token.
      *
      * @param {DefiAccount} _account

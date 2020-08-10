@@ -313,7 +313,13 @@ export default {
 */
 
         maxCollateral() {
-            return this.collateral + this.availableFTM;
+            let max = this.collateral + this.availableFTM - 1;
+
+            if (max < 0) {
+                max = 0;
+            }
+
+            return max;
         },
 
         inputValue() {
@@ -447,11 +453,14 @@ export default {
 
         onSubmit() {
             if (!this.submitDisabled) {
+                const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+
                 this.$router.push({
                     name: 'defi-manage-collateral-confirmation',
                     params: {
                         currCollateral: parseFloat(this.currCollateral),
                         collateral: this.collateral,
+                        collateralHex: tokenBalance.balance,
                         token: this.ftmToken,
                     },
                 });

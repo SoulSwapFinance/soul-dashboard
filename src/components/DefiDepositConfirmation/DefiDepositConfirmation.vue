@@ -201,21 +201,34 @@ export default {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
-                    Web3.utils.toHex(
-                        this.$defi.shiftDecPointRight(Math.abs(this.increasedCollateral).toString(), token.decimals)
+                    this.correctAmount(
+                        Web3.utils.toHex(
+                            this.$defi.shiftDecPointRight(Math.abs(this.increasedCollateral).toString(), token.decimals)
+                        ),
+                        this.decreasedCollateral > 0
                     )
                 );
             } else if (this.increasedCollateral > 0) {
                 txToSign = defiUtils.defiDepositTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedCollateral.toString(), token.decimals))
+                    this.correctAmount(
+                        Web3.utils.toHex(
+                            this.$defi.shiftDecPointRight(this.increasedCollateral.toString(), token.decimals)
+                        ),
+                        false
+                    )
                 );
             } else {
                 txToSign = defiUtils.defiWithdrawDepositedTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals))
+                    this.correctAmount(
+                        Web3.utils.toHex(
+                            this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals)
+                        ),
+                        true
+                    )
                 );
             }
 
@@ -224,6 +237,22 @@ export default {
                 this.currentAccount.address,
                 GAS_LIMITS.defi
             );
+        },
+
+        correctAmount(_amount, _withdrawDeposit) {
+            const { params } = this;
+
+            if (_withdrawDeposit) {
+                if (params.collateralHex && this.$defi.compareBN(_amount, params.collateralHex) === 1) {
+                    return params.collateralHex;
+                }
+            } else {
+                if (this.$defi.compareBN(_amount, this.token.availableBalance) === 1) {
+                    return this.token.availableBalance;
+                }
+            }
+
+            return _amount;
         },
 
         onSendTransactionSuccess(_data) {

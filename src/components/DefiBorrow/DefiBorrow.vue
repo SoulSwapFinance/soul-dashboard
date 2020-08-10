@@ -464,7 +464,7 @@ export default {
                 // get first token that can be borrowed
                 this.dToken = tokens.find($defi.canTokenBeBorrowed);
             } else {
-                this.dToken = this.token;
+                this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 
