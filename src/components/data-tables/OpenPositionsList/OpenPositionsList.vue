@@ -3,6 +3,7 @@
         <f-data-table
             :columns="columns"
             :items="items"
+            action-on-row
             first-m-v-column-width="6"
             f-card-off
             class="f-data-table-body-bg-color"
@@ -68,6 +69,8 @@
                 </template>
             </template>
         </f-data-table>
+
+        <deposit-or-borrow-token-window ref="win" :token="dbToken" />
     </div>
 </template>
 
@@ -75,11 +78,12 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
+import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowTokenWindow/DepositOrBorrowTokenWindow.vue';
 
 export default {
     name: 'OpenPositionsList',
 
-    components: { FCryptoSymbol, FDataTable },
+    components: { DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
 
     props: {
         /** @type {DefiToken[]} */
@@ -107,6 +111,8 @@ export default {
             items: [],
             /** @type {DeFi} */
             defi: this.$defi,
+            /** Token used in <deposit-or-borrow-token-window> */
+            dbToken: {},
             columns: [
                 {
                     name: 'asset',
@@ -232,7 +238,14 @@ export default {
         },
 
         onRowAction(_item) {
-            this.$router.push({ name: 'defi-manage-borrow', params: { token: _item } });
+            if (_item._debt > 0 && _item._collateral > 0) {
+                this.dbToken = _item;
+                this.$refs.win.show();
+            } else if (_item._debt > 0) {
+                this.$router.push({ name: 'defi-manage-borrow', params: { token: { ..._item } } });
+            } else if (_item._collateral > 0) {
+                this.$router.push({ name: 'defi-manage-deposit', params: { token: { ..._item } } });
+            }
         },
     },
 };

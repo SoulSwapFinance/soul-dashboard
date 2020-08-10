@@ -94,7 +94,7 @@
             <div v-if="largeView" class="right-col">
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debt }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debt.toFixed(3) }} <span class="currency">fUSD</span></div>
                 </div>
                 <template v-if="smallView">
                     <div v-if="debt > 0" class="df-data-item smaller">

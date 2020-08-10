@@ -67,7 +67,7 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debt.toFixed(3) }} <span class="currency">fUSD</span></div>
+                    <div class="value">{{ debtFUSD.toFixed(3) }} <span class="currency">fUSD</span></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Liquidation price</h3>
