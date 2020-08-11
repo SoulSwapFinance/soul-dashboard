@@ -255,6 +255,8 @@ export default {
         },
 
         maxMintable() {
+            return this.debt + this.$defi.getBorrowLimit(this.defiAccount);
+            /*
             return (
                 this.debt +
                 Math.min(
@@ -262,6 +264,7 @@ export default {
                     this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice
                 )
             );
+            */
             // return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
         },
 
