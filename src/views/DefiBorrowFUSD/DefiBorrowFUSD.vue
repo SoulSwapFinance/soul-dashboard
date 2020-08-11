@@ -366,10 +366,13 @@ export default {
         },
 
         onSubmit() {
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.fusdToken);
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,
                 token: this.fusdToken,
+                borrowLimitHex: this.$defi.getBorrowLimitHex(this.defiAccount),
+                debtBalanceHex: tokenBalance.balance,
             };
 
             if (this.decreasedDebt > 0) {

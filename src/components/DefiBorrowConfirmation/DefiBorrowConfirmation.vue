@@ -186,19 +186,26 @@ export default {
                 txToSign = defiUtils.defiBorrowTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals))
+                    this.correctAmount(
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals)),
+                        true
+                    )
                 );
             } else if (this.params.step === 1) {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     token.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    this.correctAmount(
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    )
                 );
             } else {
                 txToSign = defiUtils.defiRepayTokenTx(
                     contractAddress,
                     token.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    this.correctAmount(
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                    )
                     // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
                 );
             }
@@ -208,6 +215,24 @@ export default {
                 this.currentAccount.address,
                 GAS_LIMITS.defi
             );
+        },
+
+        correctAmount(_amount, _borrow) {
+            const { params } = this;
+            /*
+            if (!_borrow) {
+                if (params.debtBalanceHex && this.$defi.compareBN(_amount, params.debtBalanceHex) === 1) {
+                    return params.debtBalanceHex;
+                }
+            } else {
+                if (params.borrowLimitHex && this.$defi.compareBN(_amount, params.borrowLimitHex) === 1) {
+                    return params.borrowLimitHex;
+                }
+            }
+            */
+            console.log(_amount, params.debtBalanceHex, params.borrowLimitHex, _borrow);
+
+            return _amount;
         },
 
         onSendTransactionSuccess(_data) {

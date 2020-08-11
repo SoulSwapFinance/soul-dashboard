@@ -241,6 +241,19 @@ export class DeFi {
     }
 
     /**
+     * Get overall borrow limit in hex.
+     *
+     * @param {DefiAccount} _defiAccount
+     * @return {number}
+     */
+    getBorrowLimitHex(_defiAccount) {
+        const debtValue = web3utils.toBN(_defiAccount.debtValue);
+        const collateralValue = web3utils.toBN(_defiAccount.collateralValue);
+
+        return '0x' + collateralValue.divn(this.minCollateralRatio).sub(debtValue).toString('hex');
+    }
+
+    /**
      * Get overall debt limit in FUSD.
      *
      * @param {DefiAccount} _defiAccount

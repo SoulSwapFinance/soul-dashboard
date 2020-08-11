@@ -455,10 +455,12 @@ export default {
         },
 
         onSubmit() {
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,
                 token: { ...this.dToken },
+                debtBalanceHex: tokenBalance.balance,
             };
 
             if (this.decreasedDebt > 0) {
