@@ -25,23 +25,23 @@
                 <template v-if="params.step === 1">
                     You’re allowing
                     <span v-if="increasedCollateral > 0" class="inc-desc-collateral">
-                        {{ increasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="increasedCollateral" no-currency /> {{ cTokenSymbol }}
                     </span>
                     <span v-else class="inc-desc-collateral">
-                        {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="decreasedCollateral" no-currency /> {{ cTokenSymbol }}
                     </span>
                 </template>
                 <div v-else-if="increasedCollateral > 0">
                     You’re adding
                     <span class="inc-desc-collateral">
-                        {{ increasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="increasedCollateral" no-currency /> {{ cTokenSymbol }}
                     </span>
                     to your collateral
                 </div>
                 <div v-else-if="decreasedCollateral > 0">
                     You’re removing
                     <span class="inc-desc-collateral">
-                        {{ decreasedCollateral.toFixed(collateralDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="decreasedCollateral" no-currency /> {{ cTokenSymbol }}
                     </span>
                     from your collateral
                 </div>
@@ -69,6 +69,7 @@ import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import appConfig from '../../../app.config.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 /**
  * Common component for DefiDepositFTMConfirmation a DefiManageDepositConfirmation
@@ -76,7 +77,7 @@ import appConfig from '../../../app.config.js';
 export default {
     name: 'DefiDepositConfirmation',
 
-    components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
+    components: { FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Address of smart contract. */
@@ -95,11 +96,6 @@ export default {
             default() {
                 return {};
             },
-        },
-        /** Number of decimals of collateral. */
-        collateralDecimals: {
-            type: Number,
-            default: 2,
         },
         /**
          * Router params.

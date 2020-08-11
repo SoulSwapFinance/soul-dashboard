@@ -8,7 +8,7 @@
                 <f-select-button @click.native="onFromTokenSelectorClick">
                     <div class="sb-content">
                         <f-crypto-symbol :token="fromToken" />
-                        <span>{{ fromTokenBalance.toFixed(5) }}</span>
+                        <span><f-token-value :token="fromToken" :value="fromTokenBalance" no-currency /></span>
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
@@ -53,7 +53,7 @@
                 <f-select-button @click.native="onToTokenSelectorClick">
                     <div class="sb-content">
                         <f-crypto-symbol :token="toToken" />
-                        <span>{{ toTokenBalance.toFixed(5) }}</span>
+                        <span><f-token-value :token="toToken" :value="toTokenBalance" no-currency /></span>
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
@@ -134,11 +134,12 @@ import { getUniqueId } from '../../utils';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { formatNumberByLocale } from '../../filters.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'DefiFTrade',
 
-    components: { FSlider, DefiTokenPickerWindow, FSelectButton, FCryptoSymbol, FBackButton },
+    components: { FTokenValue, FSlider, DefiTokenPickerWindow, FSelectButton, FCryptoSymbol, FBackButton },
 
     mixins: [eventBusMixin],
 
@@ -187,13 +188,13 @@ export default {
         fromInputValue() {
             const fromValue = this.formatInputValue(this.fromValue);
 
-            return fromValue !== 0 ? '-' + fromValue.toFixed(6) : fromValue;
+            return fromValue !== 0 ? '-' + fromValue.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : fromValue;
         },
 
         toInputValue() {
             const toValue = this.formatInputValue(this.toValue);
 
-            return toValue !== 0 ? toValue.toFixed(6) : toValue;
+            return toValue !== 0 ? toValue.toFixed(this.$defi.getTokenDecimals(this.toToken)) : toValue;
         },
 
         fromTokens() {
@@ -348,9 +349,9 @@ export default {
             const perPrice = 1 / (this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1));
             const { $defi } = this;
 
-            this.perPrice = `${perPrice.toFixed(6)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(
-                toToken
-            )}`;
+            this.perPrice = `${perPrice.toFixed(this.$defi.getTokenDecimals(fromToken))} ${$defi.getTokenSymbol(
+                fromToken
+            )} per ${$defi.getTokenSymbol(toToken)}`;
         },
 
         swapPrice() {

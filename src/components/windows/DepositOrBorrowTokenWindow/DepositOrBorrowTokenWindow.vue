@@ -13,10 +13,16 @@
                 <div class="title"><f-crypto-symbol :token="token" img-width="40px" img-height="40px" /></div>
             </template>
             <div class="buttons">
-                <router-link class="btn large" :to="{ name: 'defi-manage-deposit', params: { token: { ...token } } }">
+                <router-link
+                    class="btn large secondary"
+                    :to="{ name: 'defi-manage-deposit', params: { token: { ...token } } }"
+                >
                     Deposit
                 </router-link>
-                <router-link class="btn large" :to="{ name: 'defi-manage-borrow', params: { token: { ...token } } }">
+                <router-link
+                    class="btn large secondary"
+                    :to="{ name: 'defi-manage-borrow', params: { token: { ...token } } }"
+                >
                     Borrow
                 </router-link>
             </div>

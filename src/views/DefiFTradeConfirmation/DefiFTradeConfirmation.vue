@@ -24,12 +24,19 @@
             <div class="info">
                 <template v-if="params.step === 1">
                     You’re allowing
-                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span>
+                    <span class="price">
+                        {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                    </span>
                 </template>
                 <template v-else>
                     You're trading
-                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span> ->
-                    <span class="price">{{ params.toValue.toFixed(priceDecimals) }} {{ toTokenSymbol }}</span>
+                    <span class="price">
+                        {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                    </span>
+                    &#10141;
+                    <span class="price">
+                        {{ params.toValue.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
+                    </span>
                 </template>
             </div>
 

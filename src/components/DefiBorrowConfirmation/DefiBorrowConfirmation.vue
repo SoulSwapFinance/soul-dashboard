@@ -25,14 +25,14 @@
                 <div v-if="increasedDebt > 0">
                     You’re adding
                     <span class="inc-desc-collateral">
-                        {{ increasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
                     </span>
                 </div>
                 <div v-else-if="decreasedDebt > 0">
                     <template v-if="params.step === 1">You’re allowing</template>
                     <template v-else>You’re removing</template>
                     <span class="inc-desc-collateral">
-                        {{ decreasedDebt.toFixed(debtDecimals) }} {{ cTokenSymbol }}
+                        <f-token-value :token="token" :value="decreasedDebt" no-currency /> {{ cTokenSymbol }}
                     </span>
                 </div>
             </div>
@@ -58,6 +58,7 @@ import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import appConfig from '../../../app.config.js';
 import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -65,7 +66,7 @@ import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 export default {
     name: 'DefiBorrowConfirmation',
 
-    components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
+    components: { FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Address of smart contract. */
@@ -84,11 +85,6 @@ export default {
             default() {
                 return {};
             },
-        },
-        /** Number of decimals of debt. */
-        debtDecimals: {
-            type: Number,
-            default: 2,
         },
         /** Router params */
         params: {

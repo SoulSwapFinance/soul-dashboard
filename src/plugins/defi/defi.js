@@ -40,6 +40,8 @@ export class DeFi {
         this.fusdToken = {};
         /** @type {DefiToken} */
         this.ftmToken = {};
+        /** Keys are token symbols, values are number of decimals. */
+        this.tokenDecimals = {};
     }
 
     /**
@@ -75,6 +77,41 @@ export class DeFi {
         this.tokens = _tokens;
         this.fusdToken = _tokens.find((_item) => _item.symbol === 'FUSD');
         this.ftmToken = _tokens.find((_item) => _item.symbol === 'FTM');
+
+        if (isObjectEmpty(this.tokenDecimals)) {
+            this.tokens.forEach((_token) => {
+                this._setTokenDecimals(_token);
+            });
+
+            console.log(this.tokenDecimals);
+        }
+    }
+
+    /**
+     * @param {DefiToken} _token
+     * @private
+     */
+    _setTokenDecimals(_token) {
+        const tokenPrice = this.getTokenPrice(_token);
+        let decimals = 0;
+
+        if (tokenPrice < 0.5) {
+            decimals = 1;
+        } else if (tokenPrice < 100) {
+            decimals = 2;
+        } else {
+            decimals = 3;
+        }
+
+        this.tokenDecimals[_token.symbol] = decimals;
+    }
+
+    /**
+     * @param {DefiToken} _token
+     * @return {number}
+     */
+    getTokenDecimals(_token) {
+        return this.tokenDecimals[_token.symbol] || 2;
     }
 
     /**

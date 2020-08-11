@@ -5,18 +5,20 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Available balance</h3>
                     <div class="value">
-                        {{ availableBalance.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
+                        <f-token-value :token="dToken" :value="availableBalance" />
                     </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Borrowed {{ tokenSymbol }}</h3>
-                    <div class="value">{{ debt.toFixed(decimals) }}</div>
+                    <h3 class="label">Borrowed</h3>
+                    <div class="value">
+                        <f-token-value :token="dToken" :value="debt" />
+                    </div>
                 </div>
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
                         <h3 class="label">Borrow Limit</h3>
                         <div class="value">
-                            {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
+                            <f-token-value :token="dToken" :value="borrowLimit" />
                         </div>
                     </div>
                 </template>
@@ -35,7 +37,9 @@
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
                         <h3 class="label">Total Deposit</h3>
-                        <div class="value">{{ collateralInFUSD }} <span class="currency">fUSD</span></div>
+                        <div class="value">
+                            <f-token-value :token="fusdToken" :value="collateralInFUSD" />
+                        </div>
                     </div>
                 </template>
             </div>
@@ -123,7 +127,9 @@
 -->
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
-                    <div class="value">{{ collateralInFUSD }} <span class="currency">fUSD</span></div>
+                    <div class="value">
+                        <f-token-value :token="fusdToken" :value="collateralInFUSD" />
+                    </div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
                     <h3 class="label">Debt Limit</h3>
@@ -134,18 +140,22 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow Limit</h3>
                     <div class="value">
-                        {{ borrowLimit.toFixed(decimals) }} <span class="currency">{{ tokenSymbol }}</span>
+                        <f-token-value :token="dToken" :value="borrowLimit" />
                     </div>
                 </div>
             </div>
 
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
                 You're adding
-                <span class="inc-desc-collateral">{{ increasedDebt.toFixed(decimals) }} {{ tokenSymbol }}</span>
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ tokenSymbol }}
+                </span>
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
                 You're removing
-                <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(decimals) }} {{ tokenSymbol }}</span>
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="dToken" :value="decreasedDebt" no-currency /> {{ tokenSymbol }}
+                </span>
             </f-message>
         </div>
 
@@ -153,35 +163,17 @@
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
                 <template v-if="submitDisabled">Submit</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">
-                    Borrow {{ increasedDebt.toFixed(decimals) }} {{ tokenSymbol }} now
+                    Borrow now
+                    <!--<f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ tokenSymbol }} now-->
                 </template>
-                <template v-else>Repay {{ decreasedDebt.toFixed(decimals) }} {{ tokenSymbol }} now</template>
+                <template v-else>
+                    Repay now
+                    <!--<f-token-value :token="dToken" :value="decreasedDebt" no-currency /> {{ tokenSymbol }} now-->
+                </template>
             </button>
         </div>
 
         <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
-
-        <div
-            v-if="tmpShow"
-            style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
-            @click="onTestBtnClick"
-        >
-            <h3>Test values</h3>
-            <h4>Common values</h4>
-            <p>
-                Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
-                Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
-                Token price: {{ tokenPrice }}
-            </p>
-            <h4>Set values</h4>
-            <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
-                <button :data-idx="index" class="btn small light break-word">
-                    Locked balance: {{ item.collateral }}, Borrowed {{ tokenSymbol }}: {{ item.debt }}
-                    <template v-if="item.tokenPrice"> , Token price: {{ item.tokenPrice }} </template>
-                </button>
-                <br />
-            </div>
-        </div>
     </div>
 </template>
 
@@ -197,6 +189,7 @@ import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPic
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -205,6 +198,7 @@ export default {
     name: 'DefiBorrow',
 
     components: {
+        FTokenValue,
         FSelectButton,
         FCryptoSymbol,
         DefiTokenPickerWindow,
@@ -229,10 +223,6 @@ export default {
             type: Boolean,
             default: false,
         },
-        decimals: {
-            type: Number,
-            default: 5,
-        },
     },
 
     data() {
@@ -256,19 +246,6 @@ export default {
             decreasedDebt: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: false,
-            tmpValues: {
-                collateral: 0,
-                debt: 0,
-            },
-            tmpTokenPrice: 0,
-            tmpTestData: [
-                { collateral: 0, debt: 0 },
-                { collateral: 5000, debt: 0 },
-                { collateral: 10000, debt: 20 },
-                { collateral: 5000, debt: 20 },
-                { collateral: 5000, debt: 20, tokenPrice: 0.008 },
-            ],
         };
     },
 
@@ -307,16 +284,6 @@ export default {
         availableBalance() {
             return this.$defi.fromTokenValue(this.dToken.availableBalance, this.dToken) || 0;
         },
-
-        /*
-        debt() {
-            return this.tmpValues.debt;
-        },
-
-        collateral() {
-            return this.tmpValues.collateral;
-        },
-*/
 
         collateralInFUSD() {
             return (this.collateral * this.$defi.getTokenPrice(this.ftmToken)).toFixed(2);
@@ -426,8 +393,6 @@ export default {
                 this.$nextTick(() => {
                     this.currDebt = this.debt.toString();
                 });
-
-                this.tmpTokenPrice = this.tokenPrice;
             }
         },
     },
@@ -469,7 +434,7 @@ export default {
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(this.decimals);
+            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.dToken));
         },
 
         updateMessage() {
@@ -537,34 +502,6 @@ export default {
 
         onAccountPicked() {
             this.init();
-        },
-
-        _setTmpValues(_values) {
-            this.tmpValues = {
-                collateral: _values.collateral,
-                debt: _values.debt,
-            };
-
-            if (_values.tokenPrice) {
-                this.tokenPrice = _values.tokenPrice;
-            } else {
-                this.tokenPrice = this.tmpTokenPrice;
-            }
-
-            this.updateCurrDebt();
-            this.updateMessage();
-        },
-
-        onTestBtnClick(_event) {
-            const eBtn = _event.target.closest('button');
-            let idx = -1;
-
-            if (eBtn) {
-                idx = parseInt(eBtn.getAttribute('data-idx'));
-                if (!isNaN(idx)) {
-                    this._setTmpValues(this.tmpTestData[idx]);
-                }
-            }
         },
 
         formatNumberByLocale,

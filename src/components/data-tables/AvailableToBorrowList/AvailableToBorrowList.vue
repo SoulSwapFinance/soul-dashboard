@@ -103,7 +103,7 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
-                        return debt > 0 ? debt.toFixed(5) : 0;
+                        return debt > 0 ? debt.toFixed(this.defi.getTokenDecimals(_item)) : 0;
                     },
                     css: { textAlign: 'right' },
                 },
@@ -113,7 +113,11 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
-                        return debt > 0 ? (debt * this.defi.getTokenPrice(_item)).toFixed(2) : 0;
+                        return debt > 0
+                            ? (debt * this.defi.getTokenPrice(_item)).toFixed(
+                                  this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                              )
+                            : 0;
                     },
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {

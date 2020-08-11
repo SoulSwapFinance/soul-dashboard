@@ -4,23 +4,19 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available Balance</h3>
-                    <div class="value">
-                        {{ formatNumberByLocale(availableBalance) }} <span class="currency">{{ tokenSymbol }}</span>
-                    </div>
+                    <div class="value"><f-token-value :token="dToken" :value="availableBalance" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Deposit Balance</h3>
-                    <div class="value">
-                        {{ collateral.toFixed(5) }} <span class="currency">{{ tokenSymbol }}</span>
-                    </div>
+                    <div class="value"><f-token-value :token="dToken" :value="collateral" /></div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
-                    <div class="value">{{ overallCollateral.toFixed(3) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="overallCollateral" /></div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">Total Borrowed</h3>
-                    <div class="value">{{ overallDebt.toFixed(3) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="overallDebt" /></div>
                 </div>
             </div>
             <div class="defi-price-input-col align-center">
@@ -112,7 +108,7 @@
             <div v-if="largeView" class="right-col">
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted {{ tokenSymbol }}</h3>
-                    <div class="value">{{ debt.toFixed(5) }}</div>
+                    <div class="value"><f-token-value :token="dToken" :value="debt" no-currency /></div>
                 </div>
                 <!--
                 <div class="df-data-item smaller">
@@ -148,13 +144,17 @@
             </f-message>
             <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
                 You’re adding
-                <span class="inc-desc-collateral">{{ increasedCollateral.toFixed(2) }} {{ tokenSymbol }}</span> to your
-                collateral
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="dToken" :value="increasedCollateral" no-currency /> {{ tokenSymbol }}
+                </span>
+                to your collateral
             </f-message>
             <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
                 You’re removing
-                <span class="inc-desc-collateral">{{ decreasedCollateral.toFixed(2) }} {{ tokenSymbol }}</span> from
-                your collateral
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="dToken" :value="decreasedCollateral" no-currency /> {{ tokenSymbol }}
+                </span>
+                from your collateral
             </f-message>
         </div>
 
@@ -185,11 +185,13 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        FTokenValue,
         DefiTokenPickerWindow,
         FCryptoSymbol,
         FSelectButton,
@@ -225,6 +227,8 @@ export default {
             },
             /** @type {DefiToken} */
             dToken: {},
+            /** @type {DefiToken} */
+            fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             currCollateral: '0',
@@ -439,7 +443,7 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
-            // this.token = this.tokens.find((_item) => _item.symbol === 'FTM');
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             // this.currCollateral = this.collateral.toString();
 
             if (!this.singleToken) {
@@ -456,7 +460,7 @@ export default {
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(2);
+            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.dToken));
         },
 
         updateMessage() {

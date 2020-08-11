@@ -13,11 +13,11 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
-                    <div class="value">{{ availableFTM.toFixed(1) }} <span class="currency">FTM</span></div>
+                    <div class="value"><f-token-value :token="ftmToken" :value="availableFTM" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
-                    <div class="value">{{ collateral.toFixed(2) }} <span class="currency">FTM</span></div>
+                    <div class="value"><f-token-value :token="ftmToken" :value="collateral" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Current FTM price</h3>
@@ -49,11 +49,11 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
-                    <div class="value">{{ maxMintable.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
-                    <div class="value">{{ debtFUSD.toFixed(3) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Liquidation price</h3>
@@ -115,11 +115,12 @@ import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FInfo from '../../components/core/FInfo/FInfo.vue';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FInfo, FBackButton, FMessage, FCircleProgress },
+    components: { FTokenValue, FInfo, FBackButton, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 
@@ -132,7 +133,9 @@ export default {
                 debt: [],
             },
             /** @type {DefiToken} */
-            ftmToken: null,
+            ftmToken: {},
+            /** @type {DefiToken} */
+            fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             id: getUniqueId(),
@@ -144,19 +147,14 @@ export default {
 
         debt() {
             // overall debt
-            return this.$defi.fromTokenValue(
-                this.defiAccount.debtValue,
-                this.tokens.find((_item) => _item.symbol === 'FUSD')
-            );
+            return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
         },
 
         debtFUSD() {
-            /** @type {DefiToken} */
-            const token = this.tokens.find((_item) => _item.symbol === 'FUSD');
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, token);
+            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.fusdToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, token) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
         },
 
         collateral() {
@@ -253,6 +251,7 @@ export default {
             this.defiAccount = result[0];
             this.tokens = result[1];
             this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
         },
 

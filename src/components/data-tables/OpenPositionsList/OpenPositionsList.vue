@@ -193,7 +193,7 @@ export default {
         formatDebt(_token) {
             const debt = '_debt' in _token ? _token._debt : this.getDebt(_token);
 
-            return debt > 0 ? debt.toFixed(5) : 0;
+            return debt > 0 ? debt.toFixed(this.defi.getTokenDecimals(_token)) : 0;
         },
 
         /**
@@ -203,7 +203,9 @@ export default {
         formatDebtFUSD(_token) {
             const debt = this.getDebt(_token);
 
-            return debt > 0 ? (debt * this.defi.getTokenPrice(_token)).toFixed(2) : 0;
+            return debt > 0
+                ? (debt * this.defi.getTokenPrice(_token)).toFixed(this.defi.getTokenDecimals({ symbol: 'FUSD' }))
+                : 0;
         },
 
         /**
@@ -224,7 +226,7 @@ export default {
         formatCollateral(_token) {
             const collateral = '_collateral' in _token ? _token._collateral : this.getCollateral(_token);
 
-            return collateral > 0 ? collateral.toFixed(5) : 0;
+            return collateral > 0 ? collateral.toFixed(this.defi.getTokenDecimals(_token)) : 0;
         },
 
         /**
@@ -234,7 +236,9 @@ export default {
         formatCollateralFUSD(_token) {
             const collateral = this.getCollateral(_token);
 
-            return collateral > 0 ? (collateral * this.defi.getTokenPrice(_token)).toFixed(2) : 0;
+            return collateral > 0
+                ? (collateral * this.defi.getTokenPrice(_token)).toFixed(this.defi.getTokenDecimals({ symbol: 'FUSD' }))
+                : 0;
         },
 
         onRowAction(_item) {

@@ -95,7 +95,7 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
-                        return collateral > 0 ? collateral.toFixed(5) : 0;
+                        return collateral > 0 ? collateral.toFixed(this.defi.getTokenDecimals(_item)) : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
@@ -107,7 +107,11 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
-                        return collateral > 0 ? (collateral * this.defi.getTokenPrice(_item)).toFixed(2) : 0;
+                        return collateral > 0
+                            ? (collateral * this.defi.getTokenPrice(_item)).toFixed(
+                                  this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                              )
+                            : 0;
                     },
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {

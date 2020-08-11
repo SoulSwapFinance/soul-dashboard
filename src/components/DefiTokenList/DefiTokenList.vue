@@ -24,7 +24,9 @@ import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 
 export default {
     name: 'DefiTokenList',
+
     components: { FCryptoSymbol },
+
     props: {
         /** @type {DefiToken[]} */
         tokens: {
@@ -69,7 +71,7 @@ export default {
         getAvailableBalance(_token) {
             const balance = this.$defi.fromTokenValue(_token.availableBalance, _token) || 0;
 
-            return balance > 0 ? balance.toFixed(5) : 0;
+            return balance > 0 ? balance.toFixed(this.$defi.getTokenDecimals(_token)) : 0;
         },
 
         /**

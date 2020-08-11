@@ -13,11 +13,11 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
-                    <div class="value">{{ totalDeposit.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="totalDeposit" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Earnings</h3>
-                    <div class="value">{{ earnings }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="earnings" /></div>
                 </div>
             </div>
             <div class="limit-col align-center">
@@ -45,11 +45,11 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Borrowed</h3>
-                    <div class="value">{{ totalBorrowed.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="totalBorrowed" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Borrow limit</h3>
-                    <div class="value">{{ borrowLimit.toFixed(2) }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="borrowLimit" /></div>
                 </div>
             </div>
             <!--
@@ -131,11 +131,13 @@ import FTab from '../../components/core/FTabs/FTab.vue';
 import SuplyToLiquidityList from '@/components/data-tables/SuplyToLiquidity/SuplyToLiquidityList.vue';
 import AvailableToBorrowList from '@/components/data-tables/AvailableToBorrowList/AvailableToBorrowList.vue';
 import OpenPositionsList from '@/components/data-tables/OpenPositionsList/OpenPositionsList.vue';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'DefiFLend',
 
     components: {
+        FTokenValue,
         OpenPositionsList,
         AvailableToBorrowList,
         SuplyToLiquidityList,
@@ -154,6 +156,8 @@ export default {
                 collateral: [],
                 debt: [],
             },
+            /** @type {DefiToken} */
+            fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             depositRecordsCount: 0,
@@ -171,7 +175,7 @@ export default {
         },
 
         earnings() {
-            return '-';
+            return 0;
         },
 
         totalBorrowed() {
@@ -214,6 +218,7 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
         },
 
         onDepositRecordsCount(_count) {

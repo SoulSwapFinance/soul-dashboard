@@ -1,11 +1,6 @@
 <template>
     <div class="view-defi-manage-borrow-confirmation">
-        <defi-borrow-confirmation
-            :params="params"
-            comp-name="defi-manage-borrow"
-            :token="params.token"
-            :debt-decimals="5"
-        />
+        <defi-borrow-confirmation :params="params" comp-name="defi-manage-borrow" :token="params.token" />
     </div>
 </template>
 
