@@ -75,22 +75,16 @@
         <div class="defi-tabs">
             <f-tabs>
                 <template #deposit>
-                    <b>
-                        Deposit to Liquidity
-                        <span class="f-records-count">({{ depositRecordsCount }})</span>
-                    </b>
+                    Deposit to Liquidity
+                    <span class="f-records-count">({{ depositRecordsCount }})</span>
                 </template>
                 <template #borrow>
-                    <b>
-                        Available to borrow
-                        <span class="f-records-count">({{ borrowRecordsCount }})</span>
-                    </b>
+                    Available to borrow
+                    <span class="f-records-count">({{ borrowRecordsCount }})</span>
                 </template>
                 <template #positions>
-                    <b>
-                        Open positions
-                        <span class="f-records-count">({{ positionsRecordsCount }})</span>
-                    </b>
+                    Open positions
+                    <span class="f-records-count">({{ positionsRecordsCount }})</span>
                 </template>
 
                 <f-tab title-slot="deposit">

@@ -26,22 +26,22 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <template v-if="item._collateral > 0">
-                            deposit: <b>{{ formatCollateral(item) }} </b>
+                            depo.: <b>{{ formatCollateral(item) }} </b>
                             <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
                         </template>
                         <template v-if="item._debt > 0">
-                            borrowed: <b>{{ formatDebt(item) }} </b>
+                            borr.: <b>{{ formatDebt(item) }} </b>
                             <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                         </template>
                     </div>
                 </div>
                 <template v-else>
                     <template v-if="item._collateral > 0">
-                        deposit: <b>{{ formatCollateral(item) }} </b>
+                        depo.: <b>{{ formatCollateral(item) }} </b>
                         <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span> --><br />
                     </template>
                     <template v-if="item._debt > 0">
-                        borrowed: <b>{{ formatDebt(item) }} </b>
+                        borr.: <b>{{ formatDebt(item) }} </b>
                         <!--<span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                     </template>
                 </template>
@@ -52,19 +52,19 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <template v-if="item._collateral > 0">
-                            deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                            depo.: <b>{{ formatCollateralFUSD(item) }}</b> <br />
                         </template>
                         <template v-if="item._debt > 0">
-                            borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                            borr.: <b>{{ formatDebtFUSD(item) }}</b>
                         </template>
                     </div>
                 </div>
                 <template v-else>
                     <template v-if="item._collateral > 0">
-                        deposit: <b>{{ formatCollateralFUSD(item) }}</b> <br />
+                        depo.: <b>{{ formatCollateralFUSD(item) }}</b> <br />
                     </template>
                     <template v-if="item._debt > 0">
-                        borrowed: <b>{{ formatDebtFUSD(item) }}</b>
+                        borr.: <b>{{ formatDebtFUSD(item) }}</b>
                     </template>
                 </template>
             </template>
@@ -129,12 +129,12 @@ export default {
                 },
                 {
                     name: 'balance',
-                    label: 'Balance',
+                    label: 'Position',
                     // css: { textAlign: 'right' },
                 },
                 {
                     name: 'balance_fusd',
-                    label: 'Balance (fUSD)',
+                    label: 'Position (fUSD)',
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {

@@ -499,7 +499,8 @@ export class DeFi {
      * @return {boolean}
      */
     canTokenBeBorrowed(_token) {
-        return _token && _token.isActive && _token.canBorrow && _token.symbol !== 'FUSD';
+        // return _token && _token.isActive && _token.canBorrow && _token.symbol !== 'FUSD';
+        return _token && _token.isActive && _token.canBorrow;
     }
 
     /**
