@@ -110,7 +110,8 @@
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                Trade now
+                Submit
+                <!--Trade now-->
             </button>
         </div>
 

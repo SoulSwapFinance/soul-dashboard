@@ -138,11 +138,16 @@ export default {
 
             if (this.params.step === 1) {
                 label = 'Continue to the next step';
-            } else if (this.params.collateral > 0) {
+            } else {
+                label = 'Submit';
+            }
+            /*
+            else if (this.params.collateral > 0) {
                 label = 'Rebalance now';
             } else {
                 label = 'Add collateral';
             }
+            */
 
             return label;
         },

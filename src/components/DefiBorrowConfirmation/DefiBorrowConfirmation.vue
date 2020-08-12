@@ -123,6 +123,10 @@ export default {
 
             if (this.params.step === 1) {
                 label = 'Continue to the next step';
+            } else {
+                label = 'Submit';
+            }
+            /*
             } else if (this.increasedDebt > 0) {
                 if (this.compName === 'defi-borrow-fusd') {
                     label = 'Mint now';
@@ -132,6 +136,7 @@ export default {
             } else {
                 label = 'Repay now';
             }
+            */
 
             return label;
         },

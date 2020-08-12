@@ -117,7 +117,8 @@ export default {
             if (this.params.step === 1) {
                 label = 'Continue to the next step';
             } else {
-                label = 'Trade now';
+                label = 'Submit';
+                // label = 'Trade now';
             }
 
             return label;

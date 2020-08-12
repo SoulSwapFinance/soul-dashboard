@@ -161,15 +161,16 @@
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
+                Submit
+                <!--
                 <template v-if="submitDisabled">Submit</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">
                     Borrow now
-                    <!--<f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ tokenSymbol }} now-->
                 </template>
                 <template v-else>
                     Repay now
-                    <!--<f-token-value :token="dToken" :value="decreasedDebt" no-currency /> {{ tokenSymbol }} now-->
                 </template>
+                -->
             </button>
         </div>
 

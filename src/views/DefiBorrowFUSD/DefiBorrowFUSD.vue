@@ -134,15 +134,16 @@
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
+                Submit
+                <!--
                 <template v-if="submitDisabled">Submit</template>
                 <template v-else-if="increasedDebt > 0 || debt === 0">
                     Mint now
-                    <!--{{ increasedDebt.toFixed(2) }} now-->
                 </template>
                 <template v-else>
                     Repay now
-                    <!--{{ decreasedDebt.toFixed(2) }} now-->
                 </template>
+                -->
             </button>
             <br /><br />
             <router-link :to="{ name: 'defi-manage-collateral' }">
