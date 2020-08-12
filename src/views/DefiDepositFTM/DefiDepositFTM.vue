@@ -141,10 +141,6 @@
                 <template v-else>Add collateral</template>
                 -->
             </button>
-            <br /><br />
-            <router-link :to="{ name: 'defi-borrow-fusd' }">
-                Manage fUSD
-            </router-link>
         </div>
 
         <div

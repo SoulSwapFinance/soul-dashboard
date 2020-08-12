@@ -145,10 +145,6 @@
                 </template>
                 -->
             </button>
-            <br /><br />
-            <router-link :to="{ name: 'defi-manage-collateral' }">
-                Manage Collateral
-            </router-link>
         </div>
     </div>
 </template>

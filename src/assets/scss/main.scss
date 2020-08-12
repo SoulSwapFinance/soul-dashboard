@@ -41,10 +41,11 @@ body {
         --f-tabs-font-family: #{$font-family-proxima};
         --f-tabs-color: #{$light-gray-color};
         --f-tabs-font-size: 18px;
+        --f-tabs-active-color: inherit;
         //--f-tabs-font-weight: 600;
         --f-tabs-border-width: 2px;
         --f-tabs-border-color: #{$grey-color-semi};
-        --f-tabs-hover-color: inherit;
+        --f-tabs-hover-color: #{$theme-color};
         --f-tabs-hover-border-color: transparent;
     }
 
@@ -200,10 +201,12 @@ form {
 @include buttons('.secondary:not([disabled]):not(.disabled):hover') {
     color: $theme-color;
     background-color: lighten($theme-color, 35);
+    border-color: $theme-color;
 }
 @include buttons('.secondary:not([disabled]):not(.disabled):focus') {
     color: $theme-color;
     background-color: lighten($theme-color, 35);
+    border-color: $theme-color;
 }
 @include buttons('.secondary:not([disabled]):not(.disabled)[aria-selected="true"]') {
     color: $theme-color;

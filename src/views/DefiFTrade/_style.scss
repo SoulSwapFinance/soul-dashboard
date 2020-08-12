@@ -99,20 +99,17 @@
         width: 100%;
         display: flex;
         align-items: center;
+        justify-content: center;
         margin-top: 16px;
         padding-left: 16px;
         padding-right: 16px;
 
-        > * {
-            flex: 1;
+        .defi-label {
+            margin-bottom: 0;
         }
 
         .value {
-            flex-basis: 100%;
             text-align: right;
-            //background-color: red;
-            //padding-left: 8px;
-            //padding-right: 8px;
             padding: 0 8px;
         }
 

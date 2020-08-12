@@ -26,11 +26,11 @@ export default {
         },
         imgWidth: {
             type: String,
-            default: '32px',
+            default: '40px',
         },
         imgHeight: {
             type: String,
-            default: '32px',
+            default: '40px',
         },
     },
 

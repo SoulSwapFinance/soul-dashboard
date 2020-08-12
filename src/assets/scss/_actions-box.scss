@@ -38,6 +38,7 @@
                         &:hover {
                             color: $theme-color !important;
                             background-color: lighten($theme-color, 35) !important;
+                            border-color: $theme-color;
                         }
                     }
                 }
