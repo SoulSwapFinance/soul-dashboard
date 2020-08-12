@@ -14,7 +14,7 @@
                 <div class="defi-price-input">
                     <input
                         :id="`text-input-${id}`"
-                        ref="input"
+                        ref="fromInput"
                         :value="fromInputValue === 0 ? '' : fromInputValue"
                         type="number"
                         placeholder="0"
@@ -23,6 +23,7 @@
                         :max="maxFromInputValue"
                         class="text-input no-style"
                         @change="onFromInputChange"
+                        @input="onFromInputInput"
                         @keydown="onInputKeydown"
                     />
                 </div>
@@ -43,7 +44,7 @@
                 <div class="defi-price-input">
                     <input
                         :id="`text-input-${id}`"
-                        ref="input"
+                        ref="toInput"
                         :value="toInputValue === 0 ? '' : toInputValue"
                         type="number"
                         placeholder="0"
@@ -52,6 +53,7 @@
                         :max="maxToInputValue"
                         class="text-input no-style"
                         @change="onToInputChange"
+                        @input="onToInputInput"
                         @keydown="onInputKeydown"
                     />
                 </div>
@@ -191,15 +193,11 @@ export default {
         },
 
         fromInputValue() {
-            const fromValue = this.formatInputValue(this.fromValue);
-
-            return fromValue !== 0 ? '-' + fromValue.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : fromValue;
+            return this.formatFromInputValue(this.fromValue);
         },
 
         toInputValue() {
-            const toValue = this.formatInputValue(this.toValue);
-
-            return toValue !== 0 ? toValue.toFixed(this.$defi.getTokenDecimals(this.toToken)) : toValue;
+            return this.formatToInputValue(this.toValue);
         },
 
         fromTokens() {
@@ -301,9 +299,18 @@ export default {
             this.setPerPrice();
         },
 
-        formatInputValue(_value) {
-            // return parseFloat(_value).toFixed(2);
-            return _value;
+        /**
+         * @param {number} _value
+         */
+        formatToInputValue(_value) {
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : _value;
+        },
+
+        /**
+         * @param {number} _value
+         */
+        formatFromInputValue(_value) {
+            return _value !== 0 ? '-' + _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
         },
 
         /**
@@ -396,13 +403,37 @@ export default {
             }
         },
 
+        /**
+         * @param {InputEvent} _event
+         */
         onFromInputChange(_event) {
             this.fromValue = this.correctFromInputValue(_event.target.value);
         },
 
+        /**
+         * @param {InputEvent} _event
+         */
+        onFromInputInput(_event) {
+            this.$refs.toInput.value = this.formatToInputValue(
+                this.correctToInputValue(this.convertFrom2To(_event.target.value))
+            );
+        },
+
+        /**
+         * @param {InputEvent} _event
+         */
         onToInputChange(_event) {
             this.toValue = this.correctToInputValue(_event.target.value);
             this.fromValue = this.convertTo2From(this.toValue);
+        },
+
+        /**
+         * @param {InputEvent} _event
+         */
+        onToInputInput(_event) {
+            this.$refs.fromInput.value = this.formatFromInputValue(
+                this.correctFromInputValue(this.convertTo2From(_event.target.value))
+            );
         },
 
         /**
