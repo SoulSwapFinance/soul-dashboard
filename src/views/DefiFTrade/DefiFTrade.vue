@@ -27,22 +27,6 @@
                     />
                 </div>
             </div>
-            <div class="f-slider-wrap">
-                <f-slider
-                    ref="slider"
-                    v-model="currFromValue"
-                    step="any"
-                    min="0"
-                    :max="maxFromInputValue.toString()"
-                    :labels="sliderLabels"
-                    clickable-labels
-                    use-lower-fill-bar
-                >
-                    <template #top="sProps">
-                        <label :for="sProps.inputId" class="not-visible">slider label</label>
-                    </template>
-                </f-slider>
-            </div>
             <div class="swap-col">
                 <button class="btn large round same-size light" title="Swap Tokens" @click="swapTokens">
                     <icon data="@/assets/svg/defi/ftrade.svg" width="24" height="24" aria-hidden="true" />
@@ -97,6 +81,26 @@
                 </div>
 -->
             </div>
+        </div>
+
+        <div class="se-cont">
+            <div class="f-slider-wrap">
+                <f-slider
+                    ref="slider"
+                    v-model="currFromValue"
+                    step="any"
+                    min="0"
+                    :max="maxFromInputValue.toString()"
+                    :labels="sliderLabels"
+                    clickable-labels
+                    use-lower-fill-bar
+                >
+                    <template #top="sProps">
+                        <label :for="sProps.inputId" class="not-visible">slider label</label>
+                    </template>
+                </f-slider>
+            </div>
+
             <div class="exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">{{ perPrice }}</div>

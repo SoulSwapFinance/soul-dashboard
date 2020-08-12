@@ -16,10 +16,6 @@
             grid-area: 2 / 1;
         }
 
-        .f-slider-wrap {
-            grid-area: 4 / 1;
-        }
-
         > .swap-col {
             display: none;
         }
@@ -103,6 +99,9 @@
         width: 100%;
         display: flex;
         align-items: center;
+        margin-top: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
 
         > * {
             flex: 1;
@@ -119,6 +118,11 @@
 
         .swap-price {
         }
+    }
+
+    .se-cont {
+        max-width: 436px;
+        margin: 0 auto;
     }
 }
 
@@ -144,10 +148,6 @@
             .f-slider-wrap {
                 margin-top: 0;
                 grid-area: initial;
-            }
-
-            .exchange-price {
-                grid-area: 2 / 3 / 2 / 3;
             }
         }
 
