@@ -196,7 +196,7 @@ export default {
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     fromToken.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(fromValue.toString(), fromToken.decimals))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
                 if (fromToken.symbol === 'FUSD') {

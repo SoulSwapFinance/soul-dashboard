@@ -204,7 +204,10 @@ export default {
                     contractAddress,
                     this.correctAmount(
                         Web3.utils.toHex(
-                            this.$defi.shiftDecPointRight(Math.abs(this.increasedCollateral).toString(), token.decimals)
+                            this.$defi.shiftDecPointRight(
+                                Math.abs(this.increasedCollateral * 1.05).toString(),
+                                token.decimals
+                            )
                         ),
                         this.decreasedCollateral > 0
                     )

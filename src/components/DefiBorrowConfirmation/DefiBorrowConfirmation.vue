@@ -201,7 +201,9 @@ export default {
                     token.address,
                     contractAddress,
                     this.correctAmount(
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
+                        Web3.utils.toHex(
+                            this.$defi.shiftDecPointRight((this.decreasedDebt * 1.05).toString(), token.decimals)
+                        )
                     )
                 );
             } else {
