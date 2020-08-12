@@ -42,6 +42,7 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'SuplyToLiquidityList',
@@ -89,26 +90,39 @@ export default {
                     width: '140px',
                 },
                 {
+                    name: 'available',
+                    label: 'Available',
+                    itemProp: 'availableBalance',
+                    formatter: (_availableBalance, _item) => {
+                        const balance = this.$defi.fromTokenValue(_availableBalance, _item);
+
+                        return balance > 0 ? formatNumberByLocale(balance, this.defi.getTokenDecimals(_item)) : 0;
+                    },
+                    css: { textAlign: 'right' },
+                    // width: '100px',
+                },
+                {
                     name: 'balance',
-                    label: 'Balance',
+                    label: 'Deposited',
                     itemProp: 'availableBalance',
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
-                        return collateral > 0 ? collateral.toFixed(this.defi.getTokenDecimals(_item)) : 0;
+                        return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_item)) : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
                 },
                 {
                     name: 'balance_fusd',
-                    label: 'Balance (fUSD)',
+                    label: 'Deposited (fUSD)',
                     itemProp: 'availableBalance',
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
                         return collateral > 0
-                            ? (collateral * this.defi.getTokenPrice(_item)).toFixed(
+                            ? formatNumberByLocale(
+                                  collateral * this.defi.getTokenPrice(_item),
                                   this.defi.getTokenDecimals({ symbol: 'FUSD' })
                               )
                             : 0;

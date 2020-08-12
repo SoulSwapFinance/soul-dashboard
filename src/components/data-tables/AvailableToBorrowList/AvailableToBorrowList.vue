@@ -103,7 +103,7 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
-                        return debt > 0 ? debt.toFixed(this.defi.getTokenDecimals(_item)) : 0;
+                        return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_item)) : 0;
                     },
                     css: { textAlign: 'right' },
                 },
@@ -114,7 +114,8 @@ export default {
                         const debt = this.getDebt(_item);
 
                         return debt > 0
-                            ? (debt * this.defi.getTokenPrice(_item)).toFixed(
+                            ? formatNumberByLocale(
+                                  debt * this.defi.getTokenPrice(_item),
                                   this.defi.getTokenDecimals({ symbol: 'FUSD' })
                               )
                             : 0;
