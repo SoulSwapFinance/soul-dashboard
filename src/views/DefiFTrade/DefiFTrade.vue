@@ -310,7 +310,8 @@ export default {
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? '-' + _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
+            // return _value !== 0 ? '-' + _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
         },
 
         /**
