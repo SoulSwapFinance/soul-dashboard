@@ -10,26 +10,7 @@
                 <f-card>
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
-                            <span class="col col-6-md">
-                                <span class="value">
-                                    {{ toFTM(account.totalBalance) }} <span class="ftm">FTM</span>
-                                </span>
-                                <span class="currency">
-                                    {{ formatCurrencyByLocale(account.totalBalance, tokenPrice) }}
-                                </span>
-                                <span class="label">Total</span>
-                            </span>
-                            <span class="col col-6-md">
-                                <span class="value">{{ toFTM(account.balance) }} <span class="ftm">FTM</span></span>
-                                <span class="currency">
-                                    {{ formatCurrencyByLocale(account.balance, tokenPrice) }}
-                                </span>
-                                <span class="label">Available</span>
-                            </span>
-                            <span
-                                class="col-5 col-10-md align-right align-left-md"
-                                :class="{ 'account-name-exists': !!account.name }"
-                            >
+                            <span class="col-5 col-10-md last-md" :class="{ 'account-name-exists': !!account.name }">
                                 <span class="address-col">
                                     <span
                                         v-if="pickMode"
@@ -37,7 +18,7 @@
                                         :data-address="account.address"
                                         tabindex="0"
                                     >
-                                        <account-name align-right :account="account" />
+                                        <account-name :account="account" />
                                     </span>
                                     <router-link
                                         v-else
@@ -49,7 +30,7 @@
                                         aria-label="Address"
                                         :data-address="account.address"
                                     >
-                                        <account-name align-right :account="account" />
+                                        <account-name :account="account" />
                                     </router-link>
 
                                     <f-copy-button
@@ -83,6 +64,22 @@
                                         Keystore file
                                     </template>
                                 </span>
+                            </span>
+                            <span class="col col-6-md">
+                                <span class="value">{{ toFTM(account.balance) }} <span class="ftm">FTM</span></span>
+                                <span class="currency">
+                                    {{ formatCurrencyByLocale(account.balance, tokenPrice) }}
+                                </span>
+                                <span class="label">Available</span>
+                            </span>
+                            <span class="col col-6-md">
+                                <span class="value">
+                                    {{ toFTM(account.totalBalance) }} <span class="ftm">FTM</span>
+                                </span>
+                                <span class="currency">
+                                    {{ formatCurrencyByLocale(account.totalBalance, tokenPrice) }}
+                                </span>
+                                <span class="label">Total</span>
                             </span>
 
                             <!--
