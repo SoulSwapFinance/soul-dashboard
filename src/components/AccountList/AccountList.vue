@@ -10,7 +10,7 @@
                 <f-card>
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
-                            <span class="col-5 col-10-md last-md" :class="{ 'account-name-exists': !!account.name }">
+                            <span class="col-5 col-10-md" :class="{ 'account-name-exists': !!account.name }">
                                 <span class="address-col">
                                     <span
                                         v-if="pickMode"
