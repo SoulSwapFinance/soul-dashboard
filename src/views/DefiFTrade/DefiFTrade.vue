@@ -260,6 +260,7 @@ export default {
             if (_value !== _oldValue) {
                 this.fromValue = parseFloat(_value);
                 this.setPerPrice();
+                this.updateSigns();
             }
         },
 
