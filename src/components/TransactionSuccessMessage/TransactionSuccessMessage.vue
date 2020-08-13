@@ -119,7 +119,7 @@ export default {
                 variables: {
                     hash: this.tx,
                 },
-                fetchPolicy: 'no-cache',
+                fetchPolicy: 'network-only',
             });
 
             if (data.data.transaction.status === null) {

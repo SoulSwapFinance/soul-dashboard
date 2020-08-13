@@ -286,7 +286,7 @@ export default {
                         voter: this.currentAccount.address,
                         ballots: ballotAddresses,
                     },
-                    fetchPolicy: 'no-cache',
+                    fetchPolicy: 'network-only',
                 });
 
                 if (data) {

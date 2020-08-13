@@ -537,7 +537,7 @@ export class DeFi {
                     }
                 }
             `,
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return data.data.defiConfiguration || {};
@@ -572,7 +572,7 @@ export class DeFi {
             variables: {
                 owner: _ownerAddress,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
         const defiTokens = data.data.defiTokens || [];
         let tokens = [];
@@ -632,7 +632,7 @@ export class DeFi {
             variables: {
                 owner: _ownerAddress,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
         /** @type {DefiAccount} */
         const { defiAccount } = data.data;
@@ -656,7 +656,7 @@ export class DeFi {
             variables: {
                 to: _to,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         if (!data.data.price) {

@@ -59,7 +59,7 @@ export class FantomWeb3Wallet {
             variables: {
                 to: _to,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         if (!data.data.price) {
@@ -182,7 +182,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return data.data.account;
@@ -223,7 +223,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return _inHexFormat ? data.data.account.txCount : parseInt(data.data.account.txCount);
@@ -266,7 +266,7 @@ export class FantomWeb3Wallet {
             variables: {
                 id: _id,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return data.data.staker;
