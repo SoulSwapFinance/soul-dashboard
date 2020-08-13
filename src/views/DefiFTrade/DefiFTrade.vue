@@ -12,20 +12,23 @@
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
-                    <input
-                        :id="`text-input-${id}`"
-                        ref="fromInput"
-                        :value="fromInputValue === 0 ? '' : fromInputValue"
-                        type="number"
-                        placeholder="0"
-                        step="any"
-                        min="0"
-                        :max="maxFromInputValue"
-                        class="text-input no-style"
-                        @change="onFromInputChange"
-                        @input="onFromInputInput"
-                        @keydown="onInputKeydown"
-                    />
+                    <div ref="fromSign" class="sign">-</div>
+                    <f-auto-resize-input ref="fromARInput" min-width="48px">
+                        <input
+                            :id="`text-input-${id}`"
+                            ref="fromInput"
+                            :value="fromInputValue === 0 ? '' : fromInputValue"
+                            type="number"
+                            placeholder="0"
+                            step="any"
+                            min="0"
+                            :max="maxFromInputValue"
+                            class="text-input no-style"
+                            @change="onFromInputChange"
+                            @input="onFromInputInput"
+                            @keydown="onInputKeydown"
+                        />
+                    </f-auto-resize-input>
                 </div>
             </div>
             <div class="swap-col">
@@ -42,20 +45,23 @@
                     </div>
                 </f-select-button>
                 <div class="defi-price-input">
-                    <input
-                        :id="`text-input-${id}`"
-                        ref="toInput"
-                        :value="toInputValue === 0 ? '' : toInputValue"
-                        type="number"
-                        placeholder="0"
-                        step="any"
-                        min="0"
-                        :max="maxToInputValue"
-                        class="text-input no-style"
-                        @change="onToInputChange"
-                        @input="onToInputInput"
-                        @keydown="onInputKeydown"
-                    />
+                    <div ref="toSign" class="sign">+</div>
+                    <f-auto-resize-input ref="toARInput" min-width="48px">
+                        <input
+                            :id="`text-input-${id}`"
+                            ref="toInput"
+                            :value="toInputValue === 0 ? '' : toInputValue"
+                            type="number"
+                            placeholder="0"
+                            step="any"
+                            min="0"
+                            :max="maxToInputValue"
+                            class="text-input no-style"
+                            @change="onToInputChange"
+                            @input="onToInputInput"
+                            @keydown="onInputKeydown"
+                        />
+                    </f-auto-resize-input>
                 </div>
             </div>
             <div class="swap-cont">
@@ -133,7 +139,7 @@
 <script>
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
@@ -142,11 +148,20 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import FAutoResizeInput from '@/components/core/FAutoResizeInput/FAutoResizeInput.vue';
 
 export default {
     name: 'DefiFTrade',
 
-    components: { FTokenValue, FSlider, DefiTokenPickerWindow, FSelectButton, FCryptoSymbol, FBackButton },
+    components: {
+        FAutoResizeInput,
+        FTokenValue,
+        FSlider,
+        DefiTokenPickerWindow,
+        FSelectButton,
+        FCryptoSymbol,
+        FBackButton,
+    },
 
     mixins: [eventBusMixin],
 
@@ -176,6 +191,8 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        ...mapState(['breakpoints']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -253,12 +270,24 @@ export default {
                 this.setPerPrice();
             }
         },
+
+        breakpoints() {
+            const { $refs } = this;
+
+            $refs.fromARInput.update();
+            $refs.toARInput.update();
+        },
     },
 
     created() {
         this.init();
 
         this._eventBus.on('account-picked', this.onAccountPicked);
+    },
+
+    mounted() {
+        this.$refs.fromSign.style.visibility = 'hidden';
+        this.$refs.toSign.style.visibility = 'hidden';
     },
 
     methods: {
@@ -303,6 +332,8 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
+            this.resizeToARInput();
+
             return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : _value;
         },
 
@@ -310,8 +341,9 @@ export default {
          * @param {number} _value
          */
         formatFromInputValue(_value) {
+            this.resizeFromARInput();
+
             return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
-            // return _value !== 0 ? '-' + _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
         },
 
         /**
@@ -372,6 +404,30 @@ export default {
             this.setPerPrice();
         },
 
+        resizeFromARInput() {
+            this.$nextTick(() => {
+                this.$refs.fromARInput.resizeInput();
+            });
+        },
+
+        resizeToARInput() {
+            this.$nextTick(() => {
+                this.$refs.toARInput.resizeInput();
+            });
+        },
+
+        updateSigns() {
+            this.$nextTick(() => {
+                const { $refs } = this;
+                let value = $refs.fromInput.value;
+
+                $refs.fromSign.style.visibility = !value || value === '0' ? 'hidden' : 'visible';
+
+                value = $refs.toInput.value;
+                $refs.toSign.style.visibility = !value || value === '0' ? 'hidden' : 'visible';
+            });
+        },
+
         onFromTokenSelectorClick() {
             this.$refs.pickFromTokenWindow.show();
         },
@@ -418,6 +474,7 @@ export default {
             this.$refs.toInput.value = this.formatToInputValue(
                 this.correctToInputValue(this.convertFrom2To(_event.target.value))
             );
+            this.updateSigns();
         },
 
         /**
@@ -435,6 +492,7 @@ export default {
             this.$refs.fromInput.value = this.formatFromInputValue(
                 this.correctFromInputValue(this.convertTo2From(_event.target.value))
             );
+            this.updateSigns();
         },
 
         /**

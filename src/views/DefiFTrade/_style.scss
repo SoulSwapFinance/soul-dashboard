@@ -72,8 +72,14 @@
     .defi-price-input {
         margin-top: 16px;
 
-        input.text-input {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+
+        input.text-input, .sign {
             font-size: 72px;
+            margin-bottom: 0;
         }
     }
 
@@ -151,9 +157,11 @@
         .defi-price-input {
             margin-top: 56px;
 
+            /*
             input.text-input {
                 margin-bottom: 24px;
             }
+            */
         }
 
         .swap-col {
@@ -183,7 +191,7 @@
 @include media-max($bp-large) {
     .view-defi-ftrade {
         .defi-price-input {
-            input.text-input {
+            input.text-input, .sign {
                 font-size: 40px;
                 margin-bottom: 0;
             }

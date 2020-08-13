@@ -91,7 +91,7 @@
     margin: 0 auto;
     text-align: center;
 
-    > span {
+    > span:not(.f-auto-resize-input) {
         font-size: 80px;
         opacity: 0.65;
     }
