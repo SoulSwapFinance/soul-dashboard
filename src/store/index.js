@@ -130,6 +130,13 @@ export const store = new Vuex.Store({
         },
         /**
          * @param {Object} _state
+         * @return {number}
+         */
+        defiSlippageReserve(_state) {
+            return _state.defiSlippageReserve / 100;
+        },
+        /**
+         * @param {Object} _state
          * @return {function(*=): ?WalletAccount}
          */
         getAccountByAddress(_state) {

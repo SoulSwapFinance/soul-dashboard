@@ -190,7 +190,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         ...mapState(['breakpoints']),
 
@@ -238,12 +238,16 @@ export default {
         },
 
         maxFromInputValue() {
+            let max = 0;
+
             if (this.fromToken.symbol === 'FUSD') {
                 // subtract 0.5% fee
-                return this.fromTokenBalance - this.fromTokenBalance * 0.005;
+                max = this.fromTokenBalance - this.fromTokenBalance * 0.005;
             } else {
-                return this.fromTokenBalance;
+                max = this.fromTokenBalance;
             }
+
+            return max - max * this.defiSlippageReserve;
         },
 
         maxToInputValue() {
@@ -325,6 +329,7 @@ export default {
             this.fromValue = this.toValue;
             this.toValue = hValue;
 
+            this.fromValue = this.correctFromInputValue(this.fromValue);
             // this.currFromValue = this.fromValue.toString();
             this.setPerPrice();
         },

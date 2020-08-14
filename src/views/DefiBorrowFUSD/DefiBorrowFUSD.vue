@@ -195,7 +195,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         debt() {
             /** @type {DefiTokenBalance} */
@@ -220,6 +220,12 @@ export default {
         },
 
         maxMintable() {
+            const maxMintable = this._maxMintable;
+
+            return maxMintable - maxMintable * this.defiSlippageReserve;
+        },
+
+        _maxMintable() {
             return this.debt + this.$defi.getBorrowLimit(this.defiAccount);
             /*
             return (
@@ -241,11 +247,15 @@ export default {
         },
 
         minDebt() {
-            return 0;
+            return this.defiSlippageReserve * this._maxDebt;
         },
 
         maxDebt() {
             return Math.max(this.maxMintable, this.debt);
+        },
+
+        _maxDebt() {
+            return Math.max(this._maxMintable, this.debt);
         },
 
         inputValue() {

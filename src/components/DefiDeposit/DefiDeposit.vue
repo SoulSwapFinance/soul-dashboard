@@ -245,7 +245,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         availableBalance() {
             return this.$defi.fromTokenValue(this.dToken.availableBalance, this.dToken) || 0;
@@ -299,7 +299,7 @@ export default {
                 console.log('minc', minC);
             }
 
-            return minC;
+            return minC + this.defiSlippageReserve * this._maxCollateral;
         },
 
         /*
@@ -316,6 +316,14 @@ export default {
 */
 
         maxCollateral() {
+            const maxCollateral = this._maxCollateral;
+
+            console.log(this._maxCollateral);
+
+            return maxCollateral - maxCollateral * this.defiSlippageReserve;
+        },
+
+        _maxCollateral() {
             return this.collateral + this.availableBalance;
         },
 
