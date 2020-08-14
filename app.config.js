@@ -83,7 +83,7 @@ const appConfig = {
         // list of available currencies displayed in settings view ( https://en.wikipedia.org/wiki/ISO_4217 )
         currencies: ['USD', 'EUR'],
         // defi slippage reserve in percentage
-        defaultDefiSlippageReserve: 0.5,
+        defaultDefiSlippageReserve: 0.1,
     },
 };
 
