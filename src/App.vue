@@ -35,6 +35,7 @@ import {
     PUSH_BNBRIDGE_PENDING_REQUEST,
     SET_BREAKPOINT,
     SET_CURRENCY,
+    SET_DEFI_SLIPPAGE_RESERVE,
     SET_FRACTION_DIGITS,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
@@ -98,6 +99,15 @@ export default {
             if (_fractionDigits) {
                 filtersOptions.fractionDigits = _fractionDigits;
                 this.$store.commit(SET_FRACTION_DIGITS, _fractionDigits);
+            }
+        },
+
+        /**
+         * @param {number} _defiSlippageReserve
+         */
+        setDefiSlippageReserve(_defiSlippageReserve) {
+            if (_defiSlippageReserve) {
+                this.$store.commit(SET_DEFI_SLIPPAGE_RESERVE, _defiSlippageReserve);
             }
         },
 

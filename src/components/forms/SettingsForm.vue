@@ -23,6 +23,25 @@
 
                         <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
 
+                        <f-input
+                            name="defi_slippage_reserve"
+                            :value="$store.state.defiSlippageReserve.toString()"
+                            label="DeFi Slippage Reserve"
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            field-size="large"
+                            validate-on-input
+                            :validator="checkDefiSlippageReserve"
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Value must be between 0% and 100%
+                                </f-message>
+                            </template>
+                        </f-input>
+
                         <!--
                         <br />
                         <f-checkbox name="night_mode" label="Night Mode" />
@@ -54,11 +73,13 @@ import FForm from '../core/FForm/FForm.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
+import FInput from '@/components/core/FInput/FInput.vue';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { SocialMediaLinks, FSelect, FForm, FCard },
+    components: { FMessage, FInput, SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
@@ -96,6 +117,21 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {string} _value
+         * @return {boolean}
+         */
+        checkDefiSlippageReserve(_value) {
+            let ok = false;
+            const value = parseFloat(_value);
+
+            if (!isNaN(value)) {
+                ok = value >= 0 && value <= 100;
+            }
+
+            return ok;
+        },
+
         onFormChange(_event) {
             const { detail } = _event;
             const appNode = this.$root.$children[0];
@@ -107,6 +143,10 @@ export default {
             } else if (detail.eTarget.name === 'fraction_digits') {
                 if (appNode) {
                     appNode.setFractionDigits(parseInt(detail.value));
+                }
+            } else if (detail.eTarget.name === 'defi_slippage_reserve') {
+                if (appNode && this.checkDefiSlippageReserve(detail.value)) {
+                    appNode.setDefiSlippageReserve(parseFloat(detail.value));
                 }
             } else if (detail.eTarget.name === 'language') {
                 alert('not implemented yet');

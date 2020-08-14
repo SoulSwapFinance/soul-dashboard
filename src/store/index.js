@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
+import appConfig from '../../app.config.js';
 
 import {
     APPEND_ACCOUNT,
@@ -21,6 +22,7 @@ import {
     MOVE_CONTACT,
     REMOVE_CONTACT,
     SET_CONTACT,
+    SET_DEFI_SLIPPAGE_RESERVE,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -48,6 +50,7 @@ const vuexLocalStorage = new VuexPersist({
         tokenPrice: _state.tokenPrice,
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
+        defiSlippageReserve: _state.defiSlippageReserve,
         accounts: _state.accounts,
         contacts: _state.contacts,
         bnbridgePendingRequests: _state.bnbridgePendingRequests,
@@ -77,6 +80,7 @@ export const store = new Vuex.Store({
         tokenPrice: 0,
         currency: 'USD',
         fractionDigits: 2,
+        defiSlippageReserve: appConfig.settings.defaultDefiSlippageReserve,
         /** @type {[WalletAccount]} */
         accounts: [],
         /** @type {[WalletContact]} */
@@ -247,6 +251,13 @@ export const store = new Vuex.Store({
          */
         [SET_FRACTION_DIGITS](_state, _fractionDigits) {
             _state.fractionDigits = _fractionDigits;
+        },
+        /**
+         * @param {Object} _state
+         * @param {number} _defiSlippageReserve
+         */
+        [SET_DEFI_SLIPPAGE_RESERVE](_state, _defiSlippageReserve) {
+            _state.defiSlippageReserve = _defiSlippageReserve;
         },
         /**
          * @param {Object} _state
