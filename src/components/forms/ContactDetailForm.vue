@@ -69,7 +69,7 @@
                     <f-select
                         v-if="action === 'new'"
                         v-model="blockchain"
-                        :data="blockchains"
+                        :data="$fWallet.blockchains"
                         select-size="large"
                         label="Blockchain"
                         name="blockchain"
@@ -77,7 +77,7 @@
                     <template v-else>
                         <span class="form-label">Blockchain</span>
                         <div class="break-word">
-                            {{ getBlockchainLabel(contactData.blockchain) }}
+                            {{ $fWallet.getBlockchainLabel(contactData.blockchain) }}
                         </div>
                         <br />
                     </template>
@@ -187,20 +187,6 @@ export default {
             /** @type {WalletBlockchain} */
             blockchain: 'fantom',
             addressErrorMsg: '',
-            blockchains: [
-                {
-                    value: 'fantom',
-                    label: 'Fantom',
-                },
-                {
-                    value: 'ethereum',
-                    label: 'Ethereum',
-                },
-                {
-                    value: 'binance',
-                    label: 'Binance',
-                },
-            ],
         };
     },
 
@@ -328,20 +314,6 @@ export default {
             }
 
             return ok;
-        },
-
-        /**
-         * @param {WalletBlockchain} _blockchain
-         * @return {string}
-         */
-        getBlockchainLabel(_blockchain) {
-            const blockchain = this.blockchains.find((_item) => _item.value === _blockchain);
-
-            if (blockchain) {
-                return blockchain.label;
-            }
-
-            return '';
         },
 
         /**

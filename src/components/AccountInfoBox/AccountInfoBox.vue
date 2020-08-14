@@ -1,7 +1,7 @@
 <template>
     <f-card class="account-info-box info-box f-card-double-padding">
         <div class="row no-vert-col-padding align-items-center align-center-lg no-collapse">
-            <div class="col-5 col-12-lg align-center-lg"><account-actions-box /></div>
+            <div class="col-6 col-12-lg align-center-lg"><account-actions-box /></div>
             <div class="col balances">
                 <div class="balance">
                     <h3 class="align-center-lg">

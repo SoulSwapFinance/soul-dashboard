@@ -19,9 +19,9 @@
 
         &:not(.off) {
             .label {
-                padding-top: 8px;
                 padding-bottom: 0;
                 font-weight: normal;
+                font-size: 18px;
             }
         }
     }
@@ -52,7 +52,7 @@
         text-align: center;
     }
 
-    .account-name .an-name {
-        color: $body-color;
+    .account-name.has-name .an-address {
+        margin-top: 0;
     }
 }

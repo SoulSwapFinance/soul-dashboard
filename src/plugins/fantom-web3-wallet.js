@@ -41,6 +41,21 @@ export class FantomWeb3Wallet {
 
     constructor(_options) {
         this.apolloClient = _options.apolloClient;
+        /** List of blockchains. */
+        this.blockchains = [
+            {
+                value: 'fantom',
+                label: 'Fantom Opera',
+            },
+            {
+                value: 'ethereum',
+                label: 'Ethereum',
+            },
+            {
+                value: 'binance',
+                label: 'Binance Chain',
+            },
+        ];
     }
 
     /**
@@ -270,6 +285,20 @@ export class FantomWeb3Wallet {
         });
 
         return data.data.staker;
+    }
+
+    /**
+     * @param {WalletBlockchain} _blockchain
+     * @return {string}
+     */
+    getBlockchainLabel(_blockchain) {
+        const blockchain = this.blockchains.find((_item) => _item.value === _blockchain);
+
+        if (blockchain) {
+            return blockchain.label;
+        }
+
+        return '';
     }
 
     /**
