@@ -23,7 +23,8 @@
             <f-breakpoint value="992px" code="large"></f-breakpoint>
             <f-breakpoint value="1100px" code="validator-list-dt-mobile-view"></f-breakpoint>
         </f-breakpoints>
-        <f-aria-alert></f-aria-alert>
+        <f-aria-alert />
+        <f-network-status />
     </div>
 </template>
 
@@ -41,11 +42,13 @@ import {
 import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
+import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
 
 export default {
     name: 'App',
 
     components: {
+        FNetworkStatus,
         FAriaAlert,
         FBreakpoint,
         FBreakpoints,

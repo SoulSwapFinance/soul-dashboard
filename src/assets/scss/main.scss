@@ -29,6 +29,15 @@
 
 //@include media-max($bp-menu) {
 
+html {
+    transition: filter $transition-length $transition-func;
+}
+
+html.offline {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
 body {
     letter-spacing: -0.5px;
 
