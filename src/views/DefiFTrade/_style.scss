@@ -81,6 +81,14 @@
             font-size: 72px;
             margin-bottom: 0;
         }
+
+        .sign, input.text-input::placeholder {
+            color: $light-gray-color;
+        }
+
+        input.text-input.invalid {
+            color: red;
+        }
     }
 
     .sb-content {

@@ -422,6 +422,17 @@ export default {
             });
         },
 
+        updateInputColor(_value, _toInput = false) {
+            const cValue = _toInput ? this.correctToInputValue(_value) : this.correctFromInputValue(_value);
+            const eInput = _toInput ? this.$refs.toInput : this.$refs.fromInput;
+
+            if (_value > cValue) {
+                eInput.classList.add('invalid');
+            } else {
+                eInput.classList.remove('invalid');
+            }
+        },
+
         updateSigns() {
             this.$nextTick(() => {
                 const { $refs } = this;
@@ -470,7 +481,17 @@ export default {
          * @param {InputEvent} _event
          */
         onFromInputChange(_event) {
-            this.fromValue = this.correctFromInputValue(_event.target.value);
+            const cValue = this.correctFromInputValue(_event.target.value);
+
+            if (this.fromValue === cValue) {
+                this.$nextTick(() => {
+                    this.$refs.fromInput.value = this.formatFromInputValue(cValue);
+                });
+            }
+
+            this.fromValue = cValue;
+
+            this.updateInputColor(this.fromValue);
         },
 
         /**
@@ -480,6 +501,8 @@ export default {
             this.$refs.toInput.value = this.formatToInputValue(
                 this.correctToInputValue(this.convertFrom2To(_event.target.value))
             );
+
+            this.updateInputColor(parseFloat(_event.target.value));
             this.updateSigns();
         },
 
@@ -487,8 +510,18 @@ export default {
          * @param {InputEvent} _event
          */
         onToInputChange(_event) {
-            this.toValue = this.correctToInputValue(_event.target.value);
+            const cValue = this.correctToInputValue(_event.target.value);
+
+            if (this.toValue === cValue) {
+                this.$nextTick(() => {
+                    this.$refs.toInput.value = this.formatToInputValue(cValue);
+                });
+            }
+
+            this.toValue = cValue;
             this.fromValue = this.convertTo2From(this.toValue);
+
+            this.updateInputColor(this.toValue, true);
         },
 
         /**
@@ -498,6 +531,8 @@ export default {
             this.$refs.fromInput.value = this.formatFromInputValue(
                 this.correctFromInputValue(this.convertTo2From(_event.target.value))
             );
+
+            this.updateInputColor(parseFloat(_event.target.value), true);
             this.updateSigns();
         },
 
