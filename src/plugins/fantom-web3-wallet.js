@@ -392,7 +392,7 @@ export class FantomWeb3Wallet {
         const root = Hdkey.fromMasterSeed(seed);
         const addrNode = root.derive("m/44'/60'/0'/0/0");
         const pubKey = ethUtil.privateToPublic(addrNode._privateKey);
-        const addr = ethUtil.publicToAddress(pubKey).toString('hex');
+        const addr = '0x' + ethUtil.publicToAddress(pubKey).toString('hex');
         const publicAddress = ethUtil.toChecksumAddress(addr);
         const privateKey = ethUtil.bufferToHex(addrNode._privateKey);
 
