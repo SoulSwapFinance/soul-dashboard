@@ -35,6 +35,10 @@ const appConfig = {
         url: 'https://api.bnbridge.exchange/api/v1',
         // auth token
         token: '',
+        // use Ethereum chain
+        useETH: false,
+        // use Binance chain
+        useBNB: false,
     },
     // address of liquidity pool contract
     liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',

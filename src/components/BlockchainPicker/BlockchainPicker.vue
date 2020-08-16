@@ -40,6 +40,7 @@
                     name="blockchain"
                     value="ethereum"
                     class="not-visible"
+                    :disabled="!appConfig.bnbridgeApi.useETH"
                 />
                 <span>
                     <icon
@@ -71,6 +72,7 @@
                     name="blockchain"
                     value="binance"
                     class="not-visible"
+                    :disabled="!appConfig.bnbridgeApi.useBNB"
                 />
                 <span>
                     <icon
@@ -97,12 +99,15 @@
 </template>
 
 <script>
+import appConfig from '../../../app.config.js';
+
 export default {
     name: 'BlockchainPicker',
 
     data() {
         return {
             blockchain: 'opera',
+            appConfig,
         };
     },
 

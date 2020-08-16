@@ -104,7 +104,7 @@ export const apolloProvider = new VueApollo({
     defaultClient: apolloClient,
     defaultOptions: {
         $query: {
-            fetchPolicy: 'no-cache', // 'cache-and-network', 'network-only', 'cache-first'
+            fetchPolicy: 'network-only', // 'cache-and-network', 'network-only', 'cache-first'
         },
     },
 });

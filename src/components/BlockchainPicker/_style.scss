@@ -42,6 +42,11 @@
                 }
             }
 
+            &:disabled + span {
+                opacity: 0.25;
+                cursor: not-allowed;
+            }
+
             &:focus.focus-visible + span {
                 background: #eee;
             }
