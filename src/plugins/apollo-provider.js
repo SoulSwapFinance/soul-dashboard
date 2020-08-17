@@ -94,7 +94,13 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
         if (!netError) {
             netError = true;
-            apolloNetworkStatus.offline();
+
+            // run "offline" a little later, because it can only be switching providers
+            setTimeout(function () {
+                if (netError) {
+                    apolloNetworkStatus.offline();
+                }
+            }, 600);
         }
 
         resetHttpApolloProviders();
