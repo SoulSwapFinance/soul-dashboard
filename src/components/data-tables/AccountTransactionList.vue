@@ -115,7 +115,7 @@ import gql from 'graphql-tag';
 import { WEIToFTM } from '../../utils/transactions.js';
 import { timestampToDate, formatNumberByLocale, formatHexToInt, formatDate } from '../../filters.js';
 import FAccountTransactionAmount from '../core/FAccountTransactionAmount/FAccountTransactionAmount.vue';
-import { getNestedProp } from '../../utils';
+import { cloneObject, getNestedProp } from '../../utils';
 import FCard from '../core/FCard/FCard.vue';
 import appConfig from '../../../app.config.js';
 import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
@@ -195,7 +195,7 @@ export default {
                 let data;
 
                 if (_key === 'account') {
-                    data = _data.data.account;
+                    data = cloneObject(_data.data.account);
 
                     const edges = data.txList.edges;
 

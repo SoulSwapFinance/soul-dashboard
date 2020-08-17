@@ -59,7 +59,7 @@ const loggerLink = new ApolloLink((operation, forward) => {
     operation.setContext({ start: new Date() });
     return forward(operation).map((response) => {
         const responseTime = new Date() - operation.getContext().start;
-        console.log(`GraphQL Response took: ${responseTime}`);
+        console.log(`GraphQL Response ${operation.operationName} took: ${responseTime}`);
         return response;
     });
 });

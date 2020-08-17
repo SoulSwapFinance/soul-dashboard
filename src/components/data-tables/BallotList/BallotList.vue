@@ -95,6 +95,7 @@ import gql from 'graphql-tag';
 import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
 import { mapGetters } from 'vuex';
+import { cloneObject } from '@/utils';
 
 export default {
     name: 'BallotList',
@@ -156,7 +157,7 @@ export default {
                 let data;
 
                 if (_key === 'ballots') {
-                    data = _data.data.ballots;
+                    data = cloneObject(_data.data.ballots);
 
                     const edges = await this.processEdges(data.edges);
 

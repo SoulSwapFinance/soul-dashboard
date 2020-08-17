@@ -126,6 +126,7 @@ import { WEIToFTM } from '../../../utils/transactions.js';
 import { formatHexToInt, timestampToDate, numToFixed, formatNumberByLocale } from '../../../filters.js';
 import { sortByHex, sortByLocaleString } from '../../../utils/array-sorting.js';
 import appConfig from '../../../../app.config.js';
+import { cloneObject } from '@/utils';
 
 export default {
     name: 'ValidatorList',
@@ -190,7 +191,7 @@ export default {
                 const tUnknown = this.$t('view_validator_list.unknown');
 
                 if (_key === 'stakers') {
-                    data = [..._data.data.stakers];
+                    data = cloneObject(_data.data.stakers);
 
                     data.forEach((_item, _idx) => {
                         // _item.total_staked = WEIToFTM(_item.stake) + WEIToFTM(_item.delegatedMe);
