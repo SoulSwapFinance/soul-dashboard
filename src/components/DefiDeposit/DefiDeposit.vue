@@ -124,7 +124,7 @@
                     <div class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
-                            <f-placeholder :content-loaded="tokenPrice" replacement-text="99%">
+                            <f-placeholder :content-loaded="!!tokenPrice" replacement-text="99%">
                                 <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
                             </f-placeholder>
                         </div>

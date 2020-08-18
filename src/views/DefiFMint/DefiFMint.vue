@@ -22,7 +22,7 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Current FTM price</h3>
                     <div class="value">
-                        <f-placeholder :content-loaded="tokenPrice" replacement-text="$0.00000">
+                        <f-placeholder :content-loaded="!!tokenPrice" replacement-text="$0.00000">
                             {{ currentPrice }}
                         </f-placeholder>
                     </div>

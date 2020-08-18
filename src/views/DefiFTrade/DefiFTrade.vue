@@ -6,7 +6,7 @@
             <div class="from-col">
                 <div class="defi-label">From</div>
                 <f-select-button @click.native="onFromTokenSelectorClick">
-                    <f-placeholder :content-loaded="fromToken.symbol" block replacement-num-chars="20">
+                    <f-placeholder :content-loaded="!!fromToken.symbol" block :replacement-num-chars="20">
                         <div class="sb-content">
                             <f-crypto-symbol :token="fromToken" />
                             <span>
@@ -48,7 +48,7 @@
             <div class="to-col">
                 <div class="defi-label">To</div>
                 <f-select-button @click.native="onToTokenSelectorClick">
-                    <f-placeholder :content-loaded="toToken.symbol" block replacement-num-chars="20">
+                    <f-placeholder :content-loaded="!!toToken.symbol" block :replacement-num-chars="20">
                         <div class="sb-content">
                             <f-crypto-symbol :token="toToken" />
                             <span>
