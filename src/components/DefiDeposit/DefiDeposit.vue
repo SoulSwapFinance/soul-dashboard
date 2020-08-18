@@ -124,7 +124,9 @@
                     <div class="df-data-item smaller">
                         <h3 class="label">Debt Limit</h3>
                         <div class="value">
-                            <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
+                            <f-placeholder :content-loaded="tokenPrice" replacement-text="99%">
+                                <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
+                            </f-placeholder>
                         </div>
                     </div>
                     <!--
@@ -189,11 +191,13 @@ import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        FPlaceholder,
         FTokenValue,
         DefiTokenPickerWindow,
         FCryptoSymbol,

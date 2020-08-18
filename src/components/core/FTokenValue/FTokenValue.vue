@@ -1,15 +1,21 @@
 <template>
     <span class="f-token-value">
-        {{ tokenValue }} <span v-if="!noCurrency" class="currency">{{ tokenSymbol }}</span>
+        <f-placeholder v-if="usePlaceholder" :content-loaded="!!token.symbol" :replacement-text="replacementText">
+            {{ tokenValue }} <span v-if="!noCurrency" class="currency">{{ tokenSymbol }}</span>
+        </f-placeholder>
+        <template v-else>
+            {{ tokenValue }} <span v-if="!noCurrency" class="currency">{{ tokenSymbol }}</span>
+        </template>
     </span>
 </template>
 
 <script>
 import { formatNumberByLocale } from '@/filters.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'FTokenValue',
-
+    components: { FPlaceholder },
     props: {
         /** @type {DefiToken} */
         token: {
@@ -28,6 +34,16 @@ export default {
         noCurrency: {
             type: Boolean,
             default: false,
+        },
+        /** Use FPlaceholder. */
+        usePlaceholder: {
+            type: Boolean,
+            default: true,
+        },
+        /** Replacement text for FPlaceholder. */
+        replacementText: {
+            type: String,
+            default: '10,000.00 FTM',
         },
     },
 

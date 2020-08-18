@@ -21,7 +21,11 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Current FTM price</h3>
-                    <div class="value">{{ currentPrice }}</div>
+                    <div class="value">
+                        <f-placeholder :content-loaded="tokenPrice" replacement-text="$0.00000">
+                            {{ currentPrice }}
+                        </f-placeholder>
+                    </div>
                 </div>
             </div>
             <div class="limit-col align-center">
@@ -116,11 +120,12 @@ import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FInfo from '../../components/core/FInfo/FInfo.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FTokenValue, FInfo, FBackButton, FMessage, FCircleProgress },
+    components: { FPlaceholder, FTokenValue, FInfo, FBackButton, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 

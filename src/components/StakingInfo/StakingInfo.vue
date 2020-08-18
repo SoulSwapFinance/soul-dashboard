@@ -8,33 +8,33 @@
                     <div class="row no-collapse">
                         <div class="col f-row-label">Delegated</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.delegated) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Pending Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.pendingRewards) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Stashed Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.stashed) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.claimedRewards) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                 </div>
@@ -58,15 +58,15 @@
                     <div class="row no-collapse">
                         <div class="col f-row-label">Validator Id</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ accountInfo.stakerId || '-' }}</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Delegation Time</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">
                                     {{
                                         accountInfo.createdTime && accountInfo.createdTime !== '0x0'
@@ -74,7 +74,7 @@
                                             : '-'
                                     }}
                                 </template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                             </template>
                         </template>
                         <template v-else>
-                            <button class="btn large" @click="stake()">Delegate</button>
+                            <button class="btn large" :disabled="!accountInfo" @click="stake()">Delegate</button>
                         </template>
                     </div>
                 </div>
@@ -146,11 +146,12 @@ import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'StakingInfo',
 
-    components: { FMessage, WithdrawRequestList, FCard },
+    components: { FPlaceholder, FMessage, WithdrawRequestList, FCard },
 
     data() {
         return {

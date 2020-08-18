@@ -6,10 +6,19 @@
             <div class="from-col">
                 <div class="defi-label">From</div>
                 <f-select-button @click.native="onFromTokenSelectorClick">
-                    <div class="sb-content">
-                        <f-crypto-symbol :token="fromToken" />
-                        <span><f-token-value :token="fromToken" :value="fromTokenBalance" no-currency /></span>
-                    </div>
+                    <f-placeholder :content-loaded="fromToken.symbol" block replacement-num-chars="20">
+                        <div class="sb-content">
+                            <f-crypto-symbol :token="fromToken" />
+                            <span>
+                                <f-token-value
+                                    :token="fromToken"
+                                    :value="fromTokenBalance"
+                                    :use-placeholder="false"
+                                    no-currency
+                                />
+                            </span>
+                        </div>
+                    </f-placeholder>
                 </f-select-button>
                 <div class="defi-price-input">
                     <div ref="fromSign" class="sign">-</div>
@@ -39,10 +48,19 @@
             <div class="to-col">
                 <div class="defi-label">To</div>
                 <f-select-button @click.native="onToTokenSelectorClick">
-                    <div class="sb-content">
-                        <f-crypto-symbol :token="toToken" />
-                        <span><f-token-value :token="toToken" :value="toTokenBalance" no-currency /></span>
-                    </div>
+                    <f-placeholder :content-loaded="toToken.symbol" block replacement-num-chars="20">
+                        <div class="sb-content">
+                            <f-crypto-symbol :token="toToken" />
+                            <span>
+                                <f-token-value
+                                    :token="toToken"
+                                    :value="toTokenBalance"
+                                    :use-placeholder="false"
+                                    no-currency
+                                />
+                            </span>
+                        </div>
+                    </f-placeholder>
                 </f-select-button>
                 <div class="defi-price-input">
                     <div ref="toSign" class="sign">+</div>
@@ -111,7 +129,11 @@
 
             <div class="exchange-price">
                 <div class="defi-label">Price</div>
-                <div class="value">{{ perPrice }}</div>
+                <div class="value">
+                    <f-placeholder :content-loaded="!!perPrice" replacement-text="000.00 fUSD per fETH">
+                        {{ perPrice }}
+                    </f-placeholder>
+                </div>
                 <div class="swap-price">
                     <button class="btn light same-size round" @click="swapPrice">
                         <icon data="@/assets/svg/exchange-alt.svg" />
@@ -149,11 +171,13 @@ import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FAutoResizeInput from '@/components/core/FAutoResizeInput/FAutoResizeInput.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'DefiFTrade',
 
     components: {
+        FPlaceholder,
         FAutoResizeInput,
         FTokenValue,
         FSlider,

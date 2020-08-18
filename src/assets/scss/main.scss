@@ -63,6 +63,16 @@ body {
             --f-data-table-cell-background-color: #{$body-bg-color};
         }
     }
+
+    .f-placeholder {
+        --f-placeholder-on-background: linear-gradient(to right, #{$body-bg-color} 8%, #{$grey-color-semi} 18%, #{$body-bg-color} 33%);
+    }
+
+    .f-card:not(.off) {
+        .f-placeholder {
+            --f-placeholder-on-background: linear-gradient(to right, #fff 8%, #{$grey-color-semi} 18%, #fff 33%);
+        }
+    }
 }
 
 main {

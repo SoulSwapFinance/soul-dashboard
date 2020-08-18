@@ -17,7 +17,10 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Earnings</h3>
-                    <div class="value"><f-token-value :token="fusdToken" :value="earnings" /></div>
+                    <div class="value">
+                        -
+                        <!--<f-token-value :token="fusdToken" :value="earnings" />-->
+                    </div>
                 </div>
             </div>
             <div class="limit-col align-center">
