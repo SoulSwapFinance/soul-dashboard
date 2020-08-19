@@ -6,11 +6,7 @@
 
         <div class="grid">
             <div>
-                <h2>
-                    <router-link :to="{ name: 'defi-manage-collateral' }" class="btn secondary large btn-large-font">
-                        Lock/Unlock {{ wftmTokenSymbol }}
-                    </router-link>
-                </h2>
+                <h2>Collateral</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available {{ wftmTokenSymbol }}</h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
@@ -48,11 +44,7 @@
                 />
             </div>
             <div class="align-right">
-                <h2>
-                    <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn secondary large btn-large-font">
-                        Mint/Repay fUSD
-                    </router-link>
-                </h2>
+                <h2>fUSD</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
@@ -70,6 +62,15 @@
                 You're getting close to your liquidation price. <br />
                 Please rebalance your collateral.
             </f-message>
+        </div>
+
+        <div class="form-buttons">
+            <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
+                Lock/Unlock {{ wftmTokenSymbol }}
+            </router-link>
+            <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">
+                Mint/Repay fUSD
+            </router-link>
         </div>
 
         <!--

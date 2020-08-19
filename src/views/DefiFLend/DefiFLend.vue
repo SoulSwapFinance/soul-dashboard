@@ -6,11 +6,7 @@
 
         <div class="grid">
             <div>
-                <h2>
-                    <router-link :to="{ name: 'defi-manage-deposit' }" class="btn secondary large btn-large-font">
-                        Deposit/Withdraw
-                    </router-link>
-                </h2>
+                <h2>Deposit</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="totalDeposit" /></div>
@@ -41,11 +37,7 @@
                 />
             </div>
             <div class="align-right">
-                <h2>
-                    <router-link :to="{ name: 'defi-manage-borrow' }" class="btn secondary large btn-large-font">
-                        Borrow/Repay
-                    </router-link>
-                </h2>
+                <h2>Debt</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Borrowed</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="totalBorrowed" /></div>
@@ -63,17 +55,14 @@
             -->
         </div>
 
-        <!--
-        <div class="tmp">
-            <div>Overall debt: {{ $defi.getOverallDebt(defiAccount) }}</div>
-            <div>Overall collateral: {{ $defi.getOverallCollateral(defiAccount) }}</div>
-            <div>
-                Overall collateral / debt:
-                {{ $defi.getOverallCollateral(defiAccount) / $defi.getOverallDebt(defiAccount) }}
-            </div>
-            <div>Borrow limit: {{ $defi.getBorrowLimit(defiAccount) }}</div>
+        <div class="form-buttons">
+            <router-link :to="{ name: 'defi-manage-deposit' }" class="btn large">
+                Deposit/Withdraw
+            </router-link>
+            <router-link :to="{ name: 'defi-manage-borrow' }" class="btn large">
+                Borrow/Repay
+            </router-link>
         </div>
--->
 
         <div class="defi-tabs">
             <f-tabs>
