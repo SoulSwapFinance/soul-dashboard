@@ -10,11 +10,11 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available balance</h3>
-                    <div class="value"><f-token-value :token="ftmToken" :value="availableFTM" /></div>
+                    <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked balance</h3>
-                    <div class="value"><f-token-value :token="ftmToken" :value="collateral" /></div>
+                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">Minted fUSD</h3>
@@ -116,14 +116,14 @@
             <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
                 You’re adding
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="ftmToken" :value="increasedCollateral" no-currency /> FTM
+                    <f-token-value :token="wftmToken" :value="increasedCollateral" no-currency /> FTM
                 </span>
                 to your collateral
             </f-message>
             <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
                 You’re removing
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="ftmToken" :value="decreasedCollateral" no-currency /> FTM
+                    <f-token-value :token="wftmToken" :value="decreasedCollateral" no-currency /> FTM
                 </span>
                 from your collateral
             </f-message>
@@ -196,7 +196,7 @@ export default {
                 debt: [],
             },
             /** @type {DefiToken} */
-            ftmToken: {},
+            wftmToken: {},
             /** @type {DefiToken} */
             fusdToken: {},
             /** @type {DefiToken[]} */
@@ -245,13 +245,13 @@ export default {
 
         collateral() {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
 
         availableFTM() {
-            return this.ftmToken ? this.$defi.fromTokenValue(this.ftmToken.availableBalance, this.ftmToken) || 0 : 0;
+            return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
         },
 
         /*
@@ -425,16 +425,16 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
-            this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
-            this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
+            this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
             this.currCollateral = this.collateral.toString();
 
             this.tmpTokenPrice = this.tokenPrice;
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.ftmToken));
+            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.wftmToken));
         },
 
         updateMessage() {
@@ -466,7 +466,7 @@ export default {
 
         onSubmit() {
             if (!this.submitDisabled) {
-                const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+                const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
 
                 this.$router.push({
                     name: 'defi-manage-collateral-confirmation',
@@ -474,7 +474,7 @@ export default {
                         currCollateral: parseFloat(this.currCollateral),
                         collateral: this.collateral,
                         collateralHex: tokenBalance.balance,
-                        token: this.ftmToken,
+                        token: this.wftmToken,
                     },
                 });
             }

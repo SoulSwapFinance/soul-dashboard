@@ -13,11 +13,11 @@
                 </h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available FTM</h3>
-                    <div class="value"><f-token-value :token="ftmToken" :value="availableFTM" /></div>
+                    <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked FTM</h3>
-                    <div class="value"><f-token-value :token="ftmToken" :value="collateral" /></div>
+                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Current FTM price</h3>
@@ -138,7 +138,7 @@ export default {
                 debt: [],
             },
             /** @type {DefiToken} */
-            ftmToken: {},
+            wftmToken: {},
             /** @type {DefiToken} */
             fusdToken: {},
             /** @type {DefiToken[]} */
@@ -164,13 +164,13 @@ export default {
 
         collateral() {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
 
         availableFTM() {
-            return this.ftmToken ? this.$defi.fromTokenValue(this.ftmToken.availableBalance, this.ftmToken) || 0 : 0;
+            return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
         },
 
         currentPrice() {
@@ -187,7 +187,7 @@ export default {
         },
 
         availableBalance() {
-            return this.ftmToken ? this.$defi.fromTokenValue(this.ftmToken.availableBalance, this.ftmToken) || 0 : 0;
+            return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
         },
 
         maxMintable() {
@@ -255,9 +255,9 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1];
-            this.ftmToken = this.tokens.find((_item) => _item.symbol === 'FTM');
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
-            this.tokenPrice = $defi.getTokenPrice(this.ftmToken);
+            this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
         },
 
         onAccountPicked() {

@@ -6,6 +6,9 @@ import web3utils from 'web3-utils';
 /** @type {BNBridgeExchange} */
 export let defi = null;
 
+// TMP!!
+const tmpWFTM = false;
+
 /**
  * Plugin for various DeFi requests and calculations.
  */
@@ -42,6 +45,9 @@ export class DeFi {
         this.ftmToken = {};
         /** Keys are token symbols, values are number of decimals. */
         this.tokenDecimals = {};
+
+        // TMP!!
+        this.tmpWFTM = tmpWFTM;
     }
 
     /**
@@ -82,8 +88,6 @@ export class DeFi {
             this.tokens.forEach((_token) => {
                 this._setTokenDecimals(_token);
             });
-
-            console.log(this.tokenDecimals);
         }
     }
 
@@ -517,7 +521,11 @@ export class DeFi {
      */
     canTokenBeTraded(_token) {
         // return _token && _token.isActive && _token.canTrade;
-        return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
+        if (tmpWFTM) {
+            return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FTM');
+        } else {
+            return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
+        }
     }
 
     /**
@@ -574,7 +582,14 @@ export class DeFi {
             },
             fetchPolicy: 'network-only',
         });
-        const defiTokens = data.data.defiTokens || [];
+        let defiTokens = data.data.defiTokens || [];
+
+        if (this.tmpWFTM) {
+            defiTokens = (data.data.defiTokens || []).slice(0, 3);
+            defiTokens[2].symbol = 'WFTM';
+            console.log(defiTokens);
+        }
+
         let tokens = [];
 
         this._setTokens(defiTokens);
