@@ -8,19 +8,19 @@
             <div>
                 <h2>
                     <router-link :to="{ name: 'defi-manage-collateral' }" class="btn secondary large btn-large-font">
-                        Lock/Unlock FTM
+                        Lock/Unlock {{ wftmTokenSymbol }}
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Available FTM</h3>
+                    <h3 class="label">Available {{ wftmTokenSymbol }}</h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked FTM</h3>
+                    <h3 class="label">Locked {{ wftmTokenSymbol }}</h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Current FTM price</h3>
+                    <h3 class="label">Current {{ wftmTokenSymbol }} price</h3>
                     <div class="value">
                         <f-placeholder :content-loaded="!!tokenPrice" replacement-text="$0.00000">
                             {{ currentPrice }}
@@ -217,6 +217,10 @@ export default {
 
         colors() {
             return this.$defi.getColors();
+        },
+
+        wftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
         backButtonRoute() {

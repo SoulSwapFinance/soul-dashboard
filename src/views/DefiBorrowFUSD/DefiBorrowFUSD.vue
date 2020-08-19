@@ -6,8 +6,9 @@
         </h1>
 
         <h2 class="perex">
-            Mint fUSD with your locked FTM or repay fUSD to unlock your FTM. You can use fUSD to trade synths, lend it
-            to the liquidity pool to earn interest, and use it as a collateral to borrow synths.
+            Mint fUSD with your locked {{ wftmTokenSymbol }} or repay fUSD to unlock your {{ wftmTokenSymbol }}. You can
+            use fUSD to trade synths, lend it to the liquidity pool to earn interest, and use it as a collateral to
+            borrow synths.
         </h2>
 
         <div class="grid">
@@ -275,6 +276,10 @@ export default {
 
         colors() {
             return this.$defi.getColors();
+        },
+
+        wftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
         backButtonRoute() {

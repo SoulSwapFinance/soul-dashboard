@@ -331,6 +331,7 @@ export default {
 
             this.defiAccount = result[0];
             this.tokens = result[1].filter($defi.canTokenBeTraded);
+            console.log('??', this.tokens);
 
             if (params.fromToken && params.toToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);

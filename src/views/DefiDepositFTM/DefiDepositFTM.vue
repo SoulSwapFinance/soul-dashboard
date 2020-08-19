@@ -1,9 +1,10 @@
 <template>
     <div class="view-defi-manage-collateral">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Lock FTM</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Lock {{ wftmTokenSymbol }}</h1>
 
         <h2 class="perex">
-            Lock FTM to increase the collateral ratio and mint fUSD, unlock FTM after you repaid fUSD.
+            Lock {{ wftmTokenSymbol }} to increase the collateral ratio and mint fUSD, unlock
+            {{ wftmTokenSymbol }} after you repaid fUSD.
         </h2>
 
         <div class="grid">
@@ -62,13 +63,13 @@
                         </div>
                     </div>
 
-                    <div class="token-label">FTM</div>
+                    <div class="token-label">{{ wftmTokenSymbol }}</div>
                     <div class="collateral-info">
-                        <div class="collateral-info-label">Unlock FTM</div>
+                        <div class="collateral-info-label">Unlock {{ wftmTokenSymbol }}</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="collateral-info increase">
-                        <div class="collateral-info-label">Lock FTM</div>
+                        <div class="collateral-info-label">Lock {{ wftmTokenSymbol }}</div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>
@@ -116,14 +117,14 @@
             <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
                 You’re adding
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="wftmToken" :value="increasedCollateral" no-currency /> FTM
+                    <f-token-value :token="wftmToken" :value="increasedCollateral" no-currency /> {{ wftmTokenSymbol }}
                 </span>
                 to your collateral
             </f-message>
             <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
                 You’re removing
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="wftmToken" :value="decreasedCollateral" no-currency /> FTM
+                    <f-token-value :token="wftmToken" :value="decreasedCollateral" no-currency /> {{ wftmTokenSymbol }}
                 </span>
                 from your collateral
             </f-message>
@@ -141,29 +142,6 @@
                 <template v-else>Add collateral</template>
                 -->
             </button>
-        </div>
-
-        <div
-            v-if="tmpShow"
-            style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
-            @click="onTestBtnClick"
-        >
-            <h3>Test values</h3>
-            <h4>Common values</h4>
-            <p>
-                Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
-                Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
-                Token price: {{ tokenPrice }}
-            </p>
-            <h4>Set values</h4>
-            <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
-                <button :data-idx="index" class="btn small light break-word">
-                    Available balance: {{ item.availableFTM }}, Locked balance: {{ item.collateral }}, Minted fUSD:
-                    {{ item.debt }}
-                    <template v-if="item.tokenPrice"> , Token price: {{ item.tokenPrice }} </template>
-                </button>
-                <br />
-            </div>
         </div>
     </div>
 </template>
@@ -208,28 +186,6 @@ export default {
             decreasedCollateral: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: false,
-            tmpValues: {
-                availableFTM: 10000,
-                collateral: 0,
-                debt: 0,
-                /*
-                availableFTM: 5000,
-                collateral: 10000,
-                debt: 20,
-*/
-            },
-            tmpTokenPrice: 0,
-            tmpTestData: [
-                { availableFTM: 10000, collateral: 0, debt: 0 },
-                { availableFTM: 0, collateral: 4000, debt: 0 },
-                { availableFTM: 10000, collateral: 5000, debt: 0 },
-                { availableFTM: 5000, collateral: 10000, debt: 20 },
-                { availableFTM: 10000, collateral: 5000, debt: 20 },
-                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.008 },
-                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.007 },
-                { availableFTM: 2000, collateral: 5000, debt: 20, tokenPrice: 0.0065 },
-            ],
         };
     },
 
@@ -253,20 +209,6 @@ export default {
         availableFTM() {
             return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
         },
-
-        /*
-        debt() {
-            return this.tmpValues.debt;
-        },
-
-        collateral() {
-            return this.tmpValues.collateral;
-        },
-
-        availableFTM() {
-            return this.tmpValues.availableFTM;
-        },
-        */
 
         maxMintable() {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(2);
@@ -344,6 +286,10 @@ export default {
 
         colors() {
             return this.$defi.getColors();
+        },
+
+        wftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
         backButtonRoute() {
@@ -439,7 +385,7 @@ export default {
 
         updateMessage() {
             if (this.availableFTM <= 0.01) {
-                this.message = 'Deposit more FTM to increase your collateral';
+                this.message = `Deposit more ${this.wftmTokenSymbol} to increase your collateral`;
             } else {
                 this.message = '';
             }
@@ -502,35 +448,6 @@ export default {
         },
 
         formatNumberByLocale,
-
-        _setTmpValues(_values) {
-            this.tmpValues = {
-                availableFTM: _values.availableFTM,
-                collateral: _values.collateral,
-                debt: _values.debt,
-            };
-
-            if (_values.tokenPrice) {
-                this.tokenPrice = _values.tokenPrice;
-            } else {
-                this.tokenPrice = this.tmpTokenPrice;
-            }
-
-            this.updateCurrCollateral();
-            this.updateMessage();
-        },
-
-        onTestBtnClick(_event) {
-            const eBtn = _event.target.closest('button');
-            let idx = -1;
-
-            if (eBtn) {
-                idx = parseInt(eBtn.getAttribute('data-idx'));
-                if (!isNaN(idx)) {
-                    this._setTmpValues(this.tmpTestData[idx]);
-                }
-            }
-        },
     },
 };
 </script>

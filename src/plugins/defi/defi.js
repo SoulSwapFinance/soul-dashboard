@@ -8,6 +8,7 @@ export let defi = null;
 
 // TMP!!
 const tmpWFTM = false;
+const filterTokens = tmpWFTM ? ['FTM', 'WFTM', 'FUSD'] : [];
 
 /**
  * Plugin for various DeFi requests and calculations.
@@ -529,6 +530,14 @@ export class DeFi {
     }
 
     /**
+     * @param {DefiToken} _token
+     * @return {boolean}
+     */
+    filterTokensBySymbol(_token) {
+        return _token && filterTokens.indexOf(_token.symbol) > -1;
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async fetchSettings() {
@@ -584,11 +593,10 @@ export class DeFi {
         });
         let defiTokens = data.data.defiTokens || [];
 
-        if (this.tmpWFTM) {
-            defiTokens = (data.data.defiTokens || []).slice(0, 3);
-            defiTokens[2].symbol = 'WFTM';
-            console.log(defiTokens);
+        if (filterTokens.length > 0) {
+            defiTokens = defiTokens.filter(this.filterTokensBySymbol);
         }
+        console.log(defiTokens);
 
         let tokens = [];
 
