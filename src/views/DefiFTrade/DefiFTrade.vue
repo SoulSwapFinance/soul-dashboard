@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-ftrade">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Trade</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Swap</h1>
 
         <div class="grid">
             <div class="from-col">

@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-manage-collateral">
-        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Lock {{ wftmTokenSymbol }}</h1>
+        <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> Lock/Unlock {{ wftmTokenSymbol }}</h1>
 
         <h2 class="perex">
             Lock {{ wftmTokenSymbol }} to increase the collateral ratio and mint fUSD, unlock
