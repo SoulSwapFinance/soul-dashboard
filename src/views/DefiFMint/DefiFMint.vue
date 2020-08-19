@@ -8,7 +8,7 @@
             <div>
                 <h2>
                     <router-link :to="{ name: 'defi-manage-collateral' }" class="btn secondary large btn-large-font">
-                        Lock FTM
+                        Lock/Unlock FTM
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
@@ -31,11 +31,13 @@
             <div class="limit-col align-center">
                 <h2>
                     Debt Limit
+                    <!--
                     <f-info window-closeable window-class="light"
                         >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam culpa dicta
                         numquam, ratione repellat sequi voluptate! Accusamus accusantium corporis dolores enim quas rem
                         sed voluptas? Animi atque labore obcaecati.</f-info
                     >
+                    -->
                 </h2>
                 <f-circle-progress
                     show-percentage
@@ -48,7 +50,7 @@
             <div class="align-right">
                 <h2>
                     <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn secondary large btn-large-font">
-                        Mint fUSD
+                        Mint/Repay fUSD
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
@@ -118,14 +120,13 @@ import { getUniqueId } from '../../utils';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
-import FInfo from '../../components/core/FInfo/FInfo.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FPlaceholder, FTokenValue, FInfo, FBackButton, FMessage, FCircleProgress },
+    components: { FPlaceholder, FTokenValue, FBackButton, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 

@@ -31,7 +31,7 @@
                 </li>
                 <li class="col-4 col-6-lg">
                     <div class="menu-item" tabindex="0">
-                        <h2>fTrade</h2>
+                        <h2>fSwap</h2>
                         <div class="icon">
                             <icon data="@/assets/svg/defi/ftrade.svg" width="96" height="96" original />
                         </div>

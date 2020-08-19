@@ -128,7 +128,7 @@ export const routes = [
                     },
                     {
                         name: 'defi-ftrade',
-                        path: 'ftrade',
+                        path: 'fswap',
                         component: DefiFTrade,
                     },
 
@@ -263,32 +263,32 @@ export const routes = [
 
                     {
                         name: 'defi-ftrade-confirmation',
-                        path: 'ftrade/confirmation',
+                        path: 'fswap/confirmation',
                         component: DefiFTradeConfirmation,
                     },
                     {
                         name: 'defi-ftrade-confirmation2',
-                        path: 'ftrade/confirmation2',
+                        path: 'fswap/confirmation2',
                         component: DefiFTradeConfirmation,
                     },
                     {
                         name: 'defi-ftrade-transaction-success-message',
-                        path: 'ftrade/confirmation/success',
+                        path: 'fswap/confirmation/success',
                         component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'defi-ftrade-transaction-success-message2',
-                        path: 'ftrade/confirmation2/success2',
+                        path: 'fswap/confirmation2/success2',
                         component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'defi-ftrade-transaction-reject-message',
-                        path: 'ftrade/confirmation/reject',
+                        path: 'fswap/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
                     {
                         name: 'defi-ftrade-transaction-reject-message2',
-                        path: 'ftrade/confirmation2/reject2',
+                        path: 'fswap/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
                 ],

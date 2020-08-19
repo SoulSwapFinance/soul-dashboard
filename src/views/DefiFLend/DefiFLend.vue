@@ -8,7 +8,7 @@
             <div>
                 <h2>
                     <router-link :to="{ name: 'defi-manage-deposit' }" class="btn secondary large btn-large-font">
-                        Deposit
+                        Deposit/Withdraw
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">
@@ -43,7 +43,7 @@
             <div class="align-right">
                 <h2>
                     <router-link :to="{ name: 'defi-manage-borrow' }" class="btn secondary large btn-large-font">
-                        Borrow
+                        Borrow/Repay
                     </router-link>
                 </h2>
                 <div class="df-data-item smaller">

@@ -75,11 +75,11 @@
                     </div>
 
                     <div class="collateral-info">
-                        <div class="collateral-info-label">Decrease collateral</div>
+                        <div class="collateral-info-label">Withdraw</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="collateral-info increase">
-                        <div class="collateral-info-label">Increase collateral</div>
+                        <div class="collateral-info-label">Deposit</div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>

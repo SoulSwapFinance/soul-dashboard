@@ -2,7 +2,7 @@
     <div class="view-defi-manage-borrow">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Borrow
+            Borrow/Repay
         </h1>
 
         <defi-borrow :token="params.token" />

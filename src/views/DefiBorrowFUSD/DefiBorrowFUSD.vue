@@ -86,11 +86,11 @@
 
                     <div class="token-label">fUSD</div>
                     <div class="token-info">
-                        <div class="token-info-label">Decrease fUSD</div>
+                        <div class="token-info-label">Repay<br />fUSD</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="token-info increase">
-                        <div class="token-info-label">Increase fUSD</div>
+                        <div class="token-info-label">Mint<br />fUSD</div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>

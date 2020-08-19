@@ -2,7 +2,7 @@
     <div class="view-defi-manage-deposit">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Deposit
+            Deposit/Withdraw
         </h1>
 
         <defi-deposit :token="params.token" />
