@@ -199,7 +199,17 @@ export default {
                     Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
-                if (fromToken.symbol === 'FUSD') {
+                if (fromToken.symbol === 'FTM' && toToken.symbol === 'WFTM') {
+                    txToSign = defiUtils.defiWrapFtm(
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
+                    );
+                } else if (fromToken.symbol === 'WFTM' && toToken.symbol === 'FTM') {
+                    txToSign = defiUtils.defiUnwrapFtm(
+                        fromToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals))
+                    );
+                } else if (fromToken.symbol === 'FUSD') {
                     txToSign = defiUtils.defiBuyTokenTx(
                         contractAddress,
                         toToken.address,

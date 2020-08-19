@@ -330,8 +330,14 @@ export default {
             ]);
 
             this.defiAccount = result[0];
-            this.tokens = result[1].filter($defi.canTokenBeTraded);
-            console.log('??', this.tokens);
+
+            if ($defi.tmpWFTM) {
+                this.tokens = result[1].filter(
+                    (_token) => _token && (_token.symbol === 'FTM' || _token.symbol === 'WFTM')
+                );
+            } else {
+                this.tokens = result[1].filter($defi.canTokenBeTraded);
+            }
 
             if (params.fromToken && params.toToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
@@ -572,14 +578,20 @@ export default {
         },
 
         onSubmit() {
+            const { fromToken } = this;
+            const { toToken } = this;
+            const ftmTokens = ['FTM', 'WFTM'];
             const params = {
                 fromValue: this.fromValue,
                 toValue: this.toValue,
-                fromToken: { ...this.fromToken },
-                toToken: { ...this.toToken },
-                steps: 2,
-                step: 1,
+                fromToken: { ...fromToken },
+                toToken: { ...toToken },
             };
+
+            if (ftmTokens.indexOf(fromToken.symbol) === -1 && ftmTokens.indexOf(toToken.symbol) === -1) {
+                params.steps = 2;
+                params.step = 1;
+            }
 
             if (!this.submitDisabled) {
                 this.$router.push({
