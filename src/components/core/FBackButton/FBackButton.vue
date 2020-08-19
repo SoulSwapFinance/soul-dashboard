@@ -1,8 +1,9 @@
 <template>
     <span class="f-back-button" @click="onClick">
         <slot>
-            <!--<icon data="@/assets/svg/chevron-left.svg" width="12" height="12" aria-hidden="true" />-->
-            Back
+            <button class="btn light large same-size round" title="Back">
+                <icon data="@/assets/svg/arrow-left.svg" width="20" height="20" aria-hidden="true" />
+            </button>
         </slot>
     </span>
 </template>
