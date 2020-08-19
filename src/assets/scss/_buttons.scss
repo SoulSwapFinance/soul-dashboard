@@ -61,7 +61,9 @@
 @include media-max($bp-small) {
     .btn {
         &.btn-large-font {
-            font-size: 20px;
+            font-size: 18px;
+            padding-left: 16px;
+            padding-right: 16px;
         }
     }
 }
