@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
-                <h3>Debt Limit</h3>
+                <h3>Debt Limit <debt-limit-f-info /></h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -116,7 +116,7 @@
                     <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Debt Limit</h3>
+                    <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                     <div class="value">
                         <f-placeholder :content-loaded="!!fusdToken.symbol" replacement-text="99%">
                             <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
@@ -169,6 +169,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -176,7 +177,16 @@ import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 export default {
     name: 'DefiBorrowFUSD',
 
-    components: { FPlaceholder, FTokenValue, FMessage, FBackButton, FColoredNumberRange, FSlider, FCircleProgress },
+    components: {
+        DebtLimitFInfo,
+        FPlaceholder,
+        FTokenValue,
+        FMessage,
+        FBackButton,
+        FColoredNumberRange,
+        FSlider,
+        FCircleProgress,
+    },
 
     mixins: [eventBusMixin],
 

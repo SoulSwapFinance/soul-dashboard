@@ -86,7 +86,7 @@
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
                 <!--                <template v-if="debt > 0">-->
-                <h3>Debt Limit</h3>
+                <h3>Debt Limit <debt-limit-f-info /></h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -122,7 +122,7 @@
                 -->
                 <template v-if="smallView">
                     <div class="df-data-item smaller">
-                        <h3 class="label">Debt Limit</h3>
+                        <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                         <div class="value">
                             <f-placeholder :content-loaded="!!tokenPrice" replacement-text="99%">
                                 <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
@@ -192,11 +192,13 @@ import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        DebtLimitFInfo,
         FPlaceholder,
         FTokenValue,
         DefiTokenPickerWindow,

@@ -76,7 +76,7 @@
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
                 <!--                <template v-if="debt > 0">-->
-                <h3>Debt Limit</h3>
+                <h3>Debt Limit <debt-limit-f-info /></h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -99,7 +99,7 @@
                 </div>
                 <template v-if="smallView">
                     <div v-if="debt > 0" class="df-data-item smaller">
-                        <h3 class="label">Debt Limit</h3>
+                        <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                         <div class="value">
                             <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
                         </div>
@@ -158,11 +158,12 @@ import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 export default {
     name: 'DefiDepositFTM',
 
-    components: { FTokenValue, FBackButton, FColoredNumberRange, FSlider, FMessage, FCircleProgress },
+    components: { DebtLimitFInfo, FTokenValue, FBackButton, FColoredNumberRange, FSlider, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 

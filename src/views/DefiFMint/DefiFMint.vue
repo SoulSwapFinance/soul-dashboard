@@ -25,16 +25,7 @@
                 </div>
             </div>
             <div class="limit-col align-center">
-                <h2>
-                    Debt Limit
-                    <!--
-                    <f-info window-closeable window-class="light"
-                        >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam culpa dicta
-                        numquam, ratione repellat sequi voluptate! Accusamus accusantium corporis dolores enim quas rem
-                        sed voluptas? Animi atque labore obcaecati.</f-info
-                    >
-                    -->
-                </h2>
+                <h2>Debt Limit <debt-limit-f-info /></h2>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -123,11 +114,12 @@ import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FPlaceholder, FTokenValue, FBackButton, FMessage, FCircleProgress },
+    components: { DebtLimitFInfo, FPlaceholder, FTokenValue, FBackButton, FMessage, FCircleProgress },
 
     mixins: [eventBusMixin],
 

@@ -20,14 +20,7 @@
                 </div>
             </div>
             <div class="limit-col align-center">
-                <h2>
-                    Debt Limit
-                    <!--
-                    <f-info window-closeable window-class="light">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </f-info>
-                    -->
-                </h2>
+                <h2>Debt Limit <debt-limit-f-info /></h2>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -118,11 +111,13 @@ import SuplyToLiquidityList from '@/components/data-tables/SuplyToLiquidity/Supl
 import AvailableToBorrowList from '@/components/data-tables/AvailableToBorrowList/AvailableToBorrowList.vue';
 import OpenPositionsList from '@/components/data-tables/OpenPositionsList/OpenPositionsList.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 export default {
     name: 'DefiFLend',
 
     components: {
+        DebtLimitFInfo,
         FTokenValue,
         OpenPositionsList,
         AvailableToBorrowList,

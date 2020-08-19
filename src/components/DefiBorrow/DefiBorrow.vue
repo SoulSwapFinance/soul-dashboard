@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
-                <h3>Debt Limit</h3>
+                <h3>Debt Limit <debt-limit-f-info /></h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Debt Limit</h3>
+                    <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                     <div class="value">
                         <f-placeholder :content-loaded="!!tokenPrice" replacement-text="99%">
                             <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
@@ -198,6 +198,7 @@ import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -206,6 +207,7 @@ export default {
     name: 'DefiBorrow',
 
     components: {
+        DebtLimitFInfo,
         FPlaceholder,
         FTokenValue,
         FSelectButton,
