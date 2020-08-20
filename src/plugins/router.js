@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { routes } from '../routes.js';
 import { store } from '../store';
+import appConfig from '../../app.config.js';
 
 Vue.use(VueRouter);
 
@@ -35,6 +36,11 @@ router.beforeEach((_to, _from, _next) => {
     // redirect to dashboard if an account exists and we are on homepage
     if (!_from.name && _to.name === 'welcome' && store.getters.accounts.length > 0) {
         _next({ name: 'dashboard' });
+    } else if (appConfig.tmpWFTM) {
+        // disable routes to flend
+        if (_to.path.indexOf('/flend') === -1) {
+            _next();
+        }
     } else {
         _next();
     }

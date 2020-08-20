@@ -38,6 +38,8 @@ const appConfig = {
     },
     // address of liquidity pool contract
     liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
+    // tmp
+    tmpWFTM: true,
     //
     useTestnet: true,
     // testnet config

@@ -2,12 +2,13 @@ import './defi.types.js';
 import gql from 'graphql-tag';
 import { isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
+import appConfig from '../../../app.config.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
 
 // TMP!!
-const tmpWFTM = true;
+const tmpWFTM = appConfig.tmpWFTM;
 const filterTokens = tmpWFTM ? ['FTM', 'WFTM', 'FUSD'] : [];
 
 /**
@@ -596,7 +597,7 @@ export class DeFi {
         if (filterTokens.length > 0) {
             defiTokens = defiTokens.filter(this.filterTokensBySymbol);
         }
-        console.log(defiTokens);
+        // console.log(defiTokens);
 
         let tokens = [];
 
