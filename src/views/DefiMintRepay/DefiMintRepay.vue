@@ -1,33 +1,34 @@
 <template>
-    <div class="view-defi-lock-unlock">
+    <div class="view-defi-mint-repay">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Lock/Unlock wFTM
+            Mint/Repay fUSD
         </h1>
 
         <h2 class="perex">
-            Lock wFTM to increase the collateral ratio and mint fUSD, unlock wFTM after you repaid fUSD.
+            Mint fUSD with your locked wFTM or repay fUSD to unlock your wFTM. You can use fUSD to trade synths, lend it
+            to the liquidity pool to earn interest, and use it as a collateral to borrow synths.
         </h2>
 
-        <defi-deposit
+        <defi-borrow
             :token="params.token"
             single-token
-            lock-unlock-mode
-            token-symbol="WFTM"
-            on-submit-route="defi-lock-unlock-confirmation"
+            mint-repay-mode
+            token-symbol="FUSD"
+            on-submit-route="defi-mint-repay-confirmation"
         />
     </div>
 </template>
 
 <script>
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
-import DefiDeposit from '@/components/DefiDeposit/DefiDeposit.vue';
 import { getAppParentNode } from '@/app-structure.js';
+import DefiBorrow from '@/components/DefiBorrow/DefiBorrow.vue';
 
 export default {
-    name: 'DefiLockUnlock',
+    name: 'DefiMintRepay',
 
-    components: { DefiDeposit, FBackButton },
+    components: { DefiBorrow, FBackButton },
 
     computed: {
         /**
@@ -40,7 +41,7 @@ export default {
         },
 
         backButtonRoute() {
-            const parentNode = getAppParentNode('defi-lock-unlock');
+            const parentNode = getAppParentNode('defi-mint-repay');
 
             return parentNode ? parentNode.route : '';
         },

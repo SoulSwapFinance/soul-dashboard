@@ -55,6 +55,42 @@ const appStructure = [
                                 ],
                             },
                             {
+                                id: 'defi-mint-repay',
+                                route: 'defi-mint-repay',
+                                _c: [
+                                    {
+                                        id: 'defi-mint-repay-confirmation',
+                                        route: 'defi-mint-repay-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-mint-repay-transaction-success-message',
+                                                route: 'defi-mint-repay-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-mint-repay-confirmation2',
+                                                        route: 'defi-mint-repay-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-success-message2',
+                                                                route: 'defi-mint-repay-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-reject-message2',
+                                                                route: 'defi-mint-repay-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-mint-repay-transaction-reject-message',
+                                                route: 'defi-mint-repay-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
                                 id: 'defi-manage-collateral',
                                 route: 'defi-manage-collateral',
                                 _c: [

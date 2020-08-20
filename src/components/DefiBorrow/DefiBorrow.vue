@@ -9,14 +9,20 @@
                     </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Borrowed</h3>
+                    <h3 class="label">
+                        <template v-if="mintRepayMode">Minted</template>
+                        <template v-else>Borrowed</template>
+                    </h3>
                     <div class="value">
                         <f-token-value :token="dToken" :value="debt" />
                     </div>
                 </div>
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
-                        <h3 class="label">Borrow Limit</h3>
+                        <h3 class="label">
+                            <template v-if="mintRepayMode">Max Mintable</template>
+                            <template v-else>Borrow Limit</template>
+                        </h3>
                         <div class="value">
                             <f-token-value :token="dToken" :value="borrowLimit" />
                         </div>
@@ -24,8 +30,8 @@
                 </template>
                 <!--
                 <div v-else class="df-data-item smaller">
-                    <h3 class="label">{{ tokenSymbol }} balance</h3>
-                    <div class="value">{{ debt }} <span class="currency">{{ tokenSymbol }}</span></div>
+                    <h3 class="label">{{ cTokenSymbol }} balance</h3>
+                    <div class="value">{{ debt }} <span class="currency">{{ cTokenSymbol }}</span></div>
                 </div>
                 -->
 
@@ -103,11 +109,11 @@
                     </div>
 
                     <div class="token-info">
-                        <div class="token-info-label">Repay <br />{{ tokenSymbol }}</div>
+                        <div class="token-info-label">Repay <br />{{ cTokenSymbol }}</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="token-info increase">
-                        <div class="token-info-label">Borrow {{ tokenSymbol }}</div>
+                        <div class="token-info-label">Borrow {{ cTokenSymbol }}</div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>
@@ -154,13 +160,13 @@
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
                 You're adding
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ tokenSymbol }}
+                    <f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
                 </span>
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
                 You're removing
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="decreasedDebt" no-currency /> {{ tokenSymbol }}
+                    <f-token-value :token="dToken" :value="decreasedDebt" no-currency /> {{ cTokenSymbol }}
                 </span>
             </f-message>
         </div>
@@ -229,6 +235,21 @@ export default {
                 return null;
             },
         },
+        /** */
+        tokenSymbol: {
+            type: String,
+            default: '',
+        },
+        /** Follow this route on submit. */
+        onSubmitRoute: {
+            type: String,
+            default: 'defi-manage-borrow-confirmation',
+        },
+        /** Used in fMint. */
+        mintRepayMode: {
+            type: Boolean,
+            default: false,
+        },
         /** Mode with sindgle token - no token picker,... */
         singleToken: {
             type: Boolean,
@@ -246,7 +267,7 @@ export default {
             /** @type {DefiToken} */
             dToken: {},
             /** @type {DefiToken} */
-            ftmToken: {},
+            wftmToken: {},
             /** @type {DefiToken} */
             fusdToken: {},
             /** @type {DefiToken[]} */
@@ -287,9 +308,9 @@ export default {
          */
         collateral() {
             /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.ftmToken);
+            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.ftmToken) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
 
         availableBalance() {
@@ -297,7 +318,7 @@ export default {
         },
 
         collateralInFUSD() {
-            return (this.collateral * this.$defi.getTokenPrice(this.ftmToken)).toFixed(2);
+            return (this.collateral * this.$defi.getTokenPrice(this.wftmToken)).toFixed(2);
             // return formatNumberByLocale(this.collateral * this.$defi.getTokenPrice(token), 2, 'USD');
         },
 
@@ -355,7 +376,7 @@ export default {
             return this.$defi.getColors();
         },
 
-        tokenSymbol() {
+        cTokenSymbol() {
             return this.$defi.getTokenSymbol(this.dToken);
         },
 
@@ -438,7 +459,7 @@ export default {
             const tokens = result[1];
 
             this.defiAccount = result[0];
-            this.ftmToken = tokens.find((_item) => _item.symbol === 'FTM');
+            this.wftmToken = tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {
@@ -447,8 +468,12 @@ export default {
             }
 
             if (this.token === null) {
-                // get first token that can be borrowed
-                this.dToken = tokens.find($defi.canTokenBeBorrowed);
+                if (this.tokenSymbol) {
+                    this.dToken = tokens.find((_token) => _token.symbol === this.tokenSymbol);
+                } else {
+                    // get first token that can be borrowed
+                    this.dToken = tokens.find($defi.canTokenBeBorrowed);
+                }
             } else {
                 this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
             }
@@ -491,7 +516,7 @@ export default {
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'defi-manage-borrow-confirmation',
+                    name: this.onSubmitRoute,
                     params,
                 });
             }
