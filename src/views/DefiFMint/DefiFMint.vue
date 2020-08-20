@@ -145,7 +145,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         debt() {
             // overall debt
@@ -188,7 +188,9 @@ export default {
         },
 
         maxMintable() {
-            return this.debtFUSD + this.$defi.getBorrowLimit(this.defiAccount);
+            const borrowLimit = this.$defi.getBorrowLimit(this.defiAccount);
+
+            return this.debtFUSD + borrowLimit - borrowLimit * this.defiSlippageReserve;
             /*
             return (
                 this.debtFUSD +

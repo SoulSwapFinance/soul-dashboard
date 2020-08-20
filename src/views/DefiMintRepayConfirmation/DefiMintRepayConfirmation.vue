@@ -1,16 +1,16 @@
 <template>
     <div class="view-defi-mint-repay-confirmation">
-        <defi-deposit-confirmation :params="params" comp-name="defi-mint-repay" :token="params.token" />
+        <defi-borrow-confirmation :params="params" comp-name="defi-mint-repay" :token="params.token" />
     </div>
 </template>
 
 <script>
-import DefiDepositConfirmation from '../../components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
+import DefiBorrowConfirmation from '@/components/DefiBorrowConfirmation/DefiBorrowConfirmation.vue';
 
 export default {
     name: 'DefiMintRepayConfirmation',
 
-    components: { DefiDepositConfirmation },
+    components: { DefiBorrowConfirmation },
 
     computed: {
         /**
