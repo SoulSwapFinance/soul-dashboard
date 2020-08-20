@@ -7,15 +7,24 @@
                     <div class="value"><f-token-value :token="dToken" :value="availableBalance" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Deposit Balance</h3>
+                    <h3 class="label">
+                        <template v-if="lockUnlockMode">Locked Balance</template>
+                        <template v-else>Deposit Balance</template>
+                    </h3>
                     <div class="value"><f-token-value :token="dToken" :value="collateral" /></div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
-                    <h3 class="label">Total Deposit</h3>
+                    <h3 class="label">
+                        <template v-if="lockUnlockMode">Total Locked</template>
+                        <template v-else>Total Deposit</template>
+                    </h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="overallCollateral" /></div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
-                    <h3 class="label">Total Borrowed</h3>
+                    <h3 class="label">
+                        <template v-if="lockUnlockMode">Total Minted</template>
+                        <template v-else>Total Borrowed</template>
+                    </h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="overallDebt" /></div>
                 </div>
             </div>
@@ -75,11 +84,17 @@
                     </div>
 
                     <div class="collateral-info">
-                        <div class="collateral-info-label">Withdraw</div>
+                        <div class="collateral-info-label">
+                            <template v-if="lockUnlockMode">Unlock {{ cTokenSymbol }}</template>
+                            <template v-else>Withdraw</template>
+                        </div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="collateral-info increase">
-                        <div class="collateral-info-label">Deposit</div>
+                        <div class="collateral-info-label">
+                            <template v-if="lockUnlockMode">Lock {{ cTokenSymbol }}</template>
+                            <template v-else>Deposit</template>
+                        </div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>
@@ -100,14 +115,14 @@
                     <h3 class="no-margin">Max mintable</h3>
                     <div class="value">
                         -&#45;&#45;
-                        &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>&ndash;&gt;
+                        &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ cTokenSymbol }}</span>&ndash;&gt;
                     </div>
                 </div>
                 -->
             </div>
             <div v-if="largeView" class="right-col">
                 <div class="df-data-item smaller">
-                    <h3 class="label">Minted {{ tokenSymbol }}</h3>
+                    <h3 class="label">Minted {{ cTokenSymbol }}</h3>
                     <div class="value"><f-token-value :token="dToken" :value="debt" no-currency /></div>
                 </div>
                 <!--
@@ -134,7 +149,7 @@
                         <h3 class="label">Max Mintable</h3>
                         <div class="value">
                             -&#45;&#45;
-                            &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ tokenSymbol }}</span>&ndash;&gt;
+                            &lt;!&ndash;{{ maxMintable }} <span class="currency">{{ cTokenSymbol }}</span>&ndash;&gt;
                         </div>
                     </div>
                     -->
@@ -147,14 +162,14 @@
             <f-message v-else-if="increasedCollateral > 0" type="info" role="alert" class="big">
                 You’re adding
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="increasedCollateral" no-currency /> {{ tokenSymbol }}
+                    <f-token-value :token="dToken" :value="increasedCollateral" no-currency /> {{ cTokenSymbol }}
                 </span>
                 to your collateral
             </f-message>
             <f-message v-else-if="decreasedCollateral > 0" type="info" role="alert" class="big">
                 You’re removing
                 <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="decreasedCollateral" no-currency /> {{ tokenSymbol }}
+                    <f-token-value :token="dToken" :value="decreasedCollateral" no-currency /> {{ cTokenSymbol }}
                 </span>
                 from your collateral
             </f-message>
@@ -220,6 +235,21 @@ export default {
                 return null;
             },
         },
+        /** */
+        tokenSymbol: {
+            type: String,
+            default: '',
+        },
+        /** Follow this route on submit. */
+        onSubmitRoute: {
+            type: String,
+            default: 'defi-manage-deposit-confirmation',
+        },
+        /** Used in fMint. */
+        lockUnlockMode: {
+            type: Boolean,
+            default: false,
+        },
         /** Mode with sindgle token - no token picker,... */
         singleToken: {
             type: Boolean,
@@ -257,7 +287,7 @@ export default {
             return this.$defi.fromTokenValue(this.dToken.availableBalance, this.dToken) || 0;
         },
 
-        tokenSymbol() {
+        cTokenSymbol() {
             return this.$defi.getTokenSymbol(this.dToken);
         },
 
@@ -469,8 +499,12 @@ export default {
             }
 
             if (this.token === null) {
-                // get first token that can be deposited
-                this.dToken = this.tokens[0];
+                if (this.tokenSymbol) {
+                    this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
+                } else {
+                    // get first token that can be deposited
+                    this.dToken = this.tokens[0];
+                }
             } else {
                 this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
             }
@@ -494,17 +528,17 @@ export default {
             this.increasedCollateral = 0;
             this.decreasedCollateral = 0;
 
-            if (this.collateral > 0) {
-                const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
+            // if (this.collateral > 0) {
+            const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
 
-                if (collateralDiff > 0) {
-                    this.increasedCollateral = collateralDiff;
-                    this.message = '';
-                } else if (collateralDiff < 0) {
-                    this.decreasedCollateral = -collateralDiff;
-                    this.message = '';
-                }
+            if (collateralDiff > 0) {
+                this.increasedCollateral = collateralDiff;
+                this.message = '';
+            } else if (collateralDiff < 0) {
+                this.decreasedCollateral = -collateralDiff;
+                this.message = '';
             }
+            // }
         },
 
         updateCurrCollateral() {
@@ -524,7 +558,7 @@ export default {
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'defi-manage-deposit-confirmation',
+                    name: this.onSubmitRoute,
                     params,
                 });
             }

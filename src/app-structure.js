@@ -19,6 +19,42 @@ const appStructure = [
                         route: 'defi-fmint',
                         _c: [
                             {
+                                id: 'defi-lock-unlock',
+                                route: 'defi-lock-unlock',
+                                _c: [
+                                    {
+                                        id: 'defi-lock-unlock-confirmation',
+                                        route: 'defi-lock-unlock-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-lock-unlock-transaction-success-message',
+                                                route: 'defi-lock-unlock-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-lock-unlock-confirmation2',
+                                                        route: 'defi-lock-unlock-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-lock-unlock-transaction-success-message2',
+                                                                route: 'defi-lock-unlock-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-lock-unlock-transaction-reject-message2',
+                                                                route: 'defi-lock-unlock-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-lock-unlock-transaction-reject-message',
+                                                route: 'defi-lock-unlock-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
                                 id: 'defi-manage-collateral',
                                 route: 'defi-manage-collateral',
                                 _c: [

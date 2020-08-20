@@ -56,7 +56,8 @@
         </div>
 
         <div class="form-buttons">
-            <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
+            <!--            <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">-->
+            <router-link :to="{ name: 'defi-lock-unlock' }" class="btn large">
                 Lock/Unlock {{ wftmTokenSymbol }}
             </router-link>
             <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">

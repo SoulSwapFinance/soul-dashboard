@@ -7,7 +7,7 @@ import web3utils from 'web3-utils';
 export let defi = null;
 
 // TMP!!
-const tmpWFTM = false;
+const tmpWFTM = true;
 const filterTokens = tmpWFTM ? ['FTM', 'WFTM', 'FUSD'] : [];
 
 /**
