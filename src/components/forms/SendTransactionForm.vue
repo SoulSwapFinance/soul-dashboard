@@ -258,7 +258,7 @@ export default {
         checkAmount(_value) {
             const remainingBalance = parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
-            const minFTMToETH = 5000;
+            const minFTMToETH = 5001;
             const operatToEthereum = this.sendDirection === 'OperaToEthereum';
             let ok = false;
 
