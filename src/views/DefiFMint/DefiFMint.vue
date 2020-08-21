@@ -59,10 +59,15 @@
             <template v-if="$defi.tmpWFTM">
                 <router-link :to="{ name: 'defi-lock' }" class="btn large">Lock {{ wftmTokenSymbol }}</router-link>
                 <router-link :to="{ name: 'defi-unlock' }" class="btn large">Unlock {{ wftmTokenSymbol }}</router-link>
+                <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
+                <router-link :to="{ name: 'defi-repay' }" class="btn large">Repay fUSD</router-link>
             </template>
             <template v-else>
                 <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
                     Lock/Unlock {{ wftmTokenSymbol }}
+                </router-link>
+                <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">
+                    Mint/Repay fUSD
                 </router-link>
             </template>
             <!--
@@ -72,10 +77,10 @@
             >
                 Lock/Unlock {{ wftmTokenSymbol }}
             </router-link>
-            -->
             <router-link :to="{ name: $defi.tmpWFTM ? 'defi-mint-repay' : 'defi-borrow-fusd' }" class="btn large">
                 Mint/Repay fUSD
             </router-link>
+            -->
         </div>
 
         <!--

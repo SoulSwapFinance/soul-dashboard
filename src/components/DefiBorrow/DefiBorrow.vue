@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-borrow">
+    <div class="defi-borrow" :class="{ 'borrow-or-repay': borrowOrRepay }">
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
@@ -24,7 +24,7 @@
                             <template v-else>Borrow Limit</template>
                         </h3>
                         <div class="value">
-                            <f-token-value :token="dToken" :value="borrowLimit" />
+                            <f-token-value :token="dToken" :value="borrowLimit + debt" />
                         </div>
                     </div>
                 </template>
@@ -82,7 +82,7 @@
                         @change="onInput"
                     />
 
-                    <div class="f-slider-wrap">
+                    <div v-if="!borrowOrRepay" class="f-slider-wrap">
                         <f-slider
                             ref="slider"
                             v-model="currDebt"
@@ -106,6 +106,22 @@
                             </button>
                             <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
+                    </div>
+                    <div v-else class="f-slider-wrap">
+                        <f-slider
+                            ref="slider"
+                            v-model="currDebt"
+                            step="any"
+                            :min="minDebt.toString()"
+                            :max="maxDebt.toString()"
+                            :labels="sliderLabels"
+                            clickable-labels
+                            use-lower-fill-bar
+                        >
+                            <template #top="sProps">
+                                <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
+                            </template>
+                        </f-slider>
                     </div>
 
                     <div class="token-info">
@@ -150,9 +166,12 @@
                     </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Borrow Limit</h3>
+                    <h3 class="label">
+                        <template v-if="mintRepayMode">Max Mintable</template>
+                        <template v-else>Borrow Limit</template>
+                    </h3>
                     <div class="value">
-                        <f-token-value :token="dToken" :value="borrowLimit" />
+                        <f-token-value :token="dToken" :value="borrowLimit + debt" />
                     </div>
                 </div>
             </div>
@@ -250,6 +269,16 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Just borrow. */
+        borrow: {
+            type: Boolean,
+            default: false,
+        },
+        /** Just repay. */
+        repay: {
+            type: Boolean,
+            default: false,
+        },
         /** Mode with sindgle token - no token picker,... */
         singleToken: {
             type: Boolean,
@@ -276,6 +305,8 @@ export default {
             tokenPrice: 0,
             increasedDebt: 0,
             decreasedDebt: 0,
+            borrowOrRepay: this.borrow || this.repay,
+            sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             label: 'tmp',
             id: getUniqueId(),
         };
@@ -334,7 +365,11 @@ export default {
         },
 
         _borrowLimit() {
-            return this.debt + this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+            if (this.borrowOrRepay) {
+                return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+            } else {
+                return this.debt + this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+            }
             /*
             return (
                 this.debt +
@@ -346,18 +381,39 @@ export default {
 
         debtLimit() {
             // const currDebtFUSD = parseFloat(this.currDebt) * this.tokenPrice;
-            const debtFUSD = parseFloat(this.debt) * this.tokenPrice;
-            const currDebtFUSD = parseFloat(this.currDebt) * this.tokenPrice - debtFUSD;
+            const debt = parseFloat(this.debt);
+            const debtFUSD = debt * this.tokenPrice;
+            let cDebt = parseFloat(this.currDebt);
+
+            if (this.borrow) {
+                cDebt = debt + cDebt;
+            } else if (this.repay) {
+                cDebt = debt - cDebt;
+            }
+
+            const currDebtFUSD = cDebt * this.tokenPrice - debtFUSD;
 
             return this.$defi.getDebtLimit(this.defiAccount, currDebtFUSD);
         },
 
         minDebt() {
+            if (this.borrowOrRepay) {
+                return 0;
+            } else {
+                return this._minDebt;
+            }
+        },
+
+        _minDebt() {
             return this.defiSlippageReserve * this._maxDebt;
         },
 
         maxDebt() {
-            return Math.max(this.borrowLimit, this.debt);
+            if (this.repay) {
+                return this.debt - this._minDebt;
+            } else {
+                return Math.max(this.borrowLimit, this.debt);
+            }
         },
 
         _maxDebt() {
@@ -432,9 +488,12 @@ export default {
         async dToken(_value) {
             if (_value) {
                 this.tokenPrice = this.$defi.getTokenPrice(_value);
-                this.$nextTick(() => {
-                    this.currDebt = this.debt.toString();
-                });
+
+                if (!this.borrowOrRepay) {
+                    this.$nextTick(() => {
+                        this.currDebt = this.debt.toString();
+                    });
+                }
             }
         },
     },
@@ -484,20 +543,28 @@ export default {
         },
 
         updateMessage() {
-            const debtDiff = parseFloat(this.currDebt) - this.debt;
-
             this.increasedDebt = 0;
             this.decreasedDebt = 0;
 
-            if (debtDiff > 0) {
-                this.increasedDebt = debtDiff;
-            } else if (debtDiff < 0) {
-                this.decreasedDebt = -debtDiff;
+            if (this.borrow) {
+                this.increasedDebt = parseFloat(this.currDebt);
+            } else if (this.repay) {
+                this.decreasedDebt = parseFloat(this.currDebt);
+            } else {
+                const debtDiff = parseFloat(this.currDebt) - this.debt;
+
+                if (debtDiff > 0) {
+                    this.increasedDebt = debtDiff;
+                } else if (debtDiff < 0) {
+                    this.decreasedDebt = -debtDiff;
+                }
             }
         },
 
         updateCurrDebt() {
-            this.currDebt = this.debt.toString();
+            if (!this.borrowOrRepay) {
+                this.currDebt = this.debt.toString();
+            }
         },
 
         onSubmit() {
@@ -509,9 +576,15 @@ export default {
                 debtBalanceHex: tokenBalance.balance,
             };
 
-            if (this.decreasedDebt > 0) {
+            if ((this.borrowOrRepay && this.repay) || this.decreasedDebt > 0) {
                 params.steps = 2;
                 params.step = 1;
+            }
+
+            if (this.borrow) {
+                params.currDebt = this.debt + parseFloat(this.currDebt);
+            } else if (this.repay) {
+                params.currDebt = this.debt - parseFloat(this.currDebt);
             }
 
             if (!this.submitDisabled) {

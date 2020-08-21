@@ -68,7 +68,7 @@
                             <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
                     </div>
-                    <div v-else>
+                    <div v-else class="f-slider-wrap">
                         <f-slider
                             ref="slider"
                             v-model="currCollateral"
@@ -335,7 +335,7 @@ export default {
         },
 
         minCollateral() {
-            if (this.deposit || this.withdraw) {
+            if (this.depositOrWithdraw) {
                 return 0;
             } else {
                 return this._minCollateral;
@@ -433,10 +433,10 @@ export default {
             const collateralFUSD = collateral * this.tokenPrice;
             let cCollateral = parseFloat(this.currCollateral);
 
-            if (this.withdraw) {
-                cCollateral = collateral - cCollateral;
-            } else if (this.deposit) {
+            if (this.deposit) {
                 cCollateral = collateral + cCollateral;
+            } else if (this.withdraw) {
+                cCollateral = collateral - cCollateral;
             }
 
             const currCollateralFUSD = cCollateral * this.tokenPrice - collateralFUSD;

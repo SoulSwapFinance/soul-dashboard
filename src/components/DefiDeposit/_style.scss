@@ -74,22 +74,12 @@
     }
 
     &.deposit-or-withdraw {
-        .grid {
-            .defi-price-input-col {
-                .defi-price-input {
-                    > input {
-                        margin-bottom: 32px;
-                    }
-                }
-            }
-        }
-
         .collateral-info {
-            bottom: 60px;
+            bottom: 64px;
         }
 
         .defi-price-input {
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
     }
 }
