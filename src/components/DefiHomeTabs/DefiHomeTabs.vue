@@ -12,7 +12,7 @@
                 </template>
 
                 <f-tab title-slot="assets">
-                    Assets table
+                    <assets-list :tokens="tokens" :defi-account="defiAccount" @records-count="onAssetsRecordsCount" />
                 </f-tab>
                 <f-tab title-slot="positions">
                     <open-positions-list
@@ -34,11 +34,12 @@ import FTab from '@/components/core/FTabs/FTab.vue';
 import OpenPositionsList from '@/components/data-tables/OpenPositionsList/OpenPositionsList.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { mapGetters } from 'vuex';
+import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
 
 export default {
     name: 'DefiHomeTabs',
 
-    components: { OpenPositionsList, FTab, FTabs },
+    components: { AssetsList, OpenPositionsList, FTab, FTabs },
 
     mixins: [eventBusMixin],
 

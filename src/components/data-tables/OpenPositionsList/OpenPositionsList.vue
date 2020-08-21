@@ -3,7 +3,7 @@
         <f-data-table
             :columns="columns"
             :items="items"
-            action-on-row
+            :action-on-row="actionOnRow"
             first-m-v-column-width="6"
             f-card-off
             class="f-data-table-body-bg-color"
@@ -117,6 +117,11 @@ export default {
         borrowRouteName: {
             type: String,
             default: 'defi-manage-borrow',
+        },
+        /** If `true`, row will become clickable. */
+        actionOnRow: {
+            type: Boolean,
+            default: false,
         },
     },
 
