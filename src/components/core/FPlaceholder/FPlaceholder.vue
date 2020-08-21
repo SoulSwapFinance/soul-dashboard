@@ -2,8 +2,8 @@
     <span class="f-placeholder" :class="classes">
         <template v-if="contentLoaded"><slot></slot></template>
         <template v-else>
-            <span class="replacement">{{ replacement || '&nbsp;' }}</span>
             <span class="replacement-twin">{{ replacement || '&nbsp;' }}</span>
+            <span class="replacement">{{ replacement || '&nbsp;' }}</span>
         </template>
     </span>
 </template>
@@ -88,7 +88,7 @@ export default {
 
             if (this.block) {
                 width = this.$el.clientWidth;
-            } else {
+            } else if (!this.contentLoaded) {
                 const eTwin = this.$el.querySelector('.replacement-twin');
 
                 if (eTwin) {
@@ -102,7 +102,9 @@ export default {
                 }
             }
 
-            this.$el.style.setProperty('--f-placeholder-background-size-width', `${width * 2}px`);
+            if (width > 0) {
+                this.$el.style.setProperty('--f-placeholder-background-size-width', `${width * 2}px`);
+            }
         },
     },
 };

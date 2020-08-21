@@ -15,13 +15,13 @@
             <div class="buttons">
                 <router-link
                     class="btn large secondary"
-                    :to="{ name: 'defi-manage-deposit', params: { token: { ...token } } }"
+                    :to="{ name: depositRouteName, params: { token: { ...token } } }"
                 >
                     Deposit
                 </router-link>
                 <router-link
                     class="btn large secondary"
-                    :to="{ name: 'defi-manage-borrow', params: { token: { ...token } } }"
+                    :to="{ name: borrowRouteName, params: { token: { ...token } } }"
                 >
                     Borrow
                 </router-link>
@@ -46,6 +46,14 @@ export default {
                 return {};
             },
             required: true,
+        },
+        depositRouteName: {
+            type: String,
+            default: 'defi-manage-deposit',
+        },
+        borrowRouteName: {
+            type: String,
+            default: 'defi-manage-borrow',
         },
     },
 

@@ -70,7 +70,12 @@
             </template>
         </f-data-table>
 
-        <deposit-or-borrow-token-window ref="win" :token="dbToken" />
+        <deposit-or-borrow-token-window
+            ref="win"
+            :token="dbToken"
+            :deposit-route-name="depositRouteName"
+            :borrow-route-name="borrowRouteName"
+        />
     </div>
 </template>
 
@@ -104,6 +109,14 @@ export default {
                     debt: [],
                 };
             },
+        },
+        depositRouteName: {
+            type: String,
+            default: 'defi-manage-deposit',
+        },
+        borrowRouteName: {
+            type: String,
+            default: 'defi-manage-borrow',
         },
     },
 
@@ -253,9 +266,9 @@ export default {
                 this.dbToken = _item;
                 this.$refs.win.show();
             } else if (_item._debt > 0) {
-                this.$router.push({ name: 'defi-manage-borrow', params: { token: { ..._item } } });
+                this.$router.push({ name: this.borrowRouteName, params: { token: { ..._item } } });
             } else if (_item._collateral > 0) {
-                this.$router.push({ name: 'defi-manage-deposit', params: { token: { ..._item } } });
+                this.$router.push({ name: this.depositRouteName, params: { token: { ..._item } } });
             }
         },
     },
