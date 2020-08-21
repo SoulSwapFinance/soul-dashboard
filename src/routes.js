@@ -34,6 +34,10 @@ import DefiLockUnlock from '@/views/DefiLockUnlock/DefiLockUnlock.vue';
 import DefiLockUnlockConfirmation from '@/views/DefiLockUnlockConfirmation/DefiLockUnlockConfirmation.vue';
 import DefiMintRepay from '@/views/DefiMintRepay/DefiMintRepay.vue';
 import DefiMintRepayConfirmation from '@/views/DefiMintRepayConfirmation/DefiMintRepayConfirmation.vue';
+import DefiLock from '@/views/DefiLock/DefiLock.vue';
+import DefiLockConfirmation from '@/views/DefiLockConfirmation/DefiLockConfirmation.vue';
+import DefiUnlock from '@/views/DefiUnlock/DefiUnlock.vue';
+import DefiUnlockConfirmation from '@/views/DefiUnlockConfirmation/DefiUnlockConfirmation.vue';
 
 export const routes = [
     {
@@ -134,6 +138,78 @@ export const routes = [
                         name: 'defi-ftrade',
                         path: 'fswap',
                         component: DefiFTrade,
+                    },
+
+                    {
+                        name: 'defi-lock',
+                        path: 'fmint/lock',
+                        component: DefiLock,
+                    },
+                    {
+                        name: 'defi-lock-confirmation',
+                        path: 'fmint/lock/confirmation',
+                        component: DefiLockConfirmation,
+                    },
+                    {
+                        name: 'defi-lock-confirmation2',
+                        path: 'fmint/lock/confirmation2',
+                        component: DefiLockConfirmation,
+                    },
+                    {
+                        name: 'defi-lock-transaction-success-message',
+                        path: 'fmint/lock/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-lock-transaction-success-message2',
+                        path: 'fmint/lock/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-lock-transaction-reject-message',
+                        path: 'fmint/lock/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-lock-transaction-reject-message2',
+                        path: 'fmint/lock/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+
+                    {
+                        name: 'defi-unlock',
+                        path: 'fmint/unlock',
+                        component: DefiUnlock,
+                    },
+                    {
+                        name: 'defi-unlock-confirmation',
+                        path: 'fmint/lock-unlock/confirmation',
+                        component: DefiUnlockConfirmation,
+                    },
+                    {
+                        name: 'defi-unlock-confirmation2',
+                        path: 'fmint/lock-unlock/confirmation2',
+                        component: DefiUnlockConfirmation,
+                    },
+                    {
+                        name: 'defi-unlock-transaction-success-message',
+                        path: 'fmint/lock-unlock/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-unlock-transaction-success-message2',
+                        path: 'fmint/lock-unlock/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-unlock-transaction-reject-message',
+                        path: 'fmint/lock-unlock/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-unlock-transaction-reject-message2',
+                        path: 'fmint/lock-unlock/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
                     },
 
                     {

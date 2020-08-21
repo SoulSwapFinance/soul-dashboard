@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-deposit">
+    <div class="defi-deposit" :class="{ 'deposit-or-withdraw': depositOrWithdraw }">
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
@@ -43,7 +43,7 @@
                         @change="onInput"
                     />
 
-                    <div class="f-slider-wrap">
+                    <div v-if="!depositOrWithdraw" class="f-slider-wrap">
                         <f-slider
                             ref="slider"
                             v-model="currCollateral"
@@ -67,6 +67,22 @@
                             </button>
                             <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
+                    </div>
+                    <div v-else>
+                        <f-slider
+                            ref="slider"
+                            v-model="currCollateral"
+                            step="any"
+                            :min="minCollateral.toString()"
+                            :max="maxCollateral.toString()"
+                            :labels="sliderLabels"
+                            clickable-labels
+                            use-lower-fill-bar
+                        >
+                            <template #top="sProps">
+                                <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
+                            </template>
+                        </f-slider>
                     </div>
 
                     <div class="token-label">
@@ -250,6 +266,16 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Just deposit. */
+        deposit: {
+            type: Boolean,
+            default: false,
+        },
+        /** Just withdraw deposit. */
+        withdraw: {
+            type: Boolean,
+            default: false,
+        },
         /** Mode with sindgle token - no token picker,... */
         singleToken: {
             type: Boolean,
@@ -275,6 +301,8 @@ export default {
             tokenPrice: 0,
             increasedCollateral: 0,
             decreasedCollateral: 0,
+            depositOrWithdraw: this.deposit || this.withdraw,
+            sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             label: 'tmp',
             id: getUniqueId(),
         };
@@ -307,6 +335,14 @@ export default {
         },
 
         minCollateral() {
+            if (this.deposit || this.withdraw) {
+                return 0;
+            } else {
+                return this._minCollateral;
+            }
+        },
+
+        _minCollateral() {
             const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
             let minC = 0;
 
@@ -354,13 +390,19 @@ export default {
         maxCollateral() {
             const maxCollateral = this._maxCollateral;
 
-            console.log(this._maxCollateral);
-
-            return maxCollateral - maxCollateral * this.defiSlippageReserve;
+            if (this.withdraw) {
+                return this.collateral - this._minCollateral;
+            } else {
+                return maxCollateral - maxCollateral * this.defiSlippageReserve;
+            }
         },
 
         _maxCollateral() {
-            return this.collateral + this.availableBalance;
+            if (this.depositOrWithdraw) {
+                return this.availableBalance;
+            } else {
+                return this.collateral + this.availableBalance;
+            }
         },
 
         debt() {
@@ -387,8 +429,17 @@ export default {
 
         debtLimit() {
             // const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice;
-            const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
-            const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice - collateralFUSD;
+            const collateral = parseFloat(this.collateral);
+            const collateralFUSD = collateral * this.tokenPrice;
+            let cCollateral = parseFloat(this.currCollateral);
+
+            if (this.withdraw) {
+                cCollateral = collateral - cCollateral;
+            } else if (this.deposit) {
+                cCollateral = collateral + cCollateral;
+            }
+
+            const currCollateralFUSD = cCollateral * this.tokenPrice - collateralFUSD;
 
             return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
             // return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
@@ -463,9 +514,11 @@ export default {
             if (_value) {
                 this.tokenPrice = this.$defi.getTokenPrice(_value);
 
-                this.$nextTick(() => {
-                    this.currCollateral = this.collateral.toString();
-                });
+                if (!this.depositOrWithdraw) {
+                    this.$nextTick(() => {
+                        this.currCollateral = this.collateral.toString();
+                    });
+                }
             }
         },
     },
@@ -529,20 +582,28 @@ export default {
             this.decreasedCollateral = 0;
 
             // if (this.collateral > 0) {
-            const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
+            if (this.deposit) {
+                this.increasedCollateral = parseFloat(this.currCollateral);
+            } else if (this.withdraw) {
+                this.decreasedCollateral = parseFloat(this.currCollateral);
+            } else {
+                const collateralDiff = parseFloat(this.currCollateral) - this.collateral;
 
-            if (collateralDiff > 0) {
-                this.increasedCollateral = collateralDiff;
-                this.message = '';
-            } else if (collateralDiff < 0) {
-                this.decreasedCollateral = -collateralDiff;
-                this.message = '';
+                if (collateralDiff > 0) {
+                    this.increasedCollateral = collateralDiff;
+                    this.message = '';
+                } else if (collateralDiff < 0) {
+                    this.decreasedCollateral = -collateralDiff;
+                    this.message = '';
+                }
             }
             // }
         },
 
         updateCurrCollateral() {
-            this.currCollateral = this.collateral.toString();
+            if (!this.depositOrWithdraw) {
+                this.currCollateral = this.collateral.toString();
+            }
         },
 
         onSubmit() {
@@ -555,6 +616,12 @@ export default {
                 steps: 2,
                 step: 1,
             };
+
+            if (this.deposit) {
+                params.currCollateral = this.collateral + parseFloat(this.currCollateral);
+            } else if (this.withdraw) {
+                params.currCollateral = this.collateral - parseFloat(this.currCollateral);
+            }
 
             if (!this.submitDisabled) {
                 this.$router.push({

@@ -21,8 +21,6 @@
             .defi-price-input {
                 > input {
                     margin-bottom: 12px;
-                    //position: relative;
-                    //top: 8px;
                 }
             }
         }
@@ -73,6 +71,26 @@
     .f-colored-number-range {
         color: $theme-color;
         font-weight: 600;
+    }
+
+    &.deposit-or-withdraw {
+        .grid {
+            .defi-price-input-col {
+                .defi-price-input {
+                    > input {
+                        margin-bottom: 32px;
+                    }
+                }
+            }
+        }
+
+        .collateral-info {
+            bottom: 60px;
+        }
+
+        .defi-price-input {
+            margin-bottom: 40px;
+        }
     }
 }
 
