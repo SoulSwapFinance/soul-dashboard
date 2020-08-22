@@ -75,7 +75,12 @@
 
     &.deposit-or-withdraw {
         .collateral-info {
-            bottom: 64px;
+            display: none;
+            //bottom: 64px;
+        }
+
+        .defi-price-input-col {
+            place-self: center;
         }
 
         .defi-price-input {

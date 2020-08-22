@@ -72,6 +72,12 @@
         color: $theme-color;
         font-weight: 600;
     }
+
+    &.borrow-or-repay {
+        .token-info {
+            display: none;
+        }
+    }
 }
 
 /*
