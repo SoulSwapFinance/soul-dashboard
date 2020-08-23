@@ -15,7 +15,7 @@
                     <assets-list :tokens="tokens" :defi-account="defiAccount" @records-count="onAssetsRecordsCount" />
                 </f-tab>
                 <f-tab title-slot="positions">
-                    <open-positions-list
+                    <positions-list
                         :tokens="tokens"
                         :defi-account="defiAccount"
                         deposit-route-name="defi-lock-unlock"
@@ -31,15 +31,15 @@
 <script>
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
-import OpenPositionsList from '@/components/data-tables/OpenPositionsList/OpenPositionsList.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { mapGetters } from 'vuex';
 import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
+import PositionsList from '@/components/data-tables/PositionsList/PositionsList.vue';
 
 export default {
     name: 'DefiHomeTabs',
 
-    components: { AssetsList, OpenPositionsList, FTab, FTabs },
+    components: { PositionsList, AssetsList, FTab, FTabs },
 
     mixins: [eventBusMixin],
 
