@@ -49,24 +49,37 @@
                 </template>
             </template>
 
-            <template v-slot:column-links="{ value, item, column }">
+            <template v-slot:column-actions="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <template v-if="item._collateral > 0">{{ formatCollateralFUSD(item) }}</template>
-                        <template v-if="item._debt > 0">{{ formatDebtFUSD(item) }}</template>
+                        <template v-if="item._collateral > 0">
+                            <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
+                                <router-link :to="{ name: 'defi-lock' }">Lock</router-link>,
+                                <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>,
+                                <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
+                            </template>
+                        </template>
+                        <template v-if="item._debt > 0">
+                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
+                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
+                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            </template>
+                        </template>
                     </div>
                 </div>
                 <template v-else>
                     <template v-if="item._collateral > 0">
-                        <template v-if="usedInFMint(item)">
+                        <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
                             <router-link :to="{ name: 'defi-lock' }">Lock</router-link>
                             <br />
                             <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>
+                            <br />
+                            <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                         </template>
                     </template>
                     <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item)">
+                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
                             <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
                             <br />
                             <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
@@ -199,8 +212,8 @@ export default {
                     },
                 },
                 {
-                    name: 'links',
-                    label: '',
+                    name: 'actions',
+                    label: 'Actions',
                 },
             ],
         };
