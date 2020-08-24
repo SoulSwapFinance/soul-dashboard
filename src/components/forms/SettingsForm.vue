@@ -23,6 +23,7 @@
 
                         <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
 
+                        <!--
                         <f-input
                             name="defi_slippage_reserve"
                             :value="$store.state.defiSlippageReserve.toString()"
@@ -41,6 +42,7 @@
                                 </f-message>
                             </template>
                         </f-input>
+                        -->
 
                         <!--
                         <br />
@@ -73,13 +75,11 @@ import FForm from '../core/FForm/FForm.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
-import FInput from '@/components/core/FInput/FInput.vue';
-import FMessage from '@/components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FMessage, FInput, SocialMediaLinks, FSelect, FForm, FCard },
+    components: { SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
@@ -144,10 +144,12 @@ export default {
                 if (appNode) {
                     appNode.setFractionDigits(parseInt(detail.value));
                 }
+                /*
             } else if (detail.eTarget.name === 'defi_slippage_reserve') {
                 if (appNode && this.checkDefiSlippageReserve(detail.value)) {
                     appNode.setDefiSlippageReserve(parseFloat(detail.value));
                 }
+                */
             } else if (detail.eTarget.name === 'language') {
                 alert('not implemented yet');
             } else if (detail.eTarget.name === 'night_mode') {
