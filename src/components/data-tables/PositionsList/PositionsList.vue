@@ -168,7 +168,7 @@ export default {
                 {
                     name: 'amount',
                     label: 'Amount',
-                    // css: { textAlign: 'right' },
+                    css: { textAlign: 'right' },
                 },
                 {
                     name: 'amount_fusd',
@@ -184,7 +184,7 @@ export default {
                             return (_direction === 'desc' ? -1 : 1) * numberSort(a, b);
                         };
                     },
-                    // css: { textAlign: 'right' },
+                    css: { textAlign: 'right' },
                 },
                 {
                     name: 'type',
@@ -210,10 +210,12 @@ export default {
 
                         return type.join(', ');
                     },
+                    width: '100px',
                 },
                 {
                     name: 'actions',
                     label: 'Actions',
+                    width: '120px',
                 },
             ],
         };
@@ -314,10 +316,17 @@ export default {
                 : 0;
         },
 
+        /**
+         * @param {DefiToken} _token
+         * @return {boolean}
+         */
         usedInFMint(_token) {
             return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
         },
 
+        /**
+         * @param {DefiToken} _item
+         */
         onRowAction(_item) {
             if (_item._debt > 0 && _item._collateral > 0) {
                 this.dbToken = _item;

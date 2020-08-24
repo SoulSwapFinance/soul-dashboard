@@ -46,6 +46,45 @@
                     <!-- <span class="currency-light">{{ $defi.getTokenSymbol(item) }}</span>-->
                 </template>
             </template>
+
+            <template v-slot:column-actions="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        <template v-if="item._collateral > 0">
+                            <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
+                                <router-link :to="{ name: 'defi-lock' }">Lock</router-link>,
+                                <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>,
+                                <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
+                            </template>
+                        </template>
+                        <template v-if="item._debt > 0">
+                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
+                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
+                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+                <template v-else>
+                    <template v-if="item._collateral > 0">
+                        <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
+                            <router-link :to="{ name: 'defi-lock' }">Lock</router-link>
+                            <br />
+                            <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>
+                            <br />
+                            <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
+                        </template>
+                    </template>
+                    <template v-if="item._debt > 0">
+                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
+                            <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
+                            <br />
+                            <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                        </template>
+                    </template>
+                </template>
+            </template>
         </f-data-table>
     </div>
 </template>
@@ -137,6 +176,11 @@ export default {
                     },
                     css: { textAlign: 'right' },
                 },
+                {
+                    name: 'actions',
+                    label: 'Actions',
+                    width: '120px',
+                },
             ],
         };
     },
@@ -173,6 +217,14 @@ export default {
             const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {boolean}
+         */
+        usedInFMint(_token) {
+            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
         },
     },
 };
