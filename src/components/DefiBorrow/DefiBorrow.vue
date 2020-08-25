@@ -425,7 +425,7 @@ export default {
         },
 
         submitDisabled() {
-            return parseFloat(this.currDebt) === parseFloat(this.debt);
+            return !this.singleToken ? parseFloat(this.currDebt) === parseFloat(this.debt) : !parseFloat(this.currDebt);
         },
 
         colors() {

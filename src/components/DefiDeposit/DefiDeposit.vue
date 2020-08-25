@@ -450,7 +450,9 @@ export default {
         },
 
         submitDisabled() {
-            return parseFloat(this.currCollateral) === parseFloat(this.collateral);
+            return !this.singleToken
+                ? parseFloat(this.currCollateral) === parseFloat(this.collateral)
+                : !parseFloat(this.currCollateral);
         },
 
         colors() {
