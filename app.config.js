@@ -36,9 +36,9 @@ const appConfig = {
         // auth token
         token: '',
         // use Ethereum chain
-        useETH: false,
+        useETH: true,
         // use Binance chain
-        useBNB: false,
+        useBNB: true,
     },
     // address of liquidity pool contract
     liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
