@@ -80,7 +80,7 @@
 
         &.info {
             font-weight: normal;
-            color: $body-color;
+            color: var(--f-doc-color);
         }
     }
 }

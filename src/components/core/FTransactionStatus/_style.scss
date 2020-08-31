@@ -6,11 +6,11 @@
     border-radius: 16px;
 
     &.success {
-        background-color: #0ebec2;
+        background-color: var(--f-success-color);
     }
 
     &.error {
-        background-color: #df1642;
+        background-color: var(--f-error-color);
     }
 
     &.pending {
@@ -25,28 +25,11 @@
         padding: initial;
 
         &.success {
-            color: #0ebec2;
+            color: var(--f-success-color);
         }
 
         &.error {
-            color: #df1642;
+            color: var(--f-error-color);
         }
     }
-
-    /*
-    background-color: $warning-color;
-    border-radius: 16px;
-
-    &.success {
-        background-color: $success-color;
-    }
-
-    &.error {
-        background-color: $error-color;
-    }
-
-    &.pending {
-        color: $body-color;
-    }
-    */
 }

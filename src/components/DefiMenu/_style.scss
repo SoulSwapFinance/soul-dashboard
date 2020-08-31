@@ -38,11 +38,11 @@
         }
 
         .icon {
-            color: $theme-color;
+            color: var(--f-primary-color);
         }
 
         .title {
-            color: $theme-color;
+            color: var(--f-primary-color);
             font-size: 21px;
             font-weight: bold;
             text-decoration: none;

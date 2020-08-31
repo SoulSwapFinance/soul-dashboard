@@ -1,7 +1,7 @@
 @import "../variables";
 
 .f-tabs {
-    --f-tabs-main-color: #{$theme-color};
+    --f-tabs-main-color: var(--f-primary-color);
 
     --f-tabs-color: inherit;
     --f-tabs-font-family: inherit;

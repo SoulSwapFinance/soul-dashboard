@@ -1,5 +1,5 @@
 <template>
-    <div class="f-navigation">
+    <div class="f-simple-navigation">
         <nav>
             <slot>
                 <ul v-if="cItems" class="no-markers">

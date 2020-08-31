@@ -61,8 +61,8 @@
     }
 
     &.popover.light {
-        color: $body-color;
-        background: #fff;
+        --f-window-popover-color: var(--f-doc-color);
+        --f-window-popover-background: #fff;
 
         &.popover-menu {
             header {

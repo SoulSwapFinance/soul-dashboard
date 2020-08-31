@@ -179,7 +179,7 @@ $headings-text-align: initial !default;
 
 // grid layout
 $grid-layout-gutter-width: $size8f !default;
-$grid-layout-row-border: 1px solid $theme-color !default;
+$grid-layout-row-border: 1px solid var(--f-primary-color) !default;
 $grid-layout-cols-border: 1px solid #eee !default;
 $grid-layout-cols-border-dark-theme: 1px solid $dark-theme-light-color !default;
 $narrow-container-max-width: 1200px !default;

@@ -11,6 +11,6 @@
     --f-circle-progress-text-font-weight: bold;
     --f-circle-progress-text-percentage-font-size: 0.4em;
     --f-circle-progress-stroke-linecap: round;
-    --f-circle-progress-circle-color: #{$theme-color};
+    --f-circle-progress-circle-color: var(--f-primary-color);
     --f-circle-progress-bg-circle-color: #e6e6e6;
 }

@@ -43,6 +43,7 @@
                     v-if="dWithOverlay && isVisible"
                     ref="overlay"
                     :z-index="dZIndex - 1"
+                    class="f-window-overlay"
                     @overlay-hide="onOverlayHide"
                 />
             </div>

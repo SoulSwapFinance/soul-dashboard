@@ -68,7 +68,7 @@
     thead {
         th {
             font-family: $font-family-proxima;
-            //background-color: $body-bg-color;
+            //background-color: var(--f-doc-background-color);
             background-color: var(--f-data-table-cell-background-color);
         }
     }

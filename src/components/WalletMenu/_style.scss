@@ -1,3 +1,4 @@
+@import "custom-properties";
 @import "../../assets/scss/vars";
 
 .wallet-menu {
@@ -32,7 +33,7 @@
         width: var(--f-left-menu-width);
         height: 100%;
         top: 0;
-        background-color: $theme-color;
+        background-color: var(--f-wallet-menu-background-color);
         //border-radius: 0 20px 20px 0;
         border-radius: 0 20px 0 0;
         transform: translateX(calc(-1 * var(--f-left-menu-width)));
@@ -57,12 +58,12 @@
         }
 
         @include links() {
-            color: $secondary-color-lighter;
+            color: var(--f-simple-navigation-link-color);
             transition: color $transition-length ease;
         }
 
         a:not(.btn):not(.disabled):hover {
-            color: #fff;
+            color: var(--f-simple-navigation-link-hover-color);
             text-decoration: none;
         }
 
@@ -81,7 +82,7 @@
             padding-bottom: 40px;
         }
 
-        .f-navigation {
+        .f-simple-navigation {
             nav {
                 ul {
                     li {
@@ -98,10 +99,10 @@
         width: 100%;
         //height: var(--f-bottom-menu-height);
         bottom: 0;
-        background-color: $theme-color;
+        background-color: var(--f-wallet-menu-background-color);
         display: none;
 
-        .f-navigation {
+        .f-simple-navigation {
             width: 100%;
 
             --f-simple-navigation-link-padding: 10px 28px;
@@ -129,7 +130,7 @@
 
 @include media-min($bp-menu) {
     .wallet-menu {
-        .f-navigation {
+        .f-simple-navigation {
             display: block;
 
             --f-simple-navigation-link-padding: 0;
@@ -193,7 +194,7 @@
                 display: block;
             }
 
-            .f-navigation {
+            .f-simple-navigation {
                 nav {
                     svg {
                         display: none;
@@ -203,14 +204,14 @@
         }
 
         .right-col {
-            .f-navigation {
+            .f-simple-navigation {
                 display: none;
                 margin-right: 0;
             }
         }
 
         &.drawer-on {
-            .f-navigation {
+            .f-simple-navigation {
                 display: block;
             }
 

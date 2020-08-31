@@ -2,7 +2,7 @@
 
 .validator-list-dt {
     .offline {
-        color: $error-color;
+        color: var(--f-error-color);
         //color: #f00;
         font-weight: bold;
     }

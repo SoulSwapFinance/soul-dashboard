@@ -1,15 +1,16 @@
-@import "variables";
+//@import "variables";
+@import "custom-properties";
 
 .f-card:not(.off) {
     position: relative;
-    padding: $f-card-padding;
-    border-radius: $f-card-border-radius;
-    background-color: $f-card-background-color;
-    box-shadow: $f-card-box-shadow;
-    transition: box-shadow $f-card-transition-length ease, transform $f-card-transition-length ease;
+    padding: var(--f-card-padding);
+    border-radius: var(--f-card-border-radius);
+    background-color: var(--f-card-background-color);
+    box-shadow: var(--f-card-box-shadow);
+    transition: box-shadow var(--f-card-transition-length) ease, transform var(--f-card-transition-length) ease;
 
     &.f-card-hover:hover {
-        box-shadow: $f-card-hover-box-shadow;
+        box-shadow: var(--f-card-hover-box-shadow);
     }
 
     &.f-card-hover.zoom:hover {
@@ -17,7 +18,7 @@
     }
 
     &.f-card-double-padding {
-        padding: $f-card-padding-2x;
+        padding: var(--f-card-padding-2x);
     }
 
     .title {
@@ -34,11 +35,11 @@
                 right: 0;
                 bottom: 0;
                 border-radius: 20px;
-                transition: box-shadow $f-card-transition-length ease;
+                transition: box-shadow var(--f-card-transition-length) ease;
             }
 
             &:hover::after, &:focus::after {
-                box-shadow: $f-card-hover-box-shadow;
+                box-shadow: var(--f-card-hover-box-shadow);
                 /*outline: 2px solid red;*/
             }
         }
@@ -51,7 +52,7 @@
     }
     /*
             &[hover]:hover {
-                box-shadow: $f-card-hover-box-shadow;
+                box-shadow: var(--f-card-hover-box-shadow);
             }
     */
 }

@@ -14,7 +14,7 @@
     --f-slider-track-color: #e6e6e6;
     --f-slider-track-height: 8px;
 
-    --f-slider-fill-bar-background-color: #{$theme-color};
+    --f-slider-fill-bar-background-color: var(--f-primary-color);
 
     --f-slider-label-color: inherit;
     --f-slider-label-font-size: inherit;

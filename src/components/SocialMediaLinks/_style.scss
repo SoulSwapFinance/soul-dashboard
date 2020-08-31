@@ -1,7 +1,8 @@
-@import "variables";
+@import "custom-properties";
+@import "../../assets/scss/vars";
 
 .f-social-media-links {
-    color: $social-media-links-color;
+    color: var(--f-social-media-link-color);
 
     li {
         display: inline-block;
@@ -17,7 +18,7 @@
         }
 
         a:not(.btn):hover {
-            color: $social-media-links-hover-color;
+            color: var(--f-social-media-link-hover-color);
         }
     }
 

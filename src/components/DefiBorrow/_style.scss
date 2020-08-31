@@ -69,7 +69,7 @@
     }
 
     .f-colored-number-range {
-        color: $theme-color;
+        color: var(--f-primary-color);
         font-weight: 600;
     }
 

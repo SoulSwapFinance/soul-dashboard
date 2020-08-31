@@ -60,7 +60,7 @@
             border: 1px solid $grey-color-semi;
             position: relative;
             z-index: 2;
-            background-color: $body-bg-color;
+            background-color: var(--f-doc-background-color);
 
             &.same-size {
                 min-width: 48px;

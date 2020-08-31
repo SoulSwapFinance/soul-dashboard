@@ -1,6 +1,8 @@
 @import "vars";
 
 .actions-box {
+    --f-actions-box-color: var(--f-primary-color);
+
     ul {
         white-space: nowrap;
 
@@ -12,7 +14,7 @@
                 display: inline-block;
                 text-align: center;
                 min-width: 80px;
-                color: $theme-color;
+                color: var(--f-actions-box-color);
                 cursor: pointer;
 
                 &:hover {
@@ -31,14 +33,14 @@
 
                 &.router-link-exact-active {
                     .btn {
-                        color: $theme-color;
-                        border-color: $theme-color;
+                        color: var(--f-actions-box-color);
+                        border-color: var(--f-actions-box-color);
                         background-color: #fff;
 
                         &:hover {
-                            color: $theme-color !important;
+                            color: var(--f-actions-box-color) !important;
                             background-color: lighten($theme-color, 35) !important;
-                            border-color: $theme-color;
+                            border-color: var(--f-actions-box-color);
                         }
                     }
                 }
