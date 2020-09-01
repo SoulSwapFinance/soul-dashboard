@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import DelegationsInfo from '@/components/DelegationsInfo/DelegationsInfo.vue';
 import StakingInfo from '../components/StakingInfo/StakingInfo.vue';
 import StakeForm from '../components/forms/StakeForm.vue';
 import StakeConfirmation from '../components/StakeConfirmation/StakeConfirmation.vue';
@@ -23,7 +24,7 @@ import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/Withd
 import UnstashConfirmation from '../components/UnstashConfirmation/UnstashConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
-const DEFAULT_COMPONENT = 'staking-info';
+const DEFAULT_COMPONENT = 'delegations-info';
 
 export default {
     components: {
@@ -32,6 +33,7 @@ export default {
         TransactionRejectMessage,
         StakeConfirmation,
         StakeForm,
+        DelegationsInfo,
         StakingInfo,
         UnstakeConfirmation,
         ClaimRewardsConfirmation,
@@ -110,5 +112,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss"></style>

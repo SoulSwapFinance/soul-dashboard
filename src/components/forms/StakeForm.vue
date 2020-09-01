@@ -117,6 +117,10 @@ export default {
                 return {};
             },
         },
+        previousComponent: {
+            type: String,
+            default: 'staking-info',
+        },
     },
 
     data() {
@@ -319,7 +323,7 @@ export default {
 
         onPreviousBtnClick() {
             this.$emit('change-component', {
-                to: 'staking-info',
+                to: this.previousComponent,
                 from: 'stake-form',
             });
         },
