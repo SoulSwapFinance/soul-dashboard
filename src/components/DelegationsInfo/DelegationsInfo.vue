@@ -6,17 +6,24 @@
                     <icon data="@/assets/svg/plus.svg" width="16" height="16" aria-hidden="true" /> Add delegation
                 </button>
             </div>
-            Delegation List
+            <delegation-list :account-address="currentAccount.address" />
         </f-card>
     </div>
 </template>
 
 <script>
 import FCard from '@/components/core/FCard/FCard.vue';
+import DelegationList from '@/components/data-tables/DelegationList/DelegationList.vue';
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'DelegationsInfo',
 
-    components: { FCard },
+    components: { DelegationList, FCard },
+
+    computed: {
+        ...mapGetters(['currentAccount']),
+    },
 
     methods: {
         onAddDelegationBtnClick() {
