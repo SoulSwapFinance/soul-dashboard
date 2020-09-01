@@ -117,6 +117,7 @@ export default {
                 return {};
             },
         },
+        /** Name of previous component. */
         previousComponent: {
             type: String,
             default: 'staking-info',
@@ -187,7 +188,7 @@ export default {
             name: '',
         };
 
-        if (stakerInfo) {
+        if (stakerInfo && stakerInfo.id) {
             this.validatorInfo = {
                 id: stakerInfo.id,
                 address: stakerInfo.stakerAddress,
@@ -272,12 +273,13 @@ export default {
          */
         async stakeCofirmation(_amount) {
             const amount = parseFloat(_amount);
+            const validatorId = parseInt(this.validatorInfo.id, 16);
             let delegationTx = null;
 
             if (this.increaseDelegation) {
-                delegationTx = sfcUtils.increaseDelegationTx(amount);
+                delegationTx = sfcUtils.increaseDelegationTx(amount, validatorId);
             } else {
-                delegationTx = sfcUtils.createDelegationTx(amount, parseInt(this.validatorInfo.id, 16));
+                delegationTx = sfcUtils.createDelegationTx(amount, validatorId);
             }
 
             const tx = await this.$fWallet.getSFCTransactionToSign(
@@ -295,6 +297,7 @@ export default {
                     tx,
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo || this.validatorInfo,
+                    previousComponent: this.previousComponent,
                 },
             });
         },

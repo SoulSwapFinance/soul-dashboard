@@ -80,7 +80,7 @@
                     </div>
                     <template v-else>
                         <button
-                            :disabled="item.isOffline || item.isCheater"
+                            :disabled="item.isOffline || item.isCheater || item.alreadyDelegated"
                             class="btn select-btn"
                             :data-validator-id="value"
                         >
@@ -127,6 +127,7 @@ import { formatHexToInt, timestampToDate, numToFixed, formatNumberByLocale } fro
 import { sortByHex, sortByLocaleString } from '../../../utils/array-sorting.js';
 import appConfig from '../../../../app.config.js';
 import { cloneObject } from '@/utils';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ValidatorList',
@@ -180,7 +181,7 @@ export default {
                     }
                 }
             `,
-            result(_data, _key) {
+            async result(_data, _key) {
                 const totals = {
                     selfStaked: 0,
                     totalDelegated: 0,
@@ -210,6 +211,8 @@ export default {
                         if (_item.isCheater) {
                             flagged.push(_idx);
                         }
+
+                        _item.alreadyDelegated = true;
                     });
 
                     if (flagged.length > 0) {
@@ -224,6 +227,15 @@ export default {
 
                     this.$emit('records-count', this.dItems.length);
                     this.$emit('validator-list-totals', totals);
+
+                    const stakerIds = await this.$fWallet.fetchStakerIdsByAddress(this.currentAccount.address);
+                    if (stakerIds.length > 0) {
+                        data.forEach((_item) => {
+                            if (stakerIds.indexOf(_item.id) === -1) {
+                                _item.alreadyDelegated = false;
+                            }
+                        });
+                    }
                 }
             },
             skip() {
@@ -305,6 +317,8 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         /**
          * Property is set to `true`, if 'tvalidator-list-dt-mobile-view' breakpoint is reached.
          *

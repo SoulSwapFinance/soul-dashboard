@@ -89,8 +89,6 @@ export default {
                 if (_key === 'delegationsByAddress') {
                     data = cloneObject(_data.data.delegationsByAddress);
 
-                    console.log(data);
-
                     const edges = data.edges;
 
                     if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {

@@ -76,6 +76,11 @@ export default {
                 return {};
             },
         },
+        /** Name of previous component. */
+        previousComponent: {
+            type: String,
+            default: 'staking-info',
+        },
     },
 
     data() {
@@ -117,6 +122,7 @@ export default {
                 data: {
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo,
+                    previousComponent: this.previousComponent,
                 },
             });
         },

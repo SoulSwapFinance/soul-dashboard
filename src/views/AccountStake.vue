@@ -59,6 +59,7 @@ export default {
                         stakeData: this._data_,
                         increaseDelegation: this._data_.increaseDelegation,
                         stakerInfo: this._data_.stakerInfo,
+                        previousComponent: this._data_.previousComponent,
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
