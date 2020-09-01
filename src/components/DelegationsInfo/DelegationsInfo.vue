@@ -1,7 +1,7 @@
 <template>
     <div class="delegations-info">
         <f-card class="f-card-double-padding f-data-layout">
-            <div class="align-center">
+            <div class="add-delegation-cont">
                 <button class="btn large" type="button" @click="onAddDelegationBtnClick">
                     <icon data="@/assets/svg/plus.svg" width="16" height="16" aria-hidden="true" /> Add delegation
                 </button>
@@ -44,3 +44,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>

@@ -235,6 +235,10 @@ export default {
                                 _item.alreadyDelegated = false;
                             }
                         });
+                    } else {
+                        data.forEach((_item) => {
+                            _item.alreadyDelegated = false;
+                        });
                     }
                 }
             },

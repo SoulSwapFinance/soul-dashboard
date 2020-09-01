@@ -17,6 +17,51 @@
                 f-card-off
                 @fetch-more="fetchMore"
             >
+                <template v-slot:column-validator="{ value, item, column }">
+                    <div v-if="column" class="row no-collapse no-vert-col-padding">
+                        <div class="col-5 f-row-label">{{ column.label }}</div>
+                        <div class="col break-word">
+                            <a
+                                v-if="value"
+                                :href="`${explorerUrl}validator/${value.stakerAddress}`"
+                                target="_blank"
+                                class="break-word"
+                            >
+                                {{ value.stakerInfo && value.stakerInfo.name ? value.stakerInfo.name : 'Unknown' }},
+                                {{ value.id | formatHexToInt }}
+                            </a>
+                            <a
+                                v-if="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
+                                :href="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
+                                target="_blank"
+                                rel="nofollow"
+                                class="validator-website"
+                            >
+                                <icon data="@/assets/svg/external-link-alt.svg"></icon>
+                            </a>
+                        </div>
+                    </div>
+                    <template v-else>
+                        <a
+                            v-if="value"
+                            :href="`${explorerUrl}validator/${value.stakerAddress}`"
+                            target="_blank"
+                            class="break-word"
+                        >
+                            {{ value.stakerInfo && value.stakerInfo.name ? value.stakerInfo.name : 'Unknown' }},
+                            {{ value.id | formatHexToInt }}
+                        </a>
+                        <a
+                            v-if="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
+                            :href="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
+                            target="_blank"
+                            rel="nofollow"
+                            class="validator-website"
+                        >
+                            <icon data="@/assets/svg/external-link-alt.svg"></icon>
+                        </a>
+                    </template>
+                </template>
             </f-data-table>
         </template>
         <template v-else>
@@ -29,7 +74,9 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
-import { formatHexToInt } from '@/filters.js';
+import { formatDate, formatHexToInt, formatNumberByLocale, timestampToDate } from '@/filters.js';
+import { WEIToFTM } from '@/utils/transactions.js';
+import appConfig from '../../../../app.config.js';
 // import { formatHexToInt } from '@/filters.js';
 export default {
     name: 'DelegationList',
@@ -83,7 +130,7 @@ export default {
                     cursor: null,
                 };
             },
-            result(_data, _key) {
+            async result(_data, _key) {
                 let data;
 
                 if (_key === 'delegationsByAddress') {
@@ -107,6 +154,18 @@ export default {
 
                     this.totalCount = data.totalCount;
                     this.$emit('records-count', formatHexToInt(this.totalCount));
+
+                    const stakers = await this.fetchStakers();
+                    if (stakers && stakers.length > 0) {
+                        // data.edges[0].delegation._validator = 'werwer';
+                        edges.forEach((_item) => {
+                            _item.delegation = {
+                                ..._item.delegation,
+                                _validator: stakers.find((_staker) => _staker.id === _item.delegation.toStakerId),
+                            };
+                        });
+                        console.log('!', edges, stakers);
+                    }
                 }
             },
             error(_error) {
@@ -122,17 +181,24 @@ export default {
                     name: 'createdTime',
                     label: 'Delegation Time',
                     itemProp: 'delegation.createdTime',
-                    // formatter: (_value) => formatHexToInt(_value),
+                    formatter: (_value) => formatDate(timestampToDate(_value), false, true),
                 },
                 {
                     name: 'validator',
                     label: 'Validator',
-                    itemProp: 'delegation.toStakerId',
+                    itemProp: 'delegation._validator',
+                    // formatter: (_value, _item) => _item._validator,
+                    width: '150px',
                 },
                 {
                     name: 'amount',
-                    label: 'Amount',
+                    label: 'Amount (FTM)',
                     itemProp: 'delegation.amount',
+                    formatter: (_value) => formatNumberByLocale(WEIToFTM(_value)),
+                    width: '150px',
+                    css: {
+                        textAlign: 'right',
+                    },
                 },
                 {
                     name: '',
@@ -142,6 +208,7 @@ export default {
                 },
             ],
             dItems: [],
+            explorerUrl: appConfig.explorerUrl,
             hasNext: false,
             delegationsByAddressError: '',
             totalCount: 0,
@@ -166,6 +233,28 @@ export default {
     },
 
     methods: {
+        async fetchStakers() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query Stakers {
+                        stakers {
+                            id
+                            stakerAddress
+                            stakerInfo {
+                                name
+                                website
+                                contact
+                                logoUrl
+                            }
+                        }
+                    }
+                `,
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.stakers;
+        },
+
         fetchMore() {
             const { delegationsByAddress } = this;
 
