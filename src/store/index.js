@@ -35,6 +35,7 @@ import {
     ADD_CONTACT,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
+import { arrayEquals } from '@/utils/array.js';
 
 Vue.use(Vuex);
 
@@ -62,14 +63,21 @@ vuexPlugins.push(vuexLocalStorage.plugin);
 
 /**
  * Get pending rewards amount from account structure.
+ * Pending rewards are stored because of not to query totalBalance too often.
  *
  * @param {object} _account
  * @return {string}
  */
 function getPendingRewards(_account) {
-    return _account && _account.delegation && _account.delegation.pendingRewards
-        ? _account.delegation.pendingRewards.amount
-        : '';
+    let pendingRewards = [];
+
+    if (_account && _account.delegations && _account.delegations.edges) {
+        pendingRewards = _account.delegations.edges.map((_item) =>
+            _item.delegation && _item.delegation.pendingRewards ? _item.delegation.pendingRewards.amount : ''
+        );
+    }
+
+    return pendingRewards;
 }
 
 export const store = new Vuex.Store({
@@ -486,7 +494,7 @@ export const store = new Vuex.Store({
                 balance = await fWallet.getBalance(account.address, false, true);
                 pendingRewards = getPendingRewards(balance);
 
-                if (account.balance !== balance.balance || account.pendingRewards !== pendingRewards) {
+                if (account.balance !== balance.balance || !arrayEquals(account.pendingRewards, pendingRewards)) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {
@@ -511,7 +519,10 @@ export const store = new Vuex.Store({
                 let balance = await fWallet.getBalance(account.address, false, true);
                 let pendingRewards = getPendingRewards(balance);
 
-                if (index > -1 && (account.balance !== balance.balance || account.pendingRewards !== pendingRewards)) {
+                if (
+                    index > -1 &&
+                    (account.balance !== balance.balance || !arrayEquals(account.pendingRewards, pendingRewards))
+                ) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {

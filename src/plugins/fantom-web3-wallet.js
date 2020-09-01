@@ -103,9 +103,15 @@ export class FantomWeb3Wallet {
                     address
                     balance
                     totalValue
-                    delegation {
-                        pendingRewards {
-                            amount
+                    delegations {
+                        totalCount
+                        edges {
+                            delegation {
+                                pendingRewards {
+                                    amount
+                                }
+                            }
+                            cursor
                         }
                     }
                 }
@@ -118,9 +124,15 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
-                        delegation {
-                            pendingRewards {
-                                amount
+                        delegations {
+                            totalCount
+                            edges {
+                                delegation {
+                                    pendingRewards {
+                                        amount
+                                    }
+                                }
+                                cursor
                             }
                         }
                     }
@@ -140,51 +152,57 @@ export class FantomWeb3Wallet {
                             createdTime
                             isActive
                         }
-                        delegation {
-                            toStakerId
-                            createdEpoch
-                            createdTime
-                            deactivatedEpoch
-                            deactivatedTime
-                            amount
-                            amountDelegated
-                            amountInWithdraw
-                            claimedReward
-                            pendingRewards {
-                                amount
-                                fromEpoch
-                                toEpoch
-                            }
-                            withdrawRequests {
-                                address
-                                receiver
-                                account {
-                                    address
+                        delegations {
+                            totalCount
+                            edges {
+                                delegation {
+                                    toStakerId
+                                    createdEpoch
+                                    createdTime
+                                    deactivatedEpoch
+                                    deactivatedTime
+                                    amount
+                                    amountDelegated
+                                    amountInWithdraw
+                                    claimedReward
+                                    pendingRewards {
+                                        amount
+                                        fromEpoch
+                                        toEpoch
+                                    }
+                                    withdrawRequests {
+                                        address
+                                        receiver
+                                        account {
+                                            address
+                                        }
+                                        stakerID
+                                        withdrawRequestID
+                                        isDelegation
+                                        amount
+                                        withdrawPenalty
+                                        requestBlock {
+                                            number
+                                            timestamp
+                                        }
+                                        withdrawBlock {
+                                            number
+                                            timestamp
+                                        }
+                                    }
+                                    deactivation {
+                                        address
+                                        requestBlock {
+                                            number
+                                            timestamp
+                                        }
+                                        withdrawBlock {
+                                            number
+                                            timestamp
+                                        }
+                                    }
                                 }
-                                stakerID
-                                withdrawRequestID
-                                isDelegation
-                                amount
-                                withdrawPenalty
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
-                            }
-                            deactivation {
-                                address
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
+                                cursor
                             }
                         }
                     }
