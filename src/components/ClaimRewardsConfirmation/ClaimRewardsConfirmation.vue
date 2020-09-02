@@ -4,6 +4,7 @@
             :tx="tx"
             confirmation-comp-name="claim-rewards-confirmation"
             go-back-comp-name="staking-info"
+            :go-back-data="{ stakerId }"
             send-button-label="Claim Rewards"
             password-label="Please enter your wallet password to claim rewards"
             :gas-limit="gasLimit"
@@ -54,6 +55,11 @@ export default {
                 return {};
             },
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -67,7 +73,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -75,7 +82,7 @@ export default {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
-                sfcUtils.claimDelegationRewardsTx(200),
+                sfcUtils.claimDelegationRewardsTx(200, parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 this.gasLimit
             );
@@ -89,6 +96,7 @@ export default {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Claiming Rewards Successful',
                     continueTo: 'account-history',
+                    stakerId: this.stakerId,
                 },
             });
         },

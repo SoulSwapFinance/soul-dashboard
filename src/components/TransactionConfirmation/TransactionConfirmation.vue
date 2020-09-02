@@ -168,6 +168,8 @@ export default {
                 el.focus();
             }
         }
+
+        // this.setSendToAddress();
     },
 
     /**

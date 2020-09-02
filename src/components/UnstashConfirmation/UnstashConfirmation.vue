@@ -57,6 +57,11 @@ export default {
                 return {};
             },
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -70,7 +75,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -91,6 +97,7 @@ export default {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Unstashing Successful',
                     continueTo: 'account-history',
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -99,6 +106,9 @@ export default {
             this.$emit('change-component', {
                 to: 'staking-info',
                 from: 'unstash-confirmation',
+                data: {
+                    stakerId: this.stakerId,
+                },
                 /*
                 data: {
                     withdrawRequest: this.withdrawRequest,

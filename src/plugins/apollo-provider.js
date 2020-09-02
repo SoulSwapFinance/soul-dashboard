@@ -54,15 +54,17 @@ const httpLink = new HttpLink({
     uri: httpProvider,
 });
 
+/*
 const loggerLink = new ApolloLink((operation, forward) => {
     console.log(`GraphQL Request: ${operation.operationName}`);
     operation.setContext({ start: new Date() });
     return forward(operation).map((response) => {
         const responseTime = new Date() - operation.getContext().start;
-        console.log(`GraphQL Response ${operation.operationName} took: ${responseTime}`);
+        console.log(`GraphQL Response ${operation.operationName} took: ${responseTime}ms`);
         return response;
     });
 });
+*/
 
 const netErrorLink = new ApolloLink((operation, forward) => {
     return forward(operation).map((response) => {
@@ -133,9 +135,11 @@ const retryLink = new RetryLink({
 
 let apolloLinks = [];
 
+/*
 if (process.env.NODE_ENV === 'development') {
     apolloLinks.push(loggerLink);
 }
+*/
 
 apolloLinks = [...apolloLinks, netErrorLink, retryLink, errorLink, concat(httpProviderMiddleware, httpLink)];
 

@@ -46,6 +46,7 @@ import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import appConfig from '../../../app.config.js';
+import { cloneObject } from '@/utils';
 
 /**
  * Base component for other 'transaction confirmation and send' components.
@@ -73,6 +74,13 @@ export default {
         goBackCompName: {
             type: String,
             default: '',
+        },
+        /** Data for component displayed after 'back' button is clicked. */
+        goBackData: {
+            type: Object,
+            default() {
+                return {};
+            },
         },
         /** Label for button in TransactionConfirmationForm component */
         sendButtonLabel: {
@@ -220,6 +228,7 @@ export default {
                 this.$emit('change-component', {
                     to: this.goBackCompName,
                     from: this.confirmationCompName,
+                    data: cloneObject(this.goBackData),
                 });
             }
         },

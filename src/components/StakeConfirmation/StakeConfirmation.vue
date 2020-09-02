@@ -81,6 +81,11 @@ export default {
             type: String,
             default: 'staking-info',
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -94,7 +99,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -111,6 +117,7 @@ export default {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Delegation Successful',
                     continueTo: 'account-history',
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -123,6 +130,7 @@ export default {
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo,
                     previousComponent: this.previousComponent,
+                    stakerId: this.stakerId,
                 },
             });
         },

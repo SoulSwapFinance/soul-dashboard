@@ -15,6 +15,8 @@
                 infinite-scroll
                 fixed-header
                 f-card-off
+                action-on-row
+                @row-action="$emit('row-action', $event)"
                 @fetch-more="fetchMore"
             >
                 <template v-slot:column-validator="{ value, item, column }">
@@ -164,7 +166,6 @@ export default {
                                 _validator: stakers.find((_staker) => _staker.id === _item.delegation.toStakerId),
                             };
                         });
-                        console.log('!', edges, stakers);
                     }
                 }
             },

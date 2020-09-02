@@ -1,12 +1,12 @@
 <template>
     <div class="view-account-stake account-main-content-mt">
-        <keep-alive>
-            <component
-                :is="currentComponent"
-                v-bind="currentComponentProperties"
-                @change-component="onChangeComponent"
-            ></component>
-        </keep-alive>
+        <!--        <keep-alive>-->
+        <component
+            :is="currentComponent"
+            v-bind="currentComponentProperties"
+            @change-component="onChangeComponent"
+        ></component>
+        <!--        </keep-alive>-->
     </div>
 </template>
 
@@ -52,14 +52,13 @@ export default {
     computed: {
         currentComponentProperties() {
             switch (this.currentComponent) {
-                case 'stake-form':
-                    return this._data_;
                 case 'stake-confirmation':
                     return {
                         stakeData: this._data_,
                         increaseDelegation: this._data_.increaseDelegation,
                         stakerInfo: this._data_.stakerInfo,
                         previousComponent: this._data_.previousComponent,
+                        stakerId: this._data_.stakerId,
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
@@ -68,15 +67,19 @@ export default {
                         accountInfo: this._data_.accountInfo,
                         amount: this._data_.amount,
                         undelegateMax: this._data_.undelegateMax,
+                        stakerId: this._data_.stakerId,
                     };
                 case 'transaction-success-message':
                     return {
                         tx: this._data_.tx,
                         title: this._data_.successMessage,
                         continueTo: this._data_.continueTo,
+                        stakerId: this._data_.stakerId,
                     };
                 case 'withdraw-f-t-m-confirmation':
                 case 'unstash-confirmation':
+                case 'stake-form':
+                case 'staking-info':
                     return this._data_;
                 default:
                     return null;

@@ -65,6 +65,11 @@ export default {
                 return {};
             },
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -107,6 +112,9 @@ export default {
             this.$emit('change-component', {
                 to: 'staking-info',
                 from: 'unstake-f-t-m',
+                data: {
+                    stakerId: this.stakerId,
+                },
             });
         },
 
@@ -120,6 +128,7 @@ export default {
                     accountInfo: this.accountInfo,
                     amount,
                     undelegateMax: amount === this.undelegateMax,
+                    stakerId: this.stakerId,
                 },
             });
         },

@@ -75,6 +75,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -88,18 +93,20 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
     methods: {
         async setTx() {
+            const stakerId = parseInt(this.stakerId, 16);
             console.log(this.amount, this.undelegateMax);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 this.undelegateMax
-                    ? sfcUtils.prepareToWithdrawDelegationTx()
-                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), this.amount),
+                    ? sfcUtils.prepareToWithdrawDelegationTx(stakerId)
+                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
                 this.currentAccount.address,
                 GAS_LIMITS.undelegate
             );
@@ -113,6 +120,7 @@ export default {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
                     continueTo: 'account-history',
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -123,6 +131,7 @@ export default {
                 from: 'unstake-confirmation',
                 data: {
                     accountInfo: this.accountInfo,
+                    stakerId: this.stakerId,
                 },
             });
         },

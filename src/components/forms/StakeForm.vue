@@ -122,6 +122,11 @@ export default {
             type: String,
             default: 'staking-info',
         },
+        /** */
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -178,7 +183,8 @@ export default {
         });
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         const { stakerInfo } = this;
 
         this.validator = 'Select a Validator';
@@ -298,6 +304,7 @@ export default {
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo || this.validatorInfo,
                     previousComponent: this.previousComponent,
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -328,6 +335,9 @@ export default {
             this.$emit('change-component', {
                 to: this.previousComponent,
                 from: 'stake-form',
+                data: {
+                    stakerId: this.stakerId,
+                },
             });
         },
 

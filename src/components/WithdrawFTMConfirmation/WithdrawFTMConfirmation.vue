@@ -76,6 +76,10 @@ export default {
                 return {};
             },
         },
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -89,7 +93,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -100,7 +105,7 @@ export default {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 withdrawRequest.withdrawRequestID
                     ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                    : sfcUtils.withdrawDelegationTx(),
+                    : sfcUtils.withdrawDelegationTx(parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 GAS_LIMITS.withdraw
             );
@@ -114,6 +119,7 @@ export default {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
                     continueTo: 'account-history',
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -124,6 +130,7 @@ export default {
                 from: 'withdraw-ftm-confirmation',
                 data: {
                     withdrawRequest: this.withdrawRequest,
+                    stakerId: this.stakerId,
                 },
             });
         },

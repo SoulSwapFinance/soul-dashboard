@@ -83,6 +83,17 @@
             <div class="row">
                 <div class="col align-center">
                     <div class="form-buttons">
+                        <template v-if="stakerId">
+                            <a
+                                href="#"
+                                class="btn light large break-word"
+                                style="max-width: 100%;"
+                                aria-label="Go to previous form"
+                                @click.prevent="onPreviousBtnClick"
+                            >
+                                Previous
+                            </a>
+                        </template>
                         <template v-if="stakerInfo">
                             <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
                                 <f-message type="info" with-icon>
@@ -147,11 +158,25 @@ import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import gql from 'graphql-tag';
 
 export default {
     name: 'StakingInfo',
 
     components: { FPlaceholder, FMessage, WithdrawRequestList, FCard },
+
+    props: {
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
+        /** Name of previous component. */
+        previousComponent: {
+            type: String,
+            default: 'delegations-info',
+        },
+    },
 
     data() {
         return {
@@ -218,7 +243,9 @@ export default {
 
                 if (delegation.withdrawRequests && delegation.withdrawRequests.length) {
                     delegation.withdrawRequests.forEach((_request) => {
-                        requests.push(_request);
+                        if (delegation.toStakerId === _request.stakerID) {
+                            requests.push(_request);
+                        }
                     });
                 }
             }
@@ -236,7 +263,7 @@ export default {
 
             if (delegation && delegation.withdrawRequests && delegation.withdrawRequests.length) {
                 delegation.withdrawRequests.forEach((_request) => {
-                    if (!_request.withdrawBlock) {
+                    if (!_request.withdrawBlock && delegation.toStakerId === _request.stakerID) {
                         amount += WeiToFtm(_request.amount);
                     }
                 });
@@ -248,8 +275,10 @@ export default {
 
     asyncComputed: {
         async accountInfo() {
-            const accountInfo = await this.$fWallet.getBalance(this.currentAccount.address, true);
-            const { delegation } = accountInfo;
+            let accountInfo = await this.fetchAccountInfo();
+            const delegation = await this.fetchDelegation(this.stakerId);
+
+            accountInfo.delegation = delegation;
 
             accountInfo.delegated = delegation ? delegation.amount : 0;
             accountInfo.pendingRewards = delegation ? delegation.pendingRewards.amount : 0;
@@ -303,6 +332,7 @@ export default {
                 data: {
                     increaseDelegation: !!_increaseDelegation,
                     stakerInfo,
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -324,6 +354,7 @@ export default {
                         stakerInfo,
                         withdrawRequestsAmount: this.withdrawRequestsAmount,
                     },
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -347,6 +378,7 @@ export default {
                             ...accountInfo,
                             stakerInfo,
                         },
+                        stakerId: this.stakerId,
                     },
                 });
             }
@@ -365,9 +397,102 @@ export default {
                             ...accountInfo,
                             stakerInfo,
                         },
+                        stakerId: this.stakerId,
                     },
                 });
             }
+        },
+
+        /**
+         * Fetch account info by current account address.
+         */
+        async fetchAccountInfo() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query AccountByAddress($address: Address!) {
+                        account(address: $address) {
+                            address
+                            balance
+                            stashed
+                            canUnStash
+                        }
+                    }
+                `,
+                variables: {
+                    address: this.currentAccount.address,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.account;
+        },
+
+        /**
+         * Fetch delegation by staker id and current account address.
+         *
+         * @param {string} _stakerId
+         */
+        async fetchDelegation(_stakerId) {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query Delegation($address: Address!, $staker: Long!) {
+                        delegation(address: $address, staker: $staker) {
+                            toStakerId
+                            createdEpoch
+                            createdTime
+                            deactivatedEpoch
+                            deactivatedTime
+                            amount
+                            amountDelegated
+                            amountInWithdraw
+                            claimedReward
+                            pendingRewards {
+                                amount
+                                fromEpoch
+                                toEpoch
+                            }
+                            withdrawRequests {
+                                address
+                                receiver
+                                account {
+                                    address
+                                }
+                                stakerID
+                                withdrawRequestID
+                                isDelegation
+                                amount
+                                withdrawPenalty
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                            deactivation {
+                                address
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    address: this.currentAccount.address,
+                    staker: _stakerId,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.delegation;
         },
 
         /**
@@ -388,7 +513,15 @@ export default {
                     amount: WeiToFtm(_withdrawRequest.amount),
                     withdraw: true,
                     withdrawRequest: _withdrawRequest,
+                    stakerId: this.stakerId,
                 },
+            });
+        },
+
+        onPreviousBtnClick() {
+            this.$emit('change-component', {
+                to: this.previousComponent,
+                from: 'stake-form',
             });
         },
 
