@@ -110,14 +110,16 @@ export default {
         },
 
         onSendTransactionSuccess(_data) {
+            const stakerId = this.stakerId || this.stakeData.id;
+
             this.$emit('change-component', {
                 to: 'transaction-success-message',
                 from: 'stake-confirmation',
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Delegation Successful',
-                    continueTo: 'account-history',
-                    stakerId: this.stakerId,
+                    continueTo: 'staking-info',
+                    continueToParams: { stakerId },
                 },
             });
         },

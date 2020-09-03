@@ -96,8 +96,10 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Unstashing Successful',
-                    continueTo: 'account-history',
-                    stakerId: this.stakerId,
+                    continueTo: 'staking-info',
+                    continueToParams: {
+                        stakerId: this.stakerId,
+                    },
                 },
             });
         },

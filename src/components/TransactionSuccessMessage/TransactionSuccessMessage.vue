@@ -148,7 +148,7 @@ export default {
                 this.$emit('change-component', {
                     to: this.continueTo,
                     from: 'transaction-success-message',
-                    params: this.continueToParams,
+                    data: this.continueToParams,
                 });
             }
         },

@@ -78,6 +78,7 @@ export default {
                         tx: this._data_.tx,
                         title: this._data_.successMessage,
                         continueTo: this._data_.continueTo,
+                        continueToParams: this._data_.continueToParams,
                         stakerId: this._data_.stakerId,
                     };
                 case 'withdraw-f-t-m-confirmation':

@@ -23,45 +23,15 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
-                            <a
-                                v-if="value"
-                                :href="`${explorerUrl}validator/${value.stakerAddress}`"
-                                target="_blank"
-                                class="break-word"
-                            >
+                            <template v-if="value">
                                 {{ value.stakerInfo && value.stakerInfo.name ? value.stakerInfo.name : 'Unknown' }},
                                 {{ value.id | formatHexToInt }}
-                            </a>
-                            <a
-                                v-if="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
-                                :href="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
-                                target="_blank"
-                                rel="nofollow"
-                                class="validator-website"
-                            >
-                                <icon data="@/assets/svg/external-link-alt.svg"></icon>
-                            </a>
+                            </template>
                         </div>
                     </div>
-                    <template v-else>
-                        <a
-                            v-if="value"
-                            :href="`${explorerUrl}validator/${value.stakerAddress}`"
-                            target="_blank"
-                            class="break-word"
-                        >
-                            {{ value.stakerInfo && value.stakerInfo.name ? value.stakerInfo.name : 'Unknown' }},
-                            {{ value.id | formatHexToInt }}
-                        </a>
-                        <a
-                            v-if="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
-                            :href="(value && value.stakerInfo ? value.stakerInfo.website || value.stakerInfo.contact : '')"
-                            target="_blank"
-                            rel="nofollow"
-                            class="validator-website"
-                        >
-                            <icon data="@/assets/svg/external-link-alt.svg"></icon>
-                        </a>
+                    <template v-else-if="value">
+                        {{ value.stakerInfo && value.stakerInfo.name ? value.stakerInfo.name : 'Unknown' }},
+                        {{ value.id | formatHexToInt }}
                     </template>
                 </template>
             </f-data-table>
