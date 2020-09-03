@@ -123,6 +123,9 @@
                                 <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
                                     Undelegate
                                 </button>
+                                <button class="btn large" :disabled="!canLockDelegation" @click="lockDelegation()">
+                                    Lock Delegation
+                                </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
                                     You need to claim all pending rewards before increasing your delegation or
@@ -207,6 +210,10 @@ export default {
                 accountInfo.pendingRewards === '0x0' &&
                 accountInfo.stashed === '0x0'
             );
+        },
+
+        canLockDelegation() {
+            return this.canUndelegate;
         },
 
         /**
@@ -354,6 +361,20 @@ export default {
                         stakerInfo,
                         withdrawRequestsAmount: this.withdrawRequestsAmount,
                     },
+                    stakerId: this.stakerId,
+                },
+            });
+        },
+
+        lockDelegation() {
+            if (!this.canLockDelegation) {
+                return;
+            }
+
+            this.$emit('change-component', {
+                to: 'delegation-lock',
+                from: 'staking-info',
+                data: {
                     stakerId: this.stakerId,
                 },
             });

@@ -1,0 +1,64 @@
+@import "../../assets/scss/vars";
+
+.delegation-lock {
+    .delegation-lock-body {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .defi-price-input {
+        margin-top: 32px;
+        margin-bottom: 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+
+        .f-auto-resize-input {
+            max-width: initial;
+        }
+
+        input.text-input {
+            font-size: 96px;
+            margin-bottom: 0;
+        }
+
+        .days-label {
+            font-size: 48px;
+            margin-left: 8px;
+        }
+
+        .days-label, input.text-input::placeholder {
+            color: $light-gray-color;
+        }
+
+        input.text-input.invalid {
+            color: red;
+        }
+    }
+
+    .f-slider-wrap {
+        margin-bottom: 32px;
+    }
+}
+
+@include media-max($bp-large) {
+    .delegation-lock {
+        .defi-price-input {
+            margin-bottom: 0;
+
+            input.text-input {
+                font-size: 60px;
+            }
+            .days-label {
+                font-size: 34px;
+                margin-left: 4px;
+            }
+        }
+
+        .f-slider-wrap {
+            margin-bottom: 16px;
+        }
+    }
+}

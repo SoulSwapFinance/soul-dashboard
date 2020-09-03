@@ -287,6 +287,9 @@ export class FantomWeb3Wallet {
                         downtime
                         isActive
                         isOffline
+                        isStakeLocked
+                        lockedFromEpoch
+                        lockedUntil
                         stakerInfo {
                             name
                             website
