@@ -2,9 +2,9 @@
     <div class="delegation-lock-confirmation">
         <tx-confirmation
             :tx="tx"
-            confirmation-comp-name="unstake-confirmation"
-            send-button-label="Undelegate"
-            password-label="Please enter your wallet password to undelegate your FTM"
+            confirmation-comp-name="delegation-lock-confirmation"
+            send-button-label="Lock"
+            password-label="Please enter your wallet password to lock delegation"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :on-go-back="onGoBack"

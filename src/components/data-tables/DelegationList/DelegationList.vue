@@ -120,6 +120,9 @@ export default {
                                 deactivatedEpoch
                                 deactivatedTime
                                 amount
+                                isDelegationLocked
+                                lockedFromEpoch
+                                lockedUntil
                             }
                         }
                     }
@@ -204,8 +207,8 @@ export default {
                 {
                     name: '',
                     label: 'Expiration Time',
-                    // itemProp: 'delegation.amount',
-                    formatter: () => '-',
+                    itemProp: 'delegation.lockedUntil',
+                    formatter: (_value) => formatDate(timestampToDate(_value)) || '-',
                 },
             ],
             dItems: [],

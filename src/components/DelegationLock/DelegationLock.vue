@@ -2,7 +2,7 @@
     <div class="delegation-lock">
         <f-card class="f-card-double-padding f-data-layout">
             <h2 class="align-left">
-                Lock Delegation <span class="f-steps"><b>1</b> / 2</span>
+                Lock Delegation <span v-if="canLockDelegation" class="f-steps"><b>1</b> / 2</span>
             </h2>
 
             <div class="delegation-lock-body">
@@ -141,7 +141,7 @@ export default {
          * @return {boolean}
          */
         canLockDelegation() {
-            return this.validatorLockedUntil - this.now() > this.minLock;
+            return this.validatorLockedUntil - this.now() > this.minLock && this.minLockDays < this.maxLockDays;
         },
 
         /**
@@ -229,7 +229,11 @@ export default {
             this.lockedUntilDate = '';
 
             if (!this.canLockDelegation) {
-                this.message = `Validator doesn't lock delegations or lock time is less than ${minDays} days.`;
+                if (this.minLockDays >= this.maxLockDays && this.maxLockDays > 0) {
+                    this.message = 'You have reached maximum days to lock delegation.';
+                } else {
+                    this.message = `Validator doesn't lock delegations or lock time is less than ${minDays} days.`;
+                }
             } else if (this.valueIsCorrect) {
                 this.lockedUntilDate = this.lockedUntil();
             }

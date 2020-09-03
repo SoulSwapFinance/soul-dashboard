@@ -228,10 +228,11 @@ form {
 
 .form-buttons {
     padding-top: 24px;
-    padding-bottom: 24px;
+    padding-bottom: 8px;
 
     .btn {
         margin-right: 16px;
+        margin-bottom: 16px;
 
         &:last-child {
             margin-right: 0;
