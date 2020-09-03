@@ -23,6 +23,7 @@ import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/Cla
 import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/WithdrawFTMConfirmation.vue';
 import UnstashConfirmation from '../components/UnstashConfirmation/UnstashConfirmation.vue';
 import DelegationLock from '@/components/DelegationLock/DelegationLock.vue';
+import DelegationLockConfirmation from '@/components/DelegationLockConfirmation/DelegationLockConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
 const DEFAULT_COMPONENT = 'delegations-info';
@@ -41,6 +42,7 @@ export default {
         WithdrawFTMConfirmation,
         UnstashConfirmation,
         DelegationLock,
+        DelegationLockConfirmation,
     },
 
     mixins: [eventBusMixin],
@@ -83,6 +85,7 @@ export default {
                 case 'stake-form':
                 case 'staking-info':
                 case 'delegation-lock':
+                case 'delegation-lock-confirmation':
                     return this._data_;
                 default:
                     return null;

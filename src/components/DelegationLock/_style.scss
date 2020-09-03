@@ -41,6 +41,10 @@
     .f-slider-wrap {
         margin-bottom: 32px;
     }
+
+    .f-message {
+        margin-bottom: 16px;
+    }
 }
 
 @include media-max($bp-large) {

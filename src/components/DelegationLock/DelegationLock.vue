@@ -60,7 +60,7 @@
                     <button
                         type="submit"
                         class="btn large"
-                        :disabled="!canLockDelegation && valueIsCorrect"
+                        :disabled="!canLockDelegation || !valueIsCorrect"
                         @click="onSubmit"
                     >
                         Ok, lock
@@ -127,7 +127,7 @@ export default {
             // tmp
             // const lockedUntil = this.delegation ? parseInt(this.validator.lockedUntil, 16) - dayS * 5 - this.now() : 0;
 
-            return Math.max(minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS));
+            return Math.max(minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS) + 1);
         },
 
         /**
@@ -239,7 +239,9 @@ export default {
             const eInput = this.$refs.lockDaysInputAR;
 
             if (eInput) {
-                eInput.update();
+                this.$nextTick(() => {
+                    eInput.update();
+                });
             }
         },
 
@@ -313,6 +315,27 @@ export default {
             return Math.min(Math.max(_value, this.minLockDays), this.maxLockDays);
         },
 
+        onSubmit() {
+            let lockDuration = 0;
+
+            if (this.canLockDelegation && this.valueIsCorrect) {
+                if (this.lockDaysInputValue === this.maxLockDays) {
+                    lockDuration = this.validatorLockedUntil - this.now() - blockTime;
+                } else {
+                    lockDuration = this.lockDaysInputValue * dayS + blockTime;
+                }
+
+                this.$emit('change-component', {
+                    to: 'delegation-lock-confirmation',
+                    from: 'delegation-lock',
+                    data: {
+                        stakerId: this.stakerId,
+                        lockDuration,
+                    },
+                });
+            }
+        },
+
         onPreviousBtnClick() {
             this.$emit('change-component', {
                 to: 'staking-info',
@@ -354,20 +377,6 @@ export default {
         onLockDaysInputKeydown(_event) {
             if (_event.key === '+' || _event.key === '-') {
                 _event.preventDefault();
-            }
-        },
-
-        onSubmit() {
-            let lockDuration = 0;
-
-            if (this.canLockDelegation && this.valueIsCorrect) {
-                if (this.lockDaysInputValue === this.maxLockDays) {
-                    lockDuration = this.validatorLockedUntil - this.now() - blockTime;
-                } else {
-                    lockDuration = this.lockDaysInputValue * dayS + blockTime;
-                }
-
-                console.log('SUBMIT', lockDuration);
             }
         },
     },
