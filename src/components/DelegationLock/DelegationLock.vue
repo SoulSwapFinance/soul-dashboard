@@ -1,8 +1,11 @@
 <template>
     <div class="delegation-lock">
         <f-card class="f-card-double-padding f-data-layout">
-            <h2 class="align-left">
-                Lock Delegation <span v-if="canLockDelegation" class="f-steps"><b>1</b> / 2</span>
+            <h2 class="align-left cont-with-back-btn">
+                <span>
+                    Lock Delegation <span v-if="canLockDelegation" class="f-steps"><b>1</b> / 2</span>
+                </span>
+                <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
             </h2>
 
             <div class="delegation-lock-body">
@@ -56,7 +59,6 @@
                 </f-message>
 
                 <div class="form-buttons align-center">
-                    <button type="button" class="btn light large" @click="onPreviousBtnClick">Previous</button>
                     <button
                         type="submit"
                         class="btn large"

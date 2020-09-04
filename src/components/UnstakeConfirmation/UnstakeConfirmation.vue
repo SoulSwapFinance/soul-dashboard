@@ -7,11 +7,13 @@
             password-label="Please enter your wallet password to undelegate your FTM"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            <h2 class="cont-with-back-btn">
+                <span>
+                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                </span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -127,7 +129,7 @@ export default {
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'unstake-f-t-m',
                 from: 'unstake-confirmation',

@@ -7,11 +7,13 @@
             send-button-label="Delegate"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            <h2 class="cont-with-back-btn">
+                <span>
+                    Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                </span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -124,7 +126,7 @@ export default {
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'stake-form',
                 from: 'stake-confirmation',

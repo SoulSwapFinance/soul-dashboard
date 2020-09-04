@@ -7,11 +7,11 @@
             password-label="Please enter your wallet password to withdraw your FTM"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Withdraw delegated FTM - Confirmation
+            <h2 class="cont-with-back-btn">
+                <span>Withdraw delegated FTM - Confirmation</span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -126,7 +126,7 @@ export default {
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'staking-info',
                 from: 'withdraw-ftm-confirmation',

@@ -3,8 +3,11 @@
         <f-card class="f-card-double-padding">
             <f-form ref="form" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
-                    <legend class="h2">
-                        Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
+                    <legend class="h2 cont-with-back-btn">
+                        <span>
+                            Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
+                        </span>
+                        <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
                     </legend>
 
                     <div class="form-body">
@@ -61,9 +64,6 @@
                         />
 
                         <div class="align-center form-buttons">
-                            <button type="button" class="btn light large" @click="onPreviousBtnClick">
-                                Previous
-                            </button>
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
                             </button>

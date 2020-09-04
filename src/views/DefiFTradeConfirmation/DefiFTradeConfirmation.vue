@@ -4,7 +4,6 @@
             v-if="hasCorrectParams"
             :tx="tx"
             card-off
-            no-previous-button
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"

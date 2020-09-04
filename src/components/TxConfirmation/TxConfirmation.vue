@@ -10,9 +10,7 @@
                 :show-password-field="!currentAccount.isLedgerAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
-                :no-previous-button="noPreviousButton"
                 @f-form-submit="onFFormSubmit"
-                @go-back="_onGoBack"
             />
         </f-card>
 
@@ -46,7 +44,6 @@ import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import appConfig from '../../../app.config.js';
-import { cloneObject } from '@/utils';
 
 /**
  * Base component for other 'transaction confirmation and send' components.
@@ -69,18 +66,6 @@ export default {
         confirmationCompName: {
             type: String,
             default: '',
-        },
-        /** Name of component in cebab case */
-        goBackCompName: {
-            type: String,
-            default: '',
-        },
-        /** Data for component displayed after 'back' button is clicked. */
-        goBackData: {
-            type: Object,
-            default() {
-                return {};
-            },
         },
         /** Label for button in TransactionConfirmationForm component */
         sendButtonLabel: {
@@ -105,18 +90,8 @@ export default {
             type: Function,
             default: null,
         },
-        /** Function called when 'previous' button was pressed */
-        onGoBack: {
-            type: Function,
-            default: null,
-        },
         /** Don't render card */
         cardOff: {
-            type: Boolean,
-            default: false,
-        },
-        /** Don't show 'previous' button */
-        noPreviousButton: {
             type: Boolean,
             default: false,
         },
@@ -218,18 +193,6 @@ export default {
                         this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
                     }, 3000);
                 }
-            }
-        },
-
-        _onGoBack() {
-            if (this.onGoBack) {
-                this.onGoBack();
-            } else {
-                this.$emit('change-component', {
-                    to: this.goBackCompName,
-                    from: this.confirmationCompName,
-                    data: cloneObject(this.goBackData),
-                });
             }
         },
 

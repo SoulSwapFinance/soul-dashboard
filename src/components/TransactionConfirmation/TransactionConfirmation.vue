@@ -3,15 +3,17 @@
         <tx-confirmation
             :tx="tx"
             confirmation-comp-name="transaction-confirmation"
-            go-back-comp-name="send-transaction-form"
             send-button-label="Send"
             password-label="Please enter your wallet password to send the transaction"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Send Opera FTM - Confirmation <span class="f-steps"><b>3</b> / 3</span>
+            <h2 class="cont-with-back-btn">
+                <span>
+                    Send Opera FTM - Confirmation <span class="f-steps"><b>3</b> / 3</span>
+                </span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -258,6 +260,13 @@ export default {
          */
         onChangeComponent(_data) {
             this.$emit('change-component', _data);
+        },
+
+        onBackBtnClick() {
+            this.$emit('change-component', {
+                to: 'send-transaction-form',
+                from: 'transaction-confirmation',
+            });
         },
 
         toFTM,

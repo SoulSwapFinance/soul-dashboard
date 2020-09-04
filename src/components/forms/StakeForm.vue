@@ -3,8 +3,19 @@
         <f-card class="f-card-double-padding">
             <f-form ref="stakeForm" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
-                    <legend class="h2">
-                        Delegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                    <legend class="h2 cont-with-back-btn">
+                        <span
+                            >Delegate FTM <span class="f-steps"><b>1</b> / 2</span></span
+                        >
+                        <a
+                            href="#"
+                            class="btn light break-word"
+                            style="max-width: 100%;"
+                            aria-label="Go to previous form"
+                            @click.prevent="onPreviousBtnClick"
+                        >
+                            Back
+                        </a>
                     </legend>
 
                     <div class="form-body">
@@ -63,15 +74,6 @@
                         </f-input>
 
                         <div class="align-center form-buttons">
-                            <a
-                                href="#"
-                                class="btn light large break-word"
-                                style="max-width: 100%;"
-                                aria-label="Go to previous form"
-                                @click.prevent="onPreviousBtnClick"
-                            >
-                                Previous
-                            </a>
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
                             </button>

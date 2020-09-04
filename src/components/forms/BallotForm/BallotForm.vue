@@ -3,8 +3,11 @@
         <f-card class="f-card-double-padding">
             <f-form center-form @f-form-submit="onFormSubmit">
                 <fieldset class="f-data-layout">
-                    <legend class="h2">
-                        Vote <span class="f-steps"><b>1</b> / 2</span>
+                    <legend class="h2 cont-with-back-btn">
+                        <span>
+                            Vote <span class="f-steps"><b>1</b> / 2</span>
+                        </span>
+                        <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
                     </legend>
 
                     <div class="form-body">
@@ -28,7 +31,6 @@
                         </div>
 
                         <div class="align-center form-buttons">
-                            <button type="button" class="btn large light" @click="onPreviousBtnClick">Previous</button>
                             <button type="submit" class="btn large">Vote</button>
                         </div>
                     </div>

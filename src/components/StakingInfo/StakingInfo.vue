@@ -1,7 +1,20 @@
 <template>
     <div ref="doc" class="stake-ftm" tabindex="0">
         <f-card class="f-card-double-padding f-data-layout">
-            <h2>Staking</h2>
+            <h2 class="cont-with-back-btn">
+                <span>Staking</span>
+                <template v-if="stakerId">
+                    <a
+                        href="#"
+                        class="btn light break-word"
+                        style="max-width: 100%;"
+                        aria-label="Go to previous form"
+                        @click.prevent="onPreviousBtnClick"
+                    >
+                        Back
+                    </a>
+                </template>
+            </h2>
 
             <div class="row no-vert-col-padding collapse-md">
                 <div class="col">
@@ -83,17 +96,6 @@
             <div class="row">
                 <div class="col align-center">
                     <div class="form-buttons">
-                        <template v-if="stakerId">
-                            <a
-                                href="#"
-                                class="btn light large break-word"
-                                style="max-width: 100%;"
-                                aria-label="Go to previous form"
-                                @click.prevent="onPreviousBtnClick"
-                            >
-                                Previous
-                            </a>
-                        </template>
                         <template v-if="stakerInfo">
                             <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
                                 <f-message type="info" with-icon>
@@ -110,20 +112,36 @@
                                 <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
                                     Unstash Rewards
                                 </button>
-                                <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
+                                <button
+                                    v-show="!canIncreaseDelegation"
+                                    class="btn large"
+                                    :disabled="canIncreaseDelegation"
+                                    @click="claimRewards()"
+                                >
                                     Claim Rewards
                                 </button>
                                 <button
+                                    v-show="canIncreaseDelegation"
                                     class="btn large"
                                     :disabled="!canIncreaseDelegation"
                                     @click="increaseDelegation()"
                                 >
                                     Increase Delegation
                                 </button>
-                                <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
+                                <button
+                                    v-show="canUndelegate"
+                                    class="btn large"
+                                    :disabled="!canUndelegate"
+                                    @click="undelegate()"
+                                >
                                     Undelegate
                                 </button>
-                                <button class="btn large" :disabled="!canLockDelegation" @click="lockDelegation()">
+                                <button
+                                    v-show="canLockDelegation"
+                                    class="btn large"
+                                    :disabled="!canLockDelegation"
+                                    @click="lockDelegation()"
+                                >
                                     Lock Delegation
                                 </button>
 
@@ -137,7 +155,9 @@
                             </template>
                         </template>
                         <template v-else>
-                            <button class="btn large" :disabled="!accountInfo" @click="stake()">Delegate</button>
+                            <button v-show="accountInfo" class="btn large" :disabled="!accountInfo" @click="stake()">
+                                Delegate
+                            </button>
                         </template>
                     </div>
                 </div>

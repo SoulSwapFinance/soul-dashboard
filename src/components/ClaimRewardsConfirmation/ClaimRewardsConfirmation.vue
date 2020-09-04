@@ -3,15 +3,16 @@
         <tx-confirmation
             :tx="tx"
             confirmation-comp-name="claim-rewards-confirmation"
-            go-back-comp-name="staking-info"
-            :go-back-data="{ stakerId }"
             send-button-label="Claim Rewards"
             password-label="Please enter your wallet password to claim rewards"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
-            <h2>Claim Rewards</h2>
+            <h2 class="cont-with-back-btn">
+                <span>Claim Rewards</span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
+            </h2>
 
             <div class="transaction-info">
                 <div class="row no-collapse">
@@ -110,6 +111,16 @@ export default {
          */
         onChangeComponent(_data) {
             this.$emit('change-component', _data);
+        },
+
+        onBackBtnClick() {
+            this.$emit('change-component', {
+                to: 'staking-info',
+                from: 'claim-rewards-confirmation',
+                data: {
+                    stakerId: this.stakerId,
+                },
+            });
         },
 
         toFTM,

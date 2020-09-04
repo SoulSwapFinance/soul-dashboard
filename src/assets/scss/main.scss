@@ -226,6 +226,16 @@ form {
 }
 */
 
+.cont-with-back-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    & > :last-child {
+        margin-left: auto;
+    }
+}
+
 .form-buttons {
     padding-top: 24px;
     padding-bottom: 8px;
