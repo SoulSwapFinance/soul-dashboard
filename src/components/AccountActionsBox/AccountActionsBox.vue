@@ -2,6 +2,14 @@
     <nav class="account-actions-box actions-box">
         <ul class="no-markers">
             <li>
+                <router-link :to="{ name: 'account-history' }" class="action" title="Home">
+                    <span class="btn large same-size round">
+                        <icon data="@/assets/svg/wallet.svg" width="20" height="20" aria-hidden="true" />
+                    </span>
+                    <span class="link-label">Wallet</span>
+                </router-link>
+            </li>
+            <li>
                 <router-link :to="{ name: 'account-send' }" class="action" title="Send">
                     <span class="btn large same-size round">
                         <icon data="@/assets/svg/send.svg" width="20" height="20" aria-hidden="true" />
@@ -31,14 +39,6 @@
                         <icon data="@/assets/svg/thumb.svg" width="20" height="20" aria-hidden="true" />
                     </span>
                     <span class="link-label">Polls</span>
-                </router-link>
-            </li>
-            <li>
-                <router-link :to="{ name: 'account-history' }" class="action" title="Home">
-                    <span class="btn large same-size round">
-                        <icon data="@/assets/svg/tx-history.svg" width="20" height="20" aria-hidden="true" />
-                    </span>
-                    <span class="link-label">History</span>
                 </router-link>
             </li>
         </ul>
