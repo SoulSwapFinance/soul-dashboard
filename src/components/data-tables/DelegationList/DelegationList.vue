@@ -93,6 +93,9 @@ export default {
                                 isDelegationLocked
                                 lockedFromEpoch
                                 lockedUntil
+                                pendingRewards {
+                                    amount
+                                }
                             }
                         }
                     }
@@ -155,7 +158,7 @@ export default {
                     name: 'createdTime',
                     label: 'Delegation Time',
                     itemProp: 'delegation.createdTime',
-                    formatter: (_value) => formatDate(timestampToDate(_value), false, true),
+                    formatter: (_value) => formatDate(timestampToDate(_value), true),
                 },
                 {
                     name: 'validator',
@@ -169,7 +172,17 @@ export default {
                     label: 'Amount (FTM)',
                     itemProp: 'delegation.amount',
                     formatter: (_value) => formatNumberByLocale(WEIToFTM(_value)),
-                    width: '150px',
+                    width: '160px',
+                    css: {
+                        textAlign: 'right',
+                    },
+                },
+                {
+                    name: 'rewards',
+                    label: 'Pending Rewards (FTM)',
+                    itemProp: 'delegation.pendingRewards',
+                    formatter: (_value) => (_value ? formatNumberByLocale(WEIToFTM(_value.amount)) : '-'),
+                    width: '160px',
                     css: {
                         textAlign: 'right',
                     },
@@ -178,7 +191,7 @@ export default {
                     name: '',
                     label: 'Expiration Time',
                     itemProp: 'delegation.lockedUntil',
-                    formatter: (_value) => formatDate(timestampToDate(_value)) || '-',
+                    formatter: (_value) => formatDate(timestampToDate(_value), true) || '-',
                 },
             ],
             dItems: [],
