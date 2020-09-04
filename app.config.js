@@ -47,7 +47,8 @@ const appConfig = {
         // list of providers. if one of them is unavailable, another is randomly picked
         providers: [
             {
-                http: 'https://xapi.testnet.fantom.network/api',
+                http: 'https://xapi5.testnet.fantom.network/graphql',
+                // http: 'https://xapi.testnet.fantom.network/api',
                 // for subscriptions
                 ws: '',
             },

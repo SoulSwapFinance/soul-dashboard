@@ -282,8 +282,18 @@ export default {
 
     asyncComputed: {
         async accountInfo() {
-            let accountInfo = await this.fetchAccountInfo();
-            const delegation = await this.fetchDelegation(this.stakerId);
+            let accountInfo = this._accountInfo;
+            let delegation = this._delegation;
+
+            if (!accountInfo) {
+                accountInfo = await this.fetchAccountInfo();
+                this._accountInfo = accountInfo;
+            }
+
+            if (!delegation) {
+                delegation = await this.fetchDelegation(this.stakerId);
+                this._delegation = delegation;
+            }
 
             accountInfo.delegation = delegation;
 
@@ -320,6 +330,11 @@ export default {
 
             return stakerInfo;
         },
+    },
+
+    created() {
+        this._accountInfo = null;
+        this._delegation = null;
     },
 
     mounted() {
