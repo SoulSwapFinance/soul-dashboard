@@ -5,7 +5,7 @@
             :items="items"
             first-m-v-column-width="6"
             f-card-off
-            class="f-data-table-body-bg-color"
+            :class="{ 'f-data-table-body-bg-color': defiAssetsList }"
         >
             <template v-slot:column-asset="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
@@ -120,6 +120,11 @@ export default {
                 };
             },
         },
+        /** Assets list used in defi module. */
+        defiAssetsList: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -169,6 +174,7 @@ export default {
                 {
                     name: 'borrowed',
                     label: 'Borrowed',
+                    hidden: !this.defiAssetsList,
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
@@ -179,6 +185,7 @@ export default {
                 {
                     name: 'actions',
                     label: 'Actions',
+                    hidden: !this.defiAssetsList,
                     width: '120px',
                 },
             ],

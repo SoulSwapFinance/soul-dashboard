@@ -10,7 +10,7 @@ import AccountReceive from './views/AccountReceive.vue';
 import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
-import AccountHistory from './views/AccountHistory.vue';
+import AccountHistory from './views/AccountHistory/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
 import AccountVote from './views/AccountVote.vue';

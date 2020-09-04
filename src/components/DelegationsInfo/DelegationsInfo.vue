@@ -1,6 +1,6 @@
 <template>
     <div class="delegations-info">
-        <f-card class="f-card-double-padding f-data-layout">
+        <f-card class="f-data-layout">
             <delegation-list :account-address="currentAccount.address" @row-action="onRowAction" />
             <div class="add-delegation-cont">
                 <button class="btn large" type="button" @click="onAddDelegationBtnClick">

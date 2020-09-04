@@ -12,7 +12,12 @@
                 </template>
 
                 <f-tab title-slot="assets">
-                    <assets-list :tokens="tokens" :defi-account="defiAccount" @records-count="onAssetsRecordsCount" />
+                    <assets-list
+                        defi-assets-list
+                        :tokens="tokens"
+                        :defi-account="defiAccount"
+                        @records-count="onAssetsRecordsCount"
+                    />
                 </f-tab>
                 <f-tab title-slot="positions">
                     <positions-list

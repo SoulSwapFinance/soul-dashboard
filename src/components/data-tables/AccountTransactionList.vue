@@ -1,8 +1,10 @@
 <template>
     <f-card class="account-transaction-list-dt" :off="windowMode">
+        <!--
         <h2 v-if="!windowMode" class="dt-heading">
             Transactions <span class="f-records-count">({{ totalCount | formatHexToInt }})</span>
         </h2>
+        -->
 
         <template v-if="!dAccountByAddressError">
             <f-data-table
