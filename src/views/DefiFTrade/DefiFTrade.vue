@@ -332,6 +332,23 @@ export default {
             this.defiAccount = result[0];
 
             if ($defi.tmpWFTM) {
+                const wFTM = result[1].filter((_token) => _token && _token.symbol === 'WFTM');
+
+                const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
+
+                // add FTM
+                result[1].push({
+                    address: '0xfc00face00000000000000000000000000000000',
+                    symbol: 'FTM',
+                    name: 'Fantom',
+                    isActive: true,
+                    decimals: 18,
+                    price: wFTM[0].price,
+                    priceDecimals: 8,
+                    availableBalance: account.balance,
+                    logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
+                });
+
                 this.tokens = result[1].filter(
                     (_token) => _token && (_token.symbol === 'FTM' || _token.symbol === 'WFTM')
                 );

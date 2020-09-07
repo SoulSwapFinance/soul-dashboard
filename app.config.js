@@ -37,7 +37,7 @@ const appConfig = {
         token: '',
     },
     // address of liquidity pool contract
-    liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
+    liquidityPoolContract: '0xdf7aba7f4bf266309fa68dd0d7eb18002d425695',
     // tmp
     tmpWFTM: true,
     //
@@ -47,8 +47,7 @@ const appConfig = {
         // list of providers. if one of them is unavailable, another is randomly picked
         providers: [
             {
-                http: 'https://xapi5.testnet.fantom.network/graphql',
-                // http: 'https://xapi.testnet.fantom.network/api',
+                http: 'https://xapi.testnet.fantom.network/api',
                 // for subscriptions
                 ws: '',
             },
