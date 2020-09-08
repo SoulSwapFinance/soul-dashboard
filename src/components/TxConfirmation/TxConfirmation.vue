@@ -95,6 +95,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Set temporary password */
+        setTmpPwd: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -145,20 +150,26 @@ export default {
             const pwd = _event.detail.data.pwd;
             let rawTx = null;
 
+            _event.detail.data.pwd = '';
+
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
                 if (appConfig.useTestnet) {
                     this.tx.chainId = appConfig.testnet.chainId;
                 }
 
-                console.log('tx', this.tx);
+                // console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;
 
-                    if (pwd) {
+                    if (pwd || fWallet.pwdStorage.isSet()) {
                         try {
                             rawTx = await fWallet.signTransaction(this.tx, currentAccount.keystore, pwd);
+
+                            if (this.setTmpPwd) {
+                                fWallet.pwdStorage.set(pwd);
+                            }
                         } catch (_error) {
                             console.error(_error);
                             this.errorMsg = _error.toString();

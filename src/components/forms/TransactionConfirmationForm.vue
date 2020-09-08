@@ -6,7 +6,7 @@
 
                 <div class="form-body">
                     <f-password-field
-                        v-if="showPasswordField"
+                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet()"
                         :label="passwordLabel"
                         field-size="large"
                         autocomplete="off"
@@ -52,7 +52,7 @@
 import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 
 export default {

@@ -33,6 +33,68 @@ export const Web3 = {
     accounts: new Accounts(),
 };
 
+/**
+ * Temporary password storage.
+ * @type {{pwd: string, timeout: number}}
+ */
+const pwdO = {
+    pwd: '',
+    timeout: 0,
+};
+
+/**
+ * Class for handling temporary password storage.
+ */
+class PWDStorage {
+    constructor() {
+        this.timeoutId = -1;
+    }
+
+    /**
+     * @param {string} _pwd
+     */
+    set(_pwd = '') {
+        pwdO.pwd = _pwd;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isSet() {
+        return !!pwdO.pwd;
+    }
+
+    clear() {
+        pwdO.pwd = '';
+    }
+
+    /**
+     * @param {number} _timeout
+     */
+    setTimeout(_timeout = 0) {
+        pwdO.timeout = _timeout;
+
+        this.timeoutId = setTimeout(function () {
+            pwdO.pwd = '';
+            pwdO.timeout = 0;
+        }, pwdO.timeout);
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isTimeoutSet() {
+        return pwdO.timeout > 0;
+    }
+
+    clearTimeout() {
+        if (this.timeoutId > -1) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = -1;
+        }
+    }
+}
+
 // Fantom web3 wallet plugin for VUE, based on https://git`hub.com/Fantom-foundation/fantom-web3-wallet
 export class FantomWeb3Wallet {
     static install(_Vue, _options) {
@@ -57,6 +119,8 @@ export class FantomWeb3Wallet {
                 label: 'Binance Chain',
             },
         ];
+
+        this.pwdStorage = new PWDStorage();
     }
 
     /**
@@ -577,7 +641,12 @@ export class FantomWeb3Wallet {
     }
 
     async signTransaction(_tx, _keystore, _password) {
-        const account = this.decryptFromKeystore(_keystore, _password);
+        const { pwdStorage } = this;
+        const account = this.decryptFromKeystore(_keystore, pwdO.pwd || _password);
+
+        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet()) {
+            pwdStorage.clear();
+        }
 
         if (account) {
             const transaction = await account.signTransaction(_tx);

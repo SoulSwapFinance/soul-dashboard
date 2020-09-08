@@ -8,6 +8,7 @@
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
+            :set-tmp-pwd="params.step === 1"
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
