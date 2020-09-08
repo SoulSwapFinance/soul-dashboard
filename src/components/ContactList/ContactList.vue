@@ -7,7 +7,7 @@
     >
         <ul class="no-markers">
             <li v-for="contact in cContacts" :key="contact.address">
-                <f-card>
+                <f-card hover>
                     <h3 slot="title" class="title" :data-address="contact.address">
                         <span class="row no-collapse align-items-start">
                             <span class="col">

@@ -7,7 +7,7 @@
     >
         <ul class="no-markers">
             <li v-for="(account, index) in accounts" :key="account.address">
-                <f-card>
+                <f-card hover>
                     <h3 slot="title" class="title">
                         <span class="row no-collapse align-items-start">
                             <span class="col-5 col-10-md" :class="{ 'account-name-exists': !!account.name }">

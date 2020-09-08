@@ -58,6 +58,8 @@ export default {
     mixins: [eventBusMixin],
 
     created() {
+        // document.documentElement.classList.add('dark-mode');
+
         filtersOptions.currency = this.$store.state.currency;
         filtersOptions.fractionDigits = this.$store.state.fractionDigits;
         this.setTokenPrice(this.$store.state.currency);

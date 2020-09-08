@@ -1,0 +1,72 @@
+:root.dark-mode {
+    --f-dark-color: #222431;
+    --f-darker-color: #2C2E3F;
+    --f-darker-hover-color: #33364a;
+    --f-lighter-color: #9299a6;
+
+    --f-doc-color: #fbfcff;
+    --f-doc-background-color: var(--f-dark-color);
+
+    //--f-simple-navigation-link-color: #2C2E3F;
+    --f-simple-navigation-link-color: var(--f-lighter-color);
+    //--f-simple-navigation-link-hover-color: #fff;
+
+    --f-home-background-color: var(--f-darker-color);
+
+    .wallet-menu {
+        --f-wallet-menu-background-color: var(--f-darker-color);
+    }
+
+    .f-card {
+        --f-card-background-color: var(--f-darker-color);
+        --f-card-hover-background-color: var(--f-darker-hover-color);
+        --f-card-box-shadow: none;
+        --f-card-hover-box-shadow: none;
+    }
+
+    .f-tabs {
+        --f-tabs-border-color: var(--f-darker-color);
+    }
+
+    .f-window {
+        //--f-window-background: var(--f-darker-color);
+        --f-window-background: var(--f-dark-color);
+        --f-window-body-background: var(--f-dark-color);
+
+        //--f-window-popover-color: #f4f4f4;
+        //--f-window-popover-background: #333;
+        //--f-window-popover-box-shadow: #{$elev8-shadow};
+    }
+
+    .f-window-overlay, .f-overlay {
+        --f-overlay-background-color: rgba(43, 50, 77, 0.8);
+    }
+
+    /*
+    .f-window.popover.light {
+        --f-window-popover-color: var(--f-doc-color);
+        --f-window-popover-background: #fff;
+    }
+    */
+
+    /*
+    .actions-box {
+        --f-actions-box-color: var(--f-primary-color);
+    }
+    */
+
+    .f-slider {
+        --f-slider-thumb-background-color: var(--f-darker-hover-color);
+        --f-slider-track-color: var(--f-darker-hover-color);
+        //--f-slider-track-color: var(--f-darker-color);
+        --f-slider-thumb-box-shadow: none;
+        --f-slider-thumb-hover-box-shadow: none;
+    }
+
+    /*
+    .f-social-media-links {
+        --f-social-media-link-color: var(--f-primary-color-light);
+        --f-social-media-link-hover-color: var(--f-primary-color);
+    }
+    */
+}

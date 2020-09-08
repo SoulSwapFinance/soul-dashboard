@@ -7,9 +7,10 @@
     border-radius: var(--f-card-border-radius);
     background-color: var(--f-card-background-color);
     box-shadow: var(--f-card-box-shadow);
-    transition: box-shadow var(--f-card-transition-length) ease, transform var(--f-card-transition-length) ease;
+    transition: background-color var(--f-card-transition-length) ease, box-shadow var(--f-card-transition-length) ease, transform var(--f-card-transition-length) ease;
 
-    &.f-card-hover:hover {
+    &.f-card-hover:hover, &.f-card-hover:focus-within {
+        background-color: var(--f-card-hover-background-color);
         box-shadow: var(--f-card-hover-box-shadow);
     }
 
@@ -37,11 +38,6 @@
                 border-radius: 20px;
                 transition: box-shadow var(--f-card-transition-length) ease;
             }
-
-            &:hover::after, &:focus::after {
-                box-shadow: var(--f-card-hover-box-shadow);
-                /*outline: 2px solid red;*/
-            }
         }
     }
 
@@ -50,9 +46,4 @@
         display: block;
         padding-bottom: 8px;
     }
-    /*
-            &[hover]:hover {
-                box-shadow: var(--f-card-hover-box-shadow);
-            }
-    */
 }
