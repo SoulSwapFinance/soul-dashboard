@@ -412,7 +412,8 @@ export default {
             if (this.repay) {
                 return this.debt - this._minDebt;
             } else {
-                return Math.max(this.borrowLimit, this.debt);
+                // return Math.max(this.borrowLimit, this.debt);
+                return this.borrowLimit;
             }
         },
 
