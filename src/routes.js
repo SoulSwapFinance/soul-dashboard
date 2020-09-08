@@ -7,7 +7,7 @@ import Account from './views/Account/Account.vue';
 import Dashboard from './views/Dashboard/Dashboard.vue';
 import AccountSend from './views/AccountSend.vue';
 import AccountReceive from './views/AccountReceive.vue';
-import AccountStake from './views/AccountStake.vue';
+// import AccountStake from './views/AccountStake.vue';
 import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 import AccountHistory from './views/AccountHistory/AccountHistory.vue';
@@ -42,6 +42,7 @@ import DefiMint from '@/views/DefiMint/DefiMint.vue';
 import DefiRepay from '@/views/DefiRepay/DefiRepay.vue';
 import DefiMintConfirmation from '@/views/DefiMintConfirmation/DefiMintConfirmation.vue';
 import DefiRepayConfirmation from '@/views/DefiRepayConfirmation/DefiRepayConfirmation.vue';
+import Staking from '@/views/Staking/Staking.vue';
 
 export const routes = [
     {
@@ -99,12 +100,14 @@ export const routes = [
                         component: AccountReceive,
                         meta: { dontScrollToTop: true },
                     },
+                    /*
                     {
                         name: 'account-stake',
                         path: 'stake',
                         component: AccountStake,
                         meta: { dontScrollToTop: true },
                     },
+                    */
                     {
                         name: 'account-vote',
                         path: 'vote',
@@ -117,6 +120,11 @@ export const routes = [
                 name: 'dashboard',
                 path: '/dashboard',
                 component: Dashboard,
+            },
+            {
+                name: 'staking',
+                path: '/staking/:address',
+                component: Staking,
             },
             {
                 name: 'defi',

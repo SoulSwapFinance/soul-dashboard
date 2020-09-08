@@ -182,7 +182,11 @@ export default {
     created() {
         const routeName = this.$route.name;
 
-        if (routeName.indexOf('account-') > -1 || routeName.indexOf('defi-') > -1) {
+        if (
+            routeName.indexOf('account-') > -1 ||
+            routeName.indexOf('defi-') > -1 ||
+            routeName.indexOf('staking') > -1
+        ) {
             this.routeName = routeName;
         }
     },

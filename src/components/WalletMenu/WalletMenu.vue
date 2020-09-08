@@ -48,6 +48,7 @@ import homeIcon from '../../assets/svg/home.svg';
 import settingsIcon from '../../assets/svg/settings.svg';
 import walletIcon from '../../assets/svg/wallet.svg';
 import defiIcon from '../../assets/svg/defi.svg';
+import stakingIcon from '../../assets/svg/stake.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
@@ -91,6 +92,14 @@ export default {
                     title: 'Wallet',
                     icon: walletIcon,
                     walletLink: true,
+                },
+                {
+                    url: {
+                        name: 'staking',
+                    },
+                    title: 'Staking',
+                    icon: stakingIcon,
+                    stakingLink: true,
                 },
                 {
                     url: {
@@ -200,6 +209,7 @@ export default {
          */
         setWalletUrl(_account) {
             this.setMenuItemUrl('walletLink', _account);
+            this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
         },
 
