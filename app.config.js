@@ -37,7 +37,8 @@ const appConfig = {
         token: '',
     },
     // address of liquidity pool contract
-    liquidityPoolContract: '0xdf7aba7f4bf266309fa68dd0d7eb18002d425695',
+    // liquidityPoolContract: '0xdf7aba7f4bf266309fa68dd0d7eb18002d425695',
+    liquidityPoolContract: '0xc984dd06804dd335172b1f7c18a093ed9127f5f0',
     // tmp
     tmpWFTM: true,
     //
