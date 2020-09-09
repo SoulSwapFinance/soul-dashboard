@@ -228,7 +228,8 @@ export default {
                     this.$emit('records-count', this.dItems.length);
                     this.$emit('validator-list-totals', totals);
 
-                    const stakerIds = await this.$fWallet.fetchStakerIdsByAddress(this.currentAccount.address);
+                    const stakerIds = await this.fetchStakerIds();
+
                     if (stakerIds.length > 0) {
                         data.forEach((_item) => {
                             if (stakerIds.indexOf(_item.id) === -1) {
@@ -346,6 +347,44 @@ export default {
     },
 
     methods: {
+        /**
+         * @return {Promise<[]>}
+         */
+        async fetchStakerIds() {
+            const delegations = await this.$fWallet.fetchAll(
+                {
+                    query: gql`
+                        query DelegationsByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
+                            delegationsByAddress(address: $address, cursor: $cursor, count: $count) {
+                                pageInfo {
+                                    first
+                                    last
+                                    hasNext
+                                    hasPrevious
+                                }
+                                totalCount
+                                edges {
+                                    cursor
+                                    delegation {
+                                        toStakerId
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        address: this.currentAccount.address,
+                        count: 100,
+                        cursor: null,
+                    },
+                    fetchPolicy: 'network-only',
+                },
+                'delegationsByAddress'
+            );
+
+            return delegations.map((_item) => (_item.delegation ? _item.delegation.toStakerId : ''));
+        },
+
         onClick(_event) {
             const eSelectBtn = _event.target.closest('.select-btn');
 

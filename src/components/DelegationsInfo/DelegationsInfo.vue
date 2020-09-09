@@ -1,6 +1,10 @@
 <template>
     <div class="delegations-info">
-        <f-card class="f-data-layout">
+        <f-card class="f-card-double-padding f-data-layout">
+            <staking-overview />
+        </f-card>
+
+        <f-card class="f-data-layout account-main-content-mt">
             <delegation-list :account-address="currentAccount.address" @row-action="onRowAction" />
             <div class="add-delegation-cont">
                 <button class="btn large" type="button" @click="onAddDelegationBtnClick">
@@ -15,11 +19,12 @@
 import FCard from '@/components/core/FCard/FCard.vue';
 import DelegationList from '@/components/data-tables/DelegationList/DelegationList.vue';
 import { mapGetters } from 'vuex';
+import StakingOverview from '@/components/StakingOverview/StakingOverview.vue';
 
 export default {
     name: 'DelegationsInfo',
 
-    components: { DelegationList, FCard },
+    components: { StakingOverview, DelegationList, FCard },
 
     computed: {
         ...mapGetters(['currentAccount']),

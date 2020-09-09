@@ -374,56 +374,27 @@ export class FantomWeb3Wallet {
     }
 
     /**
-     * Get balance and total balance of account by address.
+     * Fetch all records.
      *
-     * @param {String} _address
-     * @param {Boolean} [_withDelegations] Include delegations and staker info.
-     * @return {Promise<{totalValue: string, address: string, balance: string}>}
+     * @param {ApolloQuery} _query
+     * @param {string} _queryName
+     * @return {Promise<[]>}
      */
-    async fetchStakerIdsByAddress(_address) {
-        const query = {
-            query: gql`
-                query DelegationsByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
-                    delegationsByAddress(address: $address, cursor: $cursor, count: $count) {
-                        pageInfo {
-                            first
-                            last
-                            hasNext
-                            hasPrevious
-                        }
-                        totalCount
-                        edges {
-                            cursor
-                            delegation {
-                                toStakerId
-                            }
-                        }
-                    }
-                }
-            `,
-            variables: {
-                address: _address,
-                count: 100,
-                cursor: null,
-            },
-            fetchPolicy: 'network-only',
-        };
+    async fetchAll(_query, _queryName) {
         let edges = [];
         let pageInfo = { hasNext: true, last: null };
         let data;
-        let delegationsByAddress;
+        let item;
 
         while (pageInfo && pageInfo.hasNext) {
-            query.variables.cursor = pageInfo.last;
+            _query.variables.cursor = pageInfo.last;
 
-            data = await this.apolloClient.query(query);
+            data = await this.apolloClient.query(_query);
 
-            delegationsByAddress = data.data.delegationsByAddress;
-            pageInfo = delegationsByAddress.pageInfo;
-            if (delegationsByAddress.edges) {
-                edges = edges.concat(
-                    delegationsByAddress.edges.map((_item) => (_item.delegation ? _item.delegation.toStakerId : ''))
-                );
+            item = data.data[_queryName];
+            pageInfo = item.pageInfo;
+            if (item.edges) {
+                edges = edges.concat(item.edges);
             }
         }
 

@@ -13,7 +13,6 @@
                 :loading="loading"
                 first-m-v-column-width="5"
                 infinite-scroll
-                fixed-header
                 f-card-off
                 action-on-row
                 @row-action="$emit('row-action', $event)"
