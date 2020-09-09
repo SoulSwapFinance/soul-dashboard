@@ -4,7 +4,7 @@
             <li>
                 <span class="action" title="Create Wallet" @click="onCreateAWalletClick">
                     <button class="btn create-account-btn large same-size round">
-                        <icon data="@/assets/svg/wallet.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/wallet.svg" width="20" height="20" :fill="false" aria-hidden="true" />
                     </button>
                     <span class="link-label create-account-color">Create Wallet</span>
                 </span>

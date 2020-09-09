@@ -4,7 +4,7 @@
             <li>
                 <router-link :to="{ name: 'account-history' }" class="action" title="Home">
                     <span class="btn large same-size round">
-                        <icon data="@/assets/svg/wallet.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/wallet.svg" width="20" height="20" :fill="false" aria-hidden="true" />
                     </span>
                     <span class="link-label">Wallet</span>
                 </router-link>
@@ -38,7 +38,7 @@
             <li>
                 <router-link :to="{ name: 'account-vote' }" class="action" title="Poll">
                     <span class="btn large same-size round">
-                        <icon data="@/assets/svg/thumb.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/thumb.svg" width="20" height="20" :fill="false" aria-hidden="true" />
                     </span>
                     <span class="link-label">Polls</span>
                 </router-link>

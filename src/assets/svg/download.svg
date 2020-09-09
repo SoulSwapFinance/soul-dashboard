@@ -1,4 +1,10 @@
-<svg id="Component_3_1" data-name="Component 3 – 1" xmlns="http://www.w3.org/2000/svg" width="12.784" height="16" viewBox="0 0 12.784 16">
-  <path id="Path_4" data-name="Path 4" d="M27.524,17.947a.787.787,0,0,0-1.115,0l-4.327,4.327V13A.794.794,0,1,0,20.5,13v9.19l-4.2-4.208a.794.794,0,0,0-1.121,1.121L20.772,24.7a.806.806,0,0,0,1.121,0l5.631-5.637a.787.787,0,0,0,0-1.115Z" transform="translate(-14.971 -12.138)"/>
-  <path id="Path_5" data-name="Path 5" d="M26.983,36.611H15.765a.794.794,0,0,1,0-1.581H26.983a.794.794,0,0,1,0,1.581Z" transform="translate(-14.997 -20.611)"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="43px" height="51px" viewBox="0 0 43 51" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>download</title>
+    <g id="05-Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="download" transform="translate(1.530000, 1.450000)" stroke="#0B1823" stroke-width="2">
+            <path d="M7.91,36 L6.66,36 C3,36 0,33.3 0,30 L0,6 C0,2.7 3,0 6.66,0 L33.33,0 C37,0 40,2.7 40,6 L40,30 C40,33.3 37,36 33.33,36 L31.64,36" id="Path" stroke-linejoin="round"></path>
+            <path d="M20.03,31.49 L20.03,47.49 M20.03,47.62 L12.47,40.11 M20.04,47.62 L27.55,40.05" id="Shape"></path>
+        </g>
+    </g>
 </svg>
