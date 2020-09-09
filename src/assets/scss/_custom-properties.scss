@@ -8,6 +8,9 @@
     --f-window-padding-with-header: 40px;
     --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
 
+    --f-icon-stroke-color: var(--f-doc-background-color);
+    --f-icon-fill-color: var(--f-doc-background-color);
+
     .f-slider {
         --f-slider-label-color: var(--f-primary-color);
         --f-slider-label-font-size: 14px;
@@ -34,17 +37,28 @@
 
     .f-data-table-body-bg-color {
         .f-data-table {
+            //--f-data-table-cell-background-color: none;
             --f-data-table-cell-background-color: var(--f-doc-background-color);
         }
     }
 
+    .f-card {
+        .f-data-table-body-bg-color {
+            .f-data-table {
+                //--f-data-table-cell-background-color: none;
+                --f-data-table-cell-background-color: var(--f-card-background-color);
+            }
+        }
+    }
+
     .f-placeholder {
-        --f-placeholder-on-background: linear-gradient(to right, var(--f-doc-background-color) 8%, #{$grey-color-semi} 18%, var(--f-doc-background-color) 33%);
+        --f-placeholder-on-gradient-color1: var(--f-doc-background-color);
+        --f-placeholder-on-gradient-color2: #{$grey-color-semi};
     }
 
     .f-card:not(.off) {
         .f-placeholder {
-            --f-placeholder-on-background: linear-gradient(to right, #fff 8%, #{$grey-color-semi} 18%, #fff 33%);
+            --f-placeholder-on-gradient-color1: var(--f-card-background-color);
         }
     }
 }

@@ -188,6 +188,7 @@ form {
     width: 256px;
     //margin: 0 auto 32px auto;
     margin: 32px auto 16px auto;
+    outline: 5px solid #fff;
 }
 
 .currency-light {
@@ -217,6 +218,22 @@ form {
     color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
     border-color: transparent;
+}
+
+.icon-stroke-color {
+    g {
+        stroke: var(--f-icon-stroke-color);
+    }
+}
+
+.icon-fill-color {
+    path {
+        fill: var(--f-icon-fill-color);
+    }
+}
+
+.theme-transition, .theme-transition * {
+    transition: background-color $transition-length $transition-func;
 }
 
 /*

@@ -17,6 +17,7 @@
                 infinite-scroll
                 fixed-header
                 f-card-off
+                class="f-data-table-body-bg-color"
                 @fetch-more="fetchMore"
             >
                 <template v-slot:column-status="{ value, column }">

@@ -8,6 +8,7 @@
                 fixed-header
                 f-card-off
                 no-f-l-padding
+                class="f-data-table-body-bg-color"
             >
                 <template v-slot:column-withdrawal="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">

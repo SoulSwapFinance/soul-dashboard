@@ -9,6 +9,7 @@
                 first-m-v-column-width="6"
                 fixed-header
                 f-card-off
+                class="f-data-table-body-bg-color"
             >
                 <template v-slot:column-logo="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">

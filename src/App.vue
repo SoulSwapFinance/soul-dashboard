@@ -37,6 +37,7 @@ import {
     SET_CURRENCY,
     SET_DEFI_SLIPPAGE_RESERVE,
     SET_FRACTION_DIGITS,
+    SET_NIGHT_MODE,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
 } from './store/mutations.type.js';
@@ -58,7 +59,7 @@ export default {
     mixins: [eventBusMixin],
 
     created() {
-        // document.documentElement.classList.add('dark-mode');
+        this.nightMode(this.$store.state.nightMode);
 
         filtersOptions.currency = this.$store.state.currency;
         filtersOptions.fractionDigits = this.$store.state.fractionDigits;
@@ -111,6 +112,34 @@ export default {
             if (_defiSlippageReserve) {
                 this.$store.commit(SET_DEFI_SLIPPAGE_RESERVE, _defiSlippageReserve);
             }
+        },
+
+        /**
+         * @param {boolean} _on
+         */
+        setNightMode(_on) {
+            this.$store.commit(SET_NIGHT_MODE, _on);
+
+            this.nightMode(_on);
+        },
+
+        /**
+         * @param {boolean} _on
+         */
+        nightMode(_on) {
+            const { documentElement } = document;
+
+            documentElement.classList.add('theme-transition');
+
+            if (_on) {
+                documentElement.classList.add('dark-theme');
+            } else {
+                documentElement.classList.remove('dark-theme');
+            }
+
+            setTimeout(function () {
+                documentElement.classList.remove('theme-transition');
+            }, 250);
         },
 
         onFBreakpointChange(_event) {

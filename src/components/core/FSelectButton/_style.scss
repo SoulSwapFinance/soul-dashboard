@@ -1,4 +1,4 @@
-@import "../variables";
+@import "custom-properties";
 
 .f-select-button {
     position: relative;
@@ -7,7 +7,7 @@
     padding: 0 24px 8px 0;
     cursor: pointer;
     border: none;
-    border-bottom: 1px solid $grey-color-semi;
+    border-bottom: var(--f-select-button-border-bottom);
     text-align: left;
     margin: 0;
     background: none;

@@ -16,6 +16,7 @@
 
 @mixin f-slider-thumb-hover() {
     //@include elevation(5);
+    background: var(--f-slider-thumb-hover-background-color);
     box-shadow: var(--f-slider-thumb-hover-box-shadow);
 }
 

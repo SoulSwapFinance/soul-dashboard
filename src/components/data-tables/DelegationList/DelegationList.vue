@@ -15,6 +15,7 @@
                 infinite-scroll
                 f-card-off
                 action-on-row
+                class="f-data-table-body-bg-color"
                 @row-action="$emit('row-action', $event)"
                 @fetch-more="fetchMore"
             >

@@ -42,7 +42,8 @@
     }
 
     .label {
-        color: rgba(43,57,84,.5);
+        //color: rgba(43,57,84,.5);
+        color: $light-gray-color;
         display: block;
         padding-bottom: 8px;
     }

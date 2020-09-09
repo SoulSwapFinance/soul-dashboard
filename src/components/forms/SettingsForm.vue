@@ -46,7 +46,7 @@
 
                         <!--
                         <br />
-                        <f-checkbox name="night_mode" label="Night Mode" />
+                        <f-checkbox name="night_mode" label="Night Mode" :checked="$store.state.nightMode" />
                         -->
 
                         <p style="padding: 24px 0 32px 0;">
@@ -153,7 +153,7 @@ export default {
             } else if (detail.eTarget.name === 'language') {
                 alert('not implemented yet');
             } else if (detail.eTarget.name === 'night_mode') {
-                alert('not implemented yet');
+                appNode.setNightMode(detail.value === 'on');
             }
         },
     },

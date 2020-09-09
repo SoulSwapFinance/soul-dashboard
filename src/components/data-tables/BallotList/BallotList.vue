@@ -15,6 +15,7 @@
                     infinite-scroll
                     fixed-header
                     f-card-off
+                    class="f-data-table-body-bg-color"
                     @fetch-more="fetchMore"
                     @click.native="onDataTableClick"
                 >

@@ -1,6 +1,8 @@
 @import "../../assets/scss/vars";
 
 .view-defi-ftrade {
+    --f-view-defi-ftrade-swap-btn-border: 1px solid #{$grey-color-semi};
+
     .grid {
         //width: 100%;
         //max-width: 800px;
@@ -57,7 +59,7 @@
 
         .btn {
             color: $light-gray-color;
-            border: 1px solid $grey-color-semi;
+            border: var(--f-view-defi-ftrade-swap-btn-border);
             position: relative;
             z-index: 2;
             background-color: var(--f-doc-background-color);

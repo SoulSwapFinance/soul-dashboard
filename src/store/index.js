@@ -23,6 +23,7 @@ import {
     REMOVE_CONTACT,
     SET_CONTACT,
     SET_DEFI_SLIPPAGE_RESERVE,
+    SET_NIGHT_MODE,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -52,6 +53,7 @@ const vuexLocalStorage = new VuexPersist({
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
         defiSlippageReserve: _state.defiSlippageReserve,
+        nightMode: _state.nightMode,
         accounts: _state.accounts,
         contacts: _state.contacts,
         bnbridgePendingRequests: _state.bnbridgePendingRequests,
@@ -89,6 +91,7 @@ export const store = new Vuex.Store({
         currency: 'USD',
         fractionDigits: 2,
         defiSlippageReserve: appConfig.settings.defaultDefiSlippageReserve,
+        nightMode: false,
         /** @type {[WalletAccount]} */
         accounts: [],
         /** @type {[WalletContact]} */
@@ -281,6 +284,13 @@ export const store = new Vuex.Store({
          */
         [SET_DEFI_SLIPPAGE_RESERVE](_state, _defiSlippageReserve) {
             _state.defiSlippageReserve = _defiSlippageReserve;
+        },
+        /**
+         * @param {Object} _state
+         * @param {boolean} _on
+         */
+        [SET_NIGHT_MODE](_state, _on) {
+            _state.nightMode = _on;
         },
         /**
          * @param {Object} _state
