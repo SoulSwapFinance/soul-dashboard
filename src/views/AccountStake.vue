@@ -72,6 +72,7 @@ export default {
                         amount: this._data_.amount,
                         undelegateMax: this._data_.undelegateMax,
                         stakerId: this._data_.stakerId,
+                        reStake: this._data_.reStake,
                     };
                 case 'transaction-success-message':
                     return {

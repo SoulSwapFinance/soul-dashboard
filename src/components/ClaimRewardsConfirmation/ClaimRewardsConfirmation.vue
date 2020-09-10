@@ -10,7 +10,8 @@
             @change-component="onChangeComponent"
         >
             <h2 class="cont-with-back-btn">
-                <span>Claim Rewards</span>
+                <span v-if="reStake">Claim & Restake</span>
+                <span v-else>Claim Rewards</span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
@@ -61,6 +62,11 @@ export default {
             type: String,
             default: '',
         },
+        /***/
+        reStake: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -83,7 +89,9 @@ export default {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
-                sfcUtils.claimDelegationRewardsTx(200, parseInt(this.stakerId, 16)),
+                this.reStake
+                    ? sfcUtils.claimDelegationRewardsCompoundTx(200, parseInt(this.stakerId, 16))
+                    : sfcUtils.claimDelegationRewardsTx(200, parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 this.gasLimit
             );
@@ -95,7 +103,7 @@ export default {
                 from: 'claim-rewards-confirmation',
                 data: {
                     tx: _data.data.sendTransaction.hash,
-                    successMessage: 'Claiming Rewards Successful',
+                    successMessage: this.reStake ? 'Claim & Restake Rewards Successful' : 'Claiming Rewards Successful',
                     continueTo: 'staking-info',
                     continueToParams: {
                         stakerId: this.stakerId,

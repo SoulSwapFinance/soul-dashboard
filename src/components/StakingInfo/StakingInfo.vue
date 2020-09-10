@@ -121,6 +121,15 @@
                                     Claim Rewards
                                 </button>
                                 <button
+                                    v-show="!canIncreaseDelegation"
+                                    class="btn large"
+                                    :disabled="canIncreaseDelegation"
+                                    @click="claimRewardsAndReStake()"
+                                >
+                                    Claim & Restake
+                                </button>
+                                <!--
+                                <button
                                     v-show="canIncreaseDelegation"
                                     class="btn large"
                                     :disabled="!canIncreaseDelegation"
@@ -128,6 +137,7 @@
                                 >
                                     Increase Delegation
                                 </button>
+                                -->
                                 <button
                                     v-show="canUndelegate"
                                     class="btn large"
@@ -146,7 +156,8 @@
                                 </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
-                                    You need to claim all pending rewards before increasing your delegation or
+                                    You need to claim all pending rewards before
+                                    <!--increasing your delegation or-->
                                     undelegating.
                                     <br />
                                     You can claim rewards for a maximum of 200 epochs at once (use repeatedly if
@@ -435,6 +446,26 @@ export default {
                             stakerInfo,
                         },
                         stakerId: this.stakerId,
+                    },
+                });
+            }
+        },
+
+        async claimRewardsAndReStake() {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
+                this.$emit('change-component', {
+                    to: 'claim-rewards-confirmation',
+                    from: 'staking-info',
+                    data: {
+                        accountInfo: {
+                            ...accountInfo,
+                            stakerInfo,
+                        },
+                        stakerId: this.stakerId,
+                        reStake: true,
                     },
                 });
             }
