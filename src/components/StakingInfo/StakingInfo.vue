@@ -46,7 +46,10 @@
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                                <template v-if="accountInfo">{{ toFTM(accountInfo.claimedRewards) }} FTM</template>
+                                <template v-if="accountInfo">
+                                    -
+                                    <!--{{ toFTM(accountInfo.claimedRewards) }} FTM-->
+                                </template>
                             </f-placeholder>
                         </div>
                     </div>
