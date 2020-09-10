@@ -75,21 +75,21 @@
                 <f-tab title-slot="deposit">
                     <suply-to-liquidity-list
                         :tokens="tokens"
-                        :defi-account="defiAccount"
+                        :f-mint-account="fMintAccount"
                         @records-count="onDepositRecordsCount"
                     />
                 </f-tab>
                 <f-tab title-slot="borrow">
                     <available-to-borrow-list
                         :tokens="tokens"
-                        :defi-account="defiAccount"
+                        :f-mint-account="fMintAccount"
                         @records-count="onBorrowRecordsCount"
                     />
                 </f-tab>
                 <f-tab title-slot="positions">
                     <open-positions-list
                         :tokens="tokens"
-                        :defi-account="defiAccount"
+                        :f-mint-account="fMintAccount"
                         @records-count="onPositionsRecordsCount"
                     />
                 </f-tab>
@@ -132,8 +132,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -152,7 +152,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         totalDeposit() {
-            return this.$defi.getOverallCollateral(this.defiAccount);
+            return this.$defi.getOverallCollateral(this.fMintAccount);
         },
 
         earnings() {
@@ -160,15 +160,15 @@ export default {
         },
 
         totalBorrowed() {
-            return this.$defi.getOverallDebt(this.defiAccount);
+            return this.$defi.getOverallDebt(this.fMintAccount);
         },
 
         borrowLimit() {
-            return this.$defi.getBorrowLimit(this.defiAccount) + this.totalBorrowed;
+            return this.$defi.getBorrowLimit(this.fMintAccount) + this.totalBorrowed;
         },
 
         debtLimit() {
-            return this.$defi.getDebtLimit(this.defiAccount);
+            return this.$defi.getDebtLimit(this.fMintAccount);
         },
 
         colors() {
@@ -192,12 +192,12 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
         },

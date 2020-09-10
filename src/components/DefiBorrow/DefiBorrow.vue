@@ -288,8 +288,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -316,20 +316,20 @@ export default {
         ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         debt() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.dToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
-            // return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+            // return this.$defi.fromTokenValue(this.fMintAccount.debtValue, this.fusdToken);
         },
 
         tokenDebt() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.dToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
-            // console.log(this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken));
-            // return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+            // console.log(this.$defi.fromTokenValue(this.fMintAccount.debtValue, this.fusdToken));
+            // return this.$defi.fromTokenValue(this.fMintAccount.debtValue, this.fusdToken);
         },
 
         /**
@@ -338,8 +338,8 @@ export default {
          * @return {number}
          */
         collateral() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
@@ -366,17 +366,17 @@ export default {
 
         _borrowLimit() {
             if (this.borrowOrRepay) {
-                return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+                return this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice;
             } else {
-                return this.debt + this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+                return this.debt + this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice;
             }
             /*
             return (
                 this.debt +
-                Math.min(this.availableBalance, this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice)
+                Math.min(this.availableBalance, this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice)
             );
             */
-            // return this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice;
+            // return this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice;
         },
 
         debtLimit() {
@@ -393,7 +393,7 @@ export default {
 
             const currDebtFUSD = cDebt * this.tokenPrice - debtFUSD;
 
-            return this.$defi.getDebtLimit(this.defiAccount, currDebtFUSD);
+            return this.$defi.getDebtLimit(this.fMintAccount, currDebtFUSD);
         },
 
         minDebt() {
@@ -512,19 +512,19 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
             const tokens = result[1];
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.wftmToken = tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {
                 // get tokens that are possible to borrow
-                this.tokens = tokens.filter($defi.canTokenBeBorrowed);
+                this.tokens = tokens.filter(this.mintRepayMode ? $defi.canTokenBeMinted : $defi.canTokenBeBorrowed);
             }
 
             if (this.token === null) {
@@ -532,7 +532,7 @@ export default {
                     this.dToken = tokens.find((_token) => _token.symbol === this.tokenSymbol);
                 } else {
                     // get first token that can be borrowed
-                    this.dToken = tokens.find($defi.canTokenBeBorrowed);
+                    this.dToken = tokens.find(this.mintRepayMode ? $defi.canTokenBeMinted : $defi.canTokenBeBorrowed);
                 }
             } else {
                 this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
@@ -569,7 +569,7 @@ export default {
         },
 
         onSubmit() {
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.dToken);
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,

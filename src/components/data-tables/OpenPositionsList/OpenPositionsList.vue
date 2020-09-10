@@ -100,8 +100,8 @@ export default {
                 return [];
             },
         },
-        /** @type {DefiAccount} */
-        defiAccount: {
+        /** @type {FMintAccount} */
+        fMintAccount: {
             type: Object,
             default() {
                 return {
@@ -199,8 +199,8 @@ export default {
          * @return {*|number}
          */
         getDebt(_token) {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, _token);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },
@@ -235,8 +235,8 @@ export default {
          * @return {*|number}
          */
         getCollateral(_token) {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, _token);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },

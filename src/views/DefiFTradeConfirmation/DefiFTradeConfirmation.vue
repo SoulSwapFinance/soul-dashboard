@@ -58,7 +58,6 @@ import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
-import appConfig from '../../../app.config.js';
 import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 
 /**
@@ -73,7 +72,7 @@ export default {
         /** Address of smart contract. */
         contractAddress: {
             type: String,
-            default: appConfig.liquidityPoolContract,
+            default: '',
         },
     },
 
@@ -163,7 +162,7 @@ export default {
 
     methods: {
         async setTx() {
-            const { contractAddress } = this;
+            let { contractAddress } = this;
 
             const { params } = this;
             const { fromToken } = params;
@@ -182,6 +181,10 @@ export default {
 
             if (!fromToken || !toToken) {
                 return;
+            }
+
+            if (!contractAddress) {
+                contractAddress = this.$defi.contracts.fMint;
             }
 
             if (this.params.step === 1) {

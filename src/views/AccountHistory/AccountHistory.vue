@@ -19,7 +19,11 @@
             </f-tab>
             <f-tab title-slot="assets">
                 <f-card>
-                    <assets-list :tokens="tokens" :defi-account="defiAccount" @records-count="onAssetsRecordsCount" />
+                    <assets-list
+                        :tokens="tokens"
+                        :f-mint-account="fMintAccount"
+                        @records-count="onAssetsRecordsCount"
+                    />
                 </f-card>
             </f-tab>
         </f-tabs>
@@ -44,8 +48,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -70,12 +74,12 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
         },
 

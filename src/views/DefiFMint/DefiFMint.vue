@@ -157,8 +157,8 @@ export default {
     data() {
         return {
             tokenPrice: 0,
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -177,19 +177,19 @@ export default {
 
         debt() {
             // overall debt
-            return this.$defi.fromTokenValue(this.defiAccount.debtValue, this.fusdToken);
+            return this.$defi.fromTokenValue(this.fMintAccount.debtValue, this.fusdToken);
         },
 
         debtFUSD() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.fusdToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
         },
 
         collateral() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
@@ -216,7 +216,7 @@ export default {
         },
 
         maxMintable() {
-            const borrowLimit = this.$defi.getBorrowLimit(this.defiAccount);
+            const borrowLimit = this.$defi.getBorrowLimit(this.fMintAccount);
 
             return this.debtFUSD + borrowLimit - borrowLimit * this.defiSlippageReserve;
             /*
@@ -224,7 +224,7 @@ export default {
                 this.debtFUSD +
                 Math.min(
                     this.availableBalance * this.tokenPrice,
-                    this.$defi.getBorrowLimit(this.defiAccount) / this.tokenPrice
+                    this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice
                 )
             );
             */
@@ -232,7 +232,7 @@ export default {
         },
 
         debtLimit() {
-            return this.$defi.getDebtLimit(this.defiAccount);
+            return this.$defi.getDebtLimit(this.fMintAccount);
         },
 
         closeToLiquidation() {
@@ -279,12 +279,12 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
             this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');

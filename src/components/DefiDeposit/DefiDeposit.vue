@@ -285,8 +285,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -320,18 +320,18 @@ export default {
         },
 
         collateral() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.dToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
         },
 
         overallCollateral() {
-            return this.$defi.getOverallCollateral(this.defiAccount);
+            return this.$defi.getOverallCollateral(this.fMintAccount);
         },
 
         overallDebt() {
-            return this.$defi.getOverallDebt(this.defiAccount);
+            return this.$defi.getOverallDebt(this.fMintAccount);
         },
 
         minCollateral() {
@@ -406,8 +406,8 @@ export default {
         },
 
         debt() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.dToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.dToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
         },
@@ -418,8 +418,8 @@ export default {
             /*
             const { $defi } = this;
             const fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
-            const totalDebtFUSD = $defi.fromTokenValue(this.defiAccount.debtValue, fusdToken);
-            const totalCollateralFUSD = $defi.fromTokenValue(this.defiAccount.collateralValue, fusdToken);
+            const totalDebtFUSD = $defi.fromTokenValue(this.fMintAccount.debtValue, fusdToken);
+            const totalCollateralFUSD = $defi.fromTokenValue(this.fMintAccount.collateralValue, fusdToken);
             const borrowLimitFUSD = $defi.getMaxDebtFUSD(totalCollateralFUSD) - totalDebtFUSD;
 
             return borrowLimitFUSD / this.tokenPrice;
@@ -441,7 +441,7 @@ export default {
 
             const currCollateralFUSD = cCollateral * this.tokenPrice - collateralFUSD;
 
-            return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
+            return this.$defi.getDebtLimit(this.fMintAccount, 0, currCollateralFUSD);
             // return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
         },
 
@@ -537,13 +537,13 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
             const tokens = result[1];
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             // this.currCollateral = this.collateral.toString();
@@ -609,7 +609,7 @@ export default {
         },
 
         onSubmit() {
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.dToken);
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.dToken);
             const params = {
                 currCollateral: parseFloat(this.currCollateral),
                 collateral: this.collateral,

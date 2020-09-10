@@ -169,8 +169,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -194,15 +194,15 @@ export default {
         ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         debt() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, this.fusdToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
         },
 
         collateral() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
@@ -219,15 +219,15 @@ export default {
             const collateralFUSD = parseFloat(this.collateral) * this.tokenPrice;
             const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice - collateralFUSD;
 
-            return this.$defi.getDebtLimit(this.defiAccount, 0, currCollateralFUSD);
+            return this.$defi.getDebtLimit(this.fMintAccount, 0, currCollateralFUSD);
         },
 
         overallCollateral() {
-            return this.$defi.getOverallCollateral(this.defiAccount);
+            return this.$defi.getOverallCollateral(this.fMintAccount);
         },
 
         overallDebt() {
-            return this.$defi.getOverallDebt(this.defiAccount);
+            return this.$defi.getOverallDebt(this.fMintAccount);
         },
 
         minCollateral() {
@@ -365,12 +365,12 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
             this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
@@ -413,7 +413,7 @@ export default {
 
         onSubmit() {
             if (!this.submitDisabled) {
-                const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.wftmToken);
+                const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
 
                 this.$router.push({
                     name: 'defi-manage-collateral-confirmation',

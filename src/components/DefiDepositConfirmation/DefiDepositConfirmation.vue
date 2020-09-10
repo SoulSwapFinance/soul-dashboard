@@ -68,7 +68,6 @@ import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
-import appConfig from '../../../app.config.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 /**
@@ -83,7 +82,7 @@ export default {
         /** Address of smart contract. */
         contractAddress: {
             type: String,
-            default: appConfig.liquidityPoolContract,
+            default: '',
         },
         /**  */
         compName: {
@@ -191,11 +190,15 @@ export default {
     methods: {
         async setTx() {
             const { token } = this;
-            const { contractAddress } = this;
+            let { contractAddress } = this;
             let txToSign;
 
             if (!token) {
                 return;
+            }
+
+            if (!contractAddress) {
+                contractAddress = this.$defi.contracts.fMint;
             }
 
             if (this.params.step === 1) {

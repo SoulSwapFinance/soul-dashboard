@@ -191,8 +191,8 @@ export default {
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
@@ -324,12 +324,12 @@ export default {
             const { $defi } = this;
             const { params } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
 
             if ($defi.tmpWFTM) {
                 const wFTM = result[1].filter((_token) => _token && _token.symbol === 'WFTM');
@@ -349,7 +349,7 @@ export default {
                 this.$defi._setTokenDecimals(ftmToken);
 
                 // add FTM
-                result[1].push(ftmToken);
+                result[1].unshift(ftmToken);
 
                 this.tokens = result[1].filter(
                     (_token) => _token && (_token.symbol === 'FTM' || _token.symbol === 'WFTM')
