@@ -10,7 +10,7 @@
                                 :data="item.icon"
                                 :width="item.iconSize || iconSize"
                                 :height="item.iconSize || iconSize"
-                                :fill="false"
+                                :fill="item.fill || false"
                             />
                             <span class="title">{{ item.title }}</span>
                         </router-link>

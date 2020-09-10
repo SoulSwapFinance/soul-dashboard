@@ -92,6 +92,7 @@ export default {
                     title: 'Wallet',
                     icon: walletIcon,
                     walletLink: true,
+                    // fill: true,
                 },
                 {
                     url: {
@@ -100,6 +101,7 @@ export default {
                     title: 'Staking',
                     icon: stakingIcon,
                     stakingLink: true,
+                    // fill: true,
                 },
                 {
                     url: {
@@ -115,6 +117,7 @@ export default {
                     },
                     title: 'Settings',
                     icon: settingsIcon,
+                    // fill: true,
                 },
             ],
         };

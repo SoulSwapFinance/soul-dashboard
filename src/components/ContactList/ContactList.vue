@@ -23,7 +23,13 @@
                                         title="Edit Wallet"
                                         type="button"
                                     >
-                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
+                                        <icon
+                                            data="@/assets/svg/pen.svg"
+                                            width="16"
+                                            height="16"
+                                            aria-hidden="true"
+                                            :fill="false"
+                                        />
                                     </button>
 
                                     <f-copy-button

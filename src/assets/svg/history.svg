@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="43px" height="51px" viewBox="0 0 43 51" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>history</title>
-    <g id="05-Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M33.4,49.7 L9.4,49.7 C4.981722,49.7 1.4,46.118278 1.4,41.7 L1.4,9.7 C1.4,5.281722 4.981722,1.7 9.4,1.7 L33.4,1.7 C37.818278,1.7 41.4,5.281722 41.4,9.7 L41.4,41.7 C41.4,46.118278 37.818278,49.7 33.4,49.7 Z M13,18.5 L27,18.5 M13,23.5 L30.5,23.5 M13,28.5 L30.5,28.5 M13,33.5 L30.5,33.5" id="history" stroke="#0B1823" stroke-width="2"></path>
+    <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="OUTLINED" transform="translate(-8.000000, -84.000000)" fill="#0B1823" fill-rule="nonzero">
+            <path d="M41.4,84.7 L17.4,84.7 C12.4294373,84.7 8.4,88.7294373 8.4,93.7 L8.4,125.7 C8.4,130.670563 12.4294373,134.7 17.4,134.7 L41.4,134.7 C46.3705627,134.7 50.4,130.670563 50.4,125.7 L50.4,93.7 C50.4,88.7294373 46.3705627,84.7 41.4,84.7 Z M17.4,86.7 L41.4,86.7 C45.2659932,86.7 48.4,89.8340068 48.4,93.7 L48.4,125.7 C48.4,129.565993 45.2659932,132.7 41.4,132.7 L17.4,132.7 C13.5340068,132.7 10.4,129.565993 10.4,125.7 L10.4,93.7 C10.4,89.8340068 13.5340068,86.7 17.4,86.7 Z" id="history"></path>
+        </g>
     </g>
 </svg>
