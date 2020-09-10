@@ -8,6 +8,7 @@
                 :tabindex="tabPanel.dActive ? 0 : -1"
                 :aria-controls="tabPanel.id"
                 :aria-selected="tabPanel.dActive"
+                :aria-disabled="tabPanel.dDisabled"
                 role="tab"
                 :data-index="idx"
                 :class="tabPanel.titleClass"
@@ -83,10 +84,16 @@ export default {
             }
         },
 
+        /**
+         * @return {FTab[]}
+         */
         getTabPanels() {
             return this.findChildrenByName('f-tab');
         },
 
+        /**
+         * Deactivate currently active panel.
+         */
         deactivateActivePanel() {
             const { dTabPanels } = this;
 
@@ -104,13 +111,19 @@ export default {
         setActiveTabByIndex(_index) {
             const tabPanel = this.dTabPanels[_index];
 
-            this.deactivateActivePanel();
+            if (!tabPanel.dDisabled) {
+                this.deactivateActivePanel();
 
-            tabPanel.dActive = true;
+                tabPanel.dActive = true;
 
-            this.$emit('tab-set', { tabId: tabPanel.id });
+                this.$emit('tab-set', { tabId: tabPanel.id });
+            }
         },
 
+        /**
+         * @param {HTMLElement} _elem
+         * @return {int}
+         */
         getTabIndexByElem(_elem) {
             const eLi = _elem.closest('li');
 
@@ -128,8 +141,11 @@ export default {
             }
         },
 
+        /**
+         * @param {KeyboardEvent} _event
+         */
         onTabListKeyup(_event) {
-            const elem = keyboardNavigation(_event, '[role="tab"]', true);
+            const elem = keyboardNavigation(_event, '[role="tab"]:not([aria-disabled="true"])', true);
 
             if (elem) {
                 const tabIndex = this.getTabIndexByElem(elem);

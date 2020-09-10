@@ -5,6 +5,7 @@
                 data="@/assets/svg/copy.svg"
                 :width="defaultIconSize.toString()"
                 :height="defaultIconSize.toString()"
+                :fill="false"
                 aria-hidden="true"
             />
         </slot>

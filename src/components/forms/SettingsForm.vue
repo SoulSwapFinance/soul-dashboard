@@ -24,8 +24,29 @@
                         <f-select name="language" label="Language" select-size="large" :data="language" value="en-US" />
 
                         <!--
+                        <f-input
+                            name="defi_slippage_reserve"
+                            :value="$store.state.defiSlippageReserve.toString()"
+                            label="DeFi Slippage Reserve"
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            field-size="large"
+                            validate-on-input
+                            :validator="checkDefiSlippageReserve"
+                        >
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Value must be between 0% and 100%
+                                </f-message>
+                            </template>
+                        </f-input>
+                        -->
+
+                        <!--
                         <br />
-                        <f-checkbox name="night_mode" label="Night Mode" />
+                        <f-checkbox name="night_mode" label="Night Mode" :checked="$store.state.nightMode" />
                         -->
 
                         <p style="padding: 24px 0 32px 0;">
@@ -96,6 +117,21 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {string} _value
+         * @return {boolean}
+         */
+        checkDefiSlippageReserve(_value) {
+            let ok = false;
+            const value = parseFloat(_value);
+
+            if (!isNaN(value)) {
+                ok = value >= 0 && value <= 100;
+            }
+
+            return ok;
+        },
+
         onFormChange(_event) {
             const { detail } = _event;
             const appNode = this.$root.$children[0];
@@ -108,10 +144,16 @@ export default {
                 if (appNode) {
                     appNode.setFractionDigits(parseInt(detail.value));
                 }
+                /*
+            } else if (detail.eTarget.name === 'defi_slippage_reserve') {
+                if (appNode && this.checkDefiSlippageReserve(detail.value)) {
+                    appNode.setDefiSlippageReserve(parseFloat(detail.value));
+                }
+                */
             } else if (detail.eTarget.name === 'language') {
                 alert('not implemented yet');
             } else if (detail.eTarget.name === 'night_mode') {
-                alert('not implemented yet');
+                appNode.setNightMode(detail.value === 'on');
             }
         },
     },

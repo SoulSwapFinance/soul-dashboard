@@ -10,9 +10,7 @@
                 :show-password-field="!currentAccount.isLedgerAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
-                :no-previous-button="noPreviousButton"
                 @f-form-submit="onFFormSubmit"
-                @go-back="_onGoBack"
             />
         </f-card>
 
@@ -69,11 +67,6 @@ export default {
             type: String,
             default: '',
         },
-        /** Name of component in cebab case */
-        goBackCompName: {
-            type: String,
-            default: '',
-        },
         /** Label for button in TransactionConfirmationForm component */
         sendButtonLabel: {
             type: String,
@@ -97,18 +90,13 @@ export default {
             type: Function,
             default: null,
         },
-        /** Function called when 'previous' button was pressed */
-        onGoBack: {
-            type: Function,
-            default: null,
-        },
         /** Don't render card */
         cardOff: {
             type: Boolean,
             default: false,
         },
-        /** Don't show 'previous' button */
-        noPreviousButton: {
+        /** Set temporary password */
+        setTmpPwd: {
             type: Boolean,
             default: false,
         },
@@ -162,20 +150,26 @@ export default {
             const pwd = _event.detail.data.pwd;
             let rawTx = null;
 
+            _event.detail.data.pwd = '';
+
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
                 if (appConfig.useTestnet) {
                     this.tx.chainId = appConfig.testnet.chainId;
                 }
 
-                console.log('tx', this.tx);
+                // console.log('tx', this.tx);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;
 
-                    if (pwd) {
+                    if (pwd || fWallet.pwdStorage.isSet()) {
                         try {
                             rawTx = await fWallet.signTransaction(this.tx, currentAccount.keystore, pwd);
+
+                            if (this.setTmpPwd) {
+                                fWallet.pwdStorage.set(pwd);
+                            }
                         } catch (_error) {
                             console.error(_error);
                             this.errorMsg = _error.toString();
@@ -210,17 +204,6 @@ export default {
                         this.$store.dispatch(UPDATE_ACCOUNT_BALANCE);
                     }, 3000);
                 }
-            }
-        },
-
-        _onGoBack() {
-            if (this.onGoBack) {
-                this.onGoBack();
-            } else {
-                this.$emit('change-component', {
-                    to: this.goBackCompName,
-                    from: this.confirmationCompName,
-                });
             }
         },
 

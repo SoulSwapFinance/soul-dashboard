@@ -6,7 +6,7 @@
 
                 <div class="form-body">
                     <f-password-field
-                        v-if="showPasswordField"
+                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet()"
                         :label="passwordLabel"
                         field-size="large"
                         autocomplete="off"
@@ -33,16 +33,6 @@
                             <br />
                         </div>
 
-                        <a
-                            v-if="!noPreviousButton"
-                            href="#"
-                            class="btn light large break-word"
-                            style="max-width: 100%;"
-                            aria-label="Go to previous form"
-                            @click.prevent="onPreviousBtnClick"
-                        >
-                            Previous
-                        </a>
                         <button
                             type="submit"
                             class="btn large break-word"
@@ -62,10 +52,12 @@
 import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 
 export default {
+    name: 'TransactionConfirmationForm',
+
     components: { FMessage, FPasswordField, FForm },
 
     props: {
@@ -89,11 +81,6 @@ export default {
         gasLimit: {
             type: String,
             default: GAS_LIMITS.default,
-        },
-        /** Don't show 'previous' button */
-        noPreviousButton: {
-            type: Boolean,
-            default: false,
         },
     },
 
@@ -132,10 +119,6 @@ export default {
     methods: {
         checkPassword(_value) {
             return _value && _value.length > 0;
-        },
-
-        onPreviousBtnClick() {
-            this.$emit('go-back');
         },
     },
 };

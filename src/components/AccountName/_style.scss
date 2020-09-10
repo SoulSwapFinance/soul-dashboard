@@ -17,7 +17,7 @@
 
     .an-name, > svg {
         //min-width: 100%;
-        color: $theme-color;
+        color: var(--f-primary-color);
         //padding-right: 16px;
         //white-space: nowrap;
         //@include zpe-three-dots;

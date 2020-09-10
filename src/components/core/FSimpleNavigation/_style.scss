@@ -1,6 +1,7 @@
-@import "variables";
+@import "../variables";
+@import "custom-properties";
 
-.f-navigation {
+.f-simple-navigation {
     display: inline-block;
 
     nav {
@@ -11,7 +12,7 @@
                 margin-left: 4px;
 
                 @include links() {
-                    color: $secondary-color-lighter;
+                    color: var(--f-simple-navigation-link-color);
                     font-weight: bold;
                     letter-spacing: normal;
                     display: inline-block;
@@ -22,7 +23,7 @@
 
                     &:not(.disabled) {
                         &.router-link-active, &:hover {
-                            color: #fff;
+                            color: var(--f-simple-navigation-link-hover-color);
                             text-decoration: none;
                         }
                     }
@@ -38,7 +39,7 @@
 }
 
 @include media-max($bp-menu) {
-    .f-navigation {
+    .f-simple-navigation {
         nav {
             ul {
                 li {

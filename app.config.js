@@ -40,8 +40,8 @@ const appConfig = {
         // use Binance chain
         useBNB: true,
     },
-    // address of liquidity pool contract
-    liquidityPoolContract: '0xd457f97935e26aac8c448c711e4a6042665ab084',
+    // tmp
+    tmpWFTM: true,
     //
     useTestnet: false,
     // testnet config
@@ -49,7 +49,7 @@ const appConfig = {
         // list of providers. if one of them is unavailable, another is randomly picked
         providers: [
             {
-                http: 'https://xapi5.testnet.fantom.network/graphql',
+                http: 'https://xapi.testnet.fantom.network/api',
                 // for subscriptions
                 ws: '',
             },
@@ -86,6 +86,8 @@ const appConfig = {
     settings: {
         // list of available currencies displayed in settings view ( https://en.wikipedia.org/wiki/ISO_4217 )
         currencies: ['USD', 'EUR'],
+        // defi slippage reserve in percentage
+        defaultDefiSlippageReserve: 0.3,
     },
 };
 

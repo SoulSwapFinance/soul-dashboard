@@ -175,7 +175,7 @@ export default {
     width: 100%;
     height: $f-header-height;
     color: #fff;
-    background-color: $theme-color;
+    background-color: var(--f-primary-color);
     transition: height $transition-length ease;
 
     .narrow-container {
@@ -212,7 +212,7 @@ export default {
         height: 100%;
         top: 0;
         padding: 64px 8px 8px 8px;
-        background-color: $theme-color;
+        background-color: var(--f-primary-color);
         transform: translateX(100%);
         transition: all $transition-length ease;
         display: none;
@@ -245,7 +245,7 @@ export default {
     }
 
     .f-search-box {
-        color: $body-color;
+        color: var(--f-doc-color);
     }
 
     .right-col {

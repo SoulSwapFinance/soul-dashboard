@@ -7,18 +7,15 @@
     >
         <ul class="no-markers">
             <li v-for="contact in cContacts" :key="contact.address">
-                <f-card>
+                <f-card hover>
                     <h3 slot="title" class="title" :data-address="contact.address">
                         <span class="row no-collapse align-items-start">
                             <span class="col">
                                 <span class="address-col">
-                                    <account-name
-                                        address-as-link
-                                        :account="contact"
-                                        :blockchain="contact.blockchain"
-                                        :class="{ clickable: pickMode }"
-                                        :tabindex="pickMode ? 0 : -1"
-                                    />
+                                    <account-name v-if="pickMode" :account="contact" class="value clickable" />
+                                    <a v-else class="value clickable" :href="addressUrl(contact)" target="_blank">
+                                        <account-name :account="contact" />
+                                    </a>
 
                                     <button
                                         v-if="editMode"
@@ -26,7 +23,13 @@
                                         title="Edit Wallet"
                                         type="button"
                                     >
-                                        <icon data="@/assets/svg/pen.svg" width="16" height="16" aria-hidden="true" />
+                                        <icon
+                                            data="@/assets/svg/pen.svg"
+                                            width="16"
+                                            height="16"
+                                            aria-hidden="true"
+                                            :fill="false"
+                                        />
                                     </button>
 
                                     <f-copy-button
@@ -44,6 +47,9 @@
                                             </template>
                                         </template>
                                     </f-copy-button>
+                                </span>
+                                <span class="label">
+                                    {{ $fWallet.getBlockchainLabel(contact.blockchain) }}
                                 </span>
                             </span>
                         </span>
@@ -76,6 +82,7 @@ import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import ContactDetailWindow from '../windows/ContactDetailWindow/ContactDetailWindow.vue';
 import { ADD_CONTACT, UPDATE_CONTACT } from '../../store/actions.type.js';
 import { isAriaAction } from '../../utils/aria.js';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'ContactList',
@@ -140,6 +147,25 @@ export default {
             const elem = _event.target.closest('[data-address]');
 
             return this.getContactAndIndexByAddress(elem ? elem.getAttribute('data-address') : '');
+        },
+
+        addressUrl(_contact) {
+            const { address } = _contact;
+            let url = '';
+
+            switch (_contact.blockchain) {
+                case 'fantom':
+                    url = `${appConfig.explorerUrl}address/${address}`;
+                    break;
+                case 'ethereum':
+                    url = `${appConfig.ethereumExplorerUrl}address/${address}`;
+                    break;
+                case 'binance':
+                    url = `${appConfig.binanceExplorerUrl}address/${address}`;
+                    break;
+            }
+
+            return url;
         },
 
         /**

@@ -2,19 +2,20 @@
     <div class="defi-borrow-fusd">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            fUSD
+            Mint/Repay fUSD
         </h1>
 
         <h2 class="perex">
-            Mint fUSD with your locked FTM or repay fUSD to unlock your FTM. You can use fUSD to trade synths, lend it
-            to the liquidity pool to earn interest, and use it as a collateral to borrow synths.
+            Mint fUSD with your locked {{ wftmTokenSymbol }} or repay fUSD to unlock your {{ wftmTokenSymbol }}. You can
+            use fUSD to trade synths, lend it to the liquidity pool to earn interest, and use it as a collateral to
+            borrow synths.
         </h2>
 
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
-                    <div class="value">{{ maxMintable }} <span class="currency">fUSD</span></div>
+                    <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <!--
                 <div v-else class="df-data-item smaller">
@@ -25,17 +26,21 @@
 
                 <div class="df-data-item smaller">
                     <h3 class="label">Current price</h3>
-                    <div class="value">{{ currentPrice }}</div>
+                    <div class="value">
+                        <f-placeholder :content-loaded="!!tokenPrice" replacement-text="$0.00000">
+                            {{ currentPrice }}
+                        </f-placeholder>
+                    </div>
                 </div>
 
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
-                        <h3 class="label">Minted fUSD</h3>
-                        <div class="value">{{ debt.toFixed(3) }}</div>
+                        <h3 class="label">Minted</h3>
+                        <div class="value"><f-token-value :token="fusdToken" :value="debt" /></div>
                     </div>
                     <div class="df-data-item smaller">
                         <h3 class="label">Locked balance</h3>
-                        <div class="value">{{ collateral.toFixed(2) }} <span class="currency">FTM</span></div>
+                        <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                     </div>
                 </template>
             </div>
@@ -67,30 +72,38 @@
                                 <label :for="sProps.inputId" class="not-visible">{{ label }}</label>
                             </template>
                         </f-slider>
-                        <div class="reset-btn" @click="onResetBtnClick">
-                            <button class="btn small light">Reset</button>
+                        <div class="slider-buttons">
+                            <button class="btn small light" @click="onMinBtnClick">Min</button>
+                            <button
+                                v-show="currDebt !== debt.toString()"
+                                class="btn small light"
+                                @click="onResetBtnClick"
+                            >
+                                Reset
+                            </button>
+                            <button class="btn small light" @click="onMaxBtnClick">Max</button>
                         </div>
                     </div>
 
                     <div class="token-label">fUSD</div>
                     <div class="token-info">
-                        <div class="token-info-label">Decrease fUSD</div>
+                        <div class="token-info-label">Repay<br />fUSD</div>
                         <icon data="@/assets/svg/angle-double-left.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                     <div class="token-info increase">
-                        <div class="token-info-label">Increase fUSD</div>
+                        <div class="token-info-label">Mint<br />fUSD</div>
                         <icon data="@/assets/svg/angle-double-right.svg" width="66" height="66" aria-hidden="true" />
                     </div>
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
-                <h3>Debt Limit</h3>
+                <h3>Debt Limit <debt-limit-f-info /></h3>
                 <f-circle-progress
                     show-percentage
                     :stroke-width="6"
                     :animate="false"
                     :colors="colors"
-                    :value="mintingLimit"
+                    :value="debtLimit"
                 />
             </div>
             <div v-if="largeView" class="right-col">
@@ -100,56 +113,45 @@
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Locked balance</h3>
-                    <div class="value">{{ collateral }} <span class="currency">FTM</span></div>
+                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Debt Limit</h3>
+                    <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                     <div class="value">
-                        <f-colored-number-range show-percentage :colors="colors" :value="mintingLimit" />
+                        <f-placeholder :content-loaded="!!fusdToken.symbol" replacement-text="99%">
+                            <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
+                        </f-placeholder>
                     </div>
                 </div>
             </div>
 
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
-                You’re adding <span class="inc-desc-collateral">{{ increasedDebt.toFixed(2) }} fUSD</span>
+                You’re adding
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="fusdToken" :value="increasedDebt" no-currency /> fUSD
+                </span>
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
-                You’re removing <span class="inc-desc-collateral">{{ decreasedDebt.toFixed(2) }} fUSD</span>
+                You’re removing
+                <span class="inc-desc-collateral">
+                    <f-token-value :token="fusdToken" :value="decreasedDebt" no-currency /> fUSD
+                </span>
             </f-message>
         </div>
 
         <div class="defi-buttons">
             <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
+                Submit
+                <!--
                 <template v-if="submitDisabled">Submit</template>
-                <template v-else-if="increasedDebt > 0 || debt === 0">Mint {{ increasedDebt.toFixed(2) }} now</template>
-                <template v-else>Repay {{ decreasedDebt.toFixed(2) }} now</template>
+                <template v-else-if="increasedDebt > 0 || debt === 0">
+                    Mint now
+                </template>
+                <template v-else>
+                    Repay now
+                </template>
+                -->
             </button>
-            <br /><br />
-            <router-link :to="{ name: 'defi-manage-collateral' }">
-                Manage Collateral
-            </router-link>
-        </div>
-
-        <div
-            v-if="tmpShow"
-            style="margin-top: 48px; padding: 16px; opacity: 0.75; background-color: #eee;"
-            @click="onTestBtnClick"
-        >
-            <h3>Test values</h3>
-            <h4>Common values</h4>
-            <p>
-                Liquidation collateral ratio: {{ $defi.liqCollateralRatio }} <br />
-                Minimal collateral ratio: {{ $defi.minCollateralRatio }} <br />
-                Token price: {{ tokenPrice }}
-            </p>
-            <h4>Set values</h4>
-            <div v-for="(item, index) in tmpTestData" :key="`td${id}${index}`">
-                <button :data-idx="index" class="btn small light break-word">
-                    Locked balance: {{ item.collateral }}, Minted fUSD: {{ item.debt }}
-                    <template v-if="item.tokenPrice"> , Token price: {{ item.tokenPrice }} </template>
-                </button>
-                <br />
-            </div>
         </div>
     </div>
 </template>
@@ -165,6 +167,9 @@ import { formatNumberByLocale } from '../../filters.js';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -172,19 +177,30 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 export default {
     name: 'DefiBorrowFUSD',
 
-    components: { FMessage, FBackButton, FColoredNumberRange, FSlider, FCircleProgress },
+    components: {
+        DebtLimitFInfo,
+        FPlaceholder,
+        FTokenValue,
+        FMessage,
+        FBackButton,
+        FColoredNumberRange,
+        FSlider,
+        FCircleProgress,
+    },
 
     mixins: [eventBusMixin],
 
     data() {
         return {
-            /** @type {DefiAccount} */
-            defiAccount: {
+            /** @type {FMintAccount} */
+            fMintAccount: {
                 collateral: [],
                 debt: [],
             },
             /** @type {DefiToken} */
-            token: null,
+            wftmToken: {},
+            /** @type {DefiToken} */
+            fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             currDebt: '0',
@@ -193,69 +209,71 @@ export default {
             decreasedDebt: 0,
             label: 'tmp',
             id: getUniqueId(),
-            tmpShow: false,
-            tmpValues: {
-                collateral: 0,
-                debt: 0,
-            },
-            tmpTokenPrice: 0,
-            tmpTestData: [
-                { collateral: 0, debt: 0 },
-                { collateral: 5000, debt: 0 },
-                { collateral: 10000, debt: 20 },
-                { collateral: 5000, debt: 20 },
-                { collateral: 5000, debt: 20, tokenPrice: 0.008 },
-            ],
         };
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         debt() {
-            /** @type {DefiToken} */
-            const token = this.tokens.find((_item) => _item.symbol === 'FUSD');
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountDebt(this.defiAccount, token);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, token) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
         },
 
         collateral() {
-            /** @type {DefiTokenBalance} */
-            const tokenBalance = this.$defi.getDefiAccountCollateral(this.defiAccount, this.token);
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.token) || 0;
+            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
         },
-
-        /*
-        debt() {
-            return this.tmpValues.debt;
-        },
-
-        collateral() {
-            return this.tmpValues.collateral;
-        },
-        */
 
         currentPrice() {
             return formatNumberByLocale(this.tokenPrice, 5, 'USD');
         },
 
-        maxMintable() {
-            return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
+        availableBalance() {
+            return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
         },
 
-        mintingLimit() {
-            return this.$defi.getMintingLimit(this.currDebt, this.collateral, this.tokenPrice);
+        maxMintable() {
+            const maxMintable = this._maxMintable;
+
+            return maxMintable - maxMintable * this.defiSlippageReserve;
+        },
+
+        _maxMintable() {
+            return this.debt + this.$defi.getBorrowLimit(this.fMintAccount);
+            /*
+            return (
+                this.debt +
+                Math.min(
+                    this.availableBalance * this.tokenPrice,
+                    this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice
+                )
+            );
+            */
+            // return this.$defi.getMaxDebt(this.collateral, this.tokenPrice).toFixed(2);
+        },
+
+        debtLimit() {
+            const debtFUSD = parseFloat(this.debt);
+            const currDebtFUSD = parseFloat(this.currDebt) - debtFUSD;
+
+            return this.$defi.getDebtLimit(this.fMintAccount, currDebtFUSD);
         },
 
         minDebt() {
-            return 0;
+            return this.defiSlippageReserve * this._maxDebt;
         },
 
         maxDebt() {
             return Math.max(this.maxMintable, this.debt);
+        },
+
+        _maxDebt() {
+            return Math.max(this._maxMintable, this.debt);
         },
 
         inputValue() {
@@ -268,6 +286,10 @@ export default {
 
         colors() {
             return this.$defi.getColors();
+        },
+
+        wftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
         backButtonRoute() {
@@ -338,22 +360,21 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchDefiAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
 
-            this.defiAccount = result[0];
+            this.fMintAccount = result[0];
             this.tokens = result[1];
-            this.token = this.tokens.find((_item) => _item.symbol === 'FTM');
-            this.tokenPrice = $defi.getTokenPrice(this.token);
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
+            this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
             this.currDebt = this.debt.toString();
-
-            this.tmpTokenPrice = this.tokenPrice;
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(2);
+            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.fusdToken));
         },
 
         updateMessage() {
@@ -374,9 +395,13 @@ export default {
         },
 
         onSubmit() {
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
             const params = {
                 currDebt: parseFloat(this.currDebt),
                 debt: this.debt,
+                token: this.fusdToken,
+                borrowLimitHex: this.$defi.getBorrowLimitHex(this.fMintAccount),
+                debtBalanceHex: tokenBalance.balance,
             };
 
             if (this.decreasedDebt > 0) {
@@ -397,40 +422,20 @@ export default {
             _event.target.value = this.formatInputValue(this.currDebt);
         },
 
+        onMinBtnClick() {
+            this.currDebt = this.minDebt.toString();
+        },
+
         onResetBtnClick() {
             this.updateCurrDebt();
         },
 
+        onMaxBtnClick() {
+            this.currDebt = this.maxDebt.toString();
+        },
+
         onAccountPicked() {
             this.init();
-        },
-
-        _setTmpValues(_values) {
-            this.tmpValues = {
-                collateral: _values.collateral,
-                debt: _values.debt,
-            };
-
-            if (_values.tokenPrice) {
-                this.tokenPrice = _values.tokenPrice;
-            } else {
-                this.tokenPrice = this.tmpTokenPrice;
-            }
-
-            this.updateCurrDebt();
-            this.updateMessage();
-        },
-
-        onTestBtnClick(_event) {
-            const eBtn = _event.target.closest('button');
-            let idx = -1;
-
-            if (eBtn) {
-                idx = parseInt(eBtn.getAttribute('data-idx'));
-                if (!isNaN(idx)) {
-                    this._setTmpValues(this.tmpTestData[idx]);
-                }
-            }
         },
     },
 };

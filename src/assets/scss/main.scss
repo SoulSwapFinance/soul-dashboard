@@ -1,6 +1,8 @@
 @import "vars";
 @import "fonts";
-@import "css-variables";
+@import "core/custom-properties";
+@import "custom-properties";
+@import "dark-theme";
 @import "core/normalize";
 @import "core/reset";
 
@@ -29,13 +31,17 @@
 
 //@include media-max($bp-menu) {
 
+html {
+    transition: filter $transition-length $transition-func;
+}
+
+html.offline {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
 body {
     letter-spacing: -0.5px;
-
-    .f-slider {
-        --f-slider-label-color: #{$theme-color};
-        --f-slider-label-font-size: 14px;
-    }
 }
 
 main {
@@ -76,8 +82,8 @@ a:not(.btn):hover {
 }
 
 .query-error {
-    color: $error-color-darker;
-    background-color: $error-color-lightest;
+    color: var(--f-error-color-darker);
+    background-color: var(--f-error-color-lightest);
     padding: 8px 16px;
     border-radius: 8px;
 }
@@ -121,6 +127,23 @@ form {
     font-weight: bold;
     line-height: 1.2;
     align-items: start;
+
+    &.big {
+        //font-size: 26px;
+        font-size: 21px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1.23;
+
+        &.error {
+            color: #ff1716;
+        }
+
+        &.info {
+            font-weight: normal;
+            color: var(--f-doc-color);
+        }
+    }
 }
 
 .f-input, .f-select {
@@ -165,29 +188,52 @@ form {
     width: 256px;
     //margin: 0 auto 32px auto;
     margin: 32px auto 16px auto;
+    outline: 5px solid #fff;
+}
+
+.currency-light {
+    color: $light-gray-color;
 }
 
 @include buttons('.light:not([disabled]):not(.disabled):hover') {
-    color: $theme-color;
+    color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
 }
 @include buttons('.light:not([disabled]):not(.disabled):focus') {
-    color: $theme-color;
+    color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
 }
 
 @include buttons('.secondary:not([disabled]):not(.disabled):hover') {
-    color: $theme-color;
+    color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
+    border-color: var(--f-primary-color);
 }
 @include buttons('.secondary:not([disabled]):not(.disabled):focus') {
-    color: $theme-color;
+    color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
+    border-color: var(--f-primary-color);
 }
 @include buttons('.secondary:not([disabled]):not(.disabled)[aria-selected="true"]') {
-    color: $theme-color;
+    color: var(--f-primary-color);
     background-color: lighten($theme-color, 35);
     border-color: transparent;
+}
+
+.icon-stroke-color {
+    g {
+        stroke: var(--f-icon-stroke-color);
+    }
+}
+
+.icon-fill-color {
+    path {
+        fill: var(--f-icon-fill-color);
+    }
+}
+
+.theme-transition, .theme-transition * {
+    transition: background-color $transition-length $transition-func, border-color $transition-length $transition-func;
 }
 
 /*
@@ -197,12 +243,23 @@ form {
 }
 */
 
+.cont-with-back-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    & > :last-child {
+        margin-left: auto;
+    }
+}
+
 .form-buttons {
     padding-top: 24px;
-    padding-bottom: 24px;
+    padding-bottom: 8px;
 
     .btn {
         margin-right: 16px;
+        margin-bottom: 16px;
 
         &:last-child {
             margin-right: 0;
@@ -268,6 +325,11 @@ form {
     font-size: 0.6em;
 }
 
+.inc-desc-collateral {
+    font-weight: bold;
+    //color: var(--f-primary-color);
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
@@ -276,6 +338,10 @@ form {
 
 
 @include media-max($bp-small) {
+    .narrow-container {
+        padding-top: 8px;
+    }
+
     .dt-heading {
         padding-left: 0;
         padding-right: 0;

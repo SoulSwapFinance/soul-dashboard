@@ -1,5 +1,5 @@
 <template>
-    <div class="f-navigation">
+    <div class="f-simple-navigation">
         <nav>
             <slot>
                 <ul v-if="cItems" class="no-markers">
@@ -10,6 +10,7 @@
                                 :data="item.icon"
                                 :width="item.iconSize || iconSize"
                                 :height="item.iconSize || iconSize"
+                                :fill="item.fill || false"
                             />
                             <span class="title">{{ item.title }}</span>
                         </router-link>

@@ -1,40 +1,53 @@
 <template>
     <div ref="doc" class="stake-ftm" tabindex="0">
         <f-card class="f-card-double-padding f-data-layout">
-            <h2>Staking</h2>
+            <h2 class="cont-with-back-btn">
+                <span>Staking</span>
+                <template v-if="stakerId">
+                    <a
+                        href="#"
+                        class="btn light break-word"
+                        style="max-width: 100%;"
+                        aria-label="Go to previous form"
+                        @click.prevent="onPreviousBtnClick"
+                    >
+                        Back
+                    </a>
+                </template>
+            </h2>
 
             <div class="row no-vert-col-padding collapse-md">
                 <div class="col">
                     <div class="row no-collapse">
                         <div class="col f-row-label">Delegated</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.delegated) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Pending Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.pendingRewards) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Stashed Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.stashed) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.claimedRewards) }} FTM</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                 </div>
@@ -58,15 +71,15 @@
                     <div class="row no-collapse">
                         <div class="col f-row-label">Validator Id</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ accountInfo.stakerId || '-' }}</template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                     <div class="row no-collapse">
                         <div class="col f-row-label">Delegation Time</div>
                         <div class="col">
-                            <div v-show="accountInfo">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">
                                     {{
                                         accountInfo.createdTime && accountInfo.createdTime !== '0x0'
@@ -74,7 +87,7 @@
                                             : '-'
                                     }}
                                 </template>
-                            </div>
+                            </f-placeholder>
                         </div>
                     </div>
                 </div>
@@ -99,22 +112,52 @@
                                 <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
                                     Unstash Rewards
                                 </button>
-                                <button class="btn large" :disabled="canIncreaseDelegation" @click="claimRewards()">
+                                <button
+                                    v-show="!canIncreaseDelegation"
+                                    class="btn large"
+                                    :disabled="canIncreaseDelegation"
+                                    @click="claimRewards()"
+                                >
                                     Claim Rewards
                                 </button>
                                 <button
+                                    v-show="!canIncreaseDelegation"
+                                    class="btn large"
+                                    :disabled="canIncreaseDelegation"
+                                    @click="claimRewardsAndReStake()"
+                                >
+                                    Claim & Restake
+                                </button>
+                                <!--
+                                <button
+                                    v-show="canIncreaseDelegation"
                                     class="btn large"
                                     :disabled="!canIncreaseDelegation"
                                     @click="increaseDelegation()"
                                 >
                                     Increase Delegation
                                 </button>
-                                <button class="btn large" :disabled="!canUndelegate" @click="undelegate()">
+                                -->
+                                <button
+                                    v-show="canUndelegate"
+                                    class="btn large"
+                                    :disabled="!canUndelegate"
+                                    @click="undelegate()"
+                                >
                                     Undelegate
+                                </button>
+                                <button
+                                    v-show="canLockDelegation"
+                                    class="btn large"
+                                    :disabled="!canLockDelegation"
+                                    @click="lockDelegation()"
+                                >
+                                    Lock Delegation
                                 </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
-                                    You need to claim all pending rewards before increasing your delegation or
+                                    You need to claim all pending rewards before
+                                    <!--increasing your delegation or-->
                                     undelegating.
                                     <br />
                                     You can claim rewards for a maximum of 200 epochs at once (use repeatedly if
@@ -123,7 +166,9 @@
                             </template>
                         </template>
                         <template v-else>
-                            <button class="btn large" @click="stake()">Delegate</button>
+                            <button v-show="accountInfo" class="btn large" :disabled="!accountInfo" @click="stake()">
+                                Delegate
+                            </button>
                         </template>
                     </div>
                 </div>
@@ -146,11 +191,26 @@ import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import gql from 'graphql-tag';
 
 export default {
     name: 'StakingInfo',
 
-    components: { FMessage, WithdrawRequestList, FCard },
+    components: { FPlaceholder, FMessage, WithdrawRequestList, FCard },
+
+    props: {
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
+        /** Name of previous component. */
+        previousComponent: {
+            type: String,
+            default: 'delegations-info',
+        },
+    },
 
     data() {
         return {
@@ -181,6 +241,10 @@ export default {
                 accountInfo.pendingRewards === '0x0' &&
                 accountInfo.stashed === '0x0'
             );
+        },
+
+        canLockDelegation() {
+            return this.canUndelegate;
         },
 
         /**
@@ -217,7 +281,9 @@ export default {
 
                 if (delegation.withdrawRequests && delegation.withdrawRequests.length) {
                     delegation.withdrawRequests.forEach((_request) => {
-                        requests.push(_request);
+                        if (delegation.toStakerId === _request.stakerID) {
+                            requests.push(_request);
+                        }
                     });
                 }
             }
@@ -235,7 +301,7 @@ export default {
 
             if (delegation && delegation.withdrawRequests && delegation.withdrawRequests.length) {
                 delegation.withdrawRequests.forEach((_request) => {
-                    if (!_request.withdrawBlock) {
+                    if (!_request.withdrawBlock && delegation.toStakerId === _request.stakerID) {
                         amount += WeiToFtm(_request.amount);
                     }
                 });
@@ -247,8 +313,20 @@ export default {
 
     asyncComputed: {
         async accountInfo() {
-            const accountInfo = await this.$fWallet.getBalance(this.currentAccount.address, true);
-            const { delegation } = accountInfo;
+            let accountInfo = this._accountInfo;
+            let delegation = this._delegation;
+
+            if (!accountInfo) {
+                accountInfo = await this.fetchAccountInfo();
+                this._accountInfo = accountInfo;
+            }
+
+            if (!delegation) {
+                delegation = await this.fetchDelegation(this.stakerId);
+                this._delegation = delegation;
+            }
+
+            accountInfo.delegation = delegation;
 
             accountInfo.delegated = delegation ? delegation.amount : 0;
             accountInfo.pendingRewards = delegation ? delegation.pendingRewards.amount : 0;
@@ -285,6 +363,11 @@ export default {
         },
     },
 
+    created() {
+        this._accountInfo = null;
+        this._delegation = null;
+    },
+
     mounted() {
         this.$refs.doc.focus();
     },
@@ -302,6 +385,7 @@ export default {
                 data: {
                     increaseDelegation: !!_increaseDelegation,
                     stakerInfo,
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -323,6 +407,21 @@ export default {
                         stakerInfo,
                         withdrawRequestsAmount: this.withdrawRequestsAmount,
                     },
+                    stakerId: this.stakerId,
+                },
+            });
+        },
+
+        lockDelegation() {
+            if (!this.canLockDelegation) {
+                return;
+            }
+
+            this.$emit('change-component', {
+                to: 'delegation-lock',
+                from: 'staking-info',
+                data: {
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -346,6 +445,27 @@ export default {
                             ...accountInfo,
                             stakerInfo,
                         },
+                        stakerId: this.stakerId,
+                    },
+                });
+            }
+        },
+
+        async claimRewardsAndReStake() {
+            const accountInfo = await this.accountInfo;
+            const stakerInfo = await this.stakerInfo;
+
+            if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
+                this.$emit('change-component', {
+                    to: 'claim-rewards-confirmation',
+                    from: 'staking-info',
+                    data: {
+                        accountInfo: {
+                            ...accountInfo,
+                            stakerInfo,
+                        },
+                        stakerId: this.stakerId,
+                        reStake: true,
                     },
                 });
             }
@@ -364,9 +484,102 @@ export default {
                             ...accountInfo,
                             stakerInfo,
                         },
+                        stakerId: this.stakerId,
                     },
                 });
             }
+        },
+
+        /**
+         * Fetch account info by current account address.
+         */
+        async fetchAccountInfo() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query AccountByAddress($address: Address!) {
+                        account(address: $address) {
+                            address
+                            balance
+                            stashed
+                            canUnStash
+                        }
+                    }
+                `,
+                variables: {
+                    address: this.currentAccount.address,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.account;
+        },
+
+        /**
+         * Fetch delegation by staker id and current account address.
+         *
+         * @param {string} _stakerId
+         */
+        async fetchDelegation(_stakerId) {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query Delegation($address: Address!, $staker: Long!) {
+                        delegation(address: $address, staker: $staker) {
+                            toStakerId
+                            createdEpoch
+                            createdTime
+                            deactivatedEpoch
+                            deactivatedTime
+                            amount
+                            amountDelegated
+                            amountInWithdraw
+                            claimedReward
+                            pendingRewards {
+                                amount
+                                fromEpoch
+                                toEpoch
+                            }
+                            withdrawRequests {
+                                address
+                                receiver
+                                account {
+                                    address
+                                }
+                                stakerID
+                                withdrawRequestID
+                                isDelegation
+                                amount
+                                withdrawPenalty
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                            deactivation {
+                                address
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    address: this.currentAccount.address,
+                    staker: _stakerId,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.delegation;
         },
 
         /**
@@ -387,7 +600,15 @@ export default {
                     amount: WeiToFtm(_withdrawRequest.amount),
                     withdraw: true,
                     withdrawRequest: _withdrawRequest,
+                    stakerId: this.stakerId,
                 },
+            });
+        },
+
+        onPreviousBtnClick() {
+            this.$emit('change-component', {
+                to: this.previousComponent,
+                from: 'stake-form',
             });
         },
 

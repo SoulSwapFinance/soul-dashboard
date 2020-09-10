@@ -2,10 +2,10 @@
     <div class="view-defi-manage-borrow">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Borrow
+            Borrow/Repay
         </h1>
 
-        <defi-borrow @defi-manage-borrow-submit="onDefiManageBorrowSubmit" />
+        <defi-borrow :token="params.token" />
     </div>
 </template>
 
@@ -20,23 +20,19 @@ export default {
     components: { DefiBorrow, FBackButton },
 
     computed: {
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        params() {
+            const { $route } = this;
+
+            return $route && $route.params ? $route.params : {};
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-manage-borrow');
 
             return parentNode ? parentNode.route : '';
-        },
-    },
-
-    methods: {
-        onDefiManageBorrowSubmit(_data) {
-            console.log('onDefiManageBorrowSubmit', _data);
-
-            /*
-            this.$router.push({
-                name: 'defi-manage-borrow-confirmation',
-                params: _data,
-            });
-            */
         },
     },
 };

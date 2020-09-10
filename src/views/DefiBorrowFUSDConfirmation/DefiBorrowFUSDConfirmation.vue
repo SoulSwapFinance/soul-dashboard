@@ -1,6 +1,6 @@
 <template>
     <div class="view-defi-borrow-fusd-confirmation">
-        <defi-borrow-confirmation :params="params" />
+        <defi-borrow-confirmation :params="params" :token="params.token" />
     </div>
 </template>
 

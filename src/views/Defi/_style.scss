@@ -21,7 +21,7 @@
     }
 
     h1, .h1 {
-        font-size: 48px;
+        font-size: 42px;
         font-weight: normal;
         text-align: center;
         margin-top: 0;
@@ -52,11 +52,6 @@
         .value {
             font-size: 2.36em;
             margin-top: -2px;
-
-            .currency {
-                font-size: 0.7em;
-                color: $light-gray-color;
-            }
         }
 
         &.smaller {
@@ -71,23 +66,6 @@
         margin: 0 auto;
         color: $light-gray-color;
     }
-
-    .f-message.big {
-        //font-size: 26px;
-        font-size: 21px;
-        font-weight: bold;
-        text-align: center;
-        line-height: 1.23;
-
-        &.error {
-            color: #ff1716;
-        }
-
-        &.info {
-            font-weight: normal;
-            color: $body-color;
-        }
-    }
 }
 
 .defi-price-input {
@@ -96,7 +74,7 @@
     margin: 0 auto;
     text-align: center;
 
-    > span {
+    > span:not(.f-auto-resize-input) {
         font-size: 80px;
         opacity: 0.65;
     }
@@ -135,9 +113,12 @@
     padding: 8px 16px 16px 16px;
     overflow: hidden;
 
-    .reset-btn {
+    .slider-buttons {
+        display: flex;
+        justify-content: space-between;
         margin-top: 4px;
         text-align: left;
+        height: 28px;
     }
 }
 
@@ -166,7 +147,7 @@
         }
 
         h1, .h1 {
-            font-size: 36px;
+            font-size: 30px;
             //margin-bottom: 24px;
         }
 
@@ -176,6 +157,10 @@
 
         .df-data-item {
             @include df-data-item-smaller;
+
+            .value {
+                font-size: 2em;
+            }
         }
 
         .f-message {

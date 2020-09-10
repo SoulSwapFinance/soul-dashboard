@@ -1,0 +1,7 @@
+@import "../variables";
+
+.f-data-table {
+    --f-data-table-cell-background-color: #fff;
+    --f-data-table-cell-hover-background-color: #ccddff;
+    --f-data-table-mobile-item-border-bottom: 1px solid #{$grey-color-semi};
+}

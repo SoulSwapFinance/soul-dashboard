@@ -126,11 +126,13 @@ export default {
         },
     },
 
+    /*
     created() {
         if (parseFloat(this.max) < parseFloat(this.min)) {
-            throw new Error("'max' must be bigger than 'min'");
+            console.error("'max' must be bigger than 'min'");
         }
     },
+    */
 
     mounted() {
         const labelsLen = this.labels.length;

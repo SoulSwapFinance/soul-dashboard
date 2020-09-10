@@ -3,8 +3,19 @@
         <f-card class="f-card-double-padding">
             <f-form ref="stakeForm" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
-                    <legend class="h2">
-                        Delegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                    <legend class="h2 cont-with-back-btn">
+                        <span
+                            >Delegate FTM <span class="f-steps"><b>1</b> / 2</span></span
+                        >
+                        <a
+                            href="#"
+                            class="btn light break-word"
+                            style="max-width: 100%;"
+                            aria-label="Go to previous form"
+                            @click.prevent="onPreviousBtnClick"
+                        >
+                            Back
+                        </a>
                     </legend>
 
                     <div class="form-body">
@@ -63,15 +74,6 @@
                         </f-input>
 
                         <div class="align-center form-buttons">
-                            <a
-                                href="#"
-                                class="btn light large break-word"
-                                style="max-width: 100%;"
-                                aria-label="Go to previous form"
-                                @click.prevent="onPreviousBtnClick"
-                            >
-                                Previous
-                            </a>
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
                             </button>
@@ -116,6 +118,16 @@ export default {
             default() {
                 return {};
             },
+        },
+        /** Name of previous component. */
+        previousComponent: {
+            type: String,
+            default: 'staking-info',
+        },
+        /** */
+        stakerId: {
+            type: String,
+            default: '',
         },
     },
 
@@ -173,7 +185,8 @@ export default {
         });
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         const { stakerInfo } = this;
 
         this.validator = 'Select a Validator';
@@ -183,7 +196,7 @@ export default {
             name: '',
         };
 
-        if (stakerInfo) {
+        if (stakerInfo && stakerInfo.id) {
             this.validatorInfo = {
                 id: stakerInfo.id,
                 address: stakerInfo.stakerAddress,
@@ -268,12 +281,13 @@ export default {
          */
         async stakeCofirmation(_amount) {
             const amount = parseFloat(_amount);
+            const validatorId = parseInt(this.validatorInfo.id, 16);
             let delegationTx = null;
 
             if (this.increaseDelegation) {
-                delegationTx = sfcUtils.increaseDelegationTx(amount);
+                delegationTx = sfcUtils.increaseDelegationTx(amount, validatorId);
             } else {
-                delegationTx = sfcUtils.createDelegationTx(amount, parseInt(this.validatorInfo.id, 16));
+                delegationTx = sfcUtils.createDelegationTx(amount, validatorId);
             }
 
             const tx = await this.$fWallet.getSFCTransactionToSign(
@@ -291,6 +305,8 @@ export default {
                     tx,
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo || this.validatorInfo,
+                    previousComponent: this.previousComponent,
+                    stakerId: this.stakerId,
                 },
             });
         },
@@ -319,8 +335,11 @@ export default {
 
         onPreviousBtnClick() {
             this.$emit('change-component', {
-                to: 'staking-info',
+                to: this.previousComponent,
                 from: 'stake-form',
+                data: {
+                    stakerId: this.stakerId,
+                },
             });
         },
 

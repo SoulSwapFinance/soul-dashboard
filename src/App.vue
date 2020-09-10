@@ -23,7 +23,8 @@
             <f-breakpoint value="992px" code="large"></f-breakpoint>
             <f-breakpoint value="1100px" code="validator-list-dt-mobile-view"></f-breakpoint>
         </f-breakpoints>
-        <f-aria-alert></f-aria-alert>
+        <f-aria-alert />
+        <f-network-status />
     </div>
 </template>
 
@@ -34,18 +35,22 @@ import {
     PUSH_BNBRIDGE_PENDING_REQUEST,
     SET_BREAKPOINT,
     SET_CURRENCY,
+    SET_DEFI_SLIPPAGE_RESERVE,
     SET_FRACTION_DIGITS,
+    SET_NIGHT_MODE,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
 } from './store/mutations.type.js';
 import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
+import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
 
 export default {
     name: 'App',
 
     components: {
+        FNetworkStatus,
         FAriaAlert,
         FBreakpoint,
         FBreakpoints,
@@ -54,6 +59,8 @@ export default {
     mixins: [eventBusMixin],
 
     created() {
+        this.nightMode(this.$store.state.nightMode);
+
         filtersOptions.currency = this.$store.state.currency;
         filtersOptions.fractionDigits = this.$store.state.fractionDigits;
         this.setTokenPrice(this.$store.state.currency);
@@ -96,6 +103,43 @@ export default {
                 filtersOptions.fractionDigits = _fractionDigits;
                 this.$store.commit(SET_FRACTION_DIGITS, _fractionDigits);
             }
+        },
+
+        /**
+         * @param {number} _defiSlippageReserve
+         */
+        setDefiSlippageReserve(_defiSlippageReserve) {
+            if (_defiSlippageReserve) {
+                this.$store.commit(SET_DEFI_SLIPPAGE_RESERVE, _defiSlippageReserve);
+            }
+        },
+
+        /**
+         * @param {boolean} _on
+         */
+        setNightMode(_on) {
+            this.$store.commit(SET_NIGHT_MODE, _on);
+
+            this.nightMode(_on);
+        },
+
+        /**
+         * @param {boolean} _on
+         */
+        nightMode(_on) {
+            const { documentElement } = document;
+
+            documentElement.classList.add('theme-transition');
+
+            if (_on) {
+                documentElement.classList.add('dark-theme');
+            } else {
+                documentElement.classList.remove('dark-theme');
+            }
+
+            setTimeout(function () {
+                documentElement.classList.remove('theme-transition');
+            }, 250);
         },
 
         onFBreakpointChange(_event) {

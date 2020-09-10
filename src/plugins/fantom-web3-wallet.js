@@ -18,6 +18,7 @@ export const GAS_LIMITS = {
     default: '0xabe0',
     claimRewards: '0x3D0900',
     undelegate: '0x30D40',
+    lockDelegation: '0x30D40',
     withdraw: '0x30D40',
     delegate: '0x30D40',
     ballot: '0x3D0900',
@@ -32,6 +33,68 @@ export const Web3 = {
     accounts: new Accounts(),
 };
 
+/**
+ * Temporary password storage.
+ * @type {{pwd: string, timeout: number}}
+ */
+const pwdO = {
+    pwd: '',
+    timeout: 0,
+};
+
+/**
+ * Class for handling temporary password storage.
+ */
+class PWDStorage {
+    constructor() {
+        this.timeoutId = -1;
+    }
+
+    /**
+     * @param {string} _pwd
+     */
+    set(_pwd = '') {
+        pwdO.pwd = _pwd;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isSet() {
+        return !!pwdO.pwd;
+    }
+
+    clear() {
+        pwdO.pwd = '';
+    }
+
+    /**
+     * @param {number} _timeout
+     */
+    setTimeout(_timeout = 0) {
+        pwdO.timeout = _timeout;
+
+        this.timeoutId = setTimeout(function () {
+            pwdO.pwd = '';
+            pwdO.timeout = 0;
+        }, pwdO.timeout);
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isTimeoutSet() {
+        return pwdO.timeout > 0;
+    }
+
+    clearTimeout() {
+        if (this.timeoutId > -1) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = -1;
+        }
+    }
+}
+
 // Fantom web3 wallet plugin for VUE, based on https://git`hub.com/Fantom-foundation/fantom-web3-wallet
 export class FantomWeb3Wallet {
     static install(_Vue, _options) {
@@ -41,6 +104,23 @@ export class FantomWeb3Wallet {
 
     constructor(_options) {
         this.apolloClient = _options.apolloClient;
+        /** List of blockchains. */
+        this.blockchains = [
+            {
+                value: 'fantom',
+                label: 'Fantom Opera',
+            },
+            {
+                value: 'ethereum',
+                label: 'Ethereum',
+            },
+            {
+                value: 'binance',
+                label: 'Binance Chain',
+            },
+        ];
+
+        this.pwdStorage = new PWDStorage();
     }
 
     /**
@@ -59,7 +139,7 @@ export class FantomWeb3Wallet {
             variables: {
                 to: _to,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         if (!data.data.price) {
@@ -88,9 +168,15 @@ export class FantomWeb3Wallet {
                     address
                     balance
                     totalValue
-                    delegation {
-                        pendingRewards {
-                            amount
+                    delegations {
+                        totalCount
+                        edges {
+                            delegation {
+                                pendingRewards {
+                                    amount
+                                }
+                            }
+                            cursor
                         }
                     }
                 }
@@ -103,9 +189,15 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
-                        delegation {
-                            pendingRewards {
-                                amount
+                        delegations {
+                            totalCount
+                            edges {
+                                delegation {
+                                    pendingRewards {
+                                        amount
+                                    }
+                                }
+                                cursor
                             }
                         }
                     }
@@ -125,51 +217,57 @@ export class FantomWeb3Wallet {
                             createdTime
                             isActive
                         }
-                        delegation {
-                            toStakerId
-                            createdEpoch
-                            createdTime
-                            deactivatedEpoch
-                            deactivatedTime
-                            amount
-                            amountDelegated
-                            amountInWithdraw
-                            claimedReward
-                            pendingRewards {
-                                amount
-                                fromEpoch
-                                toEpoch
-                            }
-                            withdrawRequests {
-                                address
-                                receiver
-                                account {
-                                    address
+                        delegations {
+                            totalCount
+                            edges {
+                                delegation {
+                                    toStakerId
+                                    createdEpoch
+                                    createdTime
+                                    deactivatedEpoch
+                                    deactivatedTime
+                                    amount
+                                    amountDelegated
+                                    amountInWithdraw
+                                    claimedReward
+                                    pendingRewards {
+                                        amount
+                                        fromEpoch
+                                        toEpoch
+                                    }
+                                    withdrawRequests {
+                                        address
+                                        receiver
+                                        account {
+                                            address
+                                        }
+                                        stakerID
+                                        withdrawRequestID
+                                        isDelegation
+                                        amount
+                                        withdrawPenalty
+                                        requestBlock {
+                                            number
+                                            timestamp
+                                        }
+                                        withdrawBlock {
+                                            number
+                                            timestamp
+                                        }
+                                    }
+                                    deactivation {
+                                        address
+                                        requestBlock {
+                                            number
+                                            timestamp
+                                        }
+                                        withdrawBlock {
+                                            number
+                                            timestamp
+                                        }
+                                    }
                                 }
-                                stakerID
-                                withdrawRequestID
-                                isDelegation
-                                amount
-                                withdrawPenalty
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
-                            }
-                            deactivation {
-                                address
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
+                                cursor
                             }
                         }
                     }
@@ -182,7 +280,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return data.data.account;
@@ -223,7 +321,7 @@ export class FantomWeb3Wallet {
             variables: {
                 address: _address,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return _inHexFormat ? data.data.account.txCount : parseInt(data.data.account.txCount);
@@ -254,6 +352,9 @@ export class FantomWeb3Wallet {
                         downtime
                         isActive
                         isOffline
+                        isStakeLocked
+                        lockedFromEpoch
+                        lockedUntil
                         stakerInfo {
                             name
                             website
@@ -266,10 +367,52 @@ export class FantomWeb3Wallet {
             variables: {
                 id: _id,
             },
-            fetchPolicy: 'no-cache',
+            fetchPolicy: 'network-only',
         });
 
         return data.data.staker;
+    }
+
+    /**
+     * Fetch all records.
+     *
+     * @param {ApolloQuery} _query
+     * @param {string} _queryName
+     * @return {Promise<[]>}
+     */
+    async fetchAll(_query, _queryName) {
+        let edges = [];
+        let pageInfo = { hasNext: true, last: null };
+        let data;
+        let item;
+
+        while (pageInfo && pageInfo.hasNext) {
+            _query.variables.cursor = pageInfo.last;
+
+            data = await this.apolloClient.query(_query);
+
+            item = data.data[_queryName];
+            pageInfo = item.pageInfo;
+            if (item.edges) {
+                edges = edges.concat(item.edges);
+            }
+        }
+
+        return edges;
+    }
+
+    /**
+     * @param {WalletBlockchain} _blockchain
+     * @return {string}
+     */
+    getBlockchainLabel(_blockchain) {
+        const blockchain = this.blockchains.find((_item) => _item.value === _blockchain);
+
+        if (blockchain) {
+            return blockchain.label;
+        }
+
+        return '';
     }
 
     /**
@@ -469,7 +612,12 @@ export class FantomWeb3Wallet {
     }
 
     async signTransaction(_tx, _keystore, _password) {
-        const account = this.decryptFromKeystore(_keystore, _password);
+        const { pwdStorage } = this;
+        const account = this.decryptFromKeystore(_keystore, pwdO.pwd || _password);
+
+        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet()) {
+            pwdStorage.clear();
+        }
 
         if (account) {
             const transaction = await account.signTransaction(_tx);

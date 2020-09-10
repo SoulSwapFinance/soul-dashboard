@@ -41,6 +41,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Is tab panel disabled? */
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -49,7 +54,15 @@ export default {
             labelledBy: '',
             /** Is tab panel active? */
             dActive: this.active,
+            /** Is tab panel active? */
+            dDisabled: this.disabled,
         };
+    },
+
+    watch: {
+        disabled(_value) {
+            this.dDisabled = _value;
+        },
     },
 };
 </script>

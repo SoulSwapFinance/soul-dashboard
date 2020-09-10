@@ -1,16 +1,17 @@
 <template>
     <div class="view-account-stake account-main-content-mt">
-        <keep-alive>
-            <component
-                :is="currentComponent"
-                v-bind="currentComponentProperties"
-                @change-component="onChangeComponent"
-            ></component>
-        </keep-alive>
+        <!--        <keep-alive>-->
+        <component
+            :is="currentComponent"
+            v-bind="currentComponentProperties"
+            @change-component="onChangeComponent"
+        ></component>
+        <!--        </keep-alive>-->
     </div>
 </template>
 
 <script>
+import DelegationsInfo from '@/components/DelegationsInfo/DelegationsInfo.vue';
 import StakingInfo from '../components/StakingInfo/StakingInfo.vue';
 import StakeForm from '../components/forms/StakeForm.vue';
 import StakeConfirmation from '../components/StakeConfirmation/StakeConfirmation.vue';
@@ -21,9 +22,11 @@ import UnstakeConfirmation from '../components/UnstakeConfirmation/UnstakeConfir
 import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/ClaimRewardsConfirmation.vue';
 import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/WithdrawFTMConfirmation.vue';
 import UnstashConfirmation from '../components/UnstashConfirmation/UnstashConfirmation.vue';
+import DelegationLock from '@/components/DelegationLock/DelegationLock.vue';
+import DelegationLockConfirmation from '@/components/DelegationLockConfirmation/DelegationLockConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
-const DEFAULT_COMPONENT = 'staking-info';
+const DEFAULT_COMPONENT = 'delegations-info';
 
 export default {
     components: {
@@ -32,11 +35,14 @@ export default {
         TransactionRejectMessage,
         StakeConfirmation,
         StakeForm,
+        DelegationsInfo,
         StakingInfo,
         UnstakeConfirmation,
         ClaimRewardsConfirmation,
         WithdrawFTMConfirmation,
         UnstashConfirmation,
+        DelegationLock,
+        DelegationLockConfirmation,
     },
 
     mixins: [eventBusMixin],
@@ -50,13 +56,13 @@ export default {
     computed: {
         currentComponentProperties() {
             switch (this.currentComponent) {
-                case 'stake-form':
-                    return this._data_;
                 case 'stake-confirmation':
                     return {
                         stakeData: this._data_,
                         increaseDelegation: this._data_.increaseDelegation,
                         stakerInfo: this._data_.stakerInfo,
+                        previousComponent: this._data_.previousComponent,
+                        stakerId: this._data_.stakerId,
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
@@ -65,15 +71,23 @@ export default {
                         accountInfo: this._data_.accountInfo,
                         amount: this._data_.amount,
                         undelegateMax: this._data_.undelegateMax,
+                        stakerId: this._data_.stakerId,
+                        reStake: this._data_.reStake,
                     };
                 case 'transaction-success-message':
                     return {
                         tx: this._data_.tx,
                         title: this._data_.successMessage,
                         continueTo: this._data_.continueTo,
+                        continueToParams: this._data_.continueToParams,
+                        stakerId: this._data_.stakerId,
                     };
                 case 'withdraw-f-t-m-confirmation':
                 case 'unstash-confirmation':
+                case 'stake-form':
+                case 'staking-info':
+                case 'delegation-lock':
+                case 'delegation-lock-confirmation':
                     return this._data_;
                 default:
                     return null;
@@ -110,5 +124,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss"></style>

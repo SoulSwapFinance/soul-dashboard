@@ -7,11 +7,13 @@
             password-label="Please enter your wallet password to undelegate your FTM"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            <h2 class="cont-with-back-btn">
+                <span>
+                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                </span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -75,6 +77,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -88,18 +95,20 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
     methods: {
         async setTx() {
+            const stakerId = parseInt(this.stakerId, 16);
             console.log(this.amount, this.undelegateMax);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 this.undelegateMax
-                    ? sfcUtils.prepareToWithdrawDelegationTx()
-                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), this.amount),
+                    ? sfcUtils.prepareToWithdrawDelegationTx(stakerId)
+                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
                 this.currentAccount.address,
                 GAS_LIMITS.undelegate
             );
@@ -112,17 +121,21 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
-                    continueTo: 'account-history',
+                    continueTo: 'staking-info',
+                    continueToParams: {
+                        stakerId: this.stakerId,
+                    },
                 },
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'unstake-f-t-m',
                 from: 'unstake-confirmation',
                 data: {
                     accountInfo: this.accountInfo,
+                    stakerId: this.stakerId,
                 },
             });
         },

@@ -16,11 +16,11 @@
     }
 
     .success-icon, .error-icon {
-        color: $f-message-success-color;
+        color: var(--f-success-color);
         margin-bottom: 32px;
     }
 
     .error-icon {
-        color: $f-message-error-color;
+        color: var(--f-error-color);
     }
 }

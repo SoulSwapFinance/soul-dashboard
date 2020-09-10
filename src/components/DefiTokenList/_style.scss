@@ -1,6 +1,8 @@
 @import "../../assets/scss/vars";
 
 .defi-token-list {
+    --f-defi-token-list-item-hover-color: #ccddff;
+
     ul > li {
         padding: 8px;
         margin-bottom: 2px;
@@ -11,12 +13,18 @@
             cursor: pointer;
 
             &:hover {
-                background-color: #ccddff;
+                background-color: var(--f-defi-token-list-item-hover-color);
             }
         }
 
         &.disabled {
             opacity: 0.3;
+        }
+
+        .available-balance {
+            color: $light-gray-color;
+            font-weight: normal;
+            text-align: right;
         }
     }
 }

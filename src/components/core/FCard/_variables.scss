@@ -1,11 +1,5 @@
 @import "../variables";
 
-/*
-:root {
-    --f-card-padding: 20px;
-}
-*/
-
 $f-card-padding: var(--f-card-padding) !default;
 //$f-card-padding-2x: calc(2 * var(--f-card-padding)) !default;
 $f-card-padding-2x: calc(1.5 * var(--f-card-padding)) !default;

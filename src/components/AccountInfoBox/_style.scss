@@ -1,5 +1,23 @@
+@import "../../assets/scss/vars";
+
 .account-info-box {
     .label.h3 {
         font-weight: normal;
+    }
+}
+
+@include media-max($bp-large) {
+    .account-info-box {
+        .account-actions-box {
+            margin-bottom: 16px;
+        }
+    }
+}
+
+@include media-max($bp-small) {
+    .account-info-box {
+        .balance:first-child {
+            margin-bottom: 8px;
+        }
     }
 }

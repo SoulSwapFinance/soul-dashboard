@@ -1,0 +1,63 @@
+@import "../../assets/scss/vars";
+
+.view-defi-flend {
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-gap: 16px 16px;
+        margin: 64px 8px 0 8px;
+
+        .f-message {
+            grid-area: 2 / 1 / 2 / 4;
+        }
+    }
+
+    .f-circle-progress {
+        margin-bottom: 24px;
+    }
+
+    .form-buttons {
+        padding-top: 48px;
+        text-align: center;
+
+        .btn {
+            min-width: 220px;
+            margin-bottom: 16px;
+        }
+    }
+
+    .f-tabs {
+        padding-top: 24px;
+    }
+}
+
+@include media-max($bp-small) {
+    .view-defi-flend {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+            margin-top: 24px;
+
+            .limit-col {
+                grid-area: 1 / 1 / 1 / 3;
+            }
+
+            .f-message {
+                grid-area: 2 / 1 / 2 / 3;
+            }
+        }
+
+        .buttons {
+            padding: 24px 5% 0 5%;
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .f-circle-progress {
+            --f-circle-progress-width: 120px;
+            --f-circle-progress-height: 120px;
+        }
+    }
+}

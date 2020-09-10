@@ -9,6 +9,7 @@
                 first-m-v-column-width="6"
                 fixed-header
                 f-card-off
+                class="f-data-table-body-bg-color"
             >
                 <template v-slot:column-logo="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
@@ -80,7 +81,7 @@
                     </div>
                     <template v-else>
                         <button
-                            :disabled="item.isOffline || item.isCheater"
+                            :disabled="item.isOffline || item.isCheater || item.alreadyDelegated"
                             class="btn select-btn"
                             :data-validator-id="value"
                         >
@@ -126,6 +127,8 @@ import { WEIToFTM } from '../../../utils/transactions.js';
 import { formatHexToInt, timestampToDate, numToFixed, formatNumberByLocale } from '../../../filters.js';
 import { sortByHex, sortByLocaleString } from '../../../utils/array-sorting.js';
 import appConfig from '../../../../app.config.js';
+import { cloneObject } from '@/utils';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ValidatorList',
@@ -179,7 +182,7 @@ export default {
                     }
                 }
             `,
-            result(_data, _key) {
+            async result(_data, _key) {
                 const totals = {
                     selfStaked: 0,
                     totalDelegated: 0,
@@ -190,7 +193,7 @@ export default {
                 const tUnknown = this.$t('view_validator_list.unknown');
 
                 if (_key === 'stakers') {
-                    data = [..._data.data.stakers];
+                    data = cloneObject(_data.data.stakers);
 
                     data.forEach((_item, _idx) => {
                         // _item.total_staked = WEIToFTM(_item.stake) + WEIToFTM(_item.delegatedMe);
@@ -209,6 +212,8 @@ export default {
                         if (_item.isCheater) {
                             flagged.push(_idx);
                         }
+
+                        _item.alreadyDelegated = true;
                     });
 
                     if (flagged.length > 0) {
@@ -223,6 +228,20 @@ export default {
 
                     this.$emit('records-count', this.dItems.length);
                     this.$emit('validator-list-totals', totals);
+
+                    const stakerIds = await this.fetchStakerIds();
+
+                    if (stakerIds.length > 0) {
+                        data.forEach((_item) => {
+                            if (stakerIds.indexOf(_item.id) === -1) {
+                                _item.alreadyDelegated = false;
+                            }
+                        });
+                    } else {
+                        data.forEach((_item) => {
+                            _item.alreadyDelegated = false;
+                        });
+                    }
                 }
             },
             skip() {
@@ -304,6 +323,8 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         /**
          * Property is set to `true`, if 'tvalidator-list-dt-mobile-view' breakpoint is reached.
          *
@@ -327,6 +348,44 @@ export default {
     },
 
     methods: {
+        /**
+         * @return {Promise<[]>}
+         */
+        async fetchStakerIds() {
+            const delegations = await this.$fWallet.fetchAll(
+                {
+                    query: gql`
+                        query DelegationsByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
+                            delegationsByAddress(address: $address, cursor: $cursor, count: $count) {
+                                pageInfo {
+                                    first
+                                    last
+                                    hasNext
+                                    hasPrevious
+                                }
+                                totalCount
+                                edges {
+                                    cursor
+                                    delegation {
+                                        toStakerId
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        address: this.currentAccount.address,
+                        count: 100,
+                        cursor: null,
+                    },
+                    fetchPolicy: 'network-only',
+                },
+                'delegationsByAddress'
+            );
+
+            return delegations.map((_item) => (_item.delegation ? _item.delegation.toStakerId : ''));
+        },
+
         onClick(_event) {
             const eSelectBtn = _event.target.closest('.select-btn');
 

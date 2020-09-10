@@ -1,11 +1,6 @@
 <template>
     <div class="view-defi-manage-borrow-confirmation">
-        <defi-borrow-confirmation
-            :params="params"
-            comp-name="defi-manage-borrow"
-            :token-symbol="params.tokenSymbol"
-            :debt-decimals="5"
-        />
+        <defi-borrow-confirmation :params="params" comp-name="defi-manage-borrow" :token="params.token" />
     </div>
 </template>
 
@@ -19,7 +14,7 @@ export default {
 
     computed: {
         /**
-         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, tokenSymbol: string}}
+         * @return {{debt: number, currDebt: number, address: string, steps: number, step: number, token: DefiToken}}
          */
         params() {
             const { $route } = this;

@@ -7,11 +7,11 @@
             password-label="Please enter your wallet password to unstash your rewards"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Unstash Rewards
+            <h2 class="cont-with-back-btn">
+                <span>Unstash Rewards</span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -57,6 +57,11 @@ export default {
                 return {};
             },
         },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -70,14 +75,13 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
     methods: {
         async setTx() {
-            console.log('eeeee');
-
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.unstashRewardsTx(),
                 this.currentAccount.address,
@@ -92,15 +96,21 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Unstashing Successful',
-                    continueTo: 'account-history',
+                    continueTo: 'staking-info',
+                    continueToParams: {
+                        stakerId: this.stakerId,
+                    },
                 },
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'staking-info',
                 from: 'unstash-confirmation',
+                data: {
+                    stakerId: this.stakerId,
+                },
                 /*
                 data: {
                     withdrawRequest: this.withdrawRequest,

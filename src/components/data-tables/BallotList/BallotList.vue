@@ -15,6 +15,7 @@
                     infinite-scroll
                     fixed-header
                     f-card-off
+                    class="f-data-table-body-bg-color"
                     @fetch-more="fetchMore"
                     @click.native="onDataTableClick"
                 >
@@ -95,6 +96,7 @@ import gql from 'graphql-tag';
 import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
 import { mapGetters } from 'vuex';
+import { cloneObject } from '@/utils';
 
 export default {
     name: 'BallotList',
@@ -156,7 +158,7 @@ export default {
                 let data;
 
                 if (_key === 'ballots') {
-                    data = _data.data.ballots;
+                    data = cloneObject(_data.data.ballots);
 
                     const edges = await this.processEdges(data.edges);
 
@@ -286,7 +288,7 @@ export default {
                         voter: this.currentAccount.address,
                         ballots: ballotAddresses,
                     },
-                    fetchPolicy: 'no-cache',
+                    fetchPolicy: 'network-only',
                 });
 
                 if (data) {

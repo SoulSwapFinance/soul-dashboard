@@ -7,11 +7,11 @@
             password-label="Please enter your wallet password to withdraw your FTM"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Withdraw delegated FTM - Confirmation
+            <h2 class="cont-with-back-btn">
+                <span>Withdraw delegated FTM - Confirmation</span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -76,6 +76,10 @@ export default {
                 return {};
             },
         },
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -89,7 +93,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -100,7 +105,7 @@ export default {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 withdrawRequest.withdrawRequestID
                     ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                    : sfcUtils.withdrawDelegationTx(),
+                    : sfcUtils.withdrawDelegationTx(parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 GAS_LIMITS.withdraw
             );
@@ -113,17 +118,21 @@ export default {
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Undelegation Successful',
-                    continueTo: 'account-history',
+                    continueTo: 'staking-info',
+                    continueToParams: {
+                        stakerId: this.stakerId,
+                    },
                 },
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'staking-info',
                 from: 'withdraw-ftm-confirmation',
                 data: {
                     withdrawRequest: this.withdrawRequest,
+                    stakerId: this.stakerId,
                 },
             });
         },

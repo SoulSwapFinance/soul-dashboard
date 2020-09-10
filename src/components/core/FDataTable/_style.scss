@@ -1,4 +1,4 @@
-@import "../variables";
+@import "custom-properties";
 
 .f-data-table-card:not(.off) {
     padding-top: 20px;
@@ -37,7 +37,7 @@
         height: 48px;
 
         td {
-            background-color: #fff;
+            background-color: var(--f-data-table-cell-background-color);
             vertical-align: middle;
 
             &.f-col {
@@ -50,11 +50,23 @@
         }
     }
 
+    &.action-on-row {
+        tbody {
+            tr {
+                cursor: pointer;
+
+                &:hover td {
+                    background-color: var(--f-data-table-cell-hover-background-color);
+                }
+            }
+        }
+    }
+
     thead {
         th {
             font-family: $font-family-proxima;
-            //background-color: $body-bg-color;
-            background-color: #fff;
+            //background-color: var(--f-doc-background-color);
+            background-color: var(--f-data-table-cell-background-color);
         }
     }
 
@@ -80,7 +92,7 @@
     .mobile-view {
         .mobile-item {
             //padding: 8px;
-            background-color: #fff;
+            background-color: var(--f-data-table-cell-background-color);
             //border-radius: 8px;
             //box-shadow: $elev2-shadow;
             margin-bottom: 16px;
@@ -88,7 +100,7 @@
             border-radius: 0;
             box-shadow: none;
             padding: 0 0 16px 0;
-            border-bottom: 1px solid $grey-color-semi;
+            border-bottom: var(--f-data-table-mobile-item-border-bottom);
 
             &:last-child {
                 border-bottom: none;
@@ -198,7 +210,7 @@
                 box-shadow: none;
                 margin-bottom: 16px;
                 padding: 0 0 16px 0;
-                border-bottom: 1px solid $grey-color-semi;
+                border-bottom: var(--f-data-table-mobile-item-border-bottom);
 
                 &:last-child {
                     border-bottom: none;

@@ -19,6 +19,222 @@ const appStructure = [
                         route: 'defi-fmint',
                         _c: [
                             {
+                                id: 'defi-lock',
+                                route: 'defi-lock',
+                                _c: [
+                                    {
+                                        id: 'defi-lock-confirmation',
+                                        route: 'defi-lock-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-lock-transaction-success-message',
+                                                route: 'defi-lock-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-lock-confirmation2',
+                                                        route: 'defi-lock-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-lock-transaction-success-message2',
+                                                                route: 'defi-lock-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-lock-transaction-reject-message2',
+                                                                route: 'defi-lock-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-lock-transaction-reject-message',
+                                                route: 'defi-lock-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-unlock',
+                                route: 'defi-unlock',
+                                _c: [
+                                    {
+                                        id: 'defi-unlock-confirmation',
+                                        route: 'defi-unlock-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-unlock-transaction-success-message',
+                                                route: 'defi-unlock-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-unlock-confirmation2',
+                                                        route: 'defi-unlock-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-unlock-transaction-success-message2',
+                                                                route: 'defi-unlock-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-unlock-transaction-reject-message2',
+                                                                route: 'defi-unlock-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-unlock-transaction-reject-message',
+                                                route: 'defi-unlock-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-lock-unlock',
+                                route: 'defi-lock-unlock',
+                                _c: [
+                                    {
+                                        id: 'defi-lock-unlock-confirmation',
+                                        route: 'defi-lock-unlock-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-lock-unlock-transaction-success-message',
+                                                route: 'defi-lock-unlock-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-lock-unlock-confirmation2',
+                                                        route: 'defi-lock-unlock-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-lock-unlock-transaction-success-message2',
+                                                                route: 'defi-lock-unlock-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-lock-unlock-transaction-reject-message2',
+                                                                route: 'defi-lock-unlock-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-lock-unlock-transaction-reject-message',
+                                                route: 'defi-lock-unlock-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-mint',
+                                route: 'defi-mint',
+                                _c: [
+                                    {
+                                        id: 'defi-mint-confirmation',
+                                        route: 'defi-mint-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-mint-transaction-success-message',
+                                                route: 'defi-mint-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-mint-confirmation2',
+                                                        route: 'defi-mint-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-mint-transaction-success-message2',
+                                                                route: 'defi-mint-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-mint-transaction-reject-message2',
+                                                                route: 'defi-mint-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-mint-transaction-reject-message',
+                                                route: 'defi-mint-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-repay',
+                                route: 'defi-repay',
+                                _c: [
+                                    {
+                                        id: 'defi-repay-confirmation',
+                                        route: 'defi-repay-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-repay-transaction-success-message',
+                                                route: 'defi-repay-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-repay-confirmation2',
+                                                        route: 'defi-repay-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-repay-transaction-success-message2',
+                                                                route: 'defi-repay-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-repay-transaction-reject-message2',
+                                                                route: 'defi-repay-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-repay-transaction-reject-message',
+                                                route: 'defi-repay-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-mint-repay',
+                                route: 'defi-mint-repay',
+                                _c: [
+                                    {
+                                        id: 'defi-mint-repay-confirmation',
+                                        route: 'defi-mint-repay-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-mint-repay-transaction-success-message',
+                                                route: 'defi-mint-repay-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-mint-repay-confirmation2',
+                                                        route: 'defi-mint-repay-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-success-message2',
+                                                                route: 'defi-mint-repay-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-mint-repay-transaction-reject-message2',
+                                                                route: 'defi-mint-repay-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-mint-repay-transaction-reject-message',
+                                                route: 'defi-mint-repay-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
                                 id: 'defi-manage-collateral',
                                 route: 'defi-manage-collateral',
                                 _c: [
@@ -112,6 +328,44 @@ const appStructure = [
                                             {
                                                 id: 'defi-manage-borrow-transaction-reject-message',
                                                 route: 'defi-manage-borrow-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {
+                                id: 'defi-manage-deposit',
+                                route: 'defi-manage-deposit',
+                                _c: [
+                                    {
+                                        id: 'defi-manage-deposit-confirmation',
+                                        route: 'defi-manage-deposit-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'defi-manage-deposit-transaction-success-message',
+                                                route: 'defi-manage-deposit-transaction-success-message',
+                                                _c: [
+                                                    {
+                                                        id: 'defi-manage-deposit-confirmation2',
+                                                        route: 'defi-manage-deposit-confirmation2',
+                                                        _c: [
+                                                            {
+                                                                id: 'defi-manage-deposit-transaction-success-message2',
+                                                                route:
+                                                                    'defi-manage-deposit-transaction-success-message2',
+                                                            },
+                                                            {
+                                                                id: 'defi-manage-deposit-transaction-reject-message2',
+                                                                route:
+                                                                    'defi-manage-deposit-transaction-reject-message2',
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                id: 'defi-manage-deposit-transaction-reject-message',
+                                                route: 'defi-manage-deposit-transaction-reject-message',
                                             },
                                         ],
                                     },

@@ -4,7 +4,6 @@
             v-if="hasCorrectParams"
             :tx="tx"
             card-off
-            no-previous-button
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
@@ -12,19 +11,31 @@
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
-                <f-back-button :route-name="backButtonRoute" /> Confirmation
+                <f-back-button
+                    v-if="!params.steps || params.step === 1"
+                    :route-name="backButtonRoute"
+                    :params="{ fromToken: params.fromToken, toToken: params.toToken }"
+                />
+                Confirmation
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
             <div class="info">
                 <template v-if="params.step === 1">
                     You’re allowing
-                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span>
+                    <span class="price">
+                        {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                    </span>
                 </template>
                 <template v-else>
                     You're trading
-                    <span class="price">{{ params.fromValue.toFixed(priceDecimals) }} {{ fromTokenSymbol }}</span> ->
-                    <span class="price">{{ params.toValue.toFixed(priceDecimals) }} {{ toTokenSymbol }}</span>
+                    <span class="price">
+                        {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                    </span>
+                    &#10141;
+                    <span class="price">
+                        {{ params.toValue.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
+                    </span>
                 </template>
             </div>
 
@@ -47,7 +58,6 @@ import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
-import appConfig from '../../../app.config.js';
 import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 
 /**
@@ -62,12 +72,7 @@ export default {
         /** Address of smart contract. */
         contractAddress: {
             type: String,
-            default: appConfig.liquidityPoolContract,
-        },
-        /** Tells which token to use in confirmation process. */
-        tokenSymbol: {
-            type: String,
-            default: 'FUSD',
+            default: '',
         },
     },
 
@@ -84,7 +89,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         /**
-         * @return {{fromValue: number, toValue: number, fromTokenSymbol: string, toTokenSymbol: string}}
+         * @return {{fromValue: number, toValue: number, fromToken: DefiToken, toToken: DefiToken}}
          */
         params() {
             const { $route } = this;
@@ -110,7 +115,8 @@ export default {
             if (this.params.step === 1) {
                 label = 'Continue to the next step';
             } else {
-                label = 'Trade now';
+                label = 'Submit';
+                // label = 'Trade now';
             }
 
             return label;
@@ -129,11 +135,11 @@ export default {
         },
 
         fromTokenSymbol() {
-            return this.$defi.getTokenSymbol({ symbol: this.params.fromTokenSymbol });
+            return this.$defi.getTokenSymbol(this.params.fromToken);
         },
 
         toTokenSymbol() {
-            return this.$defi.getTokenSymbol({ symbol: this.params.toTokenSymbol });
+            return this.$defi.getTokenSymbol(this.params.toToken);
         },
 
         backButtonRoute() {
@@ -156,43 +162,77 @@ export default {
 
     methods: {
         async setTx() {
-            /** @type {DefiToken} */
-            const { contractAddress } = this;
+            let { contractAddress } = this;
 
             const { params } = this;
-            const tokens = await this.$defi.fetchTokens(this.currentAccount.address, [
-                params.fromTokenSymbol,
-                params.toTokenSymbol,
-            ]);
-            const fromToken = tokens.find((_item) => _item.symbol === params.fromTokenSymbol);
-            const toToken = tokens.find((_item) => _item.symbol === params.toTokenSymbol);
+            const { fromToken } = params;
+            const { toToken } = params;
             let txToSign;
+            let fromValue;
 
+            /*
             console.log(
                 fromToken,
                 toToken,
                 this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals),
                 Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
             );
+            */
 
             if (!fromToken || !toToken) {
                 return;
             }
 
+            if (!contractAddress) {
+                contractAddress = this.$defi.contracts.fMint;
+            }
+
             if (this.params.step === 1) {
+                fromValue = params.fromValue;
+
+                if (fromToken.symbol === 'FUSD') {
+                    // add 0.5% fee
+                    fromValue += fromValue * 0.005;
+                }
+
                 txToSign = defiUtils.erc20ApproveAmountTx(
                     fromToken.address,
                     contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
-                txToSign = defiUtils.defiTradeTokenTx(
-                    contractAddress,
-                    fromToken.address,
-                    toToken.address,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
-                    // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
-                );
+                if (fromToken.symbol === 'FTM' && toToken.symbol === 'WFTM') {
+                    txToSign = defiUtils.defiWrapFtm(
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
+                    );
+                } else if (fromToken.symbol === 'WFTM' && toToken.symbol === 'FTM') {
+                    txToSign = defiUtils.defiUnwrapFtm(
+                        fromToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals))
+                    );
+                } else if (fromToken.symbol === 'FUSD') {
+                    txToSign = defiUtils.defiBuyTokenTx(
+                        contractAddress,
+                        toToken.address,
+                        // Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
+                    );
+                } else if (toToken.symbol === 'FUSD') {
+                    txToSign = defiUtils.defiSellTokenTx(
+                        contractAddress,
+                        fromToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    );
+                } else {
+                    txToSign = defiUtils.defiTradeTokenTx(
+                        contractAddress,
+                        fromToken.address,
+                        toToken.address,
+                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                        // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
+                    );
+                }
             }
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(
@@ -216,6 +256,10 @@ export default {
                 params.autoContinueToAfter = 2000;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
+                params.continueToParams = {
+                    fromToken: { ...this.params.fromToken },
+                    toToken: { ...this.params.toToken },
+                };
             }
 
             this.$router.replace({
@@ -241,6 +285,10 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.compName,
+                        continueToParams: {
+                            fromToken: { ...this.params.fromToken },
+                            toToken: { ...this.params.toToken },
+                        },
                     },
                 });
             }

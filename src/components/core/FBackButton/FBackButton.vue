@@ -1,6 +1,10 @@
 <template>
     <span class="f-back-button" @click="onClick">
-        <slot> <icon data="@/assets/svg/chevron-left.svg" width="20" height="20" aria-hidden="true" /> Back </slot>
+        <slot>
+            <button class="btn light large same-size round" title="Back">
+                <icon data="@/assets/svg/arrow-left.svg" aria-hidden="true" />
+            </button>
+        </slot>
     </span>
 </template>
 
@@ -13,12 +17,18 @@ export default {
             type: String,
             default: '',
         },
+        params: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
     },
 
     methods: {
         onClick() {
             if (this.routeName) {
-                this.$router.replace({ name: this.routeName });
+                this.$router.replace({ name: this.routeName, params: this.params });
             }
         },
     },

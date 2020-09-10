@@ -2,7 +2,7 @@
 
 .f-footer {
     /*color: #fff;*/
-    /*background-color: $theme-color;*/
+    /*background-color: var(--f-primary-color);*/
     min-height: 64px;
 
     .narrow-container {
@@ -16,7 +16,6 @@
     }
 
     @include links() {
-        /*color: $secondary-color-lighter;*/
         transition: color $transition-length ease;
     }
 

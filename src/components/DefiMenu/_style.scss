@@ -1,6 +1,9 @@
 @import "../../assets/scss/vars";
 
 .defi-menu {
+    --f-defi-menu-item-hover-box-shadow: 0 18px 36px -18px rgba(0, 0, 0, 0.3), 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 -12px 36px -8px rgba(0, 0, 0, 0.03);
+    --f-defi-menu-item-hover-background-color: none;
+
     padding-top: 32px;
 
     ul {
@@ -23,12 +26,20 @@
         max-width: 348px;
         margin: 0 auto;
         height: 100%;
-        border-radius: 8px;
+        border-radius: 20px;
         text-align: center;
         padding: 24px;
+        transition: box-shadow $transition-length ease, background-color $transition-length ease;
 
         &.disabled {
             opacity: 0.5;
+        }
+
+        &:not(.disabled) {
+            &:hover, &:focus-within {
+                box-shadow: var(--f-defi-menu-item-hover-box-shadow);
+                background-color: var(--f-defi-menu-item-hover-background-color);
+            }
         }
 
         h2 {
@@ -38,11 +49,11 @@
         }
 
         .icon {
-            color: $theme-color;
+            color: var(--f-primary-color);
         }
 
         .title {
-            color: $theme-color;
+            color: var(--f-primary-color);
             font-size: 21px;
             font-weight: bold;
             text-decoration: none;
@@ -52,7 +63,7 @@
             max-width: 236px;
             min-height: 64px;
             margin: 24px auto 0 auto;
-            color: #2b3954;
+            //color: #2b3954;
             //text-align: left;
         }
     }
@@ -69,13 +80,6 @@
             top: 0;
             right: 0;
             bottom: 0;
-            border-radius: 20px;
-            transition: box-shadow $transition-length ease, background-color $transition-length ease;
-        }
-
-        &:hover::after, &:focus::after {
-            box-shadow: 0 18px 36px -18px rgba(0, 0, 0, 0.3), 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 -12px 36px -8px rgba(0, 0, 0, 0.03);
-            /*outline: 2px solid red;*/
         }
     }
 }

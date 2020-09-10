@@ -43,6 +43,7 @@
                     v-if="dWithOverlay && isVisible"
                     ref="overlay"
                     :z-index="dZIndex - 1"
+                    class="f-window-overlay"
                     @overlay-hide="onOverlayHide"
                 />
             </div>
@@ -87,6 +88,11 @@ export default {
         title: {
             type: String,
             default: '',
+        },
+        /** Has window a title? */
+        noTitle: {
+            type: Boolean,
+            default: false,
         },
         /** Animation that starts when the window is just about to show. */
         animationIn: {
@@ -234,7 +240,7 @@ export default {
                 'pos-fixed': this.dPosition === 'fixed',
                 'with-header': this.withHeader,
                 'with-footer': this.withFooter,
-                'no-title': !this.title,
+                'no-title': this.noTitle,
                 modal: this.modal,
                 popover: this.popover,
             };

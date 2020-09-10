@@ -10,7 +10,13 @@
                     ></f-pagination>
                 </div>
             </slot>
-            <div v-if="columns.length" class="table-container" :style="cHeight">
+            <div
+                v-if="columns.length"
+                class="table-container"
+                :style="cHeight"
+                @click="onTableClick"
+                @keyup="onTabletKeyup"
+            >
                 <table v-if="!cMobileView">
                     <slot name="header">
                         <thead>
@@ -28,7 +34,13 @@
                     </slot>
                     <slot>
                         <tbody v-if="cItems.length">
-                            <tr v-for="item in cItems" :key="item.id" :style="item.css ? obj2css(item.css) : ''">
+                            <tr
+                                v-for="item in cItems"
+                                :key="item.id"
+                                :style="item.css ? obj2css(item.css) : ''"
+                                :data-dt-item-id="actionOnRow ? item.id : undefined"
+                                :tabindex="actionOnRow ? 0 : -1"
+                            >
                                 <td
                                     v-for="(col, index) in columns"
                                     v-show="!col.hidden"
@@ -82,6 +94,8 @@
                             v-for="item in cItems"
                             :key="item.id"
                             :style="item.css ? obj2css(item.css) : ''"
+                            :data-dt-item-id="actionOnRow ? item.id : undefined"
+                            :tabindex="actionOnRow ? 0 : -1"
                             class="mobile-item"
                         >
                             <div v-for="(col, index) in columns" :key="col.name" :class="getColumnClass(index, col)">
@@ -135,6 +149,7 @@ import { helpersMixin } from '../../../mixins/helpers.js';
 import events from '../../../mixins/events.js';
 import FCard from '../FCard/FCard.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import { isAriaAction } from '@/utils/aria.js';
 
 export default {
     components: {
@@ -277,6 +292,12 @@ export default {
             default: false,
         },
 
+        /** If `true`, row will become clickable and 'row-action' event will be triggered. */
+        actionOnRow: {
+            type: Boolean,
+            default: false,
+        },
+
         ...FPagination.props,
     },
 
@@ -347,6 +368,7 @@ export default {
                 'height-set': this.height !== 'auto',
                 'fixed-header': this.fixedHeader,
                 'no-fl-padding': this.noFLPadding || !this.fCardOff,
+                'action-on-row': this.actionOnRow,
             };
         },
     },
@@ -592,6 +614,35 @@ export default {
                 this._sortByCol = _column._index;
 
                 this.items.sort(_column.sortFunc(_column.itemProp || _column.name, _column.sortDir));
+            }
+        },
+
+        /**
+         * @param {Event} _event
+         */
+        onTableClick(_event) {
+            /** @type {HTMLElement} */
+            let elem;
+
+            if (this.actionOnRow) {
+                elem = _event.target.closest('[data-dt-item-id]');
+                if (elem) {
+                    const id = elem.getAttribute('data-dt-item-id');
+                    const item = this.items.find((_item) => _item.id === id);
+
+                    if (item) {
+                        this.$emit('row-action', { ...item });
+                    }
+                }
+            }
+        },
+
+        /**
+         * @param {KeyboardEvent} _event
+         */
+        onTabletKeyup(_event) {
+            if (isAriaAction(_event)) {
+                this.onTableClick(_event);
             }
         },
 

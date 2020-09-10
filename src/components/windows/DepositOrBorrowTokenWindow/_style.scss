@@ -1,0 +1,14 @@
+.deposit-or-borrow-token-window {
+    .title {
+        text-align: center;
+        padding-left: 40px;
+    }
+
+    .buttons {
+        text-align: center;
+
+        > * {
+            margin-right: 4px;
+        }
+    }
+}

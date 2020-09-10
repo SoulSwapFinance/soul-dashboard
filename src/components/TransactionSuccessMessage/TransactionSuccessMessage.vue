@@ -92,12 +92,6 @@ export default {
     created() {
         /** Timeout id. */
         this._tId = -1;
-
-        if (this.autoContinueToAfter > 0) {
-            this._tId = setTimeout(() => {
-                this.onContinueBtnClick();
-            }, this.autoContinueToAfter);
-        }
     },
 
     beforeDestroy() {
@@ -125,7 +119,7 @@ export default {
                 variables: {
                     hash: this.tx,
                 },
-                fetchPolicy: 'no-cache',
+                fetchPolicy: 'network-only',
             });
 
             if (data.data.transaction.status === null) {
@@ -138,6 +132,12 @@ export default {
                 }
 
                 this.loading = false;
+
+                if (this.autoContinueToAfter > 0) {
+                    this._tId = setTimeout(() => {
+                        this.onContinueBtnClick();
+                    }, this.autoContinueToAfter);
+                }
             }
         },
 
@@ -148,7 +148,7 @@ export default {
                 this.$emit('change-component', {
                     to: this.continueTo,
                     from: 'transaction-success-message',
-                    params: this.continueToParams,
+                    data: this.continueToParams,
                 });
             }
         },

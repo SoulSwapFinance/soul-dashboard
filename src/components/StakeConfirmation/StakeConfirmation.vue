@@ -7,11 +7,13 @@
             send-button-label="Delegate"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
-            :on-go-back="onGoBack"
             @change-component="onChangeComponent"
         >
-            <h2>
-                Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+            <h2 class="cont-with-back-btn">
+                <span>
+                    Delegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                </span>
+                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
@@ -76,6 +78,16 @@ export default {
                 return {};
             },
         },
+        /** Name of previous component. */
+        previousComponent: {
+            type: String,
+            default: 'staking-info',
+        },
+        /***/
+        stakerId: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -89,7 +101,8 @@ export default {
         ...mapGetters(['currentAccount']),
     },
 
-    activated() {
+    // activated() {
+    mounted() {
         this.setTx();
     },
 
@@ -99,24 +112,29 @@ export default {
         },
 
         onSendTransactionSuccess(_data) {
+            const stakerId = this.stakerId || this.stakeData.id;
+
             this.$emit('change-component', {
                 to: 'transaction-success-message',
                 from: 'stake-confirmation',
                 data: {
                     tx: _data.data.sendTransaction.hash,
                     successMessage: 'Delegation Successful',
-                    continueTo: 'account-history',
+                    continueTo: 'staking-info',
+                    continueToParams: { stakerId },
                 },
             });
         },
 
-        onGoBack() {
+        onBackBtnClick() {
             this.$emit('change-component', {
                 to: 'stake-form',
                 from: 'stake-confirmation',
                 data: {
                     increaseDelegation: this.increaseDelegation,
                     stakerInfo: this.stakerInfo,
+                    previousComponent: this.previousComponent,
+                    stakerId: this.stakerId,
                 },
             });
         },

@@ -9,12 +9,15 @@
     border-radius: var(--f-slider-thumb-border-radius);
     border: none;
     cursor: pointer;
-    @include elevation(4);
+    //@include elevation(4);
+    box-shadow: var(--f-slider-thumb-box-shadow);
     transition: all $transition-length $transition-func;
 }
 
 @mixin f-slider-thumb-hover() {
-    @include elevation(5);
+    //@include elevation(5);
+    background: var(--f-slider-thumb-hover-background-color);
+    box-shadow: var(--f-slider-thumb-hover-box-shadow);
 }
 
 @mixin f-slider-fill-bar() {

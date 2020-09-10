@@ -16,11 +16,11 @@
 
         &.complete {
             &.yes {
-                color: $f-message-success-color;
+                color: var(--f-success-color);
             }
 
             &.no {
-                color: $f-message-error-color;
+                color: var(--f-error-color);
             }
         }
     }

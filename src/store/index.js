@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
+import appConfig from '../../app.config.js';
 
 import {
     APPEND_ACCOUNT,
@@ -21,6 +22,8 @@ import {
     MOVE_CONTACT,
     REMOVE_CONTACT,
     SET_CONTACT,
+    SET_DEFI_SLIPPAGE_RESERVE,
+    SET_NIGHT_MODE,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -33,6 +36,7 @@ import {
     ADD_CONTACT,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
+import { arrayEquals } from '@/utils/array.js';
 
 Vue.use(Vuex);
 
@@ -48,6 +52,8 @@ const vuexLocalStorage = new VuexPersist({
         tokenPrice: _state.tokenPrice,
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
+        defiSlippageReserve: _state.defiSlippageReserve,
+        nightMode: _state.nightMode,
         accounts: _state.accounts,
         contacts: _state.contacts,
         bnbridgePendingRequests: _state.bnbridgePendingRequests,
@@ -59,14 +65,21 @@ vuexPlugins.push(vuexLocalStorage.plugin);
 
 /**
  * Get pending rewards amount from account structure.
+ * Pending rewards are stored because of not to query totalBalance too often.
  *
  * @param {object} _account
  * @return {string}
  */
 function getPendingRewards(_account) {
-    return _account && _account.delegation && _account.delegation.pendingRewards
-        ? _account.delegation.pendingRewards.amount
-        : '';
+    let pendingRewards = [];
+
+    if (_account && _account.delegations && _account.delegations.edges) {
+        pendingRewards = _account.delegations.edges.map((_item) =>
+            _item.delegation && _item.delegation.pendingRewards ? _item.delegation.pendingRewards.amount : ''
+        );
+    }
+
+    return pendingRewards;
 }
 
 export const store = new Vuex.Store({
@@ -77,6 +90,8 @@ export const store = new Vuex.Store({
         tokenPrice: 0,
         currency: 'USD',
         fractionDigits: 2,
+        defiSlippageReserve: appConfig.settings.defaultDefiSlippageReserve,
+        nightMode: false,
         /** @type {[WalletAccount]} */
         accounts: [],
         /** @type {[WalletContact]} */
@@ -124,6 +139,21 @@ export const store = new Vuex.Store({
         sendDirection(_state) {
             return _state.sendDirection;
         },
+        /**
+         * @return {number}
+         */
+        defiSlippageReserve() {
+            return 0;
+        },
+        /**
+         * @param {Object} _state
+         * @return {number}
+         */
+        /*
+        defiSlippageReserve(_state) {
+            return _state.defiSlippageReserve / 100;
+        },
+        */
         /**
          * @param {Object} _state
          * @return {function(*=): ?WalletAccount}
@@ -247,6 +277,20 @@ export const store = new Vuex.Store({
          */
         [SET_FRACTION_DIGITS](_state, _fractionDigits) {
             _state.fractionDigits = _fractionDigits;
+        },
+        /**
+         * @param {Object} _state
+         * @param {number} _defiSlippageReserve
+         */
+        [SET_DEFI_SLIPPAGE_RESERVE](_state, _defiSlippageReserve) {
+            _state.defiSlippageReserve = _defiSlippageReserve;
+        },
+        /**
+         * @param {Object} _state
+         * @param {boolean} _on
+         */
+        [SET_NIGHT_MODE](_state, _on) {
+            _state.nightMode = _on;
         },
         /**
          * @param {Object} _state
@@ -460,7 +504,7 @@ export const store = new Vuex.Store({
                 balance = await fWallet.getBalance(account.address, false, true);
                 pendingRewards = getPendingRewards(balance);
 
-                if (account.balance !== balance.balance || account.pendingRewards !== pendingRewards) {
+                if (account.balance !== balance.balance || !arrayEquals(account.pendingRewards, pendingRewards)) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {
@@ -485,7 +529,10 @@ export const store = new Vuex.Store({
                 let balance = await fWallet.getBalance(account.address, false, true);
                 let pendingRewards = getPendingRewards(balance);
 
-                if (index > -1 && (account.balance !== balance.balance || account.pendingRewards !== pendingRewards)) {
+                if (
+                    index > -1 &&
+                    (account.balance !== balance.balance || !arrayEquals(account.pendingRewards, pendingRewards))
+                ) {
                     balance = await fWallet.getBalance(account.address);
 
                     _context.commit(SET_ACCOUNT, {

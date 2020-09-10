@@ -1,8 +1,10 @@
 <template>
     <f-card class="account-transaction-list-dt" :off="windowMode">
+        <!--
         <h2 v-if="!windowMode" class="dt-heading">
             Transactions <span class="f-records-count">({{ totalCount | formatHexToInt }})</span>
         </h2>
+        -->
 
         <template v-if="!dAccountByAddressError">
             <f-data-table
@@ -15,6 +17,7 @@
                 infinite-scroll
                 fixed-header
                 f-card-off
+                class="f-data-table-body-bg-color"
                 @fetch-more="fetchMore"
             >
                 <template v-slot:column-status="{ value, column }">
@@ -115,7 +118,7 @@ import gql from 'graphql-tag';
 import { WEIToFTM } from '../../utils/transactions.js';
 import { timestampToDate, formatNumberByLocale, formatHexToInt, formatDate } from '../../filters.js';
 import FAccountTransactionAmount from '../core/FAccountTransactionAmount/FAccountTransactionAmount.vue';
-import { getNestedProp } from '../../utils';
+import { cloneObject, getNestedProp } from '../../utils';
 import FCard from '../core/FCard/FCard.vue';
 import appConfig from '../../../app.config.js';
 import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
@@ -195,7 +198,7 @@ export default {
                 let data;
 
                 if (_key === 'account') {
-                    data = _data.data.account;
+                    data = cloneObject(_data.data.account);
 
                     const edges = data.txList.edges;
 
