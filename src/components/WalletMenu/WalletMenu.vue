@@ -47,7 +47,7 @@ import { helpersMixin } from '../../mixins/helpers.js';
 import homeIcon from '../../assets/svg/home.svg';
 import settingsIcon from '../../assets/svg/settings.svg';
 import walletIcon from '../../assets/svg/wallet.svg';
-import defiIcon from '../../assets/svg/defi.svg';
+// import defiIcon from '../../assets/svg/defi.svg';
 import stakingIcon from '../../assets/svg/stake.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
@@ -103,6 +103,7 @@ export default {
                     stakingLink: true,
                     // fill: true,
                 },
+                /*
                 {
                     url: {
                         name: 'defi',
@@ -111,6 +112,7 @@ export default {
                     icon: defiIcon,
                     deFiLink: true,
                 },
+                */
                 {
                     url: {
                         name: 'settings',
