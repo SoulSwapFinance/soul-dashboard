@@ -158,8 +158,8 @@ $grid-rows-selector: '.row, [class^="row-"], [class*=" row-"]';
 @mixin main-focus() {
     outline: none;
     z-index: 10;
-    border-color: $input-active-border-color;
-    box-shadow: $outline-shadow;
+    border-color: var(--f-input-active-border-color);
+    box-shadow: var(--f-outline-shadow);
 }
 
 @mixin clearfix() {

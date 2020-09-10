@@ -18,10 +18,6 @@
 
     --f-home-background-color: var(--f-darker-color);
 
-    .wallet-menu {
-        --f-wallet-menu-background-color: var(--f-darker-color);
-    }
-
     .f-card {
         --f-card-background-color: var(--f-darker-color);
         --f-card-hover-background-color: var(--f-darker-color-2);
@@ -47,6 +43,18 @@
 
     .f-window-overlay, .f-overlay {
         --f-overlay-background-color: rgba(43, 50, 77, 0.8);
+    }
+
+    --f-select-background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9"><path style="fill: rgb(87,92,128);" id="chevron-medium-big-4-01" d="M128,160v3l6,6,6-6v-2.952l-6,6Z" transform="translate(-128 -160)"/></svg>');
+    --f-input-border-color: var(--f-darker-color-3);
+    //--f-input-active-border-color: var(--f-lighter-color);
+    //--f-outline-shadow: 0 0 0 2px rgba(87,92,128, 0.9);
+    .inp {
+        --f-input-background-color: var(--f-darker-color-2);
+    }
+
+    label.option {
+        --f-checkbox-background-color: var(--f-darker-color-2);
     }
 
     /*
@@ -90,6 +98,10 @@
 
     .defi-token-list {
         --f-defi-token-list-item-hover-color: var(--f-darker-color);
+    }
+
+    .wallet-menu {
+        --f-wallet-menu-background-color: var(--f-darker-color);
     }
 
     .defi-menu {

@@ -233,7 +233,7 @@ form {
 }
 
 .theme-transition, .theme-transition * {
-    transition: background-color $transition-length $transition-func;
+    transition: background-color $transition-length $transition-func, border-color $transition-length $transition-func;
 }
 
 /*
