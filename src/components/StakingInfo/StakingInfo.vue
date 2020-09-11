@@ -115,13 +115,6 @@
                                 <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
                                     Unstash Rewards
                                 </button>
-                                <button class="btn large" @click="claimRewards()">
-                                    Claim Rewards
-                                </button>
-                                <button class="btn large" @click="claimRewardsAndReStake()">
-                                    Claim & Restake
-                                </button>
-                                <!--
                                 <button
                                     v-show="!canIncreaseDelegation"
                                     class="btn large"
@@ -138,7 +131,6 @@
                                 >
                                     Claim & Restake
                                 </button>
-                                -->
                                 <!--
                                 <button
                                     v-show="canIncreaseDelegation"
@@ -231,6 +223,7 @@ export default {
 
     data() {
         return {
+            isFluidStakingActive: false,
             explorerUrl: appConfig.explorerUrl,
         };
     },
@@ -241,23 +234,31 @@ export default {
         canIncreaseDelegation() {
             const { accountInfo } = this;
 
-            return (
-                accountInfo &&
-                accountInfo.pendingRewards &&
-                accountInfo.pendingRewards === '0x0' &&
-                accountInfo.stashed === '0x0'
-            );
+            if (!this.isFluidStakingActive) {
+                return false;
+            } else {
+                return (
+                    accountInfo &&
+                    accountInfo.pendingRewards &&
+                    accountInfo.pendingRewards === '0x0' &&
+                    accountInfo.stashed === '0x0'
+                );
+            }
         },
 
         canUndelegate() {
             const { accountInfo } = this;
 
-            return (
-                accountInfo &&
-                accountInfo.pendingRewards &&
-                accountInfo.pendingRewards === '0x0' &&
-                accountInfo.stashed === '0x0'
-            );
+            if (!this.isFluidStakingActive) {
+                return false;
+            } else {
+                return (
+                    accountInfo &&
+                    accountInfo.pendingRewards &&
+                    accountInfo.pendingRewards === '0x0' &&
+                    accountInfo.stashed === '0x0'
+                );
+            }
         },
 
         canLockDelegation() {
@@ -341,6 +342,7 @@ export default {
             if (!delegation) {
                 delegation = await this.fetchDelegation(this.stakerId);
                 this._delegation = delegation;
+                this.isFluidStakingActive = delegation.isFluidStakingActive;
             }
 
             accountInfo.delegation = delegation;
@@ -550,6 +552,8 @@ export default {
                             amountDelegated
                             amountInWithdraw
                             claimedReward
+                            paidUntilEpoch
+                            isFluidStakingActive
                             pendingRewards {
                                 amount
                                 fromEpoch
