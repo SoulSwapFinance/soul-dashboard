@@ -44,6 +44,7 @@
                     ref="overlay"
                     :z-index="dZIndex - 1"
                     class="f-window-overlay"
+                    :hide-on-click="hideOnEscapeKey"
                     @overlay-hide="onOverlayHide"
                 />
             </div>

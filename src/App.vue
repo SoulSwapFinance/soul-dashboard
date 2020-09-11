@@ -25,6 +25,7 @@
         </f-breakpoints>
         <f-aria-alert />
         <f-network-status />
+        <temporary-message-window />
     </div>
 </template>
 
@@ -45,11 +46,13 @@ import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
 import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
+import TemporaryMessageWindow from '@/components/windows/TemporaryMessageWindow/TemporaryMessageWindow.vue';
 
 export default {
     name: 'App',
 
     components: {
+        TemporaryMessageWindow,
         FNetworkStatus,
         FAriaAlert,
         FBreakpoint,

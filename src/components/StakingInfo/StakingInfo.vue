@@ -115,6 +115,13 @@
                                 <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
                                     Unstash Rewards
                                 </button>
+                                <button class="btn large" @click="claimRewards()">
+                                    Claim Rewards
+                                </button>
+                                <button class="btn large" @click="claimRewardsAndReStake()">
+                                    Claim & Restake
+                                </button>
+                                <!--
                                 <button
                                     v-show="!canIncreaseDelegation"
                                     class="btn large"
@@ -131,6 +138,7 @@
                                 >
                                     Claim & Restake
                                 </button>
+                                -->
                                 <!--
                                 <button
                                     v-show="canIncreaseDelegation"
@@ -439,39 +447,39 @@ export default {
             const accountInfo = await this.accountInfo;
             const stakerInfo = await this.stakerInfo;
 
-            if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
-                this.$emit('change-component', {
-                    to: 'claim-rewards-confirmation',
-                    from: 'staking-info',
-                    data: {
-                        accountInfo: {
-                            ...accountInfo,
-                            stakerInfo,
-                        },
-                        stakerId: this.stakerId,
+            // if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
+            this.$emit('change-component', {
+                to: 'claim-rewards-confirmation',
+                from: 'staking-info',
+                data: {
+                    accountInfo: {
+                        ...accountInfo,
+                        stakerInfo,
                     },
-                });
-            }
+                    stakerId: this.stakerId,
+                },
+            });
+            // }
         },
 
         async claimRewardsAndReStake() {
             const accountInfo = await this.accountInfo;
             const stakerInfo = await this.stakerInfo;
 
-            if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
-                this.$emit('change-component', {
-                    to: 'claim-rewards-confirmation',
-                    from: 'staking-info',
-                    data: {
-                        accountInfo: {
-                            ...accountInfo,
-                            stakerInfo,
-                        },
-                        stakerId: this.stakerId,
-                        reStake: true,
+            // if (accountInfo.pendingRewards > 0 && !this.canIncreaseDelegation) {
+            this.$emit('change-component', {
+                to: 'claim-rewards-confirmation',
+                from: 'staking-info',
+                data: {
+                    accountInfo: {
+                        ...accountInfo,
+                        stakerInfo,
                     },
-                });
-            }
+                    stakerId: this.stakerId,
+                    reStake: true,
+                },
+            });
+            // }
         },
 
         async unstash() {
