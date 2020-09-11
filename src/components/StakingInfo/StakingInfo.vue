@@ -181,6 +181,12 @@
                                 Delegate
                             </button>
                         </template>
+
+                        <f-message type="warning">
+                            To participate in Fluid Staking, please claim your outstanding rewards. <br />
+                            Even if your pending rewards balance shows 0, go ahead and claim anyway and you’ll receive
+                            the correct amount.
+                        </f-message>
                     </div>
                 </div>
             </div>
