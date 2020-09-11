@@ -38,12 +38,15 @@ export default {
     components: { FWindow },
 
     mounted() {
-        this.$refs.window.show();
+        if (!window.localStorage.getItem('tmp-msg')) {
+            this.$refs.window.show();
+        }
     },
 
     methods: {
         onBtnClick() {
             this.$refs.window.hide();
+            window.localStorage.setItem('tmp-msg', true);
         },
     },
 };
