@@ -53,7 +53,8 @@
 
     .f-placeholder {
         --f-placeholder-on-gradient-color1: var(--f-doc-background-color);
-        --f-placeholder-on-gradient-color2: #{$grey-color-semi};
+        --f-placeholder-on-gradient-color2: #eee;
+        //--f-placeholder-on-gradient-color2: #{$grey-color-semi};
     }
 
     .f-card:not(.off) {

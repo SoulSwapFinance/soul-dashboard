@@ -9,9 +9,7 @@
             </h2>
 
             <div class="delegation-lock-body">
-                <template v-if="canLockDelegation">
-                    <!--                    <h3>Description</h3>-->
-
+                <f-placeholder :content-loaded="canLockDelegation" block style="min-height: 200px;">
                     <div class="defi-price-input">
                         <f-auto-resize-input ref="lockDaysInputAR" min-width="48px">
                             <input
@@ -49,6 +47,9 @@
                             </template>
                         </f-slider>
                     </div>
+                </f-placeholder>
+                <template v-if="canLockDelegation">
+                    <!--                    <h3>Description</h3>-->
                 </template>
 
                 <f-message v-if="lockedUntilDate" type="info" role="alert" class="big">
@@ -82,6 +83,7 @@ import FAutoResizeInput from '@/components/core/FAutoResizeInput/FAutoResizeInpu
 import { getUniqueId } from '@/utils';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import { formatDate, timestampToDate } from '@/filters.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -93,7 +95,7 @@ const blockTime = 15 * 60;
 export default {
     name: 'DelegationLock',
 
-    components: { FSlider, FAutoResizeInput, FMessage, FCard },
+    components: { FPlaceholder, FSlider, FAutoResizeInput, FMessage, FCard },
 
     props: {
         /***/
