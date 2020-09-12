@@ -7,7 +7,7 @@ const SFC_CONTRACT_ADDRESS = '0xfc00face00000000000000000000000000000000';
 
 // DEFAULT_GAS_LIMIT represents the maximum amount of gas we are willing
 // to pay for the SFC call.
-const DEFAULT_GAS_LIMIT = '0xabe0';
+const DEFAULT_GAS_LIMIT = '0x3d0900';
 
 // ZERO_AMOUNT represents zero amount transferred on some calls.
 const ZERO_AMOUNT = '0x0';
