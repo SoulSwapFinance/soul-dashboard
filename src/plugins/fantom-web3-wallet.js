@@ -16,10 +16,10 @@ export const FANTOM_CHAIN_ID = 0xfa;
 
 export const GAS_LIMITS = {
     default: '0xabe0',
-    claimRewards: '0x3D0900',
-    undelegate: '0x3D0900',
+    claimRewards: '0x44AA20',
+    undelegate: '0x44AA20',
     lockDelegation: '0x30D40',
-    withdraw: '0x3D0900',
+    withdraw: '0x44AA20',
     delegate: '0x30D40',
     ballot: '0x3D0900',
     defi: '0x7A120',

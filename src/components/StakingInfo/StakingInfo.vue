@@ -162,8 +162,7 @@
                                     You need to claim all pending rewards before
                                     <!--increasing your delegation or-->
                                     undelegating.
-                                    <br />
-                                    <!-- @todo use SFC_CLAIM_MAX_EPOCHS here -->
+                                    <br /><!-- @todo use SFC_CLAIM_MAX_EPOCHS here -->
                                     You can claim rewards for a maximum of 50 epochs at once (use repeatedly if
                                     needed).
                                 </f-message>
