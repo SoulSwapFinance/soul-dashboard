@@ -225,6 +225,7 @@ export default {
     data() {
         return {
             isFluidStakingActive: false,
+            lockedUntil: '',
             explorerUrl: appConfig.explorerUrl,
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
         };
@@ -264,7 +265,7 @@ export default {
         },
 
         canLockDelegation() {
-            return this.canUndelegate;
+            return this.canUndelegate && this.lockedUntil && this.lockedUntil === '0x0';
         },
 
         /**
@@ -556,6 +557,8 @@ export default {
                             claimedReward
                             paidUntilEpoch
                             isFluidStakingActive
+                            isDelegationLocked
+                            lockedUntil
                             pendingRewards {
                                 amount
                                 fromEpoch
