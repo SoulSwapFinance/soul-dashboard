@@ -16,14 +16,18 @@ export const FANTOM_CHAIN_ID = 0xfa;
 
 export const GAS_LIMITS = {
     default: '0xabe0',
-    claimRewards: '0x3D0900',
-    undelegate: '0x30D40',
+    claimRewards: '0x44AA20',
+    undelegate: '0x44AA20',
     lockDelegation: '0x30D40',
-    withdraw: '0xF4240',
-    delegate: '0xF4240',
+    withdraw: '0x44AA20',
+    delegate: '0x30D40',
     ballot: '0x3D0900',
     defi: '0x7A120',
 };
+
+// SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
+// available for withdraw per single request.
+export const SFC_CLAIM_MAX_EPOCHS = 50;
 
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;

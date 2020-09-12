@@ -163,7 +163,8 @@
                                     <!--increasing your delegation or-->
                                     undelegating.
                                     <br />
-                                    You can claim rewards for a maximum of 50 epochs at once (use repeatedly if needed).
+                                    You can claim rewards for a maximum of {{ claimMaxEpochs }} epochs at once (use
+                                    repeatedly if needed).
                                 </f-message>
                             </template>
                         </template>
@@ -201,6 +202,7 @@ import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import gql from 'graphql-tag';
+import { SFC_CLAIM_MAX_EPOCHS } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'StakingInfo',
@@ -223,8 +225,8 @@ export default {
     data() {
         return {
             isFluidStakingActive: false,
-            lockedUntil: '',
             explorerUrl: appConfig.explorerUrl,
+            claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
         };
     },
 
@@ -262,7 +264,7 @@ export default {
         },
 
         canLockDelegation() {
-            return this.canUndelegate && this.lockedUntil && this.lockedUntil === '0x0';
+            return this.canUndelegate;
         },
 
         /**
@@ -343,7 +345,6 @@ export default {
                 delegation = await this.fetchDelegation(this.stakerId);
                 this._delegation = delegation;
                 this.isFluidStakingActive = delegation.isFluidStakingActive;
-                this.lockedUntil = delegation.lockedUntil;
             }
 
             accountInfo.delegation = delegation;
@@ -555,8 +556,6 @@ export default {
                             claimedReward
                             paidUntilEpoch
                             isFluidStakingActive
-                            isDelegationLocked
-                            lockedUntil
                             pendingRewards {
                                 amount
                                 fromEpoch
