@@ -34,6 +34,17 @@
                         {{ value.id | formatHexToInt }}
                     </template>
                 </template>
+                <template v-slot:column-detail="{ value, item, column }">
+                    <div v-if="column" class="row no-collapse no-vert-col-padding">
+                        <div class="col-5 f-row-label">{{ column.label }}</div>
+                        <div class="col break-word">
+                            <button class="btn">Detail</button>
+                        </div>
+                    </div>
+                    <template v-else-if="value">
+                        <button class="btn">Detail</button>
+                    </template>
+                </template>
             </f-data-table>
         </template>
         <template v-else>
@@ -192,6 +203,11 @@ export default {
                     label: 'Expiration Time',
                     itemProp: 'delegation.lockedUntil',
                     formatter: (_value) => formatDate(timestampToDate(_value), true) || '-',
+                },
+                {
+                    name: 'detail',
+                    label: '',
+                    itemProp: 'delegation.lockedUntil',
                 },
             ],
             dItems: [],

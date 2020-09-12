@@ -346,6 +346,7 @@ export default {
                 delegation = await this.fetchDelegation(this.stakerId);
                 this._delegation = delegation;
                 this.isFluidStakingActive = delegation.isFluidStakingActive;
+                this.lockedUntil = delegation.lockedUntil;
             }
 
             accountInfo.delegation = delegation;
