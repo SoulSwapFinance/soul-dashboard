@@ -25,6 +25,10 @@ export const GAS_LIMITS = {
     defi: '0x7A120',
 };
 
+// SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
+// available for withdraw per single request.
+export const SFC_CLAIM_MAX_EPOCHS = 50;
+
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
 

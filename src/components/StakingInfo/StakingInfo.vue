@@ -163,7 +163,8 @@
                                     <!--increasing your delegation or-->
                                     undelegating.
                                     <br />
-                                    You can claim rewards for a maximum of 200 epochs at once (use repeatedly if
+                                    <!-- @todo use SFC_CLAIM_MAX_EPOCHS here -->
+                                    You can claim rewards for a maximum of 50 epochs at once (use repeatedly if
                                     needed).
                                 </f-message>
                             </template>

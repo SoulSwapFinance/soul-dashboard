@@ -41,7 +41,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import { GAS_LIMITS, SFC_CLAIM_MAX_EPOCHS } from '../../plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
@@ -90,8 +90,8 @@ export default {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 this.reStake
-                    ? sfcUtils.claimDelegationRewardsCompoundTx(200, parseInt(this.stakerId, 16))
-                    : sfcUtils.claimDelegationRewardsTx(200, parseInt(this.stakerId, 16)),
+                    ? sfcUtils.claimDelegationRewardsCompoundTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16))
+                    : sfcUtils.claimDelegationRewardsTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 this.gasLimit
             );
