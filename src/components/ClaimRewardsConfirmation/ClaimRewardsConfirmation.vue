@@ -90,8 +90,8 @@ export default {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 this.reStake
-                    ? sfcUtils.claimDelegationRewardsCompoundTx(200, parseInt(this.stakerId, 16))
-                    : sfcUtils.claimDelegationRewardsTx(200, parseInt(this.stakerId, 16)),
+                    ? sfcUtils.claimDelegationRewardsCompoundTx(50, parseInt(this.stakerId, 16))
+                    : sfcUtils.claimDelegationRewardsTx(50, parseInt(this.stakerId, 16)),
                 this.currentAccount.address,
                 this.gasLimit
             );

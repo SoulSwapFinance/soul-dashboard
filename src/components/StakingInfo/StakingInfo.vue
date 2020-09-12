@@ -163,8 +163,7 @@
                                     <!--increasing your delegation or-->
                                     undelegating.
                                     <br />
-                                    You can claim rewards for a maximum of 200 epochs at once (use repeatedly if
-                                    needed).
+                                    You can claim rewards for a maximum of 50 epochs at once (use repeatedly if needed).
                                 </f-message>
                             </template>
                         </template>
@@ -224,6 +223,7 @@ export default {
     data() {
         return {
             isFluidStakingActive: false,
+            lockedUntil: '',
             explorerUrl: appConfig.explorerUrl,
         };
     },
@@ -262,7 +262,7 @@ export default {
         },
 
         canLockDelegation() {
-            return this.canUndelegate;
+            return this.canUndelegate && this.lockedUntil && this.lockedUntil === '0x0';
         },
 
         /**
@@ -343,6 +343,7 @@ export default {
                 delegation = await this.fetchDelegation(this.stakerId);
                 this._delegation = delegation;
                 this.isFluidStakingActive = delegation.isFluidStakingActive;
+                this.lockedUntil = delegation.lockedUntil;
             }
 
             accountInfo.delegation = delegation;
@@ -554,6 +555,8 @@ export default {
                             claimedReward
                             paidUntilEpoch
                             isFluidStakingActive
+                            isDelegationLocked
+                            lockedUntil
                             pendingRewards {
                                 amount
                                 fromEpoch

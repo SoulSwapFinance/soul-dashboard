@@ -51,6 +51,15 @@
         }
     }
 
+    .f-window {
+        .f-data-table-body-bg-color {
+            .f-data-table {
+                //--f-data-table-cell-background-color: none;
+                --f-data-table-cell-background-color: var(--f-window-background);
+            }
+        }
+    }
+
     .f-placeholder {
         --f-placeholder-on-gradient-color1: var(--f-doc-background-color);
         --f-placeholder-on-gradient-color2: #eee;

@@ -19,8 +19,8 @@ export const GAS_LIMITS = {
     claimRewards: '0x3D0900',
     undelegate: '0x30D40',
     lockDelegation: '0x30D40',
-    withdraw: '0x30D40',
-    delegate: '0x30D40',
+    withdraw: '0xF4240',
+    delegate: '0xF4240',
     ballot: '0x3D0900',
     defi: '0x7A120',
 };
