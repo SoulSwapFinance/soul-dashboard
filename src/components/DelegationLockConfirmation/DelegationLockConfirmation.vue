@@ -26,7 +26,7 @@
                     <div class="col-3 f-row-label">From</div>
                     <div class="col break-word">
                         {{ currentAccount.address }}
-                        <span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>
+                        <!--<span class="f-row-label">( {{ toFTM(currentAccount.balance) }} FTM )</span>-->
                     </div>
                 </div>
 
