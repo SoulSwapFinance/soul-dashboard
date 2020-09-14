@@ -59,10 +59,8 @@
                         </f-input>
                         -->
 
-                        <!--
                         <br />
                         <f-checkbox name="night_mode" label="Night Mode" :checked="$store.state.nightMode" />
-                        -->
 
                         <p style="padding: 24px 0 32px 0;">
                             <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
@@ -91,11 +89,12 @@ import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
+import FCheckbox from '@/components/core/FCheckbox/FCheckbox.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FMessage, SocialMediaLinks, FSelect, FForm, FCard },
+    components: { FCheckbox, FMessage, SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {

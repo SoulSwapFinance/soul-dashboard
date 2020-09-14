@@ -45,7 +45,7 @@
         --f-overlay-background-color: rgba(43, 50, 77, 0.8);
     }
 
-    --f-select-background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9"><path style="fill: rgb(87,92,128);" id="chevron-medium-big-4-01" d="M128,160v3l6,6,6-6v-2.952l-6,6Z" transform="translate(-128 -160)"/></svg>');
+    --f-select-background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 448 512"><path style="fill: rgb(146,153,166);" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>');
     --f-input-border-color: var(--f-darker-color-3);
     //--f-input-active-border-color: var(--f-lighter-color);
     //--f-outline-shadow: 0 0 0 2px rgba(87,92,128, 0.9);
@@ -57,6 +57,10 @@
         --f-checkbox-background-color: var(--f-darker-color-2);
     }
 
+    @include buttons {
+        --f-button-light-hover-background-color: var(--f-darker-color-2);
+    }
+
     /*
     .actions-box {
         --f-actions-box-color: var(--f-primary-color);
@@ -64,8 +68,8 @@
     */
 
     .f-slider {
-        --f-slider-thumb-background-color: var(--f-darker-color-3);
-        --f-slider-thumb-hover-background-color: var(--f-darker-color-3);
+        --f-slider-thumb-background-color: var(--f-primary-color);
+        --f-slider-thumb-hover-background-color: var(--f-primary-color);
         --f-slider-track-color: var(--f-darker-color-2);
         //--f-slider-track-color: var(--f-darker-color);
         --f-slider-thumb-box-shadow: none;
@@ -75,6 +79,7 @@
     .f-data-table {
         --f-data-table-cell-hover-background-color: var(--f-darker-color-2);
         --f-data-table-mobile-item-border-bottom: 1px solid var(--f-darker-color-3);
+        --f-data-table-sort-column-background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path style="fill: rgb(62,66,91);" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"/></svg>');
     }
 
     .f-placeholder {

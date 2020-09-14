@@ -4,6 +4,7 @@ input:-webkit-autofill, input:-webkit-autofill:focus {
 
 @include inputs() {
     --f-input-background-color: #fff;
+    --f-input-readonly-background: var(--f-input-background-color);
 
     font-family: $input-font-family;
     font-size: $fs-input;
@@ -81,11 +82,11 @@ input[type="submit"]:not(.def):focus {
 }
 
 @include inputs('[readonly]') {
-    background: $input-readonly-bg-color;
+    background: var(--f-input-readonly-background);
 }
 
 @include inputs('.readonly') {
-    background: $input-readonly-bg-color;
+    background: var(--f-input-readonly-background);
 }
 
 @include inputs('[aria-invalid="true"]') {
@@ -118,9 +119,10 @@ select:not(.def) {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
-    background-position: calc(100% - 8px) 50%;
+    background-position: calc(100% - 12px) 50%;
     background-repeat: no-repeat;
     background-image: var(--f-select-background-image);
+    padding-right: 40px;
 }
 
 select:not(.def).small {
