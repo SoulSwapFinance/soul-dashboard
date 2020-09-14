@@ -2,6 +2,8 @@
 
 .actions-box {
     --f-actions-box-color: var(--f-primary-color);
+    --f-actions-box-btn-background-color: #fff;
+    --f-actions-box-btn-hover-background-color: #ccddff;
 
     ul {
         white-space: nowrap;
@@ -35,11 +37,11 @@
                     .btn {
                         color: var(--f-actions-box-color);
                         border-color: var(--f-actions-box-color);
-                        background-color: #fff;
+                        background-color: var(--f-actions-box-btn-background-color);
 
                         &:hover {
                             color: var(--f-actions-box-color) !important;
-                            background-color: lighten($theme-color, 35) !important;
+                            background-color: var(--f-actions-box-btn-hover-background-color) !important;
                             border-color: var(--f-actions-box-color);
                         }
                     }

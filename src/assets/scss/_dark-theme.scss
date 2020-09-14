@@ -58,14 +58,18 @@
     }
 
     @include buttons {
-        --f-button-light-hover-background-color: var(--f-darker-color-2);
+        --f-button-light-hover-background-color: var(--f-darker-color-3);
     }
 
-    /*
-    .actions-box {
-        --f-actions-box-color: var(--f-primary-color);
+    .toggle-btn {
+        --f-toggle-btn-background: var(--f-darker-color-3);
     }
-    */
+
+    .actions-box {
+        --f-actions-box-btn-background-color: var(--f-darker-color);
+        --f-actions-box-btn-hover-background-color: var(--f-darker-color-3);
+        //--f-actions-box-color: var(--f-primary-color);
+    }
 
     .f-slider {
         --f-slider-thumb-background-color: var(--f-primary-color);
