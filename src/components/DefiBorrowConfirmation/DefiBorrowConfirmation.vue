@@ -56,8 +56,9 @@ import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
-import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -191,7 +192,7 @@ export default {
             }
 
             if (this.increasedDebt > 0) {
-                txToSign = defiUtils.defiBorrowTokenTx(
+                txToSign = fMintUtils.fMintMintTokenTx(
                     contractAddress,
                     token.address,
                     this.correctAmount(
@@ -200,7 +201,7 @@ export default {
                     )
                 );
             } else if (this.params.step === 1) {
-                txToSign = defiUtils.erc20ApproveAmountTx(
+                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     token.address,
                     contractAddress,
                     this.correctAmount(
@@ -210,7 +211,7 @@ export default {
                     )
                 );
             } else {
-                txToSign = defiUtils.defiRepayTokenTx(
+                txToSign = fMintUtils.fMintRepayTokenTx(
                     contractAddress,
                     token.address,
                     this.correctAmount(

@@ -21,6 +21,7 @@
  * @property {string} allowance Amount of ERC20 tokens unlocked by the owner / token holder to be accessible for DeFi operations
  * @property {string} availableBalance Available balance of the token on the account regardless of the DeFi usage of the token.
  * @property {boolean} isActive Signals if the token can be used in the DeFi functions at all.
+ * @property {boolean} canWrapFTM Signals if the token can be used to wrap native FTM tokens for DeFi trading.
  * @property {boolean} canDeposit Signals if the token can be used in deposit as a collateral asset.
  * @property {boolean} canMint Signals if the token can be used in fMint protocol as the target token.
  * @property {boolean} canBorrow Signals if the token is available for FLend borrow operations.

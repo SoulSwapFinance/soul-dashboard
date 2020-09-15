@@ -64,7 +64,8 @@ import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
-import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
+import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
@@ -202,7 +203,7 @@ export default {
             }
 
             if (this.params.step === 1) {
-                txToSign = defiUtils.erc20ApproveAmountTx(
+                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     token.address,
                     contractAddress,
                     this.correctAmount(
@@ -216,7 +217,7 @@ export default {
                     )
                 );
             } else if (this.increasedCollateral > 0) {
-                txToSign = defiUtils.defiDepositTokenTx(
+                txToSign = fMintUtils.fMintDepositTokenTx(
                     contractAddress,
                     token.address,
                     this.correctAmount(
@@ -227,7 +228,7 @@ export default {
                     )
                 );
             } else {
-                txToSign = defiUtils.defiWithdrawDepositedTokenTx(
+                txToSign = fMintUtils.fMintWithdrawTokenTx(
                     contractAddress,
                     token.address,
                     this.correctAmount(

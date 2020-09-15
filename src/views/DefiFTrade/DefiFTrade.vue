@@ -332,7 +332,7 @@ export default {
             this.fMintAccount = result[0];
 
             if ($defi.tmpWFTM) {
-                const wFTM = result[1].filter((_token) => _token && _token.symbol === 'WFTM');
+                const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
 
                 const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
                 const ftmToken = {
@@ -342,8 +342,9 @@ export default {
                     isActive: true,
                     decimals: 18,
                     price: wFTM[0].price,
-                    priceDecimals: 8,
+                    priceDecimals: wFTM[0].priceDecimals,
                     availableBalance: account.balance,
+                    allowance: '0x0',
                     logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
                 };
                 this.$defi._setTokenDecimals(ftmToken);
@@ -351,9 +352,7 @@ export default {
                 // add FTM
                 result[1].unshift(ftmToken);
 
-                this.tokens = result[1].filter(
-                    (_token) => _token && (_token.symbol === 'FTM' || _token.symbol === 'WFTM')
-                );
+                this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
             } else {
                 this.tokens = result[1].filter($defi.canTokenBeTraded);
             }
@@ -599,7 +598,7 @@ export default {
         onSubmit() {
             const { fromToken } = this;
             const { toToken } = this;
-            const ftmTokens = ['FTM', 'WFTM'];
+            // const ftmTokens = ['FTM', 'WFTM'];
             const params = {
                 fromValue: this.fromValue,
                 toValue: this.toValue,
@@ -607,10 +606,12 @@ export default {
                 toToken: { ...toToken },
             };
 
+            /*
             if (ftmTokens.indexOf(fromToken.symbol) === -1 && ftmTokens.indexOf(toToken.symbol) === -1) {
                 params.steps = 2;
                 params.step = 1;
             }
+            */
 
             if (!this.submitDisabled) {
                 this.$router.push({

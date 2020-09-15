@@ -597,6 +597,7 @@ export class DeFi {
                         price
                         priceDecimals
                         isActive
+                        canWrapFTM
                         canDeposit
                         canMint
                         canBorrow

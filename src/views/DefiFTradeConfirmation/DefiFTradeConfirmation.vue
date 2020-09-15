@@ -58,7 +58,8 @@ import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
-import defiUtils from 'fantom-ledgerjs/src/defi-utils.js';
+import wftmUtils from 'fantom-ledgerjs/src/wftm-utils.js';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -195,23 +196,24 @@ export default {
                     fromValue += fromValue * 0.005;
                 }
 
-                txToSign = defiUtils.erc20ApproveAmountTx(
+                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     fromToken.address,
                     contractAddress,
                     Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
-                if (fromToken.symbol === 'FTM' && toToken.symbol === 'WFTM') {
-                    txToSign = defiUtils.defiWrapFtm(
+                if (fromToken.symbol === 'FTM' && toToken.canWrapFTM) {
+                    txToSign = wftmUtils.defiWrapFtm(
                         toToken.address,
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
                     );
-                } else if (fromToken.symbol === 'WFTM' && toToken.symbol === 'FTM') {
-                    txToSign = defiUtils.defiUnwrapFtm(
+                } else if (fromToken.canWrapFTM && toToken.symbol === 'FTM') {
+                    txToSign = wftmUtils.defiUnwrapFtm(
                         fromToken.address,
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals))
                     );
-                } else if (fromToken.symbol === 'FUSD') {
+                }
+                /* else if (fromToken.symbol === 'FUSD') {
                     txToSign = defiUtils.defiBuyTokenTx(
                         contractAddress,
                         toToken.address,
@@ -232,14 +234,16 @@ export default {
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
                         // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
                     );
-                }
+                } */
             }
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(
-                txToSign,
-                this.currentAccount.address,
-                GAS_LIMITS.defi
-            );
+            if (txToSign) {
+                this.tx = await this.$fWallet.getDefiTransactionToSign(
+                    txToSign,
+                    this.currentAccount.address,
+                    GAS_LIMITS.defi
+                );
+            }
         },
 
         onSendTransactionSuccess(_data) {

@@ -5,12 +5,10 @@
                 Transactions
                 <span class="f-records-count">({{ transactionsRecordsCount }})</span>
             </template>
-            <!--
             <template #assets>
                 Assets
                 <span class="f-records-count">({{ assetsRecordsCount }})</span>
             </template>
-            -->
 
             <f-tab title-slot="transactions">
                 <account-transaction-list
@@ -19,7 +17,6 @@
                     @records-count="onTransactionsRecordsCount"
                 />
             </f-tab>
-            <!--
             <f-tab title-slot="assets">
                 <f-card>
                     <assets-list
@@ -29,7 +26,6 @@
                     />
                 </f-card>
             </f-tab>
-            -->
         </f-tabs>
     </div>
 </template>
@@ -40,11 +36,13 @@ import { mapGetters } from 'vuex';
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
+import FCard from '@/components/core/FCard/FCard.vue';
+import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
 
 export default {
     name: 'AccountHistory',
 
-    components: { FTab, FTabs, AccountTransactionList },
+    components: { AssetsList, FCard, FTab, FTabs, AccountTransactionList },
 
     mixins: [eventBusMixin],
 
@@ -67,7 +65,7 @@ export default {
     },
 
     created() {
-        // this.init();
+        this.init();
 
         this._eventBus.on('account-picked', this.onAccountPicked);
     },
