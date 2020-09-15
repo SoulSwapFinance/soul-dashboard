@@ -60,7 +60,7 @@
                         -->
 
                         <br />
-                        <f-toggle-button name="night_mode" label="Night Mode" :checked="$store.state.nightMode" />
+                        <f-toggle-button name="night_mode" label="Night Mode" :checked="darkModeOn" />
 
                         <p style="padding: 24px 0 32px 0;">
                             <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
@@ -107,6 +107,7 @@ export default {
                 { value: '5', label: '5' },
                 { value: '6', label: '6' },
             ],
+            darkModeOn: false,
         };
     },
 
@@ -129,6 +130,22 @@ export default {
 
             return selectData;
         },
+    },
+
+    created() {
+        this.darkModeOn = this.$store.state.nightMode;
+
+        this._useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+        if (this._useDarkColorScheme) {
+            this._useDarkColorScheme.addEventListener('change', this.onDarkMode);
+        }
+    },
+
+    beforeDestroy() {
+        if (this._useDarkColorScheme) {
+            this._useDarkColorScheme.removeEventListener('change', this.onDarkMode);
+        }
     },
 
     methods: {
@@ -170,6 +187,11 @@ export default {
             } else if (detail.eTarget.name === 'night_mode') {
                 appNode.setNightMode(detail.value === 'on');
             }
+        },
+
+        onDarkMode(_event) {
+            this.darkModeOn = _event.matches;
+            console.log(this.darkModeOn);
         },
     },
 };
