@@ -185,11 +185,11 @@ export class DeFi {
         return [
             {
                 value: (this.liqCollateralRatio / this.minCollateralRatio) * 100,
-                color: '#ffaf19',
+                color: '#F8782A',
             },
             {
                 value: (this.warningCollateralRatio / this.minCollateralRatio) * 100,
-                color: '#ff1716',
+                color: '#FD2E63',
             },
         ];
     }
