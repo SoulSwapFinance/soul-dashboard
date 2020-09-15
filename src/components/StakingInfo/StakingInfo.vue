@@ -116,17 +116,17 @@
                                     Unstash Rewards
                                 </button>
                                 <button
-                                    v-show="!canIncreaseDelegation"
+                                    v-show="canClaimRewards"
                                     class="btn large"
-                                    :disabled="canIncreaseDelegation"
+                                    :disabled="!canClaimRewards"
                                     @click="claimRewards()"
                                 >
                                     Claim Rewards
                                 </button>
                                 <button
-                                    v-show="!canIncreaseDelegation"
+                                    v-show="canClaimRewards"
                                     class="btn large"
-                                    :disabled="canIncreaseDelegation"
+                                    :disabled="!canClaimRewards"
                                     @click="claimRewardsAndReStake()"
                                 >
                                     Claim & Restake
@@ -234,17 +234,42 @@ export default {
     computed: {
         ...mapGetters(['currentAccount']),
 
+        canClaimRewards() {
+            const { accountInfo } = this;
+
+            if (!this.isFluidStakingActive) {
+                return accountInfo.delegation
+                    ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                    : true;
+            } else {
+                return (
+                    accountInfo &&
+                    accountInfo.pendingRewards &&
+                    accountInfo.pendingRewards !== '0x0' &&
+                    accountInfo.stashed === '0x0' &&
+                    (accountInfo.delegation
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        : true)
+                );
+            }
+        },
+
         canIncreaseDelegation() {
             const { accountInfo } = this;
 
             if (!this.isFluidStakingActive) {
-                return false;
+                return accountInfo.delegation
+                    ? accountInfo.delegation.amountDelegated === accountInfo.delegation.amountInWithdraw
+                    : false;
             } else {
                 return (
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
-                    accountInfo.stashed === '0x0'
+                    accountInfo.stashed === '0x0' &&
+                    (accountInfo.delegation
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        : true)
                 );
             }
         },
@@ -253,13 +278,18 @@ export default {
             const { accountInfo } = this;
 
             if (!this.isFluidStakingActive) {
-                return false;
+                return accountInfo.delegation
+                    ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                    : false;
             } else {
                 return (
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
-                    accountInfo.stashed === '0x0'
+                    accountInfo.stashed === '0x0' &&
+                    (accountInfo.delegation
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        : true)
                 );
             }
         },
