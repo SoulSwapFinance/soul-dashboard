@@ -74,7 +74,7 @@
                         </router-link>
                     </div>
                     <div v-if="canClaimRewards" class="col">
-                        <router-link :to="{ name: 'defi-claim-rewards' }" class="btn large">
+                        <router-link :to="{ name: 'defi-fmint-claim-rewards-confirmation' }" class="btn large">
                             Claim Rewards
                         </router-link>
                     </div>

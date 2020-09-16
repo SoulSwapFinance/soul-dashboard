@@ -43,6 +43,7 @@ import DefiRepay from '@/views/DefiRepay/DefiRepay.vue';
 import DefiMintConfirmation from '@/views/DefiMintConfirmation/DefiMintConfirmation.vue';
 import DefiRepayConfirmation from '@/views/DefiRepayConfirmation/DefiRepayConfirmation.vue';
 import Staking from '@/views/Staking/Staking.vue';
+import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 
 export const routes = [
     {
@@ -365,6 +366,37 @@ export const routes = [
                     {
                         name: 'defi-mint-repay-transaction-reject-message2',
                         path: 'fmint/mint-repay/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+
+                    {
+                        name: 'defi-fmint-claim-rewards-confirmation',
+                        path: 'fmint/claim-rewards/confirmation',
+                        component: DefiFMintClaimRewardsConfirmation,
+                    },
+                    {
+                        name: 'defi-fmint-claim-rewards-confirmation2',
+                        path: 'fmint/claim-rewards/confirmation2',
+                        component: DefiFMintClaimRewardsConfirmation,
+                    },
+                    {
+                        name: 'defi-fmint-claim-rewards-transaction-success-message',
+                        path: 'fmint/claim-rewards/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-fmint-claim-rewards-transaction-success-message2',
+                        path: 'fmint/claim-rewards/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-fmint-claim-rewards-transaction-reject-message',
+                        path: 'fmint/claim-rewards/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'defi-fmint-claim-rewards-transaction-reject-message2',
+                        path: 'fmint/claim-rewards/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
 
