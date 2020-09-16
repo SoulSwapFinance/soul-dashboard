@@ -135,14 +135,7 @@
                 </div>
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
-                <h3>Debt Limit <debt-limit-f-info /></h3>
-                <f-circle-progress
-                    show-percentage
-                    :stroke-width="6"
-                    :animate="false"
-                    :colors="colors"
-                    :value="debtLimit"
-                />
+                <ratio-info :value="collateralRatio" />
             </div>
             <div v-if="largeView" class="right-col">
                 <!--
@@ -158,12 +151,7 @@
                     </div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
-                    <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
-                    <div class="value">
-                        <f-placeholder :content-loaded="!!tokenPrice" replacement-text="99%">
-                            <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
-                        </f-placeholder>
-                    </div>
+                    <ratio-info :display-circle="false" :content-loaded="!!tokenPrice" :value="collateralRatio" />
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">
@@ -210,9 +198,7 @@
 </template>
 
 <script>
-import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
-import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { getUniqueId } from '../../utils';
 import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '../../filters.js';
@@ -223,7 +209,7 @@ import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
+import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -232,16 +218,14 @@ export default {
     name: 'DefiBorrow',
 
     components: {
-        DebtLimitFInfo,
+        RatioInfo,
         FPlaceholder,
         FTokenValue,
         FSelectButton,
         FCryptoSymbol,
         DefiTokenPickerWindow,
         FMessage,
-        FColoredNumberRange,
         FSlider,
-        FCircleProgress,
     },
 
     mixins: [eventBusMixin],
@@ -379,7 +363,7 @@ export default {
             // return this.$defi.getBorrowLimit(this.fMintAccount) / this.tokenPrice;
         },
 
-        debtLimit() {
+        currDebtFUSD() {
             // const currDebtFUSD = parseFloat(this.currDebt) * this.tokenPrice;
             const debt = parseFloat(this.debt);
             const debtFUSD = debt * this.tokenPrice;
@@ -391,9 +375,15 @@ export default {
                 cDebt = debt - cDebt;
             }
 
-            const currDebtFUSD = cDebt * this.tokenPrice - debtFUSD;
+            return cDebt * this.tokenPrice - debtFUSD;
+        },
 
-            return this.$defi.getDebtLimit(this.fMintAccount, currDebtFUSD);
+        debtLimit() {
+            return this.$defi.getDebtLimit(this.fMintAccount, this.currDebtFUSD);
+        },
+
+        collateralRatio() {
+            return this.$defi.getCollateralRatio(this.fMintAccount, this.currDebtFUSD);
         },
 
         minDebt() {
@@ -427,10 +417,6 @@ export default {
 
         submitDisabled() {
             return !this.singleToken ? parseFloat(this.currDebt) === parseFloat(this.debt) : !parseFloat(this.currDebt);
-        },
-
-        colors() {
-            return this.$defi.getColors();
         },
 
         cTokenSymbol() {

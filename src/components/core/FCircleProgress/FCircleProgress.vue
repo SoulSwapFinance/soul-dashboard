@@ -17,13 +17,10 @@
             />
             <text text-anchor="middle" dominant-baseline="central" class="text">
                 <slot :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
-                    <template v-if="showPercentage">
-                        <tspan>{{ percentage }}</tspan>
-                        <tspan dominant-baseline="auto" class="text-percentage" dx="3">%</tspan>
-                    </template>
-                    <template v-else>
-                        {{ cValue }}
-                    </template>
+                    <slot name="value" :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
+                        <tspan>{{ showPercentage ? percentage : cValue }}</tspan>
+                    </slot>
+                    <tspan v-if="showPercentageSign" dominant-baseline="auto" class="text-percentage" dx="3">%</tspan>
                 </slot>
             </text>
         </svg>
@@ -79,6 +76,16 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Show percentage rather than value. */
+        showPercentageSign: {
+            type: Boolean,
+            default: true,
+        },
+        /** Can exceed `to` value. */
+        canExceed: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -94,7 +101,7 @@ export default {
             // Clamp value
             if (isNaN(value) || value < this.from) {
                 value = this.from;
-            } else if (value > this.to) {
+            } else if (!this.canExceed && value > this.to) {
                 value = this.to;
             }
 
@@ -108,7 +115,9 @@ export default {
         },
 
         dashoffset() {
-            return 1 - this.percentage / 100;
+            const percentage = this.percentage > 100 ? 100 : this.percentage;
+
+            return 1 - percentage / 100;
         },
 
         classes() {
@@ -141,7 +150,7 @@ export default {
                 let color = 'default';
 
                 for (let i = colors.length - 1; i >= 0; i--) {
-                    if (_value > colors[i].value) {
+                    if (_value >= colors[i].value) {
                         color = colors[i].color;
                         break;
                     }

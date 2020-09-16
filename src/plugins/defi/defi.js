@@ -181,7 +181,7 @@ export class DeFi {
      *
      * @return {{color: string, value: number}[]}
      */
-    getColors() {
+    getDebtLimitColors() {
         return [
             {
                 value: (this.liqCollateralRatio / this.minCollateralRatio) * 100,
@@ -190,6 +190,28 @@ export class DeFi {
             {
                 value: (this.warningCollateralRatio / this.minCollateralRatio) * 100,
                 color: '#ff1716',
+            },
+        ];
+    }
+
+    /**
+     * Get color values for f-circle-progress and f-colored-number-range components
+     *
+     * @return {{color: string, value: number}[]}
+     */
+    getCollateralRatioColors() {
+        return [
+            {
+                value: 0,
+                color: '#ff1716',
+            },
+            {
+                value: 300,
+                color: '#ffaf19',
+            },
+            {
+                value: this.rewardCollateralRatio * 100 - 0.1,
+                color: '#15cd72',
             },
         ];
     }
@@ -282,6 +304,19 @@ export class DeFi {
         const overallCollateral = this.getOverallCollateral(_fMintAccount);
 
         return this.getMintingLimitFUSD(_currDebtFUSD + overallDebt, _currCollateralFUSD + overallCollateral);
+    }
+
+    /**
+     * @param {FMintAccount} _fMintAccount
+     * @param {number} [_currDebtFUSD] Current debt in FUSD.
+     * @param {number} [_currCollateralFUSD] Current corrateral in FUSD.
+     * @return {number}
+     */
+    getCollateralRatio(_fMintAccount, _currDebtFUSD = 0, _currCollateralFUSD = 0) {
+        const overallDebt = this.getOverallDebt(_fMintAccount);
+        const overallCollateral = this.getOverallCollateral(_fMintAccount);
+
+        return (overallDebt > 0 ? (overallCollateral + _currCollateralFUSD) / (overallDebt + _currDebtFUSD) : 0) * 100;
     }
 
     /**

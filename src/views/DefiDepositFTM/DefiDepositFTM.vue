@@ -286,7 +286,7 @@ export default {
         },
 
         colors() {
-            return this.$defi.getColors();
+            return this.$defi.getDebtLimitColors();
         },
 
         wftmTokenSymbol() {

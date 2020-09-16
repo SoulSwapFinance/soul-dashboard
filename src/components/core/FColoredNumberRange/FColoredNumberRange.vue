@@ -100,7 +100,7 @@ export default {
                 let color = 'default';
 
                 for (let i = colors.length - 1; i >= 0; i--) {
-                    if (_value > colors[i].value) {
+                    if (_value >= colors[i].value) {
                         color = colors[i].color;
                         break;
                     }

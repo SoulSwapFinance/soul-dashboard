@@ -117,14 +117,8 @@
             </div>
             <div v-if="!smallView" class="minting-limit-col align-center">
                 <!--                <template v-if="debt > 0">-->
-                <h3>Debt Limit <debt-limit-f-info /></h3>
-                <f-circle-progress
-                    show-percentage
-                    :stroke-width="6"
-                    :animate="false"
-                    :colors="colors"
-                    :value="debtLimit"
-                />
+                <ratio-info :value="collateralRatio" />
+
                 <!--
                 </template>
                 <div v-else class="df-data-item">
@@ -153,12 +147,7 @@
                 -->
                 <template v-if="smallView">
                     <div class="df-data-item smaller">
-                        <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
-                        <div class="value">
-                            <f-placeholder :content-loaded="!!tokenPrice" replacement-text="99%">
-                                <f-colored-number-range show-percentage :colors="colors" :value="debtLimit" />
-                            </f-placeholder>
-                        </div>
+                        <ratio-info :display-circle="false" :content-loaded="!!tokenPrice" :value="collateralRatio" />
                     </div>
                     <!--
                     <div v-else class="df-data-item smaller">
@@ -210,35 +199,29 @@
 </template>
 
 <script>
-import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { getUniqueId } from '../../utils';
-import FColoredNumberRange from '../../components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FSelectButton from '../core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
-import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
+import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
-        DebtLimitFInfo,
-        FPlaceholder,
+        RatioInfo,
         FTokenValue,
         DefiTokenPickerWindow,
         FCryptoSymbol,
         FSelectButton,
-        FColoredNumberRange,
         FSlider,
         FMessage,
-        FCircleProgress,
     },
 
     mixins: [eventBusMixin],
@@ -427,8 +410,7 @@ export default {
             return this.$defi.getMaxDebt(this.currCollateral, this.tokenPrice).toFixed(5);
         },
 
-        debtLimit() {
-            // const currCollateralFUSD = parseFloat(this.currCollateral) * this.tokenPrice;
+        currCollateralFUSD() {
             const collateral = parseFloat(this.collateral);
             const collateralFUSD = collateral * this.tokenPrice;
             let cCollateral = parseFloat(this.currCollateral);
@@ -439,10 +421,16 @@ export default {
                 cCollateral = collateral - cCollateral;
             }
 
-            const currCollateralFUSD = cCollateral * this.tokenPrice - collateralFUSD;
+            return cCollateral * this.tokenPrice - collateralFUSD;
+        },
 
-            return this.$defi.getDebtLimit(this.fMintAccount, 0, currCollateralFUSD);
+        debtLimit() {
+            return this.$defi.getDebtLimit(this.fMintAccount, 0, this.currCollateralFUSD);
             // return this.$defi.getMintingLimit(this.debt, this.currCollateral, this.tokenPrice);
+        },
+
+        collateralRatio() {
+            return this.$defi.getCollateralRatio(this.fMintAccount, 0, this.currCollateralFUSD);
         },
 
         inputValue() {
@@ -453,10 +441,6 @@ export default {
             return !this.singleToken
                 ? parseFloat(this.currCollateral) === parseFloat(this.collateral)
                 : !parseFloat(this.currCollateral);
-        },
-
-        colors() {
-            return this.$defi.getColors();
         },
 
         /**

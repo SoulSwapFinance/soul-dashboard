@@ -25,14 +25,11 @@
                 </div>
             </div>
             <div class="limit-col align-center">
-                <h2>Debt Limit <debt-limit-f-info /></h2>
-                <f-circle-progress
-                    show-percentage
-                    :stroke-width="6"
-                    :animate="false"
-                    :colors="colors"
-                    :value="debtLimit"
-                />
+                <ratio-info :value="collateralRatio">
+                    <template #ratio-info-title>
+                        <h2>Col. Ratio</h2>
+                    </template>
+                </ratio-info>
             </div>
             <div class="align-right">
                 <h2>fUSD</h2>
@@ -146,7 +143,6 @@
 </template>
 
 <script>
-import FCircleProgress from '../../components/core/FCircleProgress/FCircleProgress.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import { mapGetters } from 'vuex';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
@@ -156,12 +152,12 @@ import { getAppParentNode } from '../../app-structure.js';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
+import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { DebtLimitFInfo, FPlaceholder, FTokenValue, FBackButton, FMessage, FCircleProgress },
+    components: { RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
 
     mixins: [eventBusMixin],
 
@@ -259,14 +255,17 @@ export default {
             return this.$defi.getDebtLimit(this.fMintAccount);
         },
 
+        collateralRatio() {
+            return this.$defi.getCollateralRatio(this.fMintAccount);
+        },
+
         closeToLiquidation() {
+            return false;
+            /*
             const { $defi } = this;
 
             return this.debtLimit > ($defi.warningCollateralRatio / $defi.minCollateralRatio) * 100;
-        },
-
-        colors() {
-            return this.$defi.getColors();
+            */
         },
 
         wftmTokenSymbol() {
