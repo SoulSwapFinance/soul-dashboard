@@ -638,41 +638,77 @@ export class DeFi {
 
     /**
      * @param {string} _ownerAddress
+     * @param {boolean} [_withRewards]
      * @return {Promise<FMintAccount>}
      */
-    async fetchFMintAccount(_ownerAddress = '') {
+    async fetchFMintAccount(_ownerAddress = '', _withRewards = false) {
         const data = await this.apolloClient.query({
-            query: gql`
-                query FMintAccount($owner: Address!) {
-                    fMintAccount(owner: $owner) {
-                        address
-                        collateral {
-                            type
-                            tokenAddress
-                            balance
-                            value
-                            token {
-                                address
-                                symbol
-                            }
-                        }
-                        collateralValue
-                        collateralList
-                        debt {
-                            type
-                            tokenAddress
-                            balance
-                            value
-                            token {
-                                address
-                                symbol
-                            }
-                        }
-                        debtValue
-                        debtList
-                    }
-                }
-            `,
+            query: _withRewards
+                ? gql`
+                      query FMintAccount($owner: Address!) {
+                          fMintAccount(owner: $owner) {
+                              address
+                              collateral {
+                                  type
+                                  tokenAddress
+                                  balance
+                                  value
+                                  token {
+                                      address
+                                      symbol
+                                  }
+                              }
+                              collateralValue
+                              collateralList
+                              debt {
+                                  type
+                                  tokenAddress
+                                  balance
+                                  value
+                                  token {
+                                      address
+                                      symbol
+                                  }
+                              }
+                              debtValue
+                              debtList
+                              rewardsEarned
+                              canClaimRewards
+                              canReceiveRewards
+                          }
+                      }
+                  `
+                : gql`
+                      query FMintAccount($owner: Address!) {
+                          fMintAccount(owner: $owner) {
+                              address
+                              collateral {
+                                  type
+                                  tokenAddress
+                                  balance
+                                  value
+                                  token {
+                                      address
+                                      symbol
+                                  }
+                              }
+                              collateralValue
+                              collateralList
+                              debt {
+                                  type
+                                  tokenAddress
+                                  balance
+                                  value
+                                  token {
+                                      address
+                                      symbol
+                                  }
+                              }
+                              debtValue
+                              debtList
+                          }
+                      }
+                  `,
             variables: {
                 owner: _ownerAddress,
             },

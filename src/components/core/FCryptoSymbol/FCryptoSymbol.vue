@@ -50,7 +50,6 @@ export default {
             const { token } = this;
 
             if (token) {
-                console.log(token.symbol);
                 switch (token.symbol) {
                     case 'FTM':
                         return ftmIcon;

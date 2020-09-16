@@ -45,9 +45,15 @@
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
+                    <h3 class="label">Pending Rewards</h3>
+                    <div class="value"><f-token-value :token="fusdToken" :value="pendingRewards" /></div>
+                </div>
+                <!--
+                <div class="df-data-item smaller">
                     <h3 class="label">Liquidation price</h3>
                     <div class="value">{{ liquidationPrice }}</div>
                 </div>
+                -->
             </div>
             <f-message v-if="closeToLiquidation" type="error" role="alert" class="big">
                 You're getting close to your liquidation price. <br />
@@ -57,15 +63,20 @@
 
         <div class="form-buttons">
             <template v-if="$defi.tmpWFTM">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col">
-                        <router-link :to="{ name: 'defi-lock' }" class="btn large"
-                            >Lock {{ wftmTokenSymbol }}</router-link
-                        >
+                        <router-link :to="{ name: 'defi-lock' }" class="btn large">
+                            Lock {{ wftmTokenSymbol }}
+                        </router-link>
                         <br />
-                        <router-link :to="{ name: 'defi-unlock' }" class="btn large"
-                            >Unlock {{ wftmTokenSymbol }}</router-link
-                        >
+                        <router-link :to="{ name: 'defi-unlock' }" class="btn large">
+                            Unlock {{ wftmTokenSymbol }}
+                        </router-link>
+                    </div>
+                    <div v-if="canClaimRewards" class="col">
+                        <router-link :to="{ name: 'defi-claim-rewards' }" class="btn large">
+                            Claim Rewards
+                        </router-link>
                     </div>
                     <div class="col">
                         <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
@@ -202,6 +213,19 @@ export default {
             return formatNumberByLocale(this.tokenPrice, 5, 'USD');
         },
 
+        pendingRewards() {
+            return this.$defi.fromTokenValue(this.fMintAccount.rewardsEarned, this.fusdToken) || 0;
+        },
+
+        canClaimRewards() {
+            // const { fMintAccount } = this;
+
+            // return fMintAccount.canClaimRewards && fMintAccount.rewardsEarned !== '0x0';
+
+            // TMP
+            return false;
+        },
+
         liquidationPrice() {
             return '-';
             /*
@@ -279,7 +303,7 @@ export default {
         async init() {
             const { $defi } = this;
             const result = await Promise.all([
-                $defi.fetchFMintAccount(this.currentAccount.address),
+                $defi.fetchFMintAccount(this.currentAccount.address, true),
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);

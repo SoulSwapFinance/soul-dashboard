@@ -47,4 +47,7 @@
  * @property {FMintTokenBalance[]} debt List of all the current borrowed tokens.
  * @property {string} debtValue Current debt value in ref. denomination (fUSD).
  * @property {string[]} debtList List of all debt tokens linked with the account.
+ * @property {string} rewardsEarned Accumulated rewards earned on the DeFi / fMint account for the excessive collateral value.
+ * @property {boolean} canClaimRewards Informs if the fMint account collateral to debt is high enough to allow earned rewards claiming.
+ * @property {boolean} canReceiveRewards informs if the fMint account collateral to debt is high enough to receive earned rewards.
  */
