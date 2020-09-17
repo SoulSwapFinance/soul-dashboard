@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-home-tabs">
+    <div class="defi-home-tabs account-main-content-mt">
         <div v-if="showTabs" class="defi-tabs">
             <f-tabs>
                 <template #assets>

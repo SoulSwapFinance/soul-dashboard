@@ -157,7 +157,7 @@ export default {
 
                         return balance > 0 ? formatNumberByLocale(balance, this.defi.getTokenDecimals(_item)) : 0;
                     },
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                     // width: '100px',
                 },
                 {
@@ -169,7 +169,7 @@ export default {
 
                         return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_item)) : 0;
                     },
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                     // width: '100px',
                 },
                 {
@@ -181,13 +181,14 @@ export default {
 
                         return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_item)) : 0;
                     },
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                 },
                 {
                     name: 'actions',
                     label: 'Actions',
                     hidden: !this.defiAssetsList,
                     width: '120px',
+                    css: { textAlign: 'right' },
                 },
             ],
         };

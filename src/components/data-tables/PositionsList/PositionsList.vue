@@ -168,7 +168,7 @@ export default {
                 {
                     name: 'amount',
                     label: 'Amount',
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                 },
                 {
                     name: 'amount_fusd',
@@ -184,7 +184,7 @@ export default {
                             return (_direction === 'desc' ? -1 : 1) * numberSort(a, b);
                         };
                     },
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                 },
                 {
                     name: 'type',
@@ -211,11 +211,13 @@ export default {
                         return type.join(', ');
                     },
                     width: '160px',
+                    css: { textAlign: 'center' },
                 },
                 {
                     name: 'actions',
                     label: 'Actions',
                     width: '180px',
+                    css: { textAlign: 'right' },
                 },
             ],
         };
