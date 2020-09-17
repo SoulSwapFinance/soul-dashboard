@@ -318,7 +318,11 @@ export class DeFi {
         const overallDebt = this.getOverallDebt(_fMintAccount);
         const overallCollateral = this.getOverallCollateral(_fMintAccount);
 
-        return (overallDebt > 0 ? (overallCollateral + _currCollateralFUSD) / (overallDebt + _currDebtFUSD) : 0) * 100;
+        return (
+            (overallDebt + _currDebtFUSD > 0
+                ? (overallCollateral + _currCollateralFUSD) / (overallDebt + _currDebtFUSD)
+                : 0) * 100
+        );
     }
 
     /**
