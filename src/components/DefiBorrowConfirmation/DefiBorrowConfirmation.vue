@@ -180,8 +180,9 @@ export default {
     methods: {
         async setTx() {
             const { token } = this;
-            // const { params } = this;
-            // const repayAll = 0.005;
+            const { params } = this;
+            const repayMax = 0.995;
+            const mintMax = repayMax;
             let { contractAddress } = this;
             let txToSign;
 
@@ -193,22 +194,23 @@ export default {
                 contractAddress = this.$defi.contracts.fMint;
             }
 
-            /*
-            if (params.debt > 0 && params.currDebt / params.debt < repayAll) {
-                console.log('REPAY ALL');
-            }
-            */
-            // console.log(params.currDebt, params.debt, params.currDebt / params.debt, params.debt / params.currDebt);
-
             if (this.increasedDebt > 0) {
-                txToSign = fMintUtils.fMintMintTokenTx(
-                    contractAddress,
-                    token.address,
-                    this.correctAmount(
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals)),
-                        true
-                    )
-                );
+                // mint max
+                if (params.ratio > mintMax) {
+                    console.log('MINT MAX');
+                    txToSign = fMintUtils.fMintMintTokenMaxTx(contractAddress, token.address);
+                } else {
+                    txToSign = fMintUtils.fMintMintTokenTx(
+                        contractAddress,
+                        token.address,
+                        this.correctAmount(
+                            Web3.utils.toHex(
+                                this.$defi.shiftDecPointRight(this.increasedDebt.toString(), token.decimals)
+                            ),
+                            true
+                        )
+                    );
+                }
             } else if (this.params.step === 1) {
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     token.address,
@@ -220,14 +222,22 @@ export default {
                     )
                 );
             } else {
-                txToSign = fMintUtils.fMintRepayTokenTx(
-                    contractAddress,
-                    token.address,
-                    this.correctAmount(
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals))
-                    )
-                    // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
-                );
+                // repay max
+                if (params.ratio > repayMax) {
+                    console.log('REPAY MAX');
+                    txToSign = fMintUtils.fMintRepayTokenMaxTx(contractAddress, token.address);
+                } else {
+                    txToSign = fMintUtils.fMintRepayTokenTx(
+                        contractAddress,
+                        token.address,
+                        this.correctAmount(
+                            Web3.utils.toHex(
+                                this.$defi.shiftDecPointRight(this.decreasedDebt.toString(), token.decimals)
+                            )
+                        )
+                        // parseInt(this.decreasedDebt * Math.pow(10, token.decimals))
+                    );
+                }
             }
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(

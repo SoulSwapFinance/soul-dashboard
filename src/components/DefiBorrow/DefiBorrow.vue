@@ -413,6 +413,11 @@ export default {
 
         fSliderMax() {
             return this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
+            /*
+            return this.repay && this.availableBalance > 0
+                ? Math.min(this.maxDebt, this.availableBalance)
+                : this.maxDebt;
+            */
         },
 
         inputValue() {
@@ -562,9 +567,11 @@ export default {
             const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.dToken);
             const params = {
                 currDebt: parseFloat(this.currDebt),
+                // debt: this.repay ? Math.min(this.availableBalance, this.debt) : this.debt,
                 debt: this.debt,
                 token: { ...this.dToken },
                 debtBalanceHex: tokenBalance.balance,
+                ratio: parseFloat(this.currDebt) / this.fSliderMax,
             };
 
             if ((this.borrowOrRepay && this.repay) || this.decreasedDebt > 0) {

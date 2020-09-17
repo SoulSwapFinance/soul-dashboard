@@ -210,12 +210,12 @@ export default {
 
                         return type.join(', ');
                     },
-                    width: '100px',
+                    width: '160px',
                 },
                 {
                     name: 'actions',
                     label: 'Actions',
-                    width: '120px',
+                    width: '180px',
                 },
             ],
         };
