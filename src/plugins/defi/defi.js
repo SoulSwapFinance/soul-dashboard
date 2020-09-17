@@ -52,6 +52,7 @@ export class DeFi {
         /** Addresses of various contracts. */
         this.contracts = {
             fMint: '',
+            fMintReward: '',
         };
 
         // TMP!!
@@ -85,6 +86,7 @@ export class DeFi {
         // this.warningCollateralRatio = parseInt(_settings.warningCollateralRatio4, 16) / dec;
         this.mintFee = parseInt(_settings.mintFee4, 16) / dec;
         contracts.fMint = _settings.fMintContract;
+        contracts.fMintReward = _settings.fMintRewardDistribution;
     }
 
     /**
@@ -383,6 +385,7 @@ export class DeFi {
         let left;
         let right;
         let res = '';
+        const isHex = value.indexOf('0x') === 0;
 
         if (idx > -1) {
             left = value.slice(0, idx);
@@ -413,6 +416,10 @@ export class DeFi {
             if (!res) {
                 res = '0';
             }
+        }
+
+        if (isHex && res.charAt(0) === 'x') {
+            res = '0' + res;
         }
 
         return res;
@@ -604,6 +611,7 @@ export class DeFi {
                         rewardCollateralRatio4
                         minCollateralRatio4
                         fMintContract
+                        fMintRewardDistribution
                         decimals
                     }
                 }
@@ -708,6 +716,7 @@ export class DeFi {
                               debtValue
                               debtList
                               rewardsEarned
+                              rewardsStashed
                               canClaimRewards
                               canReceiveRewards
                           }

@@ -27,7 +27,7 @@
             <div class="limit-col align-center">
                 <ratio-info :value="collateralRatio">
                     <template #ratio-info-title>
-                        <h2>Col. Ratio</h2>
+                        <h2>C-Ratio</h2>
                     </template>
                 </ratio-info>
             </div>
@@ -42,8 +42,25 @@
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Pending Rewards</h3>
-                    <div class="value"><f-token-value :token="fusdToken" :value="pendingRewards" /></div>
+                    <h3 class="label">Est. Pending / Stashed Rewards</h3>
+                    <div class="value">
+                        <f-placeholder :content-loaded="!!wftmToken.symbol" replacement-text="999 / 999 wFTM">
+                            <f-token-value
+                                no-currency
+                                :use-placeholder="false"
+                                :token="wftmToken"
+                                :value="pendingRewardsWFTM"
+                            />
+                            <span class="currency-light">
+                                /
+                                <f-token-value
+                                    :use-placeholder="false"
+                                    :token="wftmToken"
+                                    :value="stashedRewardsWFTM"
+                                />
+                            </span>
+                        </f-placeholder>
+                    </div>
                 </div>
                 <!--
                 <div class="df-data-item smaller">
@@ -60,25 +77,31 @@
 
         <div class="form-buttons">
             <template v-if="$defi.tmpWFTM">
-                <div class="row align-items-center">
+                <div class="row">
                     <div class="col">
                         <router-link :to="{ name: 'defi-lock' }" class="btn large">
                             Lock {{ wftmTokenSymbol }}
                         </router-link>
                         <br />
-                        <router-link :to="{ name: 'defi-unlock' }" class="btn large">
+                        <router-link :to="{ name: 'defi-unlock' }" class="btn large secondary">
                             Unlock {{ wftmTokenSymbol }}
                         </router-link>
                     </div>
                     <div v-if="canClaimRewards" class="col">
-                        <router-link :to="{ name: 'defi-fmint-claim-rewards-confirmation' }" class="btn large">
+                        <router-link
+                            :to="{
+                                name: 'defi-fmint-claim-rewards-confirmation',
+                                params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
+                            }"
+                            class="btn large"
+                        >
                             Claim Rewards
                         </router-link>
                     </div>
                     <div class="col">
                         <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
                         <br />
-                        <router-link :to="{ name: 'defi-repay' }" class="btn large">Repay fUSD</router-link>
+                        <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
                     </div>
                 </div>
             </template>
@@ -213,13 +236,27 @@ export default {
             return this.$defi.fromTokenValue(this.fMintAccount.rewardsEarned, this.fusdToken) || 0;
         },
 
+        pendingRewardsWFTM() {
+            return this.$defi.fromTokenValue(this.fMintAccount.rewardsEarned, this.wftmToken) || 0;
+            // return this.$defi.convertTokenValue(this.pendingRewards, this.fusdToken, this.wftmToken);
+        },
+
+        stashedRewards() {
+            return this.$defi.fromTokenValue(this.fMintAccount.rewardsStashed, this.fusdToken) || 0;
+        },
+
+        stashedRewardsWFTM() {
+            return this.$defi.fromTokenValue(this.fMintAccount.rewardsStashed, this.wftmToken) || 0;
+            // return this.$defi.convertTokenValue(this.stashedRewards, this.fusdToken, this.wftmToken);
+        },
+
         canClaimRewards() {
-            // const { fMintAccount } = this;
+            const { fMintAccount } = this;
 
-            // return fMintAccount.canClaimRewards && fMintAccount.rewardsEarned !== '0x0';
-
-            // TMP
-            return false;
+            return (
+                fMintAccount.canClaimRewards &&
+                (fMintAccount.rewardsEarned !== '0x0' || fMintAccount.rewardsStashed !== '0x0')
+            );
         },
 
         liquidationPrice() {

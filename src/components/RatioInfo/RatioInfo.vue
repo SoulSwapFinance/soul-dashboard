@@ -3,7 +3,7 @@
         <template v-if="displayCollateralRatio">
             <template v-if="displayCircle">
                 <slot name="ratio-info-title">
-                    <h3>Col. Ratio</h3>
+                    <h3>C-Ratio</h3>
                 </slot>
                 <f-circle-progress
                     can-exceed
@@ -26,7 +26,7 @@
             </template>
             <template v-else>
                 <slot name="ratio-info-title">
-                    <h3 class="label">Col. Ratio</h3>
+                    <h3 class="label">C-Ratio</h3>
                 </slot>
                 <div class="value">
                     <f-placeholder :content-loaded="contentLoaded" replacement-text="99%">

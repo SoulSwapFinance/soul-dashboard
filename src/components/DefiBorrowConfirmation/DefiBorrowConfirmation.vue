@@ -21,7 +21,7 @@
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
-            <div class="info">
+            <div class="confirmation-info">
                 <div v-if="increasedDebt > 0">
                     You’re adding
                     <span class="inc-desc-collateral">
@@ -180,6 +180,8 @@ export default {
     methods: {
         async setTx() {
             const { token } = this;
+            // const { params } = this;
+            // const repayAll = 0.005;
             let { contractAddress } = this;
             let txToSign;
 
@@ -190,6 +192,13 @@ export default {
             if (!contractAddress) {
                 contractAddress = this.$defi.contracts.fMint;
             }
+
+            /*
+            if (params.debt > 0 && params.currDebt / params.debt < repayAll) {
+                console.log('REPAY ALL');
+            }
+            */
+            // console.log(params.currDebt, params.debt, params.currDebt / params.debt, params.debt / params.currDebt);
 
             if (this.increasedDebt > 0) {
                 txToSign = fMintUtils.fMintMintTokenTx(
@@ -296,7 +305,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss">
-@import 'style';
-</style>

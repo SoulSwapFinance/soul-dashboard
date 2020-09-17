@@ -200,7 +200,7 @@ export default {
                 },
                 {
                     name: '',
-                    label: 'Expiration Time',
+                    label: 'Unlock Date',
                     itemProp: 'delegation.lockedUntil',
                     formatter: (_value) => formatDate(timestampToDate(_value), true) || '-',
                 },

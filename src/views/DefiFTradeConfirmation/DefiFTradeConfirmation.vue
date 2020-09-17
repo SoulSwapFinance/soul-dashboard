@@ -20,7 +20,7 @@
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
-            <div class="info">
+            <div class="confirmation-info">
                 <template v-if="params.step === 1">
                     You’re allowing
                     <span class="price">
