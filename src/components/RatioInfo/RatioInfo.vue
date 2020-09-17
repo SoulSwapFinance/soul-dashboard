@@ -3,7 +3,7 @@
         <template v-if="displayCollateralRatio">
             <template v-if="displayCircle">
                 <slot name="ratio-info-title">
-                    <h3>C-Ratio</h3>
+                    <h3>C-Ratio <c-ratio-info /></h3>
                 </slot>
                 <f-circle-progress
                     can-exceed
@@ -26,7 +26,7 @@
             </template>
             <template v-else>
                 <slot name="ratio-info-title">
-                    <h3 class="label">C-Ratio</h3>
+                    <h3 class="label">C-Ratio <c-ratio-info /></h3>
                 </slot>
                 <div class="value">
                     <f-placeholder :content-loaded="contentLoaded" replacement-text="99%">
@@ -90,13 +90,14 @@ import DebtLimitFInfo from '@/components/DebLimitFInfo/DebtLimitFInfo.vue';
 import FCircleProgress from '@/components/core/FCircleProgress/FCircleProgress.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
+import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
 /**
  * Displays info about collateral ratio or debt limit.
  */
 export default {
     name: 'RatioInfo',
 
-    components: { FColoredNumberRange, FPlaceholder, FCircleProgress, DebtLimitFInfo },
+    components: { CRatioInfo, FColoredNumberRange, FPlaceholder, FCircleProgress, DebtLimitFInfo },
 
     props: {
         /** Current value. */

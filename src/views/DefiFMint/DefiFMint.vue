@@ -27,7 +27,7 @@
             <div class="limit-col align-center">
                 <ratio-info :value="collateralRatio">
                     <template #ratio-info-title>
-                        <h2>C-Ratio</h2>
+                        <h2>C-Ratio <c-ratio-info /></h2>
                     </template>
                 </ratio-info>
             </div>
@@ -176,11 +176,12 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
+    components: { CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
 
     mixins: [eventBusMixin],
 
