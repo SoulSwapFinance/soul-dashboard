@@ -62,11 +62,11 @@ export default {
     mixins: [eventBusMixin],
 
     created() {
-        const useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        // const useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
         this.nightMode(this.$store.state.nightMode);
 
-        useDarkColorScheme.addEventListener('change', (_event) => this.nightMode(_event.matches));
+        // useDarkColorScheme.addEventListener('change', (_event) => this.nightMode(_event.matches));
 
         filtersOptions.currency = this.$store.state.currency;
         filtersOptions.fractionDigits = this.$store.state.fractionDigits;

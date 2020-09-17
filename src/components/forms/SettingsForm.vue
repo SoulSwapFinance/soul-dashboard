@@ -135,18 +135,22 @@ export default {
     created() {
         this.darkModeOn = this.$store.state.nightMode;
 
+        /*
         this._useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
         if (this._useDarkColorScheme) {
             this._useDarkColorScheme.addEventListener('change', this.onDarkMode);
         }
+        */
     },
 
+    /*
     beforeDestroy() {
         if (this._useDarkColorScheme) {
             this._useDarkColorScheme.removeEventListener('change', this.onDarkMode);
         }
     },
+    */
 
     methods: {
         /**
