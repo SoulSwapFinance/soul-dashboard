@@ -88,7 +88,7 @@
                             v-model="currDebt"
                             step="any"
                             :min="minDebt.toString()"
-                            :max="maxDebt.toString()"
+                            :max="fSliderMax.toString()"
                             use-lower-fill-bar
                         >
                             <template #top="sProps">
@@ -113,7 +113,7 @@
                             v-model="currDebt"
                             step="any"
                             :min="minDebt.toString()"
-                            :max="maxDebt.toString()"
+                            :max="fSliderMax.toString()"
                             :labels="sliderLabels"
                             clickable-labels
                             use-lower-fill-bar
@@ -409,6 +409,10 @@ export default {
 
         _maxDebt() {
             return Math.max(this._borrowLimit, this.debt);
+        },
+
+        fSliderMax() {
+            return this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
         },
 
         inputValue() {
