@@ -78,7 +78,7 @@
         <div class="form-buttons">
             <template v-if="$defi.tmpWFTM">
                 <div class="row">
-                    <div class="col">
+                    <div class="col align-left">
                         <router-link :to="{ name: 'defi-lock' }" class="btn large">
                             Lock {{ wftmTokenSymbol }}
                         </router-link>
@@ -87,18 +87,23 @@
                             Unlock {{ wftmTokenSymbol }}
                         </router-link>
                     </div>
-                    <div v-if="canClaimRewards" class="col">
-                        <router-link
-                            :to="{
-                                name: 'defi-fmint-claim-rewards-confirmation',
-                                params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
-                            }"
-                            class="btn large"
-                        >
-                            Claim Rewards
-                        </router-link>
-                    </div>
                     <div class="col">
+                        <template v-if="canClaimRewards">
+                            <router-link
+                                :to="{
+                                    name: 'defi-fmint-claim-rewards-confirmation',
+                                    params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
+                                }"
+                                class="btn large"
+                            >
+                                Claim Rewards
+                            </router-link>
+                        </template>
+                        <template v-else>
+                            <button type="button" class="btn large" disabled>Claim Rewards</button>
+                        </template>
+                    </div>
+                    <div class="col align-right">
                         <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
                         <br />
                         <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
