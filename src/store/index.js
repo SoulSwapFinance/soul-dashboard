@@ -91,7 +91,7 @@ export const store = new Vuex.Store({
         currency: 'USD',
         fractionDigits: 2,
         defiSlippageReserve: appConfig.settings.defaultDefiSlippageReserve,
-        nightMode: false,
+        nightMode: true,
         /** @type {[WalletAccount]} */
         accounts: [],
         /** @type {[WalletContact]} */

@@ -63,7 +63,7 @@
                         >
                             <template #suffix>
                                 <span class="btn same-size round small light">
-                                    <icon data="@/assets/svg/chevron-down.svg" />
+                                    <icon data="@/assets/svg/chevron-down.svg" color="rgb(140,140,140)" />
                                 </span>
                             </template>
                             <template #bottom="sProps">
