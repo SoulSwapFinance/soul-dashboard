@@ -38,7 +38,7 @@ import {
     SET_CURRENCY,
     SET_DEFI_SLIPPAGE_RESERVE,
     SET_FRACTION_DIGITS,
-    SET_NIGHT_MODE,
+    SET_DARK_MODE,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
 } from './store/mutations.type.js';
@@ -64,9 +64,9 @@ export default {
     created() {
         // const useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
-        this.nightMode(this.$store.state.nightMode);
+        this.darkMode(this.$store.state.darkMode);
 
-        // useDarkColorScheme.addEventListener('change', (_event) => this.nightMode(_event.matches));
+        // useDarkColorScheme.addEventListener('change', (_event) => this.darkMode(_event.matches));
 
         filtersOptions.currency = this.$store.state.currency;
         filtersOptions.fractionDigits = this.$store.state.fractionDigits;
@@ -124,16 +124,16 @@ export default {
         /**
          * @param {boolean} _on
          */
-        setNightMode(_on) {
-            this.$store.commit(SET_NIGHT_MODE, _on);
+        setDarkMode(_on) {
+            this.$store.commit(SET_DARK_MODE, _on);
 
-            this.nightMode(_on);
+            this.darkMode(_on);
         },
 
         /**
          * @param {boolean} _on
          */
-        nightMode(_on) {
+        darkMode(_on) {
             const { documentElement } = document;
 
             documentElement.classList.add('theme-transition');
