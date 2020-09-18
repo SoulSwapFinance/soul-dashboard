@@ -184,6 +184,18 @@ export default {
                     css: { textAlign: 'center' },
                 },
                 {
+                    name: 'totalSupply',
+                    label: 'Supply',
+                    hidden: !this.defiAssetsList,
+                    formatter: (_value, _item) => {
+                        return formatNumberByLocale(
+                            this.$defi.fromTokenValue(_value, _item),
+                            this.defi.getTokenDecimals(_item)
+                        );
+                    },
+                    css: { textAlign: 'center' },
+                },
+                {
                     name: 'actions',
                     label: 'Actions',
                     hidden: !this.defiAssetsList,

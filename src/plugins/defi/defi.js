@@ -670,6 +670,7 @@ export class DeFi {
                         decimals
                         price
                         priceDecimals
+                        totalSupply
                         isActive
                         canWrapFTM
                         canDeposit
