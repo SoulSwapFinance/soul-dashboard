@@ -49,7 +49,7 @@
                                 no-currency
                                 :use-placeholder="false"
                                 :token="wftmToken"
-                                :value="pendingRewardsWFTM"
+                                :value="pendingRewardsWFTM - stashedRewardsWFTM"
                             />
                             <span class="currency-light">
                                 /

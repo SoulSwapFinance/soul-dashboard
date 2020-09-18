@@ -22,7 +22,7 @@ export const GAS_LIMITS = {
     withdraw: '0x44AA20',
     delegate: '0x30D40',
     ballot: '0x3D0900',
-    defi: '0x7A120',
+    defi: '0xF4240', // 1 000 000
 };
 
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
