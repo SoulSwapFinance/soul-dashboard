@@ -12,6 +12,7 @@
                     :from="minValue"
                     :to="1000"
                     :colors="collateralRatioColors"
+                    :dots="collateralRatioDots"
                     :value="parseInt(value)"
                 >
                     <template #value>
@@ -62,6 +63,7 @@
                     :from="minValue"
                     :to="maxValue"
                     :colors="debtLimitColors"
+                    :dots="debtLimitDots"
                     :value="value"
                 />
             </template>
@@ -139,12 +141,20 @@ export default {
     },
 
     computed: {
+        collateralRatioColors() {
+            return this.$defi.getCollateralRatioColors();
+        },
+
+        collateralRatioDots() {
+            return this.$defi.getCollateralRatioDots();
+        },
+
         debtLimitColors() {
             return this.$defi.getDebtLimitColors();
         },
 
-        collateralRatioColors() {
-            return this.$defi.getCollateralRatioColors();
+        debtLimitDots() {
+            return this.$defi.getDebtLimitDots();
         },
     },
 };

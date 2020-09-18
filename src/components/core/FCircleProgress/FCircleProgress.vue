@@ -15,6 +15,14 @@
                 pathLength="1"
                 class="circle"
             />
+            <circle
+                v-for="(dot, index) in dots"
+                :key="`cpk_${dot.value}${index}`"
+                :r="strokeWidth / 3"
+                :cx="dotCx(index)"
+                :cy="dotCy(index)"
+                :fill="dot.color"
+            />
             <text text-anchor="middle" dominant-baseline="central" class="text">
                 <slot :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
                     <slot name="value" :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
@@ -56,6 +64,16 @@ export default {
          * @type {{color: string, value: number}[]}
          */
         colors: {
+            type: Array,
+            default() {
+                return [];
+            },
+        },
+        /**
+         * Dots displayed on circle at positions given by values.
+         * @type {{color: string, value: number}[]}
+         */
+        dots: {
             type: Array,
             default() {
                 return [];
@@ -111,7 +129,7 @@ export default {
         },
 
         percentage() {
-            return Math.round(((this.cValue - this.from) / (this.to - this.from)) * 100);
+            return this.getPercentage(this.cValue);
         },
 
         dashoffset() {
@@ -138,6 +156,41 @@ export default {
     },
 
     methods: {
+        /**
+         * @param {number} _index Index into `dots` array.
+         */
+        dotCx(_index) {
+            return Math.cos(this.getDotX(_index)) * this.r;
+        },
+
+        /**
+         * @param {number} _index Index into `dots` array.
+         */
+        dotCy(_index) {
+            return Math.sin(this.getDotX(_index)) * this.r;
+        },
+
+        /**
+         * @param {number} _index Index into `dots` array.
+         */
+        getDotX(_index) {
+            const PI = Math.PI;
+            let percentage = this.getPercentage(this.dots[_index].value);
+
+            if (percentage > 100) {
+                percentage = 100;
+            }
+
+            return 2 * PI * (percentage / 100) - PI / 2;
+        },
+
+        /**
+         * @param {number} _value
+         */
+        getPercentage(_value) {
+            return Math.round(((_value - this.from) / (this.to - this.from)) * 100);
+        },
+
         /**
          * Set circle stroke color according to current value and `this.colors` array.
          *

@@ -197,6 +197,15 @@ export class DeFi {
     }
 
     /**
+     * Get dot values for f-circle-progress component.
+     *
+     * @return {{color: string, value: number}[]}
+     */
+    getDebtLimitDots() {
+        return [];
+    }
+
+    /**
      * Get color values for f-circle-progress and f-colored-number-range components
      *
      * @return {{color: string, value: number}[]}
@@ -214,6 +223,24 @@ export class DeFi {
             {
                 value: this.rewardCollateralRatio * 100 - 0.1,
                 color: '#15cd72',
+            },
+        ];
+    }
+
+    /**
+     * Get dot values for f-circle-progress component.
+     *
+     * @return {{color: string, value: number}[]}
+     */
+    getCollateralRatioDots() {
+        return [
+            {
+                value: 300,
+                color: '#ff1716',
+            },
+            {
+                value: this.rewardCollateralRatio * 100 - 0.1,
+                color: '#ffaf19',
             },
         ];
     }
