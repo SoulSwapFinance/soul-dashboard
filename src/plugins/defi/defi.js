@@ -712,78 +712,70 @@ export class DeFi {
 
     /**
      * @param {string} _ownerAddress
-     * @param {boolean} [_withRewards]
      * @return {Promise<FMintAccount>}
      */
-    async fetchFMintAccount(_ownerAddress = '', _withRewards = false) {
+    async fetchFMintAccount(_ownerAddress = '') {
         const data = await this.apolloClient.query({
-            query: _withRewards
-                ? gql`
-                      query FMintAccount($owner: Address!) {
-                          fMintAccount(owner: $owner) {
-                              address
-                              collateral {
-                                  type
-                                  tokenAddress
-                                  balance
-                                  value
-                                  token {
-                                      address
-                                      symbol
-                                  }
-                              }
-                              collateralValue
-                              collateralList
-                              debt {
-                                  type
-                                  tokenAddress
-                                  balance
-                                  value
-                                  token {
-                                      address
-                                      symbol
-                                  }
-                              }
-                              debtValue
-                              debtList
-                              rewardsEarned
-                              rewardsStashed
-                              canClaimRewards
-                              canReceiveRewards
-                          }
-                      }
-                  `
-                : gql`
-                      query FMintAccount($owner: Address!) {
-                          fMintAccount(owner: $owner) {
-                              address
-                              collateral {
-                                  type
-                                  tokenAddress
-                                  balance
-                                  value
-                                  token {
-                                      address
-                                      symbol
-                                  }
-                              }
-                              collateralValue
-                              collateralList
-                              debt {
-                                  type
-                                  tokenAddress
-                                  balance
-                                  value
-                                  token {
-                                      address
-                                      symbol
-                                  }
-                              }
-                              debtValue
-                              debtList
-                          }
-                      }
-                  `,
+            query: gql`
+                query FMintAccount($owner: Address!) {
+                    fMintAccount(owner: $owner) {
+                        address
+                        collateral {
+                            type
+                            tokenAddress
+                            balance
+                            value
+                            token {
+                                address
+                                symbol
+                            }
+                        }
+                        collateralValue
+                        collateralList
+                        debt {
+                            type
+                            tokenAddress
+                            balance
+                            value
+                            token {
+                                address
+                                symbol
+                            }
+                        }
+                        debtValue
+                        debtList
+                    }
+                }
+            `,
+            variables: {
+                owner: _ownerAddress,
+            },
+            fetchPolicy: 'network-only',
+        });
+        /** @type {FMintAccount} */
+        const { fMintAccount } = data.data;
+
+        return fMintAccount;
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @return {Promise<FMintAccount>}
+     */
+    async fetchFMintAccountRewards(_ownerAddress = '') {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query FMintAccount($owner: Address!) {
+                    fMintAccount(owner: $owner) {
+                        address
+                        rewardsEarned
+                        rewardsStashed
+                        canClaimRewards
+                        canPushNewRewards
+                        canReceiveRewards
+                    }
+                }
+            `,
             variables: {
                 owner: _ownerAddress,
             },

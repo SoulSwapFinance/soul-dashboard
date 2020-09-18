@@ -249,6 +249,20 @@ const appStructure = [
                                 ],
                             },
                             {
+                                id: 'defi-fmint-push-rewards-confirmation',
+                                route: 'defi-fmint-push-rewards-confirmation',
+                                _c: [
+                                    {
+                                        id: 'defi-fmint-push-rewards-transaction-success-message',
+                                        route: 'defi-fmint-push-rewards-transaction-success-message',
+                                    },
+                                    {
+                                        id: 'defi-fmint-push-rewards-transaction-reject-message',
+                                        route: 'defi-fmint-push-rewards-transaction-reject-message',
+                                    },
+                                ],
+                            },
+                            {
                                 id: 'defi-manage-collateral',
                                 route: 'defi-manage-collateral',
                                 _c: [

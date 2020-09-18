@@ -44,6 +44,7 @@ import DefiMintConfirmation from '@/views/DefiMintConfirmation/DefiMintConfirmat
 import DefiRepayConfirmation from '@/views/DefiRepayConfirmation/DefiRepayConfirmation.vue';
 import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
+import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 
 export const routes = [
     {
@@ -382,6 +383,22 @@ export const routes = [
                     {
                         name: 'defi-fmint-claim-rewards-transaction-reject-message',
                         path: 'fmint/claim-rewards/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+
+                    {
+                        name: 'defi-fmint-push-rewards-confirmation',
+                        path: 'fmint/push-rewards/confirmation',
+                        component: DefiFMintPushRewardsConfirmation,
+                    },
+                    {
+                        name: 'defi-fmint-push-rewards-transaction-success-message',
+                        path: 'fmint/push-rewards/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'defi-fmint-push-rewards-transaction-reject-message',
+                        path: 'fmint/push-rewards/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
 

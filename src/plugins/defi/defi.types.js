@@ -51,5 +51,6 @@
  * @property {string} rewardsEarned Accumulated rewards earned on the DeFi / fMint account for the excessive collateral value.
  * @property {string} rewardsStashed Accumulated rewards earned on the DeFi / fMint account for the excessive collateral value and stored into the stash for future claim.
  * @property {boolean} canClaimRewards Informs if the fMint account collateral to debt is high enough to allow earned rewards claiming.
+ * @property {boolean} canPushNewRewards Indicates if new rewards are unlocked inside the reward distribution and can be pushed into the system to distribute them among eligible accounts.
  * @property {boolean} canReceiveRewards informs if the fMint account collateral to debt is high enough to receive earned rewards.
  */
