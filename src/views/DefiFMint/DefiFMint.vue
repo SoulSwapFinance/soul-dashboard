@@ -78,7 +78,7 @@
         <div class="form-buttons">
             <template v-if="$defi.tmpWFTM">
                 <div class="row">
-                    <div class="col align-left">
+                    <div class="col align-left align-center-md">
                         <router-link :to="{ name: 'defi-lock' }" class="btn large">
                             Lock {{ wftmTokenSymbol }}
                         </router-link>
@@ -103,7 +103,7 @@
                             <button type="button" class="btn large" disabled>Claim Rewards</button>
                         </template>
                     </div>
-                    <div class="col align-right">
+                    <div class="col align-right align-center-md">
                         <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
                         <br />
                         <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
