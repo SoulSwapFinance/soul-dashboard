@@ -25,11 +25,14 @@ import {
     SET_ACTIVE_ACCOUNT_ADDRESS,
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
 } from '../../store/mutations.type.js';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     name: 'Defi',
 
     components: { FViewTransition, AddressInfoBox, FMessage },
+
+    mixins: [eventBusMixin],
 
     computed: {
         ...mapGetters(['currentAccount']),
@@ -46,6 +49,7 @@ export default {
             const { address } = _value.params;
             if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
                 this.setActiveAccount(address);
+                this._eventBus.emit('account-picked', address);
             }
         },
     },

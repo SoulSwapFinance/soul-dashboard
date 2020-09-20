@@ -24,11 +24,14 @@ import {
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
 } from '@/store/mutations.type.js';
 import AccountStake from '@/views/AccountStake.vue';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     name: 'Staking',
 
     components: { AccountStake, AddressInfoBox, FMessage },
+
+    mixins: [eventBusMixin],
 
     computed: {
         ...mapGetters(['currentAccount']),
@@ -40,6 +43,7 @@ export default {
 
             if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
                 this.setActiveAccount(address);
+                this._eventBus.emit('account-picked', address);
             }
         },
     },

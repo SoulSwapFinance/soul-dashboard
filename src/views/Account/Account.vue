@@ -29,6 +29,7 @@ import { mapGetters } from 'vuex';
 import AccountHeader from '../../components/AccountHeader/AccountHeader.vue';
 import AddressInfoBox from '../../components/AddressInfoBox/AddressInfoBox.vue';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     components: {
@@ -38,6 +39,8 @@ export default {
         // FMessage,
         // FCard
     },
+
+    mixins: [eventBusMixin],
 
     computed: {
         ...mapGetters(['currentAccount']),
@@ -49,6 +52,7 @@ export default {
 
             if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
                 this.setActiveAccount(address);
+                this._eventBus.emit('account-picked', address);
             }
         },
     },
