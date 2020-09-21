@@ -8,7 +8,9 @@
             <div>
                 <h2>Collateral</h2>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Available {{ wftmTokenSymbol }}</h3>
+                    <h3 class="label">
+                        <router-link :to="{ name: 'defi-ftrade' }"> Available {{ wftmTokenSymbol }} </router-link>
+                    </h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
                 </div>
                 <div class="df-data-item smaller">
