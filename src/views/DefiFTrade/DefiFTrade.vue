@@ -250,7 +250,11 @@ export default {
         },
 
         fromTokenBalance() {
-            return this.$defi.fromTokenValue(this.fromToken.availableBalance, this.fromToken);
+            const { fromToken } = this;
+
+            return (
+                this.$defi.fromTokenValue(fromToken.availableBalance, fromToken) - (fromToken.symbol === 'FTM' ? 2 : 0)
+            );
         },
 
         toTokenBalance() {
