@@ -86,6 +86,30 @@
                     </template>
                 </template>
             </template>
+
+            <template v-slot:column-actions-account="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        <router-link
+                            :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
+                            class="action"
+                            title="Send"
+                        >
+                            Send
+                        </router-link>
+                    </div>
+                </div>
+                <template v-else>
+                    <router-link
+                        :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
+                        class="action"
+                        title="Send"
+                    >
+                        Send
+                    </router-link>
+                </template>
+            </template>
         </f-data-table>
     </div>
 </template>
@@ -199,6 +223,13 @@ export default {
                     name: 'actions',
                     label: 'Actions',
                     hidden: !this.defiAssetsList,
+                    width: '120px',
+                    css: { textAlign: 'right' },
+                },
+                {
+                    name: 'actions-account',
+                    label: 'Actions',
+                    hidden: this.defiAssetsList,
                     width: '120px',
                     css: { textAlign: 'right' },
                 },

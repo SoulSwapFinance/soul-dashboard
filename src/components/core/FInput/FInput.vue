@@ -153,7 +153,13 @@ export default {
 
     watch: {
         value(_val) {
+            const oldVal = this.val;
+
             this.val = _val;
+
+            if (this.validateOnInput && oldVal !== _val) {
+                this.validate();
+            }
         },
 
         isInvalid() {

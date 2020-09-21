@@ -10,7 +10,10 @@
             @change-component="onChangeComponent"
         >
             <h2 class="cont-with-back-btn">
-                <span>
+                <span v-if="token.address">
+                    Send {{ tokenSymbol }} - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                </span>
+                <span v-else>
                     Send Opera FTM - Confirmation <span class="f-steps"><b>3</b> / 3</span>
                 </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
@@ -110,6 +113,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { formatNumberByLocale } from '../../filters.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 
 export default {
     components: { TxConfirmation },
@@ -117,6 +121,13 @@ export default {
     props: {
         // transaction data from SendTransactionForm
         txData: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
+        /** @type {DefiToken} */
+        token: {
             type: Object,
             default() {
                 return {};
@@ -135,6 +146,24 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount', 'sendDirection']),
+
+        /**
+         * @return {string}
+         */
+        tokenSymbol() {
+            const { token } = this;
+
+            return token.address ? this.$defi.getTokenSymbol(token) : 'FTM';
+        },
+
+        /**
+         * @return {number}
+         */
+        maxRemainingErc20TokenBalance() {
+            const { token } = this;
+
+            return this.$defi.fromTokenValue(token.availableBalance, token) || 0;
+        },
     },
 
     asyncComputed: {
@@ -222,13 +251,28 @@ export default {
             const from = this.currentAccount ? this.currentAccount.address : '';
             const { dTxData } = this;
             const fWallet = this.$fWallet;
+            const { token } = this;
 
-            this.tx = await fWallet.getTransactionToSign({
-                value: Web3.utils.toHex(Web3.utils.toWei(dTxData.amount)),
-                from,
-                to: fWallet.toChecksumAddress(dTxData.opera_address),
-                memo: dTxData.memo,
-            });
+            if (token.address) {
+                this.tx = await this.$fWallet.getDefiTransactionToSign(
+                    erc20Utils.erc20TransferTx(
+                        token.address,
+                        fWallet.toChecksumAddress(dTxData.opera_address),
+                        parseFloat(dTxData.amount) === this.maxRemainingErc20TokenBalance
+                            ? token.availableBalance
+                            : Web3.utils.toHex(Web3.utils.toWei(dTxData.amount))
+                    ),
+                    this.currentAccount.address,
+                    GAS_LIMITS.defi
+                );
+            } else {
+                this.tx = await fWallet.getTransactionToSign({
+                    value: Web3.utils.toHex(Web3.utils.toWei(dTxData.amount)),
+                    from,
+                    to: fWallet.toChecksumAddress(dTxData.opera_address),
+                    memo: dTxData.memo,
+                });
+            }
         },
 
         onSendTransactionSuccess(_data) {

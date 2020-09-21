@@ -3,7 +3,10 @@
         <f-card class="f-card-double-padding">
             <f-form ref="form" center-form @f-form-submit="onFormSubmit">
                 <fieldset class="">
-                    <legend class="h2 cont-with-back-btn">
+                    <legend v-if="token.address" class="h2">
+                        Send {{ tokenSymbol }} <span class="f-steps"><b>1</b> / 2</span>
+                    </legend>
+                    <legend v-else class="h2 cont-with-back-btn">
                         <span>
                             Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
                         </span>
@@ -57,7 +60,7 @@
                         </address-field>
 
                         <f-input
-                            v-if="sendDirection !== 'OperaToEthereum'"
+                            v-if="sendDirection !== 'OperaToEthereum' && !token.address"
                             label="Memo (optional)"
                             field-size="large"
                             name="memo"
@@ -97,6 +100,16 @@ export default {
     },
 
     mixins: [eventBusMixin],
+
+    props: {
+        /** @type {DefiToken} */
+        token: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
+    },
 
     data() {
         return {
@@ -138,6 +151,24 @@ export default {
             }
 
             return price;
+        },
+
+        /**
+         * @return {number}
+         */
+        maxRemainingErc20TokenBalance() {
+            const { token } = this;
+
+            return this.$defi.fromTokenValue(token.availableBalance, token) || 0;
+        },
+
+        /**
+         * @return {string}
+         */
+        tokenSymbol() {
+            const { token } = this;
+
+            return token.address ? this.$defi.getTokenSymbol(token) : 'FTM';
         },
 
         /**
@@ -256,10 +287,13 @@ export default {
         },
 
         checkAmount(_value) {
-            const remainingBalance = parseFloat(this.remainingBalance);
+            const remainingBalance = this.token.address
+                ? parseFloat(this.maxRemainingErc20TokenBalance)
+                : parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
             const minFTMToETH = 50001;
             const operatToEthereum = this.sendDirection === 'OperaToEthereum';
+            const { tokenSymbol } = this;
             let ok = false;
 
             this.amountErrMsg = 'Invalid amount';
@@ -267,14 +301,14 @@ export default {
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
                     if (operatToEthereum && value < minFTMToETH) {
-                        this.amountErrMsg = `You must transfer at least ${minFTMToETH} FTM`;
+                        this.amountErrMsg = `You must transfer at least ${minFTMToETH} ${tokenSymbol}`;
                     } else {
                         ok = true;
                     }
                 } else if (remainingBalance < 0) {
                     this.amountErrMsg = 'You have no balance left';
                 } else if (value > 0) {
-                    this.amountErrMsg = `You can transfer max ${remainingBalance} FTM`;
+                    this.amountErrMsg = `You can transfer max ${remainingBalance} ${tokenSymbol}`;
                 }
             }
 
@@ -349,7 +383,14 @@ export default {
         },
 
         onEntireBalanceClick() {
-            this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance.toString() : '0';
+            const { token } = this;
+
+            if (token.address) {
+                this.amount =
+                    this.maxRemainingErc20TokenBalance > 0 ? this.maxRemainingErc20TokenBalance.toString() : '0';
+            } else {
+                this.amount = this.maxRemainingBalance > 0 ? this.maxRemainingBalance.toString() : '0';
+            }
         },
     },
 };
