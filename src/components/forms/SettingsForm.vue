@@ -1,21 +1,6 @@
 <template>
     <div class="settings-form">
         <f-card class="f-card-double-padding">
-            <f-message type="warning" style="max-width: 600px;">
-                <h2>Claim your rewards!</h2>
-                <p>To participate in Fluid Staking, please claim your outstanding rewards.</p>
-                <p>
-                    Please note that the wallet is still under mainteinance and some data regarding staking and totals
-                    might not be accurate for the duration of the mainteinance.
-                </p>
-                <p>We apologize for any inconvenience!</p>
-                <p>
-                    Even if your pending rewards balance shows 0, go ahead and claim anyway and you’ll receive the
-                    correct amount.
-                </p>
-            </f-message>
-            <br /><br />
-
             <f-form ref="form" center-form @f-form-change="onFormChange">
                 <fieldset>
                     <legend class="not-visible">Settings form</legend>
@@ -88,13 +73,12 @@ import FForm from '../core/FForm/FForm.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
-import FMessage from '@/components/core/FMessage/FMessage.vue';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FToggleButton, FMessage, SocialMediaLinks, FSelect, FForm, FCard },
+    components: { FToggleButton, SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
