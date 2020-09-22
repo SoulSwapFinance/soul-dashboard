@@ -154,9 +154,7 @@ export default {
 
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
-                if (appConfig.useTestnet) {
-                    this.tx.chainId = appConfig.testnet.chainId;
-                }
+                this.tx.chainId = appConfig.chainId;
 
                 // console.log('tx', this.tx);
 

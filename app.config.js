@@ -33,6 +33,8 @@ const appConfig = {
         // index into providers array of default provider or 'random' - takes index randomly
         defaultProviderIndex: 'random',
     },
+    // Opera chain id
+    chainId: '0xfa',
     // used in links pointing to fantom explorer
     explorerUrl: 'https://explorer.fantom.network/',
     // used in links pointing to ethereum explorer
@@ -104,6 +106,7 @@ const appConfig = {
 if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
+    appConfig.chainId = appConfig.testnet.chainId;
 }
 
 //
