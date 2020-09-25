@@ -1,0 +1,26 @@
+@import "../../assets/scss/vars";
+
+.wallet-list {
+    --f-wallet-list-item-color: #eee;
+    --f-wallet-list-item-hover-color: #ccddff;
+
+    ul > li {
+        padding: 4px 24px;
+        margin-bottom: 2px;
+        font-weight: bold;
+        border-radius: $input-border-radius;
+        cursor: pointer;
+        background-color: var(--f-wallet-list-item-color);
+        transition: background-color $transition-length $transition-func;
+
+        &:hover {
+            background-color: var(--f-wallet-list-item-hover-color);
+        }
+
+        .available-balance {
+            //color: $light-gray-color;
+            font-weight: normal;
+            text-align: right;
+        }
+    }
+}
