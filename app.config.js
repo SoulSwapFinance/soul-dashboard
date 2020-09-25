@@ -86,6 +86,12 @@ const appConfig = {
         name: 'Fantom PWA Wallet',
         // chrome extension description
         description: 'Fantom PWA Wallet',
+        // output directory for application
+        outputDir: 'chrome-extension/dist',
+        // output directory for application (relative to outputDir)
+        outputDirApp: 'app',
+        // output directory for background js bundle script (relative to outputDir)
+        outputDirBackgroundJs: 'background-js',
     },
     // default options for production build
     build: {
@@ -113,7 +119,7 @@ if (appConfig.isChromeExtension) {
     appConfig.build = {
         ...{
             // output dir for production build
-            outputDir: 'chrome-extension/app',
+            outputDir: `${appConfig.chromeExtension.outputDir}/${appConfig.chromeExtension.outputDirApp}`,
         },
     };
 }

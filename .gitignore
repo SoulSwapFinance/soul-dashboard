@@ -2,8 +2,6 @@
 .DS_Store
 node_modules/
 dist/
-chrome-extension/app/
-chrome-extension/manifest.json
 
 # local env files
 .env.local

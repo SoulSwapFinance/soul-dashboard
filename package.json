@@ -3,9 +3,12 @@
     "version": "0.1.0",
     "scripts": {
         "serve": "vue-cli-service serve",
-        "serve-chrome-extension": "vue-cli-service serve --mode chrome-extension-development",
+        "serve:chrome-extension:app": "vue-cli-service serve --mode chrome-extension-development",
         "build": "vue-cli-service build",
-        "build-chrome-extension": "vue-cli-service build --mode chrome-extension-production && node chrome-extension/manifest.js",
+        "build:chrome-extension": "npm run build:chrome-extension:app && npm run build:chrome-extension:background-js",
+        "build:chrome-extension:app": "vue-cli-service build --mode chrome-extension-production && node chrome-extension/src/manifest.js",
+        "build:chrome-extension:background-js": "vue-cli-service build --no-clean --mode chrome-extension-backgroundjs --formats umd,umd-min --skip-plugins html,pwa,apollo,i18n --target lib --name background chrome-extension/src/background.js",
+        "build:chrome-extension:background-js:watch": "npm run build:chrome-extension:background-js -- --watch",
         "lint": "vue-cli-service lint",
         "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
     },
