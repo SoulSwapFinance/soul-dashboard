@@ -18,5 +18,10 @@
         &:hover {
             background-color: var(--f-wallet-list-item-hover-color);
         }
+
+        .loader {
+            padding-top: 8px;
+            height: 32px;
+        }
     }
 }

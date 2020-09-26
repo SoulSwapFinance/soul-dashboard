@@ -6,13 +6,16 @@
                     <div class="col">{{ wallet.name }}</div>
                     <div class="col-4 align-right">
                         <icon
-                            v-if="wallet.icon"
+                            v-if="wallet.icon && !wallet.loading"
                             :data="wallet.icon"
                             width="32"
                             height="32"
                             :original="wallet.iconOriginal || false"
                             :fill="wallet.iconFill || false"
                         />
+                        <div v-else class="loader">
+                            <pulse-loader color="#1969ff"></pulse-loader>
+                        </div>
                     </div>
                 </div>
             </li>
@@ -25,12 +28,15 @@ import { cloneObject } from '@/utils';
 import { isAriaAction } from '@/utils/aria.js';
 import metamaskIcon from '../../assets/svg/metamask.svg';
 import ledgerIcon from '../../assets/svg/ledger-logo-icon.svg';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 /**
  * List of wallets to connect to.
  */
 export default {
     name: 'WalletList',
+
+    components: { PulseLoader },
 
     data() {
         return {
@@ -40,6 +46,7 @@ export default {
                     name: 'Metamask',
                     icon: metamaskIcon,
                     iconOriginal: true,
+                    showLoading: true,
                 },
                 {
                     code: 'ledger',
@@ -61,6 +68,10 @@ export default {
             const wallet = code ? this.wallets.find((_item) => _item.code === code) : null;
 
             if (wallet) {
+                if (wallet.showLoading) {
+                    this.$set(wallet, 'loading', true);
+                }
+
                 this.$emit('wallet-picked', cloneObject(wallet));
             }
         },
