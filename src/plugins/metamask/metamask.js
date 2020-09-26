@@ -1,6 +1,8 @@
 import detectEthereumProvider from '@metamask/detect-provider';
-import appConfig from '../../app.config.js';
+import appConfig from '../../../app.config.js';
 import Web3 from 'web3';
+import { store } from '@/store';
+import { SET_ACCOUNT, SET_CHAIN_ID } from '@/plugins/metamask/store.js';
 
 const OPERA_CHAIN_ID = appConfig.chainId;
 
@@ -43,26 +45,27 @@ export class Metamask {
 
             await this._detectProvider();
 
-            if (this._provider) {
-                this._web3 = new Web3(this._provider);
+            const provider = this._provider;
 
-                this._provider.autoRefreshOnNetworkChange = false;
-                this._provider.on('chainChanged', this._onChainChange);
-                this._provider.on('accountsChanged', this._onAccountsChange);
+            if (provider) {
+                this._web3 = new Web3(provider);
+
+                provider.autoRefreshOnNetworkChange = false;
+                provider.on('chainChanged', (_chainId) => {
+                    this._onChainChange(_chainId);
+                });
+                provider.on('accountsChanged', (_account) => {
+                    this._onAccountsChange(_account);
+                });
+
+                this._setChainId(provider.chainId);
+                this._setAccount(await this.getAccounts());
 
                 console.log('is correct chain id', this.isCorrectChainId());
 
                 // this._web3.eht.a
             }
         }
-    }
-
-    _onChainChange(_chainId) {
-        console.log('JO!', _chainId);
-    }
-
-    _onAccountsChange(_account) {
-        console.log('accounts change', _account);
     }
 
     /**
@@ -74,10 +77,16 @@ export class Metamask {
         return this._installed;
     }
 
+    /**
+     * @return {boolean}
+     */
     isCorrectChainId() {
         return this._provider && this._provider.chainId === OPERA_CHAIN_ID;
     }
 
+    /**
+     * @return {Promise<[]>}
+     */
     async getAccounts() {
         let accounts = [];
 
@@ -95,9 +104,7 @@ export class Metamask {
     async requestAccounts() {
         if (this._provider) {
             try {
-                const accounts = await this._provider.request({ method: 'eth_requestAccounts' });
-
-                return accounts;
+                return await this._provider.request({ method: 'eth_requestAccounts' });
             } catch (_error) {
                 // userRejectedRequest error
                 if (_error.code === 4001) {
@@ -109,6 +116,42 @@ export class Metamask {
                 }
             }
         }
+    }
+
+    /**
+     * @param {string} _chainId Hex number.
+     * @private
+     */
+    _setChainId(_chainId) {
+        store.commit(`metamask/${SET_CHAIN_ID}`, _chainId);
+    }
+
+    /**
+     * @param {string} _account
+     * @private
+     */
+    _setAccount(_account) {
+        store.commit(`metamask/${SET_ACCOUNT}`, _account[0] || '');
+    }
+
+    /**
+     * Called on chainId change.
+     *
+     * @param {string} _chainId Hex number.
+     * @private
+     */
+    _onChainChange(_chainId) {
+        this._setChainId(_chainId);
+    }
+
+    /**
+     * Called on account change.
+     *
+     * @param {string} _account
+     * @private
+     */
+    _onAccountsChange(_account) {
+        this._setAccount(_account);
     }
 
     /**

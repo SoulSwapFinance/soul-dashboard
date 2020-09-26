@@ -16,7 +16,7 @@ import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
 import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.js';
 import { FNano } from './plugins/fantom-nano.js';
 import { DeFi } from './plugins/defi/defi.js';
-import { Metamask } from '@/plugins/metamask.js';
+import { Metamask } from '@/plugins/metamask/metamask.js';
 import 'focus-visible';
 
 import './wallet.types.js';
