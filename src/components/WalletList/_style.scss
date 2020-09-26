@@ -4,10 +4,12 @@
     --f-wallet-list-item-color: #eee;
     --f-wallet-list-item-hover-color: #ccddff;
 
+    max-width: 300px;
+    margin: 0 auto;
+
     ul > li {
         padding: 4px 24px;
-        margin-bottom: 2px;
-        font-weight: bold;
+        margin-bottom: 24px;
         border-radius: $input-border-radius;
         cursor: pointer;
         background-color: var(--f-wallet-list-item-color);
@@ -15,12 +17,6 @@
 
         &:hover {
             background-color: var(--f-wallet-list-item-hover-color);
-        }
-
-        .available-balance {
-            //color: $light-gray-color;
-            font-weight: normal;
-            text-align: right;
         }
     }
 }

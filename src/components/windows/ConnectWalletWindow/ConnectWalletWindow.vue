@@ -1,11 +1,10 @@
 <template>
-    <div class="defi-token-picker-window">
+    <div class="connect-wallet-window">
         <f-window
             ref="win"
             modal
-            style="max-width: 400px;"
             title="Connect Wallet"
-            class="account-picker-f-window"
+            class="connect-wallet-f-window"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             @window-hide="$emit('window-hide', $event)"
@@ -43,3 +42,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>
