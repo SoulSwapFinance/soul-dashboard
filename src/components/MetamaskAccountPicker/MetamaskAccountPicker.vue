@@ -1,13 +1,17 @@
 <template>
     <div class="metamask-account-picker">
-        <div v-if="!accountExists">
-            Would you like to add account <b>{{ dMetamaskAccount }}</b> ? <br />
-            Or select another one ...
+        <div v-if="!$metamask.isInstalled()" class="metamask-not-installed">
+            Metamask is not installed.
         </div>
-        <div v-else>
-            Account <b>{{ dMetamaskAccount }}</b> is already in your wallet list. Please, select another one.
-        </div>
-        <div v-if="!$metamask.isInstalled()">Metamask is not installed.</div>
+        <template v-else>
+            <div v-if="!accountExists">
+                Would you like to add account <b>{{ dMetamaskAccount }}</b> ? <br />
+                Or select another one ...
+            </div>
+            <div v-else>
+                Account <b>{{ dMetamaskAccount }}</b> is already in your wallet list. Please, select another one.
+            </div>
+        </template>
 
         <div v-if="$metamask.isInstalled()" class="form-buttons">
             <button v-show="!accountExists" class="btn large" @click="onAddAccountClick">Add Account</button>
@@ -58,7 +62,9 @@ export default {
         /** Helper. */
         this._closing = false;
 
-        this.dMetamaskAccount = this.$fWallet.toChecksumAddress(this.metamaskAccount);
+        if (this.metamaskAccount) {
+            this.dMetamaskAccount = this.$fWallet.toChecksumAddress(this.metamaskAccount);
+        }
     },
 
     methods: {

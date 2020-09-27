@@ -33,15 +33,20 @@ export default {
 
         async onWalletPicked(_wallet) {
             if (_wallet.code === 'metamask') {
+                // root node (App.vue)
+                const appNode = this.$root.$children[0];
+
+                if (!this.$metamask.isInstalled()) {
+                    appNode.showMetamaskAccountPickerWindow('');
+                    this.$refs.win.hide('fade-leave-active');
+                    return;
+                }
+
                 try {
                     const accounts = await this.$metamask.requestAccounts();
 
-                    if (accounts) {
-                        // root node (App.vue)
-                        const appNode = this.$root.$children[0];
-                        if (appNode) {
-                            appNode.showMetamaskAccountPickerWindow(accounts[0]);
-                        }
+                    if (accounts && appNode) {
+                        appNode.showMetamaskAccountPickerWindow(accounts[0]);
                     }
 
                     this.$refs.win.hide('fade-leave-active');

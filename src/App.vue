@@ -181,7 +181,9 @@ export default {
          * @param {string} _account Metamask account.
          */
         showMetamaskAccountPickerWindow(_account) {
-            this.dMetamaskAccount = this.$fWallet.toChecksumAddress(_account);
+            if (_account) {
+                this.dMetamaskAccount = this.$fWallet.toChecksumAddress(_account);
+            }
             this.$refs.metamaskAccountPickerWindow.show();
         },
 
