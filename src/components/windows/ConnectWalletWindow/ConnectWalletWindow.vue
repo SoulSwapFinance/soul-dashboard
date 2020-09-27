@@ -20,6 +20,7 @@
 import FWindow from '@/components/core/FWindow/FWindow.vue';
 import LedgerAccountsWindow from '@/components/windows/LedgerAccountsWindow/LedgerAccountsWindow.vue';
 import WalletList from '@/components/WalletList/WalletList.vue';
+
 export default {
     name: 'ConnectWalletWindow',
 
@@ -30,12 +31,25 @@ export default {
             this.$refs.win.show();
         },
 
-        onWalletPicked(_wallet) {
-            this.$refs.win.hide('fade-leave-active');
-
+        async onWalletPicked(_wallet) {
             if (_wallet.code === 'metamask') {
-                alert('Not implemented yet');
+                try {
+                    const accounts = await this.$metamask.requestAccounts();
+
+                    if (accounts) {
+                        // root node (App.vue)
+                        const appNode = this.$root.$children[0];
+                        if (appNode) {
+                            appNode.showMetamaskAccountPickerWindow(accounts[0]);
+                        }
+                    }
+
+                    this.$refs.win.hide('fade-leave-active');
+                } catch (_error) {
+                    console.log('!!', _error);
+                }
             } else if (_wallet.code === 'ledger') {
+                this.$refs.win.hide('fade-leave-active');
                 this.$refs.ledgerAccountsWindow.show();
             }
         },

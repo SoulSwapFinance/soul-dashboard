@@ -66,6 +66,9 @@
                                     <template v-if="account.isLedgerAccount">
                                         Ledger
                                     </template>
+                                    <template v-if="account.isMetamaskAccount">
+                                        Metamask
+                                    </template>
                                     <template v-else>
                                         Keystore file
                                     </template>

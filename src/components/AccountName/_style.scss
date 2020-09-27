@@ -1,6 +1,7 @@
 @import "../../assets/scss/vars";
 
 .account-name {
+    position: relative;
     display: block;
     word-break: break-word;
     font-weight: normal;
@@ -42,6 +43,16 @@
             font-size: 0.75em;
             margin-top: 4px;
         }
+    }
+
+    .metamask-account-active {
+        position: absolute;
+        top: 4px;
+        left: -18px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--f-success-color);
     }
 }
 

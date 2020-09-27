@@ -34,6 +34,7 @@ import {
     REMOVE_ACCOUNT_BY_ADDRESS,
     UPDATE_CONTACT,
     ADD_CONTACT,
+    ADD_METAMASK_ACCOUNT,
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 import { arrayEquals } from '@/utils/array.js';
@@ -490,6 +491,27 @@ export const store = new Vuex.Store({
         },
         /**
          * @param {Object} _context
+         * @param {string} _address
+         */
+        async [ADD_METAMASK_ACCOUNT](_context, _address) {
+            const address = fWallet.toChecksumAddress(_address);
+
+            if (!_context.getters.getAccountByAddress(address)) {
+                const balance = await fWallet.getBalance(address);
+                const account = {
+                    address,
+                    balance: balance.balance,
+                    totalBalance: balance.totalValue,
+                    pendingRewards: getPendingRewards(balance),
+                    isMetamaskAccount: true,
+                    name: `Wallet ${_context.state.accounts.length + 1}`,
+                };
+
+                _context.commit(APPEND_ACCOUNT, account);
+            }
+        },
+        /**
+         * @param {Object} _context
          */
         async [UPDATE_ACCOUNTS_BALANCES](_context) {
             const accounts = _context.getters.accounts;
@@ -498,7 +520,7 @@ export const store = new Vuex.Store({
             let pendingRewards;
             // const balances = await Promise.all(accounts.map((_address) => fWallet.getBalance(_address.address)));
 
-            for (let i = 0, len1 = accounts.length; i < len1; i++) {
+            for (let i = 0; i < accounts.length; i++) {
                 account = accounts[i];
 
                 balance = await fWallet.getBalance(account.address, false, true);
