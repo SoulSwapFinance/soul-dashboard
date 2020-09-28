@@ -4,6 +4,10 @@ import Web3 from 'web3';
 import { store } from '@/store';
 import { SET_ACCOUNT, SET_CHAIN_ID } from '@/plugins/metamask/store.js';
 
+import { Transaction } from 'ethereumjs-tx';
+import Common from 'ethereumjs-common';
+const ethUtil = require('ethereumjs-util');
+
 const OPERA_CHAIN_ID = appConfig.chainId;
 
 /** @type {Metamask} */
@@ -116,6 +120,87 @@ export class Metamask {
                 }
             }
         }
+    }
+
+    async signTransaction(_tx, _address) {
+        const typedData = this._getTransactionTypedData();
+
+        typedData.message = _tx;
+
+        console.log(typedData);
+
+        if (this._provider) {
+            try {
+                // const sTx = await this._provider.request({ method: 'eth_signTransaction', params: [_tx] });
+                const sTx = await this._provider.request({
+                    method: 'eth_signTypedData_v4',
+                    params: [_address, JSON.stringify(typedData)],
+                    from: _address,
+                });
+                const signature = sTx.substring(2);
+
+                const r = '0x' + signature.substring(0, 64);
+                const s = '0x' + signature.substring(64, 128);
+                const v = parseInt(signature.substring(128, 130), 16);
+
+                console.log({ r }, { s }, { v });
+
+                const tx = new Transaction(
+                    { ..._tx, r, s, v },
+                    {
+                        common: Common.forCustomChain(
+                            'mainnet',
+                            {
+                                name: 'custom-network',
+                                networkId: 1,
+                                chainId: OPERA_CHAIN_ID,
+                            },
+                            'petersburg'
+                        ),
+                    }
+                );
+
+                console.log('tx', tx.verifySignature(), tx);
+
+                return ethUtil.bufferToHex(tx.serialize());
+            } catch (_error) {
+                console.error(_error);
+            }
+        }
+    }
+
+    /**
+     * @return {{types: {Transaction: ({name: string, type: string}|{name: string, type: string}|{name: string, type: string}|{name: string, type: string}|{name: string, type: string})[], EIP712Domain: [{name: string, type: string}, {name: string, type: string}, {name: string, type: string}]}, primaryType: string, domain: {chainId: string, name: string, version: string}}}
+     * @private
+     */
+    _getTransactionTypedData() {
+        return {
+            types: {
+                EIP712Domain: [
+                    { name: 'name', type: 'string' },
+                    { name: 'version', type: 'string' },
+                    { name: 'chainId', type: 'uint256' },
+                    // { name: 'verifyingContract', type: 'address' },
+                ],
+                Transaction: [
+                    { name: 'chainId', type: 'uint64' },
+                    { name: 'data', type: 'bytes' },
+                    { name: 'gas', type: 'uint256' },
+                    { name: 'gasLimit', type: 'uint256' },
+                    { name: 'gasPrice', type: 'uint256' },
+                    { name: 'nonce', type: 'uint256' },
+                    { name: 'to', type: 'address' },
+                    { name: 'value', type: 'uint256' },
+                    // { name: 'memo', type: 'string' },
+                ],
+            },
+            primaryType: 'Transaction',
+            domain: {
+                name: 'Fantom PWA Wallet',
+                version: '1',
+                chainId: OPERA_CHAIN_ID,
+            },
+        };
     }
 
     /**
