@@ -7,7 +7,7 @@
 
             <transaction-confirmation-form
                 :error-message="errorMsg"
-                :show-password-field="!currentAccount.isLedgerAccount"
+                :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
                 @f-form-submit="onFFormSubmit"
@@ -30,6 +30,29 @@
 
             <slot name="window-content"></slot>
         </f-window>
+
+        <f-window
+            v-if="currentAccount.isMetamaskAccount"
+            ref="metamaskNoticeWindow"
+            modal
+            title="Notice"
+            class="double-body-padding"
+            style="max-width: 560px;"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
+        >
+            <div class="align-center">
+                <div v-if="!$metamask.isInstalled()">
+                    Metamask is not installed.
+                </div>
+                <div v-else-if="!$metamask.isCorrectChainId()">
+                    Please, select Opera chain in Metamask.
+                </div>
+                <div v-else-if="metamaskAccount !== currentAccount.address">
+                    Please, select account <b>{{ currentAccount.address }}</b> in Metamask.
+                </div>
+            </div>
+        </f-window>
     </div>
 </template>
 
@@ -38,7 +61,7 @@ import FCard from '../core/FCard/FCard.vue';
 import FWindow from '../core/FWindow/FWindow.vue';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import TransactionConfirmationForm from '../forms/TransactionConfirmationForm.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
@@ -110,7 +133,30 @@ export default {
     },
 
     computed: {
+        ...mapState('metamask', {
+            metamaskAccount: 'account',
+            metamaskChainId: 'chainId',
+        }),
+
         ...mapGetters(['currentAccount']),
+    },
+
+    watch: {
+        metamaskAccount() {
+            if (this.areMetamaskParamsOk()) {
+                this.$refs.metamaskNoticeWindow.hide();
+            } else {
+                this.$refs.metamaskNoticeWindow.show();
+            }
+        },
+
+        metamaskChainId() {
+            if (this.areMetamaskParamsOk()) {
+                this.$refs.metamaskNoticeWindow.hide();
+            } else {
+                this.$refs.metamaskNoticeWindow.show();
+            }
+        },
     },
 
     mounted() {
@@ -174,7 +220,7 @@ export default {
                             // this.errorMsg = 'Invalid password';
                         }
                     }
-                } else {
+                } else if (currentAccount.isLedgerAccount) {
                     delete this.tx.gas;
 
                     try {
@@ -192,10 +238,16 @@ export default {
                         this.$refs.confirmationWindow.hide();
                         // this.errorMsg = _error.toString();
                     }
+                } else if (currentAccount.isMetamaskAccount) {
+                    if (this.areMetamaskParamsOk()) {
+                        rawTx = await this.$metamask.signTransaction({ ...this.tx }, currentAccount.address);
+                    } else {
+                        this.$refs.metamaskNoticeWindow.show();
+                    }
                 }
 
                 if (rawTx) {
-                    // console.log('rawTx', rawTx);
+                    console.log('rawTx', rawTx);
                     this.sendTransaction(rawTx);
 
                     setTimeout(() => {
@@ -203,6 +255,14 @@ export default {
                     }, 3000);
                 }
             }
+        },
+
+        areMetamaskParamsOk() {
+            return (
+                this.$metamask.isInstalled() &&
+                this.metamaskAccount.toLowerCase() === this.currentAccount.address.toLowerCase() &&
+                this.$metamask.isCorrectChainId()
+            );
         },
 
         /**

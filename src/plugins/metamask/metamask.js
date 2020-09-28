@@ -64,10 +64,6 @@ export class Metamask {
 
                 this._setChainId(provider.chainId);
                 this._setAccount(await this.getAccounts());
-
-                console.log('is correct chain id', this.isCorrectChainId());
-
-                // this._web3.eht.a
             }
         }
     }
