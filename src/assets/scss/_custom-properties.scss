@@ -5,8 +5,6 @@
     --f-data-table-header-sticky-top: 146px;
     --f-left-menu-width: 100px;
     --f-bottom-menu-height: 68px;
-    --f-window-padding-with-header: 40px;
-    --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
 
     --f-icon-stroke-color: var(--f-doc-background-color);
     --f-icon-fill-color: var(--f-doc-background-color);
@@ -52,6 +50,9 @@
     }
 
     .f-window {
+        --f-window-padding-with-header: 40px;
+        --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
+
         .f-data-table-body-bg-color {
             .f-data-table {
                 //--f-data-table-cell-background-color: none;
@@ -89,6 +90,9 @@
     :root {
         //--f-header-height: 52px;
         --f-header-height: 0;
-        --f-window-padding-with-header: 24px;
+
+        .f-window {
+            --f-window-padding-with-header: 24px;
+        }
     }
 }

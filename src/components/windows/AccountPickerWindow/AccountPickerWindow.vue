@@ -5,7 +5,7 @@
             modal
             style="max-width: 1050px;"
             title="Select Wallet"
-            class="account-picker-f-window"
+            class="account-picker-f-window normal-padding"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             @window-hide="onWindowHide"

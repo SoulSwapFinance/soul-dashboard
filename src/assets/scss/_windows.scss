@@ -88,5 +88,12 @@
         .body {
             padding: var(--f-window-body-padding-with-header) !important;
         }
+
+        &.normal-padding {
+            .body {
+                --f-window-padding-with-header: 24px;
+                --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
+            }
+        }
     }
 }
