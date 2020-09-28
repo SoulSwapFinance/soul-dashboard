@@ -32,6 +32,15 @@ npm run serve
 npm run build
 ```
 
+### Chrome Extension Build
+
+```shell
+
+npm run build:chrome-extension:background-js
+npm run build:chrome-extension:app
+# output is in chrome-extension/dist
+```
+
 ## Localization
 
 Translations for views and components are located in `src/locales` directory.
