@@ -59,6 +59,15 @@
                 --f-data-table-cell-background-color: var(--f-window-background);
             }
         }
+
+        &.popover {
+            --f-window-popover-padding: 24px;
+            --f-window-popover-body-padding: var(--f-window-popover-padding);
+
+            &.with-header {
+                --f-window-popover-body-padding: calc(var(--f-window-popover-padding) / 2) var(--f-window-popover-padding) var(--f-window-popover-padding) var(--f-window-popover-padding);
+            }
+        }
     }
 
     .f-placeholder {
@@ -93,6 +102,10 @@
 
         .f-window {
             --f-window-padding-with-header: 24px;
+
+            &.popover {
+                --f-window-popover-padding: 16px;
+            }
         }
     }
 }
