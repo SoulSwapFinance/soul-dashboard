@@ -3,6 +3,7 @@
         <svg viewBox="-50 -50 100 100">
             <circle :r="r" cx="0" cy="0" fill="none" :stroke-width="strokeWidth" class="bg-circle" />
             <circle
+                v-if="dashoffset < 1"
                 ref="circle"
                 :r="r"
                 cx="0"
