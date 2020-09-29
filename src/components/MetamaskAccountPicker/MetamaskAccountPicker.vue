@@ -53,7 +53,11 @@ export default {
     watch: {
         account(_account) {
             if (!this._closing) {
-                this.dMetamaskAccount = this.$fWallet.toChecksumAddress(_account);
+                if (_account) {
+                    this.dMetamaskAccount = this.$fWallet.toChecksumAddress(_account);
+                } else {
+                    this.$emit('metamask-account-picker-cancel');
+                }
             }
         },
     },

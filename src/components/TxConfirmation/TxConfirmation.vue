@@ -202,6 +202,7 @@ export default {
 
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
+                this.tx.nonce = `0x${this.tx.nonce.toString(16)}`;
                 this.tx.chainId = appConfig.chainId;
 
                 // console.log('tx', this.tx);
@@ -242,8 +243,23 @@ export default {
                     }
                 } else if (currentAccount.isMetamaskAccount) {
                     if (this.areMetamaskParamsOk()) {
+                        const from = currentAccount.address;
+                        const to = this.tx.to;
+
                         this.waiting = true;
-                        rawTx = await this.$metamask.signTransaction({ ...this.tx }, currentAccount.address);
+                        const txHash = await this.$metamask.signTransaction({ ...this.tx }, currentAccount.address);
+
+                        if (this.onSendTransactionSuccess && txHash) {
+                            this.onSendTransactionSuccess({
+                                data: {
+                                    sendTransaction: {
+                                        hash: txHash,
+                                        from,
+                                        to,
+                                    },
+                                },
+                            });
+                        }
                     } else {
                         this.$refs.metamaskNoticeWindow.show();
                     }
@@ -252,7 +268,7 @@ export default {
                 }
 
                 if (rawTx) {
-                    console.log('rawTx', rawTx);
+                    // console.log('rawTx', rawTx);
                     this.sendTransaction(rawTx);
 
                     setTimeout(() => {
