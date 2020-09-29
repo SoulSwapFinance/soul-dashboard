@@ -10,6 +10,7 @@
                 :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
+                :waiting="waiting"
                 @f-form-submit="onFFormSubmit"
             />
         </f-card>
@@ -129,6 +130,7 @@ export default {
         return {
             errorMsg: '',
             error: null,
+            waiting: false,
         };
     },
 
@@ -240,10 +242,13 @@ export default {
                     }
                 } else if (currentAccount.isMetamaskAccount) {
                     if (this.areMetamaskParamsOk()) {
+                        this.waiting = true;
                         rawTx = await this.$metamask.signTransaction({ ...this.tx }, currentAccount.address);
                     } else {
                         this.$refs.metamaskNoticeWindow.show();
                     }
+
+                    this.waiting = false;
                 }
 
                 if (rawTx) {

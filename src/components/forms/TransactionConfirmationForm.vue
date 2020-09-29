@@ -34,6 +34,7 @@
                         </div>
 
                         <button
+                            v-if="!waiting"
                             type="submit"
                             class="btn large break-word"
                             style="max-width: 100%;"
@@ -41,6 +42,7 @@
                         >
                             {{ sendButtonLabel }}
                         </button>
+                        <pulse-loader v-else color="#1969ff"></pulse-loader>
                     </div>
                 </div>
             </fieldset>
@@ -52,13 +54,14 @@
 import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 
 export default {
     name: 'TransactionConfirmationForm',
 
-    components: { FMessage, FPasswordField, FForm },
+    components: { FMessage, FPasswordField, FForm, PulseLoader },
 
     props: {
         showPasswordField: {
@@ -81,6 +84,11 @@ export default {
         gasLimit: {
             type: String,
             default: GAS_LIMITS.default,
+        },
+        /** */
+        waiting: {
+            type: Boolean,
+            default: false,
         },
     },
 

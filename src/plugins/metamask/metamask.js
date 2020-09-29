@@ -156,7 +156,7 @@ export class Metamask {
                     }
                 );
 
-                console.log('tx', tx.verifySignature(), tx);
+                // console.log('tx', tx.verifySignature(), tx);
 
                 return ethUtil.bufferToHex(tx.serialize());
             } catch (_error) {
