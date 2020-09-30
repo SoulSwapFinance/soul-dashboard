@@ -12,7 +12,7 @@
                 <div class="form-body">
                     <h3>The withdrawal of your delegated tokens will take 7 days</h3>
                     <h3 v-if="isLocked" class="orange-color" style="padding-top: 0;">
-                        Your delegation is still locked. You will loose part of your rewards by undelegating before the
+                        Your delegation is still locked. You will lose part of your rewards by undelegating before the
                         lock expiration.
                     </h3>
 
@@ -44,7 +44,9 @@
                     </f-input>
 
                     <div class="form-buttons align-center">
-                        <button type="submit" class="btn large">Ok, undelegate</button>
+                        <button type="submit" class="btn large" :class="{ 'orange-btn': orangeBtn }">
+                            Ok, undelegate
+                        </button>
                     </div>
                 </div>
             </f-form>
@@ -106,6 +108,15 @@ export default {
             const now = new Date().getTime() / 1000;
 
             return lockedUntilTS > now;
+        },
+
+        /**
+         * Color of 'Undelegate' button.
+         *
+         * @return {boolean}
+         */
+        orangeBtn() {
+            return this.isLocked;
         },
     },
 
