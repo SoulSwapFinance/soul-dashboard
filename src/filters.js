@@ -53,9 +53,10 @@ export function timestampToDate(_timestamp) {
  * @param {string|Date} _value
  * @param {boolean} [_notWeekday]
  * @param {boolean} [_withTime]
+ * @param {object} [_options]
  * @return {string}
  */
-export function formatDate(_value, _notWeekday, _withTime) {
+export function formatDate(_value, _notWeekday, _withTime, _options = {}) {
     if (!_value) {
         return '';
     }
@@ -65,6 +66,7 @@ export function formatDate(_value, _notWeekday, _withTime) {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
+        ..._options,
     };
 
     if (!_notWeekday) {

@@ -103,7 +103,7 @@ export default {
                     name: 'createdTime',
                     label: 'Delegation Time',
                     itemProp: 'delegation.createdTime',
-                    formatter: (_value) => formatDate(timestampToDate(_value), true),
+                    formatter: (_value) => formatDate(timestampToDate(_value), true, false, { month: 'short' }),
                 },
                 {
                     name: 'validator',
@@ -133,7 +133,7 @@ export default {
                     name: '',
                     label: 'Unlock Date',
                     itemProp: 'delegation.lockedUntil',
-                    formatter: (_value) => formatDate(timestampToDate(_value), true) || '-',
+                    formatter: (_value) => formatDate(timestampToDate(_value), true, false, { month: 'short' }) || '-',
                     css: { textAlign: 'center' },
                 },
                 {
