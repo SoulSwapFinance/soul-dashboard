@@ -5,8 +5,7 @@
         </div>
         <template v-else>
             <div v-if="!accountExists">
-                Would you like to add account <b>{{ dMetamaskAccount }}</b> ? <br />
-                Or select another one ...
+                Would you like to add account <b>{{ dMetamaskAccount }}</b> ?
             </div>
             <div v-else>
                 Account <b>{{ dMetamaskAccount }}</b> is already in your wallet list. Please, select another one.
