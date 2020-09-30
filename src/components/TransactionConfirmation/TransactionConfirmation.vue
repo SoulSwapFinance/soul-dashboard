@@ -24,8 +24,13 @@
                     <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">
                         {{ sendToAddress }}
-                        <span v-show="sendToAddressBalance" class="f-row-label" style="display: inline-block;">
-                            <template v-if="sendToAddressBalance"> ( {{ sendToAddressBalance }} FTM ) </template>
+                        <span
+                            v-show="sendToAddressBalance || sendToAccountName"
+                            class="f-row-label"
+                            style="display: inline-block;"
+                        >
+                            ( <template v-if="sendToAddressBalance"> {{ sendToAddressBalance }} FTM </template>
+                            <template v-if="sendToAccountName">, {{ sendToAccountName }} </template> )
                         </span>
                     </div>
                 </div>
@@ -145,7 +150,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount', 'sendDirection']),
+        ...mapGetters(['currentAccount', 'sendDirection', 'getAccountByAddress']),
 
         /**
          * @return {string}
@@ -163,6 +168,12 @@ export default {
             const { token } = this;
 
             return this.$defi.fromTokenValue(token.availableBalance, token) || 0;
+        },
+
+        sendToAccountName() {
+            const account = this.sendToAddress ? this.getAccountByAddress(this.sendToAddress) : null;
+
+            return account ? account.name : '';
         },
     },
 
