@@ -8,6 +8,9 @@
     --f-window-padding-with-header: 40px;
     --f-window-body-padding-with-header: 0 var(--f-window-padding-with-header) var(--f-window-padding-with-header) var(--f-window-padding-with-header);
 
+    --f-orange-color: var(--f-warning-color-dark);
+    --f-orange-color-darker: #997021;
+
     --f-icon-stroke-color: var(--f-doc-background-color);
     --f-icon-fill-color: var(--f-doc-background-color);
 
@@ -18,7 +21,7 @@
 
     .f-message {
         --f-message-success-color: var(--f-success-color);
-        --f-message-warning-color: var(--f-warning-color-dark);
+        --f-message-warning-color: var(--f-orange-color);
         --f-message-error-color: var(--f-error-color);
         --f-message-info-color: #{$light-gray-color};
     }

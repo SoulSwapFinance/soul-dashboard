@@ -8,6 +8,9 @@
     --f-darker-color-3: #3e425b;
     --f-lighter-color: #8997b1;
 
+    --f-orange-color: #F8782A;
+    --f-orange-color-darker: #de6b26;
+
     --f-doc-color: #fff;
     //--f-doc-color: #fff;
     //--f-doc-color: #ebeeff;
@@ -73,9 +76,11 @@
         //--f-actions-box-color: var(--f-primary-color);
     }
 
+    /*
     .f-message {
         --f-message-warning-color: #F8782A;
     }
+    */
 
     .f-slider {
         --f-slider-thumb-background-color: var(--f-primary-color);

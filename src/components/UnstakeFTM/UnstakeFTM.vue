@@ -11,6 +11,10 @@
 
                 <div class="form-body">
                     <h3>The withdrawal of your delegated tokens will take 7 days</h3>
+                    <h3 v-if="isLocked" class="orange-color" style="padding-top: 0;">
+                        Your delegation is still locked. You will loose part of your rewards by undelegating before the
+                        lock expiration.
+                    </h3>
 
                     <f-input
                         v-model="amount"
@@ -86,6 +90,22 @@ export default {
             return this.accountInfo
                 ? WEIToFTM(this.accountInfo.delegation.amount) - this.accountInfo.withdrawRequestsAmount
                 : 0;
+        },
+
+        /**
+         * Returns `true` if delegetion is still locked.
+         *
+         * @return {boolean}
+         */
+        isLocked() {
+            const { accountInfo } = this;
+            const lockedUntilTS =
+                accountInfo && accountInfo.delegation && accountInfo.delegation.lockedUntil
+                    ? parseInt(accountInfo.delegation.lockedUntil, 16)
+                    : 0;
+            const now = new Date().getTime() / 1000;
+
+            return lockedUntilTS > now;
         },
     },
 

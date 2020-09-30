@@ -38,6 +38,18 @@
     background: darken($ledger-accounts-color, 10%);
 }
 
+@include buttons('.orange-btn') {
+    background-color: var(--f-orange-color);
+}
+
+@include buttons('.orange-btn:not([disabled]):not(.disabled):not(.no-hover):hover') {
+    background: var(--f-orange-color-darker);
+}
+
+@include buttons('.orange-btn:not([disabled]):not(.disabled):not(.no-hover):focus') {
+    background: var(--f-orange-color-darker);
+}
+
 @include buttons('.white-btn.light') {
     color: #fff;
 }

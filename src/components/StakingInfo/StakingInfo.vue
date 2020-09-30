@@ -161,6 +161,7 @@
                                 <button
                                     v-show="canUndelegate"
                                     class="btn large"
+                                    :class="{ 'orange-btn': orangeBtn }"
                                     :disabled="!canUndelegate"
                                     @click="undelegate()"
                                 >
@@ -378,11 +379,32 @@ export default {
             return amount;
         },
 
+        /**
+         * @return {string}
+         */
         lockedUntilMessageType() {
+            return this.isLocked ? 'warning' : 'success';
+        },
+
+        /**
+         * Color of 'Undelegate' button.
+         *
+         * @return {boolean}
+         */
+        orangeBtn() {
+            return this.isLocked;
+        },
+
+        /**
+         * Returns `true` if delegetion is still locked.
+         *
+         * @return {boolean}
+         */
+        isLocked() {
             const lockedUntilTS = parseInt(this.lockedUntil, 16);
             const now = new Date().getTime() / 1000;
 
-            return lockedUntilTS > now ? 'warning' : 'success';
+            return lockedUntilTS > now;
         },
     },
 

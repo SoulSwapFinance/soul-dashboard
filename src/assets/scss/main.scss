@@ -312,6 +312,10 @@ form {
     //color: var(--f-primary-color);
 }
 
+.orange-color {
+    color: var(--f-orange-color);
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
