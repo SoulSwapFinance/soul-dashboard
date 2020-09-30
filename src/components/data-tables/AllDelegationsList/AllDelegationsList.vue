@@ -1,5 +1,5 @@
 <template>
-    <div class="delegation-list-dt">
+    <div class="all-delegation-list-dt">
         <!--
         <h2 class="dt-heading">
             Delegations <span class="f-records-count">({{ totalCount | formatHexToInt }})</span>
@@ -10,17 +10,28 @@
             <f-data-table
                 :columns="columns"
                 :items="dItems"
-                :disable-infinite-scroll="!hasNext"
                 :mobile-view="mobileView"
                 :loading="loading"
+                force-loading="true"
                 first-m-v-column-width="5"
-                infinite-scroll
                 f-card-off
                 action-on-row
                 class="f-data-table-body-bg-color"
                 @row-action="$emit('row-action', $event)"
-                @fetch-more="fetchMore"
             >
+                <template v-slot:column-accountName="{ value, item, column }">
+                    <div v-if="column" class="row no-collapse no-vert-col-padding">
+                        <div class="col-5 f-row-label">{{ column.label }}</div>
+                        <div class="col-7">
+                            <template v-if="value">{{ value }}</template>
+                            <template v-else><f-ellipsis :text="item.accountAddress" overflow="middle" /></template>
+                        </div>
+                    </div>
+                    <template v-else>
+                        <template v-if="value">{{ value }}</template>
+                        <template v-else><f-ellipsis :text="item.accountAddress" overflow="middle" /></template>
+                    </template>
+                </template>
                 <template v-slot:column-validator="{ value, item, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
@@ -58,15 +69,17 @@
 <script>
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import gql from 'graphql-tag';
-import { cloneObject } from '@/utils';
-import { formatDate, formatHexToInt, formatNumberByLocale, timestampToDate } from '@/filters.js';
+// import { cloneObject } from '@/utils';
+import { formatDate, formatNumberByLocale, timestampToDate } from '@/filters.js';
 import { WEIToFTM } from '@/utils/transactions.js';
 import appConfig from '../../../../app.config.js';
+import { mapGetters } from 'vuex';
+import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 // import { formatHexToInt } from '@/filters.js';
 export default {
-    name: 'DelegationList',
+    name: 'AllDelegationsList',
 
-    components: { FDataTable },
+    components: { FEllipsis, FDataTable },
 
     props: {
         /** */
@@ -75,98 +88,17 @@ export default {
             default: '',
             required: true,
         },
-        /** Number of items per page. */
-        itemsPerPage: {
-            type: Number,
-            default: 25,
-        },
-    },
-
-    apollo: {
-        delegationsByAddress: {
-            query: gql`
-                query DelegationsByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
-                    delegationsByAddress(address: $address, cursor: $cursor, count: $count) {
-                        pageInfo {
-                            first
-                            last
-                            hasNext
-                            hasPrevious
-                        }
-                        totalCount
-                        edges {
-                            cursor
-                            delegation {
-                                toStakerId
-                                createdEpoch
-                                createdTime
-                                deactivatedEpoch
-                                deactivatedTime
-                                amount
-                                isDelegationLocked
-                                lockedFromEpoch
-                                lockedUntil
-                                pendingRewards {
-                                    amount
-                                }
-                            }
-                        }
-                    }
-                }
-            `,
-            variables() {
-                return {
-                    address: this.accountAddress,
-                    count: this.itemsPerPage,
-                    cursor: null,
-                };
-            },
-            async result(_data, _key) {
-                let data;
-
-                if (_key === 'delegationsByAddress') {
-                    data = cloneObject(_data.data.delegationsByAddress);
-
-                    const edges = data.edges;
-
-                    if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
-                        return;
-                    }
-
-                    this.hasNext = data.pageInfo.hasNext;
-
-                    if (this.dItems.length === 0) {
-                        this.dItems = edges;
-                    } else {
-                        for (let i = 0, len1 = edges.length; i < len1; i++) {
-                            this.dItems.push(edges[i]);
-                        }
-                    }
-
-                    this.totalCount = data.totalCount;
-                    this.$emit('records-count', formatHexToInt(this.totalCount));
-
-                    const stakers = await this.fetchStakers();
-                    if (stakers && stakers.length > 0) {
-                        // data.edges[0].delegation._validator = 'werwer';
-                        edges.forEach((_item) => {
-                            _item.delegation = {
-                                ..._item.delegation,
-                                _validator: stakers.find((_staker) => _staker.id === _item.delegation.toStakerId),
-                            };
-                        });
-                    }
-                }
-            },
-            error(_error) {
-                this.delegationsByAddressError = _error.message;
-            },
-        },
     },
 
     data() {
         return {
             columns: [
+                {
+                    name: 'accountName',
+                    label: 'Wallet',
+                    itemProp: 'accountName',
+                    width: '150px',
+                },
                 {
                     name: 'createdTime',
                     label: 'Delegation Time',
@@ -213,13 +145,16 @@ export default {
             ],
             dItems: [],
             explorerUrl: appConfig.explorerUrl,
-            hasNext: false,
+            loading: true,
+            stopLoading: false,
             delegationsByAddressError: '',
             totalCount: 0,
         };
     },
 
     computed: {
+        ...mapGetters(['accounts']),
+
         /**
          * Property is set to `true`, if 'account-transaction-list-dt-mobile-view' breakpoint is reached.
          *
@@ -230,13 +165,119 @@ export default {
 
             return dataTableBreakpoint && dataTableBreakpoint.matches;
         },
+    },
 
-        loading() {
-            return this.$apollo.queries.delegationsByAddress.loading;
-        },
+    created() {
+        this.init();
+    },
+
+    beforeDestroy() {
+        this.stopLoading = true;
     },
 
     methods: {
+        async init() {
+            const { accounts } = this;
+
+            this.loading = true;
+
+            if (accounts) {
+                for (let i = 0; i < accounts.length; i++) {
+                    await this.addDelegations(accounts[i]);
+
+                    if (this.stopLoading) {
+                        break;
+                    }
+                }
+            }
+
+            this.loading = false;
+        },
+
+        /**
+         * @param {WalletAccount} _account
+         * @return {Promise<>}
+         */
+        async addDelegations(_account) {
+            const delegations = await this.fetchDelegationsByAddress(_account.address);
+
+            delegations.forEach((_item) => {
+                _item.accountName = _account.name;
+                _item.accountAddress = _account.address;
+            });
+
+            if (this.dItems.length === 0) {
+                this.dItems = delegations;
+            } else {
+                for (let i = 0, len1 = delegations.length; i < len1; i++) {
+                    this.dItems.push(delegations[i]);
+                }
+            }
+
+            this.totalCount += delegations.length;
+            this.$emit('records-count', this.totalCount);
+
+            if (!this.stopLoading) {
+                const stakers = await this.fetchStakers();
+                if (stakers && stakers.length > 0) {
+                    delegations.forEach((_item) => {
+                        _item.delegation = {
+                            ..._item.delegation,
+                            _validator: stakers.find((_staker) => _staker.id === _item.delegation.toStakerId),
+                        };
+                    });
+                }
+            }
+        },
+
+        /**
+         * @param {string} _address Acount address.
+         * @return {Promise<[]>}
+         */
+        async fetchDelegationsByAddress(_address) {
+            return this.$fWallet.fetchAll(
+                {
+                    query: gql`
+                        query DelegationsByAddress($address: Address!, $cursor: Cursor, $count: Int!) {
+                            delegationsByAddress(address: $address, cursor: $cursor, count: $count) {
+                                pageInfo {
+                                    first
+                                    last
+                                    hasNext
+                                    hasPrevious
+                                }
+                                totalCount
+                                edges {
+                                    cursor
+                                    delegation {
+                                        toStakerId
+                                        createdEpoch
+                                        createdTime
+                                        deactivatedEpoch
+                                        deactivatedTime
+                                        amount
+                                        isDelegationLocked
+                                        lockedFromEpoch
+                                        lockedUntil
+                                        pendingRewards {
+                                            amount
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        address: _address,
+                        count: 100,
+                        cursor: null,
+                    },
+                    fetchPolicy: 'network-only',
+                },
+                'delegationsByAddress'
+            );
+        },
+
         async fetchStakers() {
             const data = await this.$apollo.query({
                 query: gql`
@@ -257,24 +298,6 @@ export default {
             });
 
             return data.data.stakers;
-        },
-
-        fetchMore() {
-            const { delegationsByAddress } = this;
-
-            if (delegationsByAddress && delegationsByAddress.pageInfo && delegationsByAddress.pageInfo.hasNext) {
-                const cursor = delegationsByAddress.pageInfo.last;
-
-                this.$apollo.queries.delegationsByAddress.fetchMore({
-                    variables: {
-                        cursor,
-                        count: this.itemsPerPage,
-                    },
-                    updateQuery: (previousResult, { fetchMoreResult }) => {
-                        return fetchMoreResult;
-                    },
-                });
-            }
         },
     },
 };

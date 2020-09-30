@@ -77,7 +77,7 @@
                                 </td>
                             </tr>
 
-                            <tr v-if="loading && !cItems.length">
+                            <tr v-if="loading && (!cItems.length || forceLoading)">
                                 <td :colspan="dVisibleColumnsNum">
                                     <div class="f-loading-more">
                                         <pulse-loader color="#1969ff"></pulse-loader>
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div v-if="loading && !cItems.length">
+                    <div v-if="loading && (!cItems.length || forceLoading)">
                         <div class="f-loading-more">
                             <pulse-loader color="#1969ff"></pulse-loader>
                         </div>
@@ -264,6 +264,12 @@ export default {
 
         /** Display loading message. */
         loading: {
+            type: Boolean,
+            default: false,
+        },
+
+        /** Display loading message, even if items exist. */
+        forceLoading: {
             type: Boolean,
             default: false,
         },
