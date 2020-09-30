@@ -93,6 +93,23 @@
                             </f-placeholder>
                         </div>
                     </div>
+                    <div class="row no-collapse">
+                        <div class="col f-row-label">Unlock Date</div>
+                        <div class="col">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
+                                <template v-if="accountInfo">
+                                    <f-message
+                                        v-if="lockedUntil !== '0x0'"
+                                        :type="lockedUntilMessageType"
+                                        style="margin-top: 0; padding-top: 0;"
+                                    >
+                                        {{ formatDate(timestampToDate(lockedUntil), false, true) }}
+                                    </f-message>
+                                    <template v-else>-</template>
+                                </template>
+                            </f-placeholder>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -359,6 +376,13 @@ export default {
             }
 
             return amount;
+        },
+
+        lockedUntilMessageType() {
+            const lockedUntilTS = parseInt(this.lockedUntil, 16);
+            const now = new Date().getTime() / 1000;
+
+            return lockedUntilTS > now ? 'warning' : 'success';
         },
     },
 
