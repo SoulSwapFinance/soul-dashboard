@@ -7,9 +7,10 @@
 
             <transaction-confirmation-form
                 :error-message="errorMsg"
-                :show-password-field="!currentAccount.isLedgerAccount"
+                :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
+                :waiting="waiting"
                 @f-form-submit="onFFormSubmit"
             />
         </f-card>
@@ -30,6 +31,29 @@
 
             <slot name="window-content"></slot>
         </f-window>
+
+        <f-window
+            v-if="currentAccount.isMetamaskAccount"
+            ref="metamaskNoticeWindow"
+            modal
+            title="Notice"
+            class="double-body-padding"
+            style="max-width: 560px;"
+            animation-in="scale-center-enter-active"
+            animation-out="scale-center-leave-active"
+        >
+            <div class="align-center">
+                <div v-if="!$metamask.isInstalled()">
+                    Metamask is not installed.
+                </div>
+                <div v-else-if="!$metamask.isCorrectChainId()">
+                    Please, select Opera chain in Metamask.
+                </div>
+                <div v-else-if="metamaskAccount !== currentAccount.address">
+                    Please, select account <b>{{ currentAccount.address }}</b> in Metamask.
+                </div>
+            </div>
+        </f-window>
     </div>
 </template>
 
@@ -38,7 +62,7 @@ import FCard from '../core/FCard/FCard.vue';
 import FWindow from '../core/FWindow/FWindow.vue';
 import LedgerMessage from '../LedgerMessage/LedgerMessage.vue';
 import TransactionConfirmationForm from '../forms/TransactionConfirmationForm.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
@@ -106,11 +130,35 @@ export default {
         return {
             errorMsg: '',
             error: null,
+            waiting: false,
         };
     },
 
     computed: {
+        ...mapState('metamask', {
+            metamaskAccount: 'account',
+            metamaskChainId: 'chainId',
+        }),
+
         ...mapGetters(['currentAccount']),
+    },
+
+    watch: {
+        metamaskAccount() {
+            if (this.areMetamaskParamsOk()) {
+                this.$refs.metamaskNoticeWindow.hide();
+            } else {
+                this.$refs.metamaskNoticeWindow.show();
+            }
+        },
+
+        metamaskChainId() {
+            if (this.areMetamaskParamsOk()) {
+                this.$refs.metamaskNoticeWindow.hide();
+            } else {
+                this.$refs.metamaskNoticeWindow.show();
+            }
+        },
     },
 
     mounted() {
@@ -154,9 +202,8 @@ export default {
 
             if (currentAccount && this.tx && this.tx.to) {
                 this.tx.nonce = await fWallet.getTransactionCount(currentAccount.address);
-                if (appConfig.useTestnet) {
-                    this.tx.chainId = appConfig.testnet.chainId;
-                }
+                this.tx.nonce = `0x${this.tx.nonce.toString(16)}`;
+                this.tx.chainId = appConfig.chainId;
 
                 // console.log('tx', this.tx);
 
@@ -176,7 +223,7 @@ export default {
                             // this.errorMsg = 'Invalid password';
                         }
                     }
-                } else {
+                } else if (currentAccount.isLedgerAccount) {
                     delete this.tx.gas;
 
                     try {
@@ -194,6 +241,30 @@ export default {
                         this.$refs.confirmationWindow.hide();
                         // this.errorMsg = _error.toString();
                     }
+                } else if (currentAccount.isMetamaskAccount) {
+                    if (this.areMetamaskParamsOk()) {
+                        const from = currentAccount.address;
+                        const to = this.tx.to;
+
+                        this.waiting = true;
+                        const txHash = await this.$metamask.signTransaction({ ...this.tx }, currentAccount.address);
+
+                        if (this.onSendTransactionSuccess && txHash) {
+                            this.onSendTransactionSuccess({
+                                data: {
+                                    sendTransaction: {
+                                        hash: txHash,
+                                        from,
+                                        to,
+                                    },
+                                },
+                            });
+                        }
+                    } else {
+                        this.$refs.metamaskNoticeWindow.show();
+                    }
+
+                    this.waiting = false;
                 }
 
                 if (rawTx) {
@@ -205,6 +276,14 @@ export default {
                     }, 3000);
                 }
             }
+        },
+
+        areMetamaskParamsOk() {
+            return (
+                this.$metamask.isInstalled() &&
+                this.metamaskAccount.toLowerCase() === this.currentAccount.address.toLowerCase() &&
+                this.$metamask.isCorrectChainId()
+            );
         },
 
         /**

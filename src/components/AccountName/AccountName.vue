@@ -33,12 +33,14 @@
                 <template #suffix><slot name="suffix"></slot></template>
             </f-ellipsis>
         </template>
+        <span v-if="isActiveMetamaskAccount" class="metamask-account-active"></span>
     </span>
 </template>
 
 <script>
 import FEllipsis from '../core/FEllipsis/FEllipsis.vue';
 import appConfig from '../../../app.config.js';
+import { mapState } from 'vuex';
 
 export default {
     name: 'AccountName',
@@ -80,6 +82,10 @@ export default {
     },
 
     computed: {
+        ...mapState('metamask', {
+            metamaskAccount: 'account',
+        }),
+
         addressUrl() {
             const { blockchain } = this;
             const { address } = this.account;
@@ -105,6 +111,12 @@ export default {
                 'has-name': !!this.account.name,
                 'an-align-right': this.alignRight,
             };
+        },
+
+        isActiveMetamaskAccount() {
+            const { address } = this.account;
+
+            return address.toLowerCase() === this.metamaskAccount;
         },
     },
 };

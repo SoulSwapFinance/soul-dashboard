@@ -26,6 +26,7 @@
         <f-aria-alert />
         <f-network-status />
         <temporary-message-window />
+        <metamask-account-picker-window ref="metamaskAccountPickerWindow" :metamask-account="dMetamaskAccount" />
     </div>
 </template>
 
@@ -47,11 +48,14 @@ import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
 import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
 import TemporaryMessageWindow from '@/components/windows/TemporaryMessageWindow/TemporaryMessageWindow.vue';
+import MetamaskAccountPickerWindow from '@/components/windows/MetamaskAccountPickerWindow/MetamaskAccountPickerWindow.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'App',
 
     components: {
+        MetamaskAccountPickerWindow,
         TemporaryMessageWindow,
         FNetworkStatus,
         FAriaAlert,
@@ -60,6 +64,30 @@ export default {
     },
 
     mixins: [eventBusMixin],
+
+    data() {
+        return {
+            dMetamaskAccount: '',
+        };
+    },
+
+    computed: {
+        /*
+        ...mapState('metamask', {
+            metamaskAccount: 'account',
+        }),
+        */
+
+        ...mapGetters(['getAccountByAddress']),
+    },
+
+    /*
+    watch: {
+        metamaskAccount(_account) {
+            console.log(_account, this.getAccountByAddress(_account));
+        },
+    },
+    */
 
     created() {
         // const useDarkColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -147,6 +175,16 @@ export default {
             setTimeout(function () {
                 documentElement.classList.remove('theme-transition');
             }, 250);
+        },
+
+        /**
+         * @param {string} _account Metamask account.
+         */
+        showMetamaskAccountPickerWindow(_account) {
+            if (_account) {
+                this.dMetamaskAccount = this.$fWallet.toChecksumAddress(_account);
+            }
+            this.$refs.metamaskAccountPickerWindow.show();
         },
 
         onFBreakpointChange(_event) {

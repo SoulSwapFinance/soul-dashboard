@@ -117,7 +117,13 @@
     */
 
     .defi-token-list {
-        --f-defi-token-list-item-hover-color: var(--f-darker-color);
+        --f-defi-token-list-item-color: var(--f-darker-color-2);
+        --f-defi-token-list-item-hover-color: var(--f-darker-color-3);
+    }
+
+    .wallet-list {
+        --f-wallet-list-item-color: var(--f-darker-color-2);
+        --f-wallet-list-item-hover-color: var(--f-darker-color-3);
     }
 
     .wallet-menu {

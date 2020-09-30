@@ -18,42 +18,42 @@
                 </span>
             </li>
             <li>
-                <span class="action" title="Ledger (Coming)" @click="onConnectToLedgerClick">
+                <span class="action" title="Connect Wallet" @click="onConnectWalletClick">
                     <button class="btn ledger-accounts-btn large same-size round">
-                        <icon data="@/assets/svg/ledger-logo-icon.svg" width="20" height="20" aria-hidden="true" />
+                        <icon data="@/assets/svg/connect.svg" width="20" height="20" aria-hidden="true" />
                     </button>
-                    <span class="link-label ledger-accounts-color">Ledger (Coming)</span>
+                    <span class="link-label ledger-accounts-color">Connect Wallet</span>
                 </span>
             </li>
         </ul>
 
-        <ledger-accounts-window ref="ledgerAccountsWindow" />
         <create-account-window ref="createAccountWindow" />
         <restore-account-window ref="restoreAccountWindow" />
+        <connect-wallet-window ref="connectWalletWindow" />
     </nav>
 </template>
 
 <script>
-import LedgerAccountsWindow from '../windows/LedgerAccountsWindow/LedgerAccountsWindow.vue';
 import CreateAccountWindow from '../windows/CreateAccountWindow/CreateAccountWindow.vue';
 import RestoreAccountWindow from '../windows/RestoreAccountWindow/RestoreAccountWindow.vue';
+import ConnectWalletWindow from '@/components/windows/ConnectWalletWindow/ConnectWalletWindow.vue';
 
 export default {
     name: 'DashboardActionsBox',
 
-    components: { RestoreAccountWindow, CreateAccountWindow, LedgerAccountsWindow },
+    components: { ConnectWalletWindow, RestoreAccountWindow, CreateAccountWindow },
 
     methods: {
-        onConnectToLedgerClick() {
-            this.$refs.ledgerAccountsWindow.show();
-        },
-
         onCreateAWalletClick() {
             this.$refs.createAccountWindow.show();
         },
 
         onRestoreWalletClick() {
             this.$refs.restoreAccountWindow.show();
+        },
+
+        onConnectWalletClick() {
+            this.$refs.connectWalletWindow.show();
         },
     },
 };
