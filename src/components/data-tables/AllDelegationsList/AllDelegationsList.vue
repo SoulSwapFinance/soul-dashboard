@@ -12,7 +12,7 @@
                 :items="dItems"
                 :mobile-view="mobileView"
                 :loading="loading"
-                force-loading="true"
+                :force-loading="true"
                 first-m-v-column-width="5"
                 f-card-off
                 action-on-row

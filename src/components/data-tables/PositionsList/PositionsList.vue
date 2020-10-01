@@ -49,6 +49,50 @@
                 </template>
             </template>
 
+            <template v-slot:column-rewards="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        <template v-if="canClaimRewards(item.rewards)">
+                            <f-token-value
+                                no-currency
+                                :use-placeholder="false"
+                                :token="wftmToken"
+                                :value="pendingRewardsWFTM(item.rewards) - stashedRewardsWFTM(item.rewards)"
+                            />
+                            <span class="currency-light">
+                                /
+                                <f-token-value
+                                    :use-placeholder="false"
+                                    :token="wftmToken"
+                                    :value="stashedRewardsWFTM(item.rewards)"
+                                />
+                            </span>
+                        </template>
+                        <template v-else>-</template>
+                    </div>
+                </div>
+                <template v-else>
+                    <template v-if="canClaimRewards(item.rewards)">
+                        <f-token-value
+                            no-currency
+                            :use-placeholder="false"
+                            :token="wftmToken"
+                            :value="pendingRewardsWFTM(item.rewards) - stashedRewardsWFTM(item.rewards)"
+                        />
+                        <span class="currency-light">
+                            /
+                            <f-token-value
+                                :use-placeholder="false"
+                                :token="wftmToken"
+                                :value="stashedRewardsWFTM(item.rewards)"
+                            />
+                        </span>
+                    </template>
+                    <template v-else>-</template>
+                </template>
+            </template>
+
             <template v-slot:column-actions="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
@@ -65,6 +109,20 @@
                                 <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
                                 <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
                             </template>
+                        </template>
+                        <template v-if="canClaimRewards(item.rewards)">
+                            ,<router-link
+                                v-if="canClaimRewards"
+                                :to="{
+                                    name: 'defi-fmint-claim-rewards-confirmation',
+                                    params: {
+                                        pendingRewards: pendingRewardsWFTM(item.rewards),
+                                        token: { ...wftmToken },
+                                    },
+                                }"
+                            >
+                                Claim
+                            </router-link>
                         </template>
                     </div>
                 </div>
@@ -85,6 +143,18 @@
                             <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
                         </template>
                     </template>
+                    <template v-if="canClaimRewards(item.rewards)">
+                        <br />
+                        <router-link
+                            v-if="canClaimRewards"
+                            :to="{
+                                name: 'defi-fmint-claim-rewards-confirmation',
+                                params: { pendingRewards: pendingRewardsWFTM(item.rewards), token: { ...wftmToken } },
+                            }"
+                        >
+                            Claim
+                        </router-link>
+                    </template>
                 </template>
             </template>
         </f-data-table>
@@ -104,11 +174,13 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
 import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowTokenWindow/DepositOrBorrowTokenWindow.vue';
 import { formatNumberByLocale } from '@/filters.js';
+import { mapGetters } from 'vuex';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'PositionsList',
 
-    components: { DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
+    components: { FTokenValue, DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
 
     props: {
         /** @type {DefiToken[]} */
@@ -151,6 +223,8 @@ export default {
             defi: this.$defi,
             /** Token used in <deposit-or-borrow-token-window> */
             dbToken: {},
+            /** @type {DefiToken} */
+            wftmToken: {},
             columns: [
                 {
                     name: 'asset',
@@ -184,6 +258,11 @@ export default {
                             return (_direction === 'desc' ? -1 : 1) * numberSort(a, b);
                         };
                     },
+                    css: { textAlign: 'center' },
+                },
+                {
+                    name: 'rewards',
+                    label: 'Est. Pending / Stashed Rewards',
                     css: { textAlign: 'center' },
                 },
                 {
@@ -223,12 +302,18 @@ export default {
         };
     },
 
+    computed: {
+        ...mapGetters(['currentAccount']),
+    },
+
     watch: {
         /**
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
             const items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+
+            this.wftmToken = _value.find((_item) => _item.symbol === 'WFTM');
 
             this.items = items.filter((_item) => {
                 const collateral = this.getCollateral(_item);
@@ -240,6 +325,8 @@ export default {
 
                 return collateral !== 0 || debt !== 0;
             });
+
+            this.setRewards();
 
             this.$emit('records-count', this.items.length);
         },
@@ -255,6 +342,17 @@ export default {
             const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
+        async setRewards() {
+            const { items } = this;
+
+            for (let i = 0, len1 = items.length; i < len1; i++) {
+                if (items[i].symbol === 'FUSD') {
+                    items[i].rewards = await this.$defi.fetchFMintAccountRewards(this.currentAccount.address);
+                    break;
+                }
+            }
         },
 
         /**
@@ -324,6 +422,32 @@ export default {
          */
         usedInFMint(_token) {
             return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+        },
+
+        /**
+         * @param {object} _rewards
+         * @return {boolean}
+         */
+        canClaimRewards(_rewards) {
+            return (
+                _rewards &&
+                _rewards.canClaimRewards &&
+                (_rewards.rewardsEarned !== '0x0' || _rewards.rewardsStashed !== '0x0')
+            );
+        },
+
+        /**
+         * @param {object} _rewards
+         */
+        pendingRewardsWFTM(_rewards) {
+            return this.$defi.fromTokenValue(_rewards.rewardsEarned, this.wftmToken) || 0;
+        },
+
+        /**
+         * @param {object} _rewards
+         */
+        stashedRewardsWFTM(_rewards) {
+            return this.$defi.fromTokenValue(_rewards.rewardsStashed, this.wftmToken) || 0;
         },
 
         /**
