@@ -69,7 +69,7 @@ export default {
             let params = {};
 
             if ($route) {
-                if ($route.query) {
+                if ($route.query && $route.query.token) {
                     params = $route.query;
                 } else if ($route.params) {
                     params = $route.params;
