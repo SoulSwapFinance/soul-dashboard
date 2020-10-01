@@ -66,8 +66,17 @@ export default {
          */
         params() {
             const { $route } = this;
+            let params = {};
 
-            return $route && $route.params ? $route.params : {};
+            if ($route) {
+                if ($route.query) {
+                    params = $route.query;
+                } else if ($route.params) {
+                    params = $route.params;
+                }
+            }
+
+            return params;
         },
 
         hasCorrectParams() {
