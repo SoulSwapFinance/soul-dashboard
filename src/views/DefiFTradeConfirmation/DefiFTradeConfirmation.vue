@@ -210,7 +210,11 @@ export default {
                 } else if (fromToken.canWrapFTM && toToken.symbol === 'FTM') {
                     txToSign = wftmUtils.defiUnwrapFtm(
                         fromToken.address,
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals))
+                        params.max
+                            ? fromToken.availableBalance
+                            : Web3.utils.toHex(
+                                  this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals)
+                              )
                     );
                 }
                 /* else if (fromToken.symbol === 'FUSD') {

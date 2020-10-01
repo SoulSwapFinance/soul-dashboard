@@ -612,6 +612,7 @@ export default {
                 toValue: this.toValue,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
+                max: this.maxFromInputValue === this.fromValue,
             };
 
             /*
