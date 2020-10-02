@@ -4,7 +4,7 @@
             <icon v-if="svgIcon" :data="svgIcon" original />
             <img v-else-if="token.logoUrl" :src="token.logoUrl" class="not-fluid" :alt="$defi.getTokenSymbol(token)" />
         </span>
-        {{ $defi.getTokenSymbol(token) }}
+        <span>{{ $defi.getTokenSymbol(token) }}</span>
     </div>
 </template>
 

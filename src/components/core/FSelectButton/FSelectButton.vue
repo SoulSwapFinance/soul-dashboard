@@ -1,6 +1,7 @@
 <template>
     <button class="f-select-button" :class="classes">
         <slot></slot>
+        <span class="arrow"></span>
     </button>
 </template>
 
