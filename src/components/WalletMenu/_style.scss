@@ -101,9 +101,10 @@
         bottom: 0;
         background-color: var(--f-wallet-menu-background-color);
         display: none;
+        overflow: auto;
 
         .f-simple-navigation {
-            width: 100%;
+            //width: 100%;
 
             --f-simple-navigation-link-padding: 10px 22px;
 

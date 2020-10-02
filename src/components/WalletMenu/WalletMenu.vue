@@ -246,8 +246,6 @@ export default {
                 return false;
             });
 
-            console.log(_propName, navItemIdx, account);
-
             if (navItemIdx > -1) {
                 if (account) {
                     this.$set(navigation, navItemIdx, {
