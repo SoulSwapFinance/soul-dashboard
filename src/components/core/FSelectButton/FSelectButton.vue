@@ -1,5 +1,5 @@
 <template>
-    <button class="f-select-button" :class="classes">
+    <button class="f-select-button" :class="[classes, btnClass]">
         <slot></slot>
         <span class="arrow"></span>
     </button>
@@ -16,6 +16,10 @@ export default {
         collapsed: {
             type: Boolean,
             default: false,
+        },
+        btnClass: {
+            type: String,
+            default: '',
         },
     },
 
