@@ -57,10 +57,12 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <template v-if="item._collateral > 0">{{
-                            formatCollateral(item, item._fMintAccount)
-                        }}</template>
-                        <template v-if="item._debt > 0">{{ formatDebt(item) }}</template>
+                        <ratio-info
+                            :value="item.cratio"
+                            :content-loaded="true"
+                            :display-circle="false"
+                            :display-info-title="false"
+                        />
                     </div>
                 </div>
                 <template v-else>
