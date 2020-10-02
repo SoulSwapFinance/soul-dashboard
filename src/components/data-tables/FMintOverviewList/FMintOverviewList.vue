@@ -13,7 +13,7 @@
         >
             <template v-slot:column-accountName="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
-                    <div class="col-5 f-row-label">{{ column.label }}</div>
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col-7">
                         <template v-if="value">{{ value }}</template>
                         <template v-else><f-ellipsis :text="item.accountAddress" overflow="middle" /></template>

@@ -49,6 +49,7 @@ import settingsIcon from '../../assets/svg/settings.svg';
 import walletIcon from '../../assets/svg/wallet.svg';
 import defiIcon from '../../assets/svg/defi.svg';
 import stakingIcon from '../../assets/svg/stake.svg';
+import swapIcon from '../../assets/svg/defi/ftrade.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
@@ -110,6 +111,15 @@ export default {
                     title: 'DeFi',
                     icon: defiIcon,
                     deFiLink: true,
+                },
+                {
+                    url: {
+                        name: 'funiswap',
+                    },
+                    title: 'fUniswap',
+                    icon: swapIcon,
+                    fill: true,
+                    fUniswapLink: true,
                 },
                 {
                     url: {
@@ -214,6 +224,7 @@ export default {
             this.setMenuItemUrl('walletLink', _account);
             this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
+            this.setMenuItemUrl('fUniswapLink', _account, 'funiswap');
         },
 
         /**
@@ -234,6 +245,8 @@ export default {
 
                 return false;
             });
+
+            console.log(_propName, navItemIdx, account);
 
             if (navItemIdx > -1) {
                 if (account) {

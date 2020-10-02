@@ -46,6 +46,7 @@ import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
+import FUniswap from '@/views/FUniswap/FUniswap.vue';
 
 export const routes = [
     {
@@ -569,6 +570,11 @@ export const routes = [
                         component: TransactionRejectMessageView,
                     },
                 ],
+            },
+            {
+                name: 'funiswap',
+                path: '/funiswap/:address',
+                component: FUniswap,
             },
             {
                 name: 'settings',
