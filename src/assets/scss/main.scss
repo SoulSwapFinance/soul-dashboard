@@ -316,6 +316,25 @@ form {
     color: var(--f-orange-color);
 }
 
+input.no-style {
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    padding: 0;
+    border: none;
+
+    &:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    &:invalid {
+        box-shadow: none;
+        outline: none;
+        border: none;
+    }
+}
+
 @if $IS_CHROME_EXTENSION == true {
     body {
         width: 360px;
