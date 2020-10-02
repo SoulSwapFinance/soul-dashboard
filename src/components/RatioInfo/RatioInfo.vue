@@ -2,7 +2,7 @@
     <div class="ratio-info" :class="{ 'collateral-ratio': displayCollateralRatio }">
         <template v-if="displayCollateralRatio">
             <template v-if="displayCircle">
-                <slot name="ratio-info-title">
+                <slot v-if="displayInfoTitle" name="ratio-info-title">
                     <h3>C-Ratio <c-ratio-info /></h3>
                 </slot>
                 <f-circle-progress
@@ -26,7 +26,7 @@
                 </f-circle-progress>
             </template>
             <template v-else>
-                <slot name="ratio-info-title">
+                <slot v-if="displayInfoTitle" name="ratio-info-title">
                     <h3 class="label">C-Ratio <c-ratio-info /></h3>
                 </slot>
                 <div class="value">
@@ -52,7 +52,7 @@
         </template>
         <template v-else>
             <template v-if="displayCircle">
-                <slot name="ratio-info-title">
+                <slot v-if="displayInfoTitle" name="ratio-info-title">
                     <h3>Debt Limit <debt-limit-f-info /></h3>
                 </slot>
                 <f-circle-progress
@@ -68,7 +68,7 @@
                 />
             </template>
             <template v-else>
-                <slot name="ratio-info-title">
+                <slot v-if="displayInfoTitle" name="ratio-info-title">
                     <h3 class="label">Debt Limit <debt-limit-f-info /></h3>
                 </slot>
                 <div class="value">
@@ -124,6 +124,11 @@ export default {
         },
         /** If value of this property is `false`, display just colored number. */
         displayCircle: {
+            type: Boolean,
+            default: true,
+        },
+        /** */
+        displayInfoTitle: {
             type: Boolean,
             default: true,
         },

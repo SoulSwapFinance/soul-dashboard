@@ -53,6 +53,26 @@
                 </template>
             </template>
 
+            <template v-slot:column-cratio="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        <template v-if="item._collateral > 0">{{
+                            formatCollateral(item, item._fMintAccount)
+                        }}</template>
+                        <template v-if="item._debt > 0">{{ formatDebt(item) }}</template>
+                    </div>
+                </div>
+                <template v-else>
+                    <ratio-info
+                        :value="item.cratio"
+                        :content-loaded="true"
+                        :display-circle="false"
+                        :display-info-title="false"
+                    />
+                </template>
+            </template>
+
             <template v-slot:column-rewards="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
@@ -205,11 +225,12 @@ import { formatNumberByLocale } from '@/filters.js';
 import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
+import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 
 export default {
     name: 'FMintOverviewList',
 
-    components: { FEllipsis, FTokenValue, DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
+    components: { RatioInfo, FEllipsis, FTokenValue, DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
 
     props: {
         /** @type {DefiToken[]} */
@@ -261,6 +282,11 @@ export default {
                 {
                     name: 'amount',
                     label: 'Amount',
+                    css: { textAlign: 'center' },
+                },
+                {
+                    name: 'cratio',
+                    label: 'C-Ratio',
                     css: { textAlign: 'center' },
                 },
                 {
@@ -333,6 +359,7 @@ export default {
 
                 _item.accountName = _account.name;
                 _item.accountAddress = _account.address;
+                _item.cratio = this.collateralRatio(fMintAccount);
 
                 // store collateral and debt for later use
                 _item._collateral = collateral;
@@ -463,6 +490,13 @@ export default {
          */
         stashedRewardsWFTM(_rewards) {
             return this.$defi.fromTokenValue(_rewards.rewardsStashed, this.wftmToken) || 0;
+        },
+
+        /**
+         * @param {FMintAccount} _fMintAccount
+         */
+        collateralRatio(_fMintAccount) {
+            return this.$defi.getCollateralRatio(_fMintAccount);
         },
 
         /**
