@@ -15,7 +15,7 @@
                     </span>
                 </div>
                 <div class="fswap__token__body">
-                    <div class="sign">-</div>
+                    <div class="fswap__token__sign">-</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="fromInput"
@@ -57,7 +57,7 @@
                     </span>
                 </div>
                 <div class="fswap__token__body">
-                    <div class="sign">+</div>
+                    <div class="fswap__token__sign">+</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="toInput"
@@ -299,33 +299,10 @@ export default {
 
             this.fMintAccount = result[0];
 
-            if ($defi.tmpWFTM) {
-                const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
+            this.tokens = result[1];
 
-                const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
-                const ftmToken = {
-                    address: '0xfc00face00000000000000000000000000000000',
-                    symbol: 'FTM',
-                    name: 'Fantom',
-                    isActive: true,
-                    decimals: 18,
-                    price: wFTM[0].price,
-                    priceDecimals: wFTM[0].priceDecimals,
-                    availableBalance: account.balance,
-                    allowance: '0x0',
-                    logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
-                };
-                this.$defi._setTokenDecimals(ftmToken);
-
-                // add FTM
-                result[1].unshift(ftmToken);
-
-                this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
-            } else {
-                this.tokens = result[1].filter($defi.canTokenBeTraded);
-            }
-
-            if (params.fromToken && params.toToken) {
+            // if (params.fromToken && params.toToken) {
+            if (params.fromToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
                 // this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
             } else if (this.tokens.length >= 2) {
@@ -394,10 +371,17 @@ export default {
          * @return {DefiToken[]}
          */
         getPickerTokens(_type = 'from') {
+            // const fromTokenAddress = this.fromToken.address;
             let token = _type === 'from' ? this.fromToken : this.toToken;
+            let fromTokenAddress = token.address;
+
+            // if no 'to' token is selected
+            if (_type === 'to' && !this.toToken.address) {
+                fromTokenAddress = this.fromToken.address;
+            }
 
             return this.tokens.map((_item) => {
-                return { ..._item, _disabled: _item.address === token.address };
+                return { ..._item, _disabled: _item.address === fromTokenAddress };
             });
         },
 
@@ -580,15 +564,10 @@ export default {
                 toValue: this.toValue,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
+                steps: 2,
+                step: 1,
                 max: this.maxFromInputValue === this.fromValue,
             };
-
-            /*
-            if (ftmTokens.indexOf(fromToken.symbol) === -1 && ftmTokens.indexOf(toToken.symbol) === -1) {
-                params.steps = 2;
-                params.step = 1;
-            }
-            */
 
             if (!this.submitDisabled) {
                 this.$router.push({

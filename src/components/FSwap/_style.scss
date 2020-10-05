@@ -17,6 +17,10 @@
         border-radius: 20px;
         border: 1px solid var(--f-fswap-swap-btn-border-color);
 
+        &__sign {
+            opacity: 0.5;
+        }
+
         &__balance {
             display: flex;
             flex-wrap: nowrap;
