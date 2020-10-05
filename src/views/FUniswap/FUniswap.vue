@@ -7,7 +7,7 @@
             <address-info-box />
 
             <main class="main">
-                <f-swap />
+                <f-uniswap-swap />
             </main>
         </template>
     </div>
@@ -23,12 +23,12 @@ import {
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
 } from '@/store/mutations.type.js';
 import { eventBusMixin } from '@/mixins/event-bus.js';
-import FSwap from '@/components/FSwap/FSwap.vue';
+import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
 
 export default {
     name: 'FUniswap',
 
-    components: { FSwap, AddressInfoBox, FMessage },
+    components: { FUniswapSwap, AddressInfoBox, FMessage },
 
     mixins: [eventBusMixin],
 

@@ -1,6 +1,6 @@
 @import "../../assets/scss/vars";
 
-.fswap {
+.funiswap-swap {
     //--f-fswap-swap-btn-border-color: #{$grey-color-semi};
     --f-fswap-swap-btn-border-color: #f7f8fa;
     --f-fswap-swap-btn-border: 1px solid var(--f-fswap-swap-btn-border-color);
@@ -113,7 +113,7 @@
 }
 
 @include media-max($bp-small) {
-    .fswap {
+    .funiswap-swap {
         > .f-card {
             margin-top: 0;
         }

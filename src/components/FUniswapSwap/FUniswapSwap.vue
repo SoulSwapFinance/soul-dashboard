@@ -1,8 +1,8 @@
 <template>
-    <div class="fswap">
+    <div class="funiswap-swap">
         <f-card>
-            <div class="fswap__token">
-                <div class="fswap__token__balance">
+            <div class="funiswap-swap__token">
+                <div class="funiswap-swap__token__balance">
                     <span>From</span>
                     <span class="balance">
                         Balance:
@@ -14,8 +14,8 @@
                         />
                     </span>
                 </div>
-                <div class="fswap__token__body">
-                    <div class="fswap__token__sign">-</div>
+                <div class="funiswap-swap__token__body">
+                    <div class="funiswap-swap__token__sign">-</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="fromInput"
@@ -42,22 +42,22 @@
                 </div>
             </div>
 
-            <div class="fswap__swap-cont">
+            <div class="funiswap-swap__swap-cont">
                 <button class="btn round same-size light" title="Swap Tokens" @click="swapTokens">
                     <icon data="@/assets/svg/arrow-left.svg" width="12" height="12" dir="left" aria-hidden="true" />
                 </button>
             </div>
 
-            <div class="fswap__token">
-                <div class="fswap__token__balance">
+            <div class="funiswap-swap__token">
+                <div class="funiswap-swap__token__balance">
                     <span>To</span>
                     <span class="balance">
                         Balance:
                         <f-token-value :token="toToken" :value="toTokenBalance" :use-placeholder="false" no-currency />
                     </span>
                 </div>
-                <div class="fswap__token__body">
-                    <div class="fswap__token__sign">+</div>
+                <div class="funiswap-swap__token__body">
+                    <div class="funiswap-swap__token__sign">+</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="toInput"
@@ -83,7 +83,7 @@
                     </f-select-button>
                     <button
                         v-else
-                        class="btn small secondary fswap__select-token-btn"
+                        class="btn small secondary funiswap-swap__select-token-btn"
                         type="button"
                         @click="onToTokenSelectorClick"
                     >
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div v-show="toToken.address" class="fswap__exchange-price">
+            <div v-show="toToken.address" class="funiswap-swap__exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">
                     <f-placeholder :content-loaded="!!perPrice" replacement-text="000.00 fUSD per fETH">
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="fswap__submit-cont">
+            <div class="funiswap-swap__submit-cont">
                 <button ref="submitBut" class="btn large" @click="onSubmit">
                     Enter an amount
                 </button>
@@ -123,7 +123,6 @@
 </template>
 
 <script>
-import { getAppParentNode } from '../../app-structure.js';
 import { mapGetters, mapState } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
@@ -136,7 +135,7 @@ import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 
 export default {
-    name: 'FSwap',
+    name: 'FUniswapSwap',
 
     components: {
         FCard,
@@ -186,12 +185,6 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
-        },
-
-        backButtonRoute() {
-            const parentNode = getAppParentNode('fswap');
-
-            return parentNode ? parentNode.route : '';
         },
 
         fromInputValue() {
