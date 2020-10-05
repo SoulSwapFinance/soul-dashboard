@@ -53,6 +53,8 @@ export class DeFi {
         this.contracts = {
             fMint: '',
             fMintReward: '',
+            uniswapCoreFactory: '',
+            uniswapRouter: '',
         };
 
         // TMP!!
@@ -87,6 +89,8 @@ export class DeFi {
         this.mintFee = parseInt(_settings.mintFee4, 16) / dec;
         contracts.fMint = _settings.fMintContract;
         contracts.fMintReward = _settings.fMintRewardDistribution;
+        contracts.uniswapCoreFactory = _settings.uniswapCoreFactory;
+        contracts.uniswapRouter = _settings.uniswapRouter;
     }
 
     /**

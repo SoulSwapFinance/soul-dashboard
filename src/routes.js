@@ -47,6 +47,8 @@ import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConf
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
 import FUniswap from '@/views/FUniswap/FUniswap.vue';
+import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
+import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
 
 export const routes = [
     {
@@ -575,6 +577,43 @@ export const routes = [
                 name: 'funiswap',
                 path: '/funiswap/:address',
                 component: FUniswap,
+                children: [
+                    {
+                        name: 'funiswap-home',
+                        path: '',
+                        component: FUniswapHome,
+                    },
+                    {
+                        name: 'funiswap-swap-confirmation',
+                        path: 'swap/confirmation',
+                        component: FUniswapSwapConfirmation,
+                    },
+                    {
+                        name: 'funiswap-swap-confirmation2',
+                        path: 'swap/confirmation2',
+                        component: FUniswapSwapConfirmation,
+                    },
+                    {
+                        name: 'funiswap-swap-transaction-success-message',
+                        path: 'swap/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'funiswap-swap-transaction-success-message2',
+                        path: 'swap/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'funiswap-swap-transaction-reject-message',
+                        path: 'swap/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'funiswap-swap-transaction-reject-message2',
+                        path: 'swap/confirmation2/reject2',
+                        component: TransactionRejectMessageView,
+                    },
+                ],
             },
             {
                 name: 'settings',

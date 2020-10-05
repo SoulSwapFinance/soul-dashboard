@@ -439,6 +439,48 @@ const appStructure = [
                     },
                 ],
             },
+            {
+                id: 'funiswap',
+                route: 'funiswap',
+                _c: [
+                    {
+                        id: 'funiswap-home',
+                        route: 'funiswap-home',
+                        _c: [
+                            {
+                                id: 'funiswap-swap-confirmation',
+                                route: 'funiswap-swap-confirmation',
+                                _c: [
+                                    {
+                                        id: 'funiswap-swap-transaction-success-message',
+                                        route: 'funiswap-swap-transaction-success-message',
+                                        _c: [
+                                            {
+                                                id: 'funiswap-swap-confirmation2',
+                                                route: 'funiswap-swap-confirmation2',
+                                                _c: [
+                                                    {
+                                                        id: 'funiswap-swap-transaction-success-message2',
+                                                        route: 'funiswap-swap-transaction-success-message2',
+                                                    },
+                                                    {
+                                                        id: 'funiswap-swap-transaction-reject-message2',
+                                                        route: 'funiswap-swap-transaction-reject-message2',
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        id: 'funiswap-swap-transaction-reject-message',
+                                        route: 'funiswap-swap-transaction-reject-message',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     },
 ];

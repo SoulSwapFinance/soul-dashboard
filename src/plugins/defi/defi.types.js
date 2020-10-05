@@ -4,8 +4,10 @@
  * @property {number} mintFee4 Current fee applied to all minting operations on fMint protocol.
  * @property {number} rewardCollateralRatio4 Minimal ratio between collateral and debt values in ref. denomination (fUSD) on which the account is eligible for rewards distribution.
  * @property {number} minCollateralRatio4 Minimal collateral ratio.
- * @property {number} fMintContract Address of the fMint contract.
- * @property {number} fMintRewardDistribution Address of the DeFi fMint reward distribution contract.
+ * @property {string} fMintContract Address of the fMint contract.
+ * @property {string} fMintRewardDistribution Address of the DeFi fMint reward distribution contract.
+ * @property {string} uniswapCoreFactory Address of the Uniswap Core Factory contract.
+ * @property {string} uniswapRouter Address of the Uniswap Router contract.
  * @property {number} decimals Decimals represents the decimals / digits correction applied to the fees and ratios.
  */
 

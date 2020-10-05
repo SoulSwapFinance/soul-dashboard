@@ -7,7 +7,9 @@
             <address-info-box />
 
             <main class="main">
-                <f-uniswap-swap />
+                <f-view-transition watch-route :views-structure="viewsStructure">
+                    <router-view></router-view>
+                </f-view-transition>
             </main>
         </template>
     </div>
@@ -23,17 +25,24 @@ import {
     SET_ACTIVE_ACCOUNT_BY_ADDRESS,
 } from '@/store/mutations.type.js';
 import { eventBusMixin } from '@/mixins/event-bus.js';
-import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
+import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
+import { appStructureTree } from '@/app-structure.js';
 
 export default {
     name: 'FUniswap',
 
-    components: { FUniswapSwap, AddressInfoBox, FMessage },
+    components: { FViewTransition, AddressInfoBox, FMessage },
 
     mixins: [eventBusMixin],
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        viewsStructure() {
+            const defiHomeNode = appStructureTree.serialize(appStructureTree.get('funiswap-home'));
+
+            return defiHomeNode ? [JSON.parse(defiHomeNode)] : [];
+        },
     },
 
     watch: {
@@ -63,3 +72,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>
