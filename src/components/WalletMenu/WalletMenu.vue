@@ -224,7 +224,7 @@ export default {
             this.setMenuItemUrl('walletLink', _account);
             this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
-            this.setMenuItemUrl('fUniswapLink', _account, 'funiswap');
+            this.setMenuItemUrl('fUniswapLink', _account, 'funiswap-home');
         },
 
         /**
