@@ -1,8 +1,8 @@
 <template>
     <div class="fswap">
         <f-card>
-            <div class="token-cont">
-                <div class="token-balance">
+            <div class="fswap__token">
+                <div class="fswap__token__balance">
                     <span>From</span>
                     <span class="balance">
                         Balance:
@@ -14,8 +14,8 @@
                         />
                     </span>
                 </div>
-                <div class="token-body">
-                    <div ref="fromSign__" class="sign">-</div>
+                <div class="fswap__token__body">
+                    <div class="sign">-</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="fromInput"
@@ -42,22 +42,22 @@
                 </div>
             </div>
 
-            <div class="swap-cont">
+            <div class="fswap__swap-cont">
                 <button class="btn round same-size light" title="Swap Tokens" @click="swapTokens">
                     <icon data="@/assets/svg/arrow-left.svg" width="12" height="12" dir="left" aria-hidden="true" />
                 </button>
             </div>
 
-            <div class="token-cont">
-                <div class="token-balance">
+            <div class="fswap__token">
+                <div class="fswap__token__balance">
                     <span>To</span>
                     <span class="balance">
                         Balance:
                         <f-token-value :token="toToken" :value="toTokenBalance" :use-placeholder="false" no-currency />
                     </span>
                 </div>
-                <div class="token-body">
-                    <div ref="toSign__" class="sign">+</div>
+                <div class="fswap__token__body">
+                    <div class="sign">+</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="toInput"
@@ -68,11 +68,12 @@
                         min="0"
                         :max="maxFromInputValue"
                         class="text-input no-style"
-                        @change="onFromInputChange"
-                        @input="onFromInputInput"
+                        @change="onToInputChange"
+                        @input="onToInputInput"
                         @keydown="onInputKeydown"
                     />
                     <f-select-button
+                        v-if="toToken.address"
                         collapsed
                         aria-label="pick a token"
                         class="bigger-arrow"
@@ -80,10 +81,18 @@
                     >
                         <f-crypto-symbol :token="toToken" img-width="24px" img-height="24px" />
                     </f-select-button>
+                    <button
+                        v-else
+                        class="btn small secondary fswap__select-token-btn"
+                        type="button"
+                        @click="onToTokenSelectorClick"
+                    >
+                        Select a token <icon data="@/assets/svg/chevron-down.svg" width="12" height="12" />
+                    </button>
                 </div>
             </div>
 
-            <div class="exchange-price">
+            <div v-show="toToken.address" class="fswap__exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">
                     <f-placeholder :content-loaded="!!perPrice" replacement-text="000.00 fUSD per fETH">
@@ -97,159 +106,12 @@
                 </div>
             </div>
 
-            <div class="submit-cont">
-                <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                    {{ submitLabel }}
+            <div class="fswap__submit-cont">
+                <button ref="submitBut" class="btn large" @click="onSubmit">
+                    Enter an amount
                 </button>
             </div>
         </f-card>
-
-        <div class="grid" style="display: none;">
-            <div class="from-col">
-                <div class="defi-label">From</div>
-                <f-select-button @click.native="onFromTokenSelectorClick">
-                    <f-placeholder :content-loaded="!!fromToken.symbol" block :replacement-num-chars="20">
-                        <div class="sb-content">
-                            <f-crypto-symbol :token="fromToken" />
-                            <span>
-                                <f-token-value
-                                    :token="fromToken"
-                                    :value="fromTokenBalance"
-                                    :use-placeholder="false"
-                                    no-currency
-                                />
-                            </span>
-                        </div>
-                    </f-placeholder>
-                </f-select-button>
-                <div class="defi-price-input">
-                    <div ref="fromSign" class="sign">-</div>
-                    <f-auto-resize-input ref="fromARInput" min-width="48px">
-                        <input
-                            :id="`text-input-${id}`"
-                            ref="fromInput_"
-                            :value="fromInputValue === 0 ? '' : fromInputValue"
-                            type="number"
-                            placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxFromInputValue"
-                            class="text-input no-style"
-                            @change="onFromInputChange"
-                            @input="onFromInputInput"
-                            @keydown="onInputKeydown"
-                        />
-                    </f-auto-resize-input>
-                </div>
-            </div>
-            <div class="swap-col" style="display: none;">
-                <button class="btn large round same-size light" title="Swap Tokens" @click="swapTokens">
-                    <icon data="@/assets/svg/defi/ftrade.svg" width="24" height="24" aria-hidden="true" />
-                </button>
-            </div>
-            <div class="to-col" style="display: none;">
-                <div class="defi-label">To</div>
-                <f-select-button @click.native="onToTokenSelectorClick">
-                    <f-placeholder :content-loaded="!!toToken.symbol" block :replacement-num-chars="20">
-                        <div class="sb-content">
-                            <f-crypto-symbol :token="toToken" />
-                            <span>
-                                <f-token-value
-                                    :token="toToken"
-                                    :value="toTokenBalance"
-                                    :use-placeholder="false"
-                                    no-currency
-                                />
-                            </span>
-                        </div>
-                    </f-placeholder>
-                </f-select-button>
-                <div class="defi-price-input">
-                    <div ref="toSign" class="sign">+</div>
-                    <f-auto-resize-input ref="toARInput" min-width="48px">
-                        <input
-                            :id="`text-input-${id}`"
-                            ref="toInput_"
-                            :value="toInputValue === 0 ? '' : toInputValue"
-                            type="number"
-                            placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxToInputValue"
-                            class="text-input no-style"
-                            @change="onToInputChange"
-                            @input="onToInputInput"
-                            @keydown="onInputKeydown"
-                        />
-                    </f-auto-resize-input>
-                </div>
-            </div>
-            <div class="swap-cont" style="display: none;">
-                <!--
-                <div>
-                    <div class="defi-label">Current rate</div>
-                    <div class="value">{{ toTokenPrice }}</div>
-                </div>
--->
-                <div class="swap-col">
-                    <button class="btn round same-size light" title="Swap Tokens" @click="swapTokens">
-                        <icon
-                            data="@/assets/svg/defi/ftrade.svg"
-                            width="20"
-                            height="20"
-                            dir="right"
-                            aria-hidden="true"
-                        />
-                    </button>
-                </div>
-                <!--
-                <div class="align-right">
-                    <div class="defi-label">Today's change</div>
-                    <div class="value">2.38%</div>
-                </div>
--->
-            </div>
-        </div>
-
-        <div class="se-cont" style="display: none;">
-            <div class="f-slider-wrap">
-                <f-slider
-                    ref="slider"
-                    v-model="currFromValue"
-                    step="any"
-                    min="0"
-                    :max="maxFromInputValue.toString()"
-                    :labels="sliderLabels"
-                    clickable-labels
-                    use-lower-fill-bar
-                >
-                    <template #top="sProps">
-                        <label :for="sProps.inputId" class="not-visible">slider label</label>
-                    </template>
-                </f-slider>
-            </div>
-
-            <div class="exchange-price">
-                <div class="defi-label">Price</div>
-                <div class="value">
-                    <f-placeholder :content-loaded="!!perPrice" replacement-text="000.00 fUSD per fETH">
-                        {{ perPrice }}
-                    </f-placeholder>
-                </div>
-                <div class="swap-price">
-                    <button class="btn light same-size round" @click="swapPrice">
-                        <icon data="@/assets/svg/exchange-alt.svg" />
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="defi-buttons" style="display: none;">
-            <button class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                Submit
-                <!--Trade now-->
-            </button>
-        </div>
 
         <defi-token-picker-window
             ref="pickFromTokenWindow"
@@ -268,10 +130,8 @@ import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import { getUniqueId } from '../../utils';
 import { eventBusMixin } from '../../mixins/event-bus.js';
-import FSlider from '../../components/core/FSlider/FSlider.vue';
 import { formatNumberByLocale } from '../../filters.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
-import FAutoResizeInput from '@/components/core/FAutoResizeInput/FAutoResizeInput.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 
@@ -281,9 +141,7 @@ export default {
     components: {
         FCard,
         FPlaceholder,
-        FAutoResizeInput,
         FTokenValue,
-        FSlider,
         DefiTokenPickerWindow,
         FSelectButton,
         FCryptoSymbol,
@@ -303,6 +161,7 @@ export default {
             perPrice: 0,
             /** Per price direction. true - from -> to, false - to -> from */
             perPriceDirF2T: true,
+            sbmtDisabled: true,
             /** @type {DefiToken} */
             fromToken: {},
             toValue: 0,
@@ -312,8 +171,6 @@ export default {
             tokens: [],
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
-            // submitLabel: 'Enter an amount',
-            submitLabel: 'Swap',
         };
     },
 
@@ -400,7 +257,7 @@ export default {
             if (_value !== _oldValue) {
                 this.fromValue = parseFloat(_value);
                 this.setPerPrice();
-                this.updateSigns();
+                this.updateSubmitLabel();
             }
         },
 
@@ -427,8 +284,7 @@ export default {
     },
 
     mounted() {
-        this.$refs.fromSign.style.visibility = 'hidden';
-        this.$refs.toSign.style.visibility = 'hidden';
+        this.$refs.submitBut.disabled = true;
     },
 
     methods: {
@@ -471,10 +327,10 @@ export default {
 
             if (params.fromToken && params.toToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
-                this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
+                // this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
             } else if (this.tokens.length >= 2) {
                 this.fromToken = this.tokens[0];
-                this.toToken = this.tokens[1];
+                // this.toToken = this.tokens[1];
             }
 
             this.setPerPrice();
@@ -499,8 +355,6 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            this.resizeToARInput();
-
             return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : _value;
         },
 
@@ -508,8 +362,6 @@ export default {
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            this.resizeFromARInput();
-
             return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
         },
 
@@ -553,7 +405,6 @@ export default {
             this.fromValue = 0;
             this.toValue = 0;
             this.currFromValue = '0';
-            this.submitLabel = 'Enter an amount';
         },
 
         setPerPrice() {
@@ -572,40 +423,42 @@ export default {
             this.setPerPrice();
         },
 
-        resizeFromARInput() {
-            this.$nextTick(() => {
-                this.$refs.fromARInput.resizeInput();
-            });
-        },
-
-        resizeToARInput() {
-            this.$nextTick(() => {
-                this.$refs.toARInput.resizeInput();
-            });
-        },
-
         updateInputColor(_value, _toInput = false) {
             const cValue = _toInput ? this.correctToInputValue(_value) : this.correctFromInputValue(_value);
             const eInput = _toInput ? this.$refs.toInput : this.$refs.fromInput;
 
             if (_value > cValue) {
                 eInput.classList.add('invalid');
-                // this.submitLabel = `Insufficient balance`;
             } else {
                 eInput.classList.remove('invalid');
-                // this.submitLabel = `Swap`;
             }
         },
 
-        updateSigns() {
+        updateSubmitLabel() {
             this.$nextTick(() => {
-                const { $refs } = this;
-                let value = $refs.fromInput.value;
+                const fromInputValue = this.$refs.fromInput.value;
+                const toInputValue = this.$refs.toInput.value;
+                let submitLabel = '';
+                let sbmtDisabled = true;
 
-                $refs.fromSign.style.visibility = !value || value === '0' ? 'hidden' : 'visible';
+                if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+                    if (
+                        parseInt(fromInputValue) > this.maxFromInputValue ||
+                        parseInt(toInputValue) > this.maxToInputValue
+                    ) {
+                        submitLabel = 'Insufficient balance';
+                    } else {
+                        submitLabel = 'Swap';
+                        sbmtDisabled = false;
+                    }
+                } else if (fromInputValue && fromInputValue !== '0') {
+                    submitLabel = 'Select a token';
+                } else {
+                    submitLabel = 'Enter an amount';
+                }
 
-                value = $refs.toInput.value;
-                $refs.toSign.style.visibility = !value || value === '0' ? 'hidden' : 'visible';
+                this.$refs.submitBut.innerText = submitLabel;
+                this.$refs.submitBut.disabled = sbmtDisabled;
             });
         },
 
@@ -641,7 +494,11 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
-                this.resetInputValues();
+
+                // this.resetInputValues();
+                this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
+                this.updateSubmitLabel();
+                this.setPerPrice();
             }
         },
 
@@ -671,7 +528,7 @@ export default {
             );
 
             this.updateInputColor(parseFloat(_event.target.value));
-            this.updateSigns();
+            this.updateSubmitLabel();
         },
 
         /**
@@ -701,7 +558,7 @@ export default {
             );
 
             this.updateInputColor(parseFloat(_event.target.value), true);
-            this.updateSigns();
+            this.updateSubmitLabel();
         },
 
         /**

@@ -12,19 +12,19 @@
         margin: 120px auto 0 auto;
     }
 
-    .token-cont {
+    &__token {
         padding: 12px 16px;
         border-radius: 20px;
         border: 1px solid var(--f-fswap-swap-btn-border-color);
 
-        .token-balance {
+        &__balance {
             display: flex;
             flex-wrap: nowrap;
             align-items: center;
             justify-content: space-between;
         }
 
-        .token-body {
+        &__body {
             display: inline-flex;
             flex-wrap: nowrap;
             align-items: center;
@@ -60,12 +60,12 @@
         }
     }
 
-    .swap-cont {
+    &__swap-cont {
         margin: 8px 0;
         text-align: center;
     }
 
-    .exchange-price {
+    &__exchange-price {
         display: flex;
         align-items: center;
         margin-top: 16px;
@@ -86,100 +86,25 @@
         }
     }
 
-    .submit-cont {
+    &__select-token-btn {
+        &.small {
+            padding-right: 0;
+        }
+
+        svg {
+            margin-right: 0;
+            margin-left: 8px;
+        }
+    }
+
+    &__submit-cont {
         margin-top: 16px;
 
         .btn {
+            font-size: 21px;
             width: 100%;
             min-height: 64px;
         }
-    }
-
-
-
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        grid-gap: 16px 32px;
-        margin: 32px 8px 0 8px;
-
-        .swap-cont {
-            grid-area: 2 / 1;
-        }
-
-        > .swap-col {
-            display: none;
-        }
-    }
-
-    .swap-col {
-        text-align: center;
-        padding: 32px 0;
-
-        .btn {
-            color: $light-gray-color;
-            border: var(--f-fswap-swap-btn-border);
-            position: relative;
-            z-index: 2;
-            background-color: var(--f-doc-background-color);
-
-            &.same-size {
-                min-width: 48px;
-                min-height: 48px;
-            }
-        }
-    }
-
-    .defi-price-input {
-        margin-top: 16px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        justify-items: center;
-
-        input.text-input, .sign {
-            font-size: 72px;
-            margin-bottom: 0;
-        }
-
-        .sign, input.text-input::placeholder {
-            color: $light-gray-color;
-        }
-
-        input.text-input.invalid {
-            color: red;
-        }
-    }
-
-    .sb-content {
-        display: flex;
-        align-items: center;
-
-        > :first-child {
-            width: 100%;
-        }
-
-        > :last-child {
-            color: $light-gray-color;
-            padding-right: 8px;
-        }
-    }
-
-    .f-select-button {
-        .f-placeholder {
-            min-height: 38px;
-        }
-    }
-
-    .f-slider-wrap {
-        margin-top: 40px;
-    }
-
-    .se-cont {
-        max-width: 600px;
-        margin: 0 auto;
     }
 }
 
