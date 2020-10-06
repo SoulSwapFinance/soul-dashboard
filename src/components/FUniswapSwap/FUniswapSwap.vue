@@ -482,7 +482,7 @@ export default {
                         parseInt(fromInputValue) > this.maxFromInputValue ||
                         parseInt(toInputValue) > this.maxToInputValue
                     ) {
-                        this.submitLabel = 'Insufficient balance';
+                        this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
                     } else {
                         this.submitLabel = 'Swap';
                         this.submitBtnDisabled = false;
@@ -502,6 +502,10 @@ export default {
 
         onMaxAmountClick() {
             this.fromValue = this.maxFromInputValue;
+
+            defer(() => {
+                this.$refs.fromInput.value = this.formatFromInputValue(this.fromValue);
+            });
         },
 
         onFromTokenSelectorClick() {

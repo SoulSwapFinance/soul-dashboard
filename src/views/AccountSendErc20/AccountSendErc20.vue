@@ -50,7 +50,6 @@ export default {
 
         currentComponentProperties() {
             const { token } = this.params;
-            console.log('DFAK', this.currentComponent, this.params);
 
             switch (this.currentComponent) {
                 case 'send-transaction-form':

@@ -10,7 +10,7 @@
         width: 100%;
         max-width: 440px;
         //max-width: 480px;
-        margin: 120px auto 0 auto;
+        margin: 0 auto;
     }
 
     &__token {
@@ -130,13 +130,5 @@
         position: relative;
         top: -2px;
         right: -2px;
-    }
-}
-
-@include media-max($bp-small) {
-    .funiswap-swap {
-        > .f-card {
-            margin-top: 0;
-        }
     }
 }
