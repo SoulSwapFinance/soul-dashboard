@@ -1,0 +1,40 @@
+@import "../../assets/scss/vars";
+
+.funiswap-home-tabs {
+    --f-funiswap-home-tabs-font-family: #{$font-family-proxima};
+    --f-funiswap-home-tabs-color: #{$light-gray-color};
+    --f-funiswap-home-tabs-font-size: 18px;
+    --f-funiswap-active-color: inherit;
+    --f-funiswap-home-tabs-hover-color: var(--f-primary-color);
+
+    display: flex;
+
+    label {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding-bottom: 12px;
+        cursor: pointer;
+
+        input {
+            &:checked + .funiswap-home-tabs__title {
+                color: var(--f-funiswap-active-color);
+            }
+
+            &:focus.focus-visible + .funiswap-home-tabs__title {
+                background: #eee;
+            }
+        }
+    }
+
+    &__title {
+        font-family: var(--f-funiswap-home-tabs-font-family);
+        font-size: var(--f-funiswap-home-tabs-font-size);
+        color: var(--f-funiswap-home-tabs-color);
+        padding: 12px 16px;
+
+        &:hover {
+            color: var(--f-funiswap-home-tabs-hover-color);
+        }
+    }
+}
