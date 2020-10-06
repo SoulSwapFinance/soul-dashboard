@@ -153,8 +153,11 @@
         --f-view-defi-ftrade-swap-btn-border-color: var(--f-darker-color-3);
     }
 
+    .funiswap {
+        --f-funiswap-btn-border-color: var(--f-darker-color-3);
+    }
+
     .funiswap-swap {
-        --f-funiswap-swap-btn-border-color: var(--f-darker-color-3);
         --f-funiswap-swap-price-info-background-color: var(--f-darker-color-4);
     }
 }

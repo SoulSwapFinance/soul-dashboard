@@ -1,8 +1,8 @@
 <template>
-    <div class="funiswap-swap">
+    <div class="funiswap-swap funiswap">
         <f-card>
-            <div class="funiswap-swap__token">
-                <div class="funiswap-swap__token__balance">
+            <div class="funiswap__box">
+                <div class="funiswap__token__balance">
                     <span>From</span>
                     <span class="balance">
                         Balance:
@@ -14,8 +14,8 @@
                         />
                     </span>
                 </div>
-                <div class="funiswap-swap__token__body">
-                    <div class="funiswap-swap__token__sign">-</div>
+                <div class="funiswap__token__body">
+                    <div class="funiswap__token__sign">-</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="fromInput"
@@ -47,16 +47,16 @@
                 </button>
             </div>
 
-            <div class="funiswap-swap__token">
-                <div class="funiswap-swap__token__balance">
+            <div class="funiswap__box">
+                <div class="funiswap__token__balance">
                     <span>To</span>
                     <span class="balance">
                         Balance:
                         <f-token-value :token="toToken" :value="toTokenBalance" :use-placeholder="false" no-currency />
                     </span>
                 </div>
-                <div class="funiswap-swap__token__body">
-                    <div class="funiswap-swap__token__sign">+</div>
+                <div class="funiswap__token__body">
+                    <div class="funiswap__token__sign">+</div>
                     <input
                         :id="`text-input-${id}`"
                         ref="toInput"
@@ -81,7 +81,7 @@
                     </f-select-button>
                     <button
                         v-else
-                        class="btn small secondary funiswap-swap__select-token-btn"
+                        class="btn small secondary funiswap__select-token-btn"
                         type="button"
                         @click="onToTokenSelectorClick"
                     >
@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <div class="funiswap-swap__submit-cont">
+            <div class="funiswap__submit-cont">
                 <button ref="submitBut" class="btn large" :disabled="submitBtnDisabled" @click="onSubmit">
                     {{ submitLabel }}
                 </button>
@@ -254,10 +254,6 @@ export default {
             return this.$defi.fromTokenValue(this.toToken.availableBalance, this.toToken);
         },
 
-        toTokenPrice() {
-            return formatNumberByLocale(this.$defi.getTokenPrice(this.toToken), 5, 'USD');
-        },
-
         maxFromInputValue() {
             let max = 0;
 
@@ -312,11 +308,7 @@ export default {
 
                 if (!this._fromValueChanged) {
                     // correct 'from' input value
-                    defer(() => {
-                        this.$refs.fromInput.value = this.formatFromInputValue(
-                            this.correctFromInputValue(this.convertTo2From(_value))
-                        );
-                    });
+                    this.setFromInputValue(this.correctFromInputValue(this.convertTo2From(_value)));
                 }
 
                 this._fromValueChanged = false;
@@ -443,6 +435,18 @@ export default {
             this.toValue = '';
         },
 
+        setFromInputValue(_value) {
+            defer(() => {
+                this.$refs.fromInput.value = this.formatFromInputValue(_value);
+            });
+        },
+
+        setToInputValue(_value) {
+            defer(() => {
+                this.$refs.toInput.value = this.formatToInputValue(_value);
+            });
+        },
+
         setPerPrice() {
             const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
             const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
@@ -457,6 +461,8 @@ export default {
         swapPrice() {
             this.perPriceDirF2T = !this.perPriceDirF2T;
             this.setPerPrice();
+            this.setFromInputValue(this.fromValue);
+            this.setToInputValue(this.toValue);
         },
 
         updateInputColor(_value, _toInput = false) {
@@ -502,10 +508,7 @@ export default {
 
         onMaxAmountClick() {
             this.fromValue = this.maxFromInputValue;
-
-            defer(() => {
-                this.$refs.fromInput.value = this.formatFromInputValue(this.fromValue);
-            });
+            this.setFromInputValue(this.fromValue);
         },
 
         onFromTokenSelectorClick() {

@@ -23,7 +23,7 @@
                     value="pool"
                     class="not-visible"
                 />
-                <span class="funiswap-home-tabs__title">Pool</span>
+                <span class="funiswap-home-tabs__title">Add Liquidity</span>
             </label>
         </li>
     </ul>

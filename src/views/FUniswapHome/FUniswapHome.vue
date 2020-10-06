@@ -11,6 +11,7 @@
 
 <script>
 import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
+import FUniswapLiquidity from '@/components/FUniswapLiquidity/FUniswapLiquidity.vue';
 import { mapGetters } from 'vuex';
 import FUniswapHomeTabs from '@/components/FUniswapHomeTabs/FUniswapHomeTabs.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
@@ -20,7 +21,7 @@ const DEFAULT_COMPONENT = 'f-uniswap-swap';
 export default {
     name: 'FUniswapHome',
 
-    components: { FUniswapHomeTabs, FUniswapSwap },
+    components: { FUniswapHomeTabs, FUniswapSwap, FUniswapLiquidity },
 
     mixins: [eventBusMixin],
 
@@ -67,7 +68,11 @@ export default {
         },
 
         onTabSelected(_tabCode) {
-            console.log('tab selected', _tabCode);
+            if (_tabCode === 'swap') {
+                this.currentComponent = 'f-uniswap-swap';
+            } else if (_tabCode === 'pool') {
+                this.currentComponent = 'f-uniswap-liquidity';
+            }
         },
 
         onAccountPicked() {

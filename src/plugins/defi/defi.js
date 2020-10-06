@@ -645,6 +645,8 @@ export class DeFi {
                         mintFee4
                         rewardCollateralRatio4
                         minCollateralRatio4
+                        uniswapCoreFactory
+                        uniswapRouter
                         fMintContract
                         fMintRewardDistribution
                         decimals
