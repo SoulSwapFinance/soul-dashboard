@@ -39,6 +39,7 @@ import {
 } from './actions.type.js';
 import { fWallet } from '../plugins/fantom-web3-wallet.js';
 import { arrayEquals } from '@/utils/array.js';
+import backingStorage from './storage';
 
 Vue.use(Vuex);
 
@@ -47,8 +48,8 @@ const vuexPlugins = [];
 const vuexLocalStorage = new VuexPersist({
     // The key to store the state on in the storage provider.
     key: 'vuex',
-    // TODO: write custom storage for chrome.storage
-    storage: window.localStorage,
+    storage: backingStorage.storage,
+    asyncStorage: backingStorage.asyncStorage,
     // Function that passes the state and returns the state with only the Objects you want to store.
     reducer: (_state) => ({
         tokenPrice: _state.tokenPrice,
