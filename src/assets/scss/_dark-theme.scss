@@ -6,6 +6,7 @@
     --f-darker-color-2: #33364a;
     //--f-darker-color-3: #41455e;
     --f-darker-color-3: #3e425b;
+    --f-darker-color-4: #252736;
     --f-lighter-color: #8997b1;
 
     --f-orange-color: #F8782A;
@@ -153,6 +154,7 @@
     }
 
     .funiswap-swap {
-        --f-fswap-swap-btn-border-color: var(--f-darker-color-3);
+        --f-funiswap-swap-btn-border-color: var(--f-darker-color-3);
+        --f-funiswap-swap-price-info-background-color: var(--f-darker-color-4);
     }
 }

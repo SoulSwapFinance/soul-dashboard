@@ -3,7 +3,9 @@
         <span @click="onButtonClick">
             <slot name="button">
                 <button class="no-style" :title="buttonTooltip">
-                    <slot name="button-content"><icon data="@/assets/svg/info.svg" width="20" height="20" /></slot>
+                    <slot name="button-content">
+                        <icon data="@/assets/svg/info.svg" :width="iconSize" :height="iconSize" />
+                    </slot>
                 </button>
             </slot>
         </span>
@@ -76,6 +78,11 @@ export default {
         buttonTooltip: {
             type: String,
             default: 'Show info',
+        },
+        /** Default icon size. */
+        iconSize: {
+            type: String,
+            default: '20',
         },
     },
 

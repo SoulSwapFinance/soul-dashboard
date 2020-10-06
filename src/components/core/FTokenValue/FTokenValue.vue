@@ -45,6 +45,11 @@ export default {
             type: String,
             default: '10,000.00 FTM',
         },
+        /** Number of decimal places. If not set (-1), token decimal places will be taken. */
+        decimals: {
+            type: Number,
+            default: -1,
+        },
     },
 
     computed: {
@@ -53,7 +58,7 @@ export default {
         },
 
         tokenValue() {
-            let decimals = this.$defi.tokenDecimals[this.token.symbol];
+            let decimals = this.decimals > -1 ? this.decimals : this.$defi.tokenDecimals[this.token.symbol];
 
             return this.value === 0 ? 0 : formatNumberByLocale(parseFloat(this.value).toFixed(decimals), decimals);
         },

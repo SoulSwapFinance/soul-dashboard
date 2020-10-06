@@ -19,7 +19,7 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="fromInput"
-                        :value="fromInputValue === 0 ? '' : fromInputValue"
+                        v-model="fromValue"
                         type="number"
                         placeholder="0"
                         step="any"
@@ -27,7 +27,6 @@
                         :max="maxFromInputValue"
                         class="text-input no-style"
                         @change="onFromInputChange"
-                        @input="onFromInputInput"
                         @keydown="onInputKeydown"
                     />
                     <button class="btn small secondary max-amount" @click="onMaxAmountClick">Max</button>
@@ -61,7 +60,7 @@
                     <input
                         :id="`text-input-${id}`"
                         ref="toInput"
-                        :value="toInputValue === 0 ? '' : toInputValue"
+                        v-model="toValue"
                         type="number"
                         placeholder="0"
                         step="any"
@@ -69,7 +68,6 @@
                         :max="maxFromInputValue"
                         class="text-input no-style"
                         @change="onToInputChange"
-                        @input="onToInputInput"
                         @keydown="onInputKeydown"
                     />
                     <f-select-button
@@ -107,11 +105,42 @@
             </div>
 
             <div class="funiswap-swap__submit-cont">
-                <button ref="submitBut" class="btn large" @click="onSubmit">
-                    Enter an amount
+                <button ref="submitBut" class="btn large" :disabled="submitBtnDisabled" @click="onSubmit">
+                    {{ submitLabel }}
                 </button>
             </div>
         </f-card>
+
+        <transition name="scale-center">
+            <div
+                v-if="showPriceInfo"
+                class="funiswap-swap__price-info"
+                :class="{ 'funiswap-swap__price-info--show': showPriceInfo }"
+            >
+                <div class="row no-vert-col-padding no-collapse">
+                    <div class="col defi-label">
+                        Minimum Received
+                        <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
+                            Your transaction will revert if there is a large, unfavorable price movement before it is
+                            confirmed.
+                        </f-info>
+                    </div>
+                    <div class="col align-right"><f-token-value :value="minimumReceived" :token="toToken" /></div>
+                </div>
+                <div class="row no-vert-col-padding no-collapse">
+                    <div class="col defi-label">
+                        Liquidity Provider Fee
+                        <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
+                            A portion of each trade ({{ liquidityProviderFee * 100 }}%) goes to liquidity providers as a
+                            protocol incentive.
+                        </f-info>
+                    </div>
+                    <div class="col align-right">
+                        <f-token-value :decimals="4" :value="fromValue * liquidityProviderFee" :token="fromToken" />
+                    </div>
+                </div>
+            </div>
+        </transition>
 
         <defi-token-picker-window
             ref="pickFromTokenWindow"
@@ -123,21 +152,23 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
-import { getUniqueId } from '../../utils';
+import { defer, getUniqueId } from '../../utils';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import { formatNumberByLocale } from '../../filters.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
+import FInfo from '@/components/core/FInfo/FInfo.vue';
 
 export default {
     name: 'FUniswapSwap',
 
     components: {
+        FInfo,
         FCard,
         FPlaceholder,
         FTokenValue,
@@ -155,28 +186,30 @@ export default {
                 collateral: [],
                 debt: [],
             },
-            fromValue: 0,
-            currFromValue: '0',
+            fromValue: '',
+            toValue: '',
             perPrice: 0,
             /** Per price direction. true - from -> to, false - to -> from */
             perPriceDirF2T: true,
-            sbmtDisabled: true,
+            submitBtnDisabled: true,
+            showPriceInfo: false,
             /** @type {DefiToken} */
             fromToken: {},
-            toValue: 0,
             /** @type {DefiToken} */
             toToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
+            slippageReserve: 0.005,
+            liquidityProviderFee: 0.003,
+            submitLabel: 'Enter an amount',
+            // minimumReceived: 0,
         };
     },
 
     computed: {
         ...mapGetters(['currentAccount', 'defiSlippageReserve']),
-
-        ...mapState(['breakpoints']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -189,10 +222,6 @@ export default {
 
         fromInputValue() {
             return this.formatFromInputValue(this.fromValue);
-        },
-
-        toInputValue() {
-            return this.formatToInputValue(this.toValue);
         },
 
         fromTokens() {
@@ -226,12 +255,14 @@ export default {
         maxFromInputValue() {
             let max = 0;
 
+            /*
             if (this.fromToken.symbol === 'FUSD') {
                 // subtract 0.5% fee
                 max = this.fromTokenBalance - this.fromTokenBalance * 0.005;
             } else {
-                max = this.fromTokenBalance;
-            }
+            */
+            max = this.fromTokenBalance;
+            // }
 
             return max - max * this.defiSlippageReserve;
         },
@@ -243,35 +274,54 @@ export default {
         submitDisabled() {
             return this.correctFromInputValue(this.fromValue) === 0;
         },
+
+        minimumReceived() {
+            return this.formatToInputValue(this.toValue * (1 - this.slippageReserve));
+        },
     },
 
     watch: {
-        currFromValue(_value, _oldValue) {
-            if (_value !== _oldValue) {
-                this.fromValue = parseFloat(_value);
-                this.setPerPrice();
-                this.updateSubmitLabel();
-            }
-        },
-
         fromValue(_value, _oldValue) {
             if (_value !== _oldValue) {
-                this.toValue = this.convertFrom2To(_value);
-                this.currFromValue = _value.toString();
+                this.updateInputColor(parseFloat(_value));
+                this.updateSubmitLabel();
+
                 this.setPerPrice();
+
+                this._fromValueChanged = true;
+
+                this.toValue = this.convertFrom2To(_value);
+
+                defer(() => {
+                    this.$refs.toInput.value = this.formatToInputValue(this.toValue);
+                    this._fromValueChanged = false;
+                });
             }
         },
 
-        breakpoints() {
-            const { $refs } = this;
+        toValue(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this.updateInputColor(parseFloat(_value), true);
+                this.updateSubmitLabel();
 
-            $refs.fromARInput.update();
-            $refs.toARInput.update();
+                if (!this._fromValueChanged) {
+                    // correct 'from' input value
+                    defer(() => {
+                        this.$refs.fromInput.value = this.formatFromInputValue(
+                            this.correctFromInputValue(this.convertTo2From(_value))
+                        );
+                    });
+                }
+
+                this._fromValueChanged = false;
+            }
         },
     },
 
     created() {
         this.init();
+
+        this._fromValueChanged = false;
 
         this._eventBus.on('account-picked', this.onAccountPicked);
     },
@@ -313,11 +363,11 @@ export default {
             this.fromToken = this.toToken;
             this.toToken = hToken;
 
-            this.fromValue = this.toValue;
-            this.toValue = hValue;
+            this.fromValue = this.toValue || '';
+            this.toValue = hValue || '';
 
-            this.fromValue = this.correctFromInputValue(this.fromValue);
-            // this.currFromValue = this.fromValue.toString();
+            this.fromValue = this.correctFromInputValue(this.fromValue) || '';
+
             this.setPerPrice();
         },
 
@@ -325,14 +375,18 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : _value;
+            const decimals = this.$defi.getTokenDecimals(this.toToken);
+
+            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : _value;
+            const decimals = this.$defi.getTokenDecimals(this.fromToken);
+
+            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
         },
 
         /**
@@ -379,9 +433,8 @@ export default {
         },
 
         resetInputValues() {
-            this.fromValue = 0;
-            this.toValue = 0;
-            this.currFromValue = '0';
+            this.fromValue = '';
+            this.toValue = '';
         },
 
         setPerPrice() {
@@ -415,27 +468,29 @@ export default {
             this.$nextTick(() => {
                 const fromInputValue = this.$refs.fromInput.value;
                 const toInputValue = this.$refs.toInput.value;
-                let submitLabel = '';
-                let sbmtDisabled = true;
+
+                this.submitBtnDisabled = true;
 
                 if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
                     if (
                         parseInt(fromInputValue) > this.maxFromInputValue ||
                         parseInt(toInputValue) > this.maxToInputValue
                     ) {
-                        submitLabel = 'Insufficient balance';
+                        this.submitLabel = 'Insufficient balance';
                     } else {
-                        submitLabel = 'Swap';
-                        sbmtDisabled = false;
+                        this.submitLabel = 'Swap';
+                        this.submitBtnDisabled = false;
                     }
                 } else if (fromInputValue && fromInputValue !== '0') {
-                    submitLabel = 'Select a token';
+                    this.submitLabel = 'Select a token';
                 } else {
-                    submitLabel = 'Enter an amount';
+                    this.submitLabel = 'Enter an amount';
                 }
 
-                this.$refs.submitBut.innerText = submitLabel;
-                this.$refs.submitBut.disabled = sbmtDisabled;
+                // this.$refs.submitBut.innerText = submitLabel;
+                // this.$refs.submitBut.disabled = submitBtnDisabled;
+
+                this.showPriceInfo = !this.submitBtnDisabled;
             });
         },
 
@@ -473,7 +528,12 @@ export default {
                 this.toToken = _token;
 
                 // this.resetInputValues();
-                this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
+                const value = this.$refs.fromInput.value;
+
+                if (value !== '') {
+                    this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
+                }
+
                 this.updateSubmitLabel();
                 this.setPerPrice();
             }
@@ -499,18 +559,6 @@ export default {
         /**
          * @param {InputEvent} _event
          */
-        onFromInputInput(_event) {
-            this.$refs.toInput.value = this.formatToInputValue(
-                this.correctToInputValue(this.convertFrom2To(_event.target.value))
-            );
-
-            this.updateInputColor(parseFloat(_event.target.value));
-            this.updateSubmitLabel();
-        },
-
-        /**
-         * @param {InputEvent} _event
-         */
         onToInputChange(_event) {
             const cValue = this.correctToInputValue(_event.target.value);
 
@@ -521,21 +569,9 @@ export default {
             }
 
             this.toValue = cValue;
-            this.fromValue = this.convertTo2From(this.toValue);
+            // this.fromValue = this.convertTo2From(this.toValue);
 
             this.updateInputColor(this.toValue, true);
-        },
-
-        /**
-         * @param {InputEvent} _event
-         */
-        onToInputInput(_event) {
-            this.$refs.fromInput.value = this.formatFromInputValue(
-                this.correctFromInputValue(this.convertTo2From(_event.target.value))
-            );
-
-            this.updateInputColor(parseFloat(_event.target.value), true);
-            this.updateSubmitLabel();
         },
 
         /**
@@ -564,7 +600,7 @@ export default {
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'fswap-confirmation',
+                    name: 'funiswap-swap-confirmation',
                     params,
                 });
             }
