@@ -179,6 +179,13 @@ export default {
 
     mixins: [eventBusMixin],
 
+    props: {
+        slippageTolerance: {
+            type: Number,
+            default: 0.005,
+        },
+    },
+
     data() {
         return {
             /** @type {FMintAccount} */
@@ -201,7 +208,6 @@ export default {
             tokens: [],
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
-            slippageReserve: 0.005,
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
             // minimumReceived: 0,
@@ -276,7 +282,7 @@ export default {
         },
 
         minimumReceived() {
-            return this.formatToInputValue(this.toValue * (1 - this.slippageReserve));
+            return this.formatToInputValue(this.toValue * (1 - this.slippageTolerance));
         },
     },
 
@@ -593,6 +599,7 @@ export default {
                 toValue: this.toValue,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
+                slippageTolerance: this.slippageTolerance,
                 steps: 2,
                 step: 1,
                 max: this.maxFromInputValue === this.fromValue,

@@ -42,6 +42,7 @@ import {
     SET_DARK_MODE,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
+    SET_FUNISWAP_SLIPPAGE_TOLERANCE,
 } from './store/mutations.type.js';
 import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
@@ -146,6 +147,15 @@ export default {
         setDefiSlippageReserve(_defiSlippageReserve) {
             if (_defiSlippageReserve) {
                 this.$store.commit(SET_DEFI_SLIPPAGE_RESERVE, _defiSlippageReserve);
+            }
+        },
+
+        /**
+         * @param {number} _fUniswapSlippageTolerance
+         */
+        setFUniswapSlippageTolerance(_fUniswapSlippageTolerance) {
+            if (_fUniswapSlippageTolerance) {
+                this.$store.commit(SET_FUNISWAP_SLIPPAGE_TOLERANCE, _fUniswapSlippageTolerance);
             }
         },
 

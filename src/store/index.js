@@ -24,6 +24,7 @@ import {
     SET_CONTACT,
     SET_DEFI_SLIPPAGE_RESERVE,
     SET_DARK_MODE,
+    SET_FUNISWAP_SLIPPAGE_TOLERANCE,
 } from './mutations.type.js';
 import {
     ADD_ACCOUNT,
@@ -92,6 +93,7 @@ export const store = new Vuex.Store({
         currency: 'USD',
         fractionDigits: 2,
         defiSlippageReserve: appConfig.settings.defaultDefiSlippageReserve,
+        fUniswapSlippageTolerance: appConfig.settings.defaultFUniswapSlippageTolerance,
         darkMode: true,
         /** @type {[WalletAccount]} */
         accounts: [],
@@ -155,6 +157,13 @@ export const store = new Vuex.Store({
             return _state.defiSlippageReserve / 100;
         },
         */
+        /**
+         * @param {Object} _state
+         * @return {number}
+         */
+        fUniswapSlippageTolerance(_state) {
+            return _state.fUniswapSlippageTolerance / 100;
+        },
         /**
          * @param {Object} _state
          * @return {function(*=): ?WalletAccount}
@@ -285,6 +294,13 @@ export const store = new Vuex.Store({
          */
         [SET_DEFI_SLIPPAGE_RESERVE](_state, _defiSlippageReserve) {
             _state.defiSlippageReserve = _defiSlippageReserve;
+        },
+        /**
+         * @param {Object} _state
+         * @param {number} _fUniswapSlippageTolerance
+         */
+        [SET_FUNISWAP_SLIPPAGE_TOLERANCE](_state, _fUniswapSlippageTolerance) {
+            _state.fUniswapSlippageTolerance = _fUniswapSlippageTolerance;
         },
         /**
          * @param {Object} _state

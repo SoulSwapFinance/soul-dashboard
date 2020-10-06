@@ -106,6 +106,8 @@ const appConfig = {
         currencies: ['USD', 'EUR'],
         // defi slippage reserve in percentage
         defaultDefiSlippageReserve: 0.3,
+        // default funiswap slippage tolerance in percentage
+        defaultFUniswapSlippageTolerance: 0.5,
     },
 };
 

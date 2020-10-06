@@ -173,7 +173,7 @@ export default {
             let txToSign;
             let fromValue;
             const web3 = new Web3();
-            const slippageReserve = 0.005;
+            const { slippageTolerance } = params;
 
             if (!fromToken || !toToken) {
                 return;
@@ -204,7 +204,7 @@ export default {
                     // slippage 0.5%
                     Web3.utils.toHex(
                         this.$defi.shiftDecPointRight(
-                            (params.toValue * (1 - slippageReserve)).toString(),
+                            (params.toValue * (1 - slippageTolerance)).toString(),
                             toToken.decimals
                         )
                     ),

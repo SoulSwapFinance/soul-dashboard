@@ -43,6 +43,33 @@
                             </template>
                         </f-input>
                         -->
+                        <f-input
+                            name="funiswap_slippage_tolerance"
+                            :value="$store.state.fUniswapSlippageTolerance.toString()"
+                            label="fUniswap Slippage Tolerance"
+                            type="number"
+                            min="0.1"
+                            max="100"
+                            step="0.1"
+                            field-size="large"
+                            validate-on-input
+                            :validator="checkFUniswapSlippageTolerance"
+                        >
+                            <template #top="sProps">
+                                <div class="input-label-layout">
+                                    <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                    <f-info window-closeable window-class="light" style="margin-left: 8px;">
+                                        Your transaction in fUniswap will revert if the price changes unfavorable by
+                                        more than this percentage.
+                                    </f-info>
+                                </div>
+                            </template>
+                            <template #bottom="sProps">
+                                <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                    Value must be between 0.1% and 100%
+                                </f-message>
+                            </template>
+                        </f-input>
 
                         <br />
                         <f-toggle-button name="night_mode" label="Dark Mode" :checked="darkModeOn" />
@@ -74,11 +101,14 @@ import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
+import FInput from '@/components/core/FInput/FInput.vue';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
+import FInfo from '@/components/core/FInfo/FInfo.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FToggleButton, SocialMediaLinks, FSelect, FForm, FCard },
+    components: { FInfo, FMessage, FInput, FToggleButton, SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
@@ -141,6 +171,21 @@ export default {
          * @param {string} _value
          * @return {boolean}
          */
+        checkFUniswapSlippageTolerance(_value) {
+            let ok = false;
+            const value = parseFloat(_value);
+
+            if (!isNaN(value)) {
+                ok = value >= 0.1 && value <= 100;
+            }
+
+            return ok;
+        },
+
+        /**
+         * @param {string} _value
+         * @return {boolean}
+         */
         checkDefiSlippageReserve(_value) {
             let ok = false;
             const value = parseFloat(_value);
@@ -163,6 +208,10 @@ export default {
             } else if (detail.eTarget.name === 'fraction_digits') {
                 if (appNode) {
                     appNode.setFractionDigits(parseInt(detail.value));
+                }
+            } else if (detail.eTarget.name === 'funiswap_slippage_tolerance') {
+                if (appNode && this.checkFUniswapSlippageTolerance(detail.value)) {
+                    appNode.setFUniswapSlippageTolerance(parseFloat(detail.value));
                 }
                 /*
             } else if (detail.eTarget.name === 'defi_slippage_reserve') {
