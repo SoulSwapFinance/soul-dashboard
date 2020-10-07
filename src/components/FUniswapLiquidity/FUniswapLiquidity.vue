@@ -350,14 +350,18 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
+            const value = parseFloat(_value);
+
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
+            const value = parseFloat(_value);
+
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
         },
 
         /**
@@ -371,7 +375,7 @@ export default {
          * @param {number} _value
          */
         correctToInputValue(_value) {
-            return Math.min(Math.max(_value, 0), this.maxToInputValue);
+            return Math.min(Math.max(_value, 0), Math.min(this.maxToInputValue, this.toTokenBalance));
         },
 
         convertFrom2To(_value) {
@@ -418,11 +422,10 @@ export default {
                 this.submitBtnDisabled = true;
 
                 if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                    if (
-                        parseInt(fromInputValue) > this.maxFromInputValue ||
-                        parseInt(toInputValue) > this.maxToInputValue
-                    ) {
+                    if (parseInt(fromInputValue) > Math.min(this.maxFromInputValue, this.fromTokenBalance)) {
                         this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
+                    } else if (parseInt(toInputValue) > Math.min(this.maxToInputValue, this.toTokenBalance)) {
+                        this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
                     } else {
                         this.submitLabel = 'Supply';
                         this.submitBtnDisabled = false;
