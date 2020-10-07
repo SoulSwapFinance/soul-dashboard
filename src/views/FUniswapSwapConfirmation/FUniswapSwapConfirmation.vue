@@ -16,7 +16,7 @@
                     :route-name="backButtonRoute"
                     :params="{ fromToken: params.fromToken, toToken: params.toToken }"
                 />
-                Confirmation
+                Confirm Swap
                 <template v-if="params.steps">({{ params.step }}/{{ params.steps }})</template>
             </h1>
 
@@ -183,7 +183,18 @@ export default {
                 contractAddress = this.$defi.contracts.fMint;
             }
 
-            if (this.params.step === 1) {
+            /*
+            console.log(
+                await uniswapUtils.uniswapAmountsIn(
+                    web3,
+                    this.$defi.contracts.uniswapRouter,
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
+                    [fromToken.address, toToken.address]
+                )
+            );
+            */
+
+            if (params.step === 1) {
                 fromValue = params.fromValue;
 
                 // add 0.5% fee
@@ -191,16 +202,17 @@ export default {
 
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     fromToken.address,
-                    contractAddress,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
+                    this.$defi.contracts.uniswapRouter,
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(fromValue.toString(), fromToken.decimals))
+                    // Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
-                console.log(fromToken, toToken, params.toValue);
+                // console.log(fromToken, toToken, params.toValue);
 
                 txToSign = uniswapUtils.uniswapExactTokensForTokens(
                     web3,
                     this.$defi.contracts.uniswapRouter,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
                     // slippage 0.5%
                     Web3.utils.toHex(
                         this.$defi.shiftDecPointRight(
@@ -209,8 +221,8 @@ export default {
                         )
                     ),
                     [fromToken.address, toToken.address],
-                    toToken.address,
-                    '60'
+                    this.currentAccount.address,
+                    (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
                 );
             }
 
