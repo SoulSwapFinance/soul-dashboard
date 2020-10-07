@@ -1,5 +1,6 @@
 <template>
     <div class="view-funiswap-home">
+        <h1>fUniswap</h1>
         <f-uniswap-home-tabs @tab-selected="onTabSelected" />
         <component
             :is="currentComponent"
