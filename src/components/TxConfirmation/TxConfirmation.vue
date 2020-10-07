@@ -124,6 +124,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Count of usage of temporary password */
+        tmpPwdCount: {
+            type: Number,
+            default: 1,
+        },
     },
 
     data() {
@@ -214,8 +219,8 @@ export default {
                         try {
                             rawTx = await fWallet.signTransaction(this.tx, currentAccount.keystore, pwd);
 
-                            if (this.setTmpPwd) {
-                                fWallet.pwdStorage.set(pwd);
+                            if (this.setTmpPwd && this.tmpPwdCount > 0) {
+                                fWallet.pwdStorage.set(pwd, this.tmpPwdCount);
                             }
                         } catch (_error) {
                             console.error(_error);

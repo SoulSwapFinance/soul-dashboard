@@ -562,9 +562,8 @@ export default {
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
                 slippageTolerance: this.slippageTolerance,
-                addLiquidity: true,
-                // steps: 2,
-                // step: 1,
+                steps: 3,
+                step: 1,
                 max: this.maxFromInputValue === this.fromValue,
             };
 

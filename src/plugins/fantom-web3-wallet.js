@@ -41,11 +41,12 @@ export const Web3 = {
 
 /**
  * Temporary password storage.
- * @type {{pwd: string, timeout: number}}
+ * @type {{pwd: string, timeout: number, count: number}}
  */
 const pwdO = {
     pwd: '',
     timeout: 0,
+    count: 0,
 };
 
 /**
@@ -58,9 +59,11 @@ class PWDStorage {
 
     /**
      * @param {string} _pwd
+     * @param {number} [_count] Count of usage of the password
      */
-    set(_pwd = '') {
+    set(_pwd = '', _count = 1) {
         pwdO.pwd = _pwd;
+        pwdO.count = _count;
     }
 
     /**
@@ -72,6 +75,7 @@ class PWDStorage {
 
     clear() {
         pwdO.pwd = '';
+        pwdO.count = 0;
     }
 
     /**
@@ -80,8 +84,8 @@ class PWDStorage {
     setTimeout(_timeout = 0) {
         pwdO.timeout = _timeout;
 
-        this.timeoutId = setTimeout(function () {
-            pwdO.pwd = '';
+        this.timeoutId = setTimeout(() => {
+            this.clear();
             pwdO.timeout = 0;
         }, pwdO.timeout);
     }
@@ -619,9 +623,23 @@ export class FantomWeb3Wallet {
 
     async signTransaction(_tx, _keystore, _password) {
         const { pwdStorage } = this;
-        const account = this.decryptFromKeystore(_keystore, pwdO.pwd || _password);
+        let password = _password;
 
-        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet()) {
+        if (pwdStorage.isSet()) {
+            if (!pwdStorage.isTimeoutSet()) {
+                if (pwdO.count-- > 0) {
+                    password = pwdO.pwd;
+                }
+            } else {
+                password = pwdO.pwd;
+            }
+        }
+
+        const account = this.decryptFromKeystore(_keystore, password);
+
+        password = '';
+
+        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet() && pwdO.count === 0) {
             pwdStorage.clear();
         }
 
