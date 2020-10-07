@@ -1,13 +1,6 @@
 @import "../../assets/scss/vars";
 
 .funiswap-swap {
-    --f-funiswap-swap-price-info-background-color: #f4f4f4;
-
-    &__swap-cont {
-        margin: 8px 0;
-        text-align: center;
-    }
-
     &__exchange-price {
         display: flex;
         align-items: center;
@@ -26,20 +19,6 @@
         }
 
         .swap-price {
-        }
-    }
-
-    &__price-info {
-        //display: none;
-        width: 100%;
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: var(--f-funiswap-swap-price-info-background-color);
-        border-radius: 0 0 16px 16px;
-
-        &--show {
-            //display: block;
         }
     }
 }

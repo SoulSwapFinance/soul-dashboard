@@ -37,6 +37,7 @@ export default {
         currentComponentProperties() {
             switch (this.currentComponent) {
                 case 'f-uniswap-swap':
+                case 'f-uniswap-liquidity':
                     return {
                         slippageTolerance: this.fUniswapSlippageTolerance,
                     };

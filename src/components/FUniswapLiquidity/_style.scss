@@ -5,4 +5,18 @@
         //max-width: 480px;
         margin: 0 auto;
     }
+
+    &__prices {
+        margin-top: 24px;
+
+        > .row {
+            margin-top: 8px;
+            text-align: center;
+        }
+    }
+
+    .funiswap__swap-cont {
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
 }

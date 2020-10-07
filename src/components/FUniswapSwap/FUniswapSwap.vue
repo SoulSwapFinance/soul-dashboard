@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="funiswap-swap__swap-cont">
+            <div class="funiswap__swap-cont">
                 <button class="btn round same-size light" title="Swap Tokens" @click="swapTokens">
                     <icon data="@/assets/svg/arrow-left.svg" width="12" height="12" dir="left" aria-hidden="true" />
                 </button>
@@ -112,11 +112,7 @@
         </f-card>
 
         <transition name="scale-center">
-            <div
-                v-if="showPriceInfo"
-                class="funiswap-swap__price-info"
-                :class="{ 'funiswap-swap__price-info--show': showPriceInfo }"
-            >
+            <div v-if="showPriceInfo" class="funiswap__bottom-box">
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
                         Minimum Received
