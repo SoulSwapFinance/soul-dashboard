@@ -154,7 +154,6 @@ import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import { defer, getUniqueId } from '../../utils';
 import { eventBusMixin } from '../../mixins/event-bus.js';
-import { formatNumberByLocale } from '../../filters.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
@@ -369,18 +368,14 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            const decimals = this.$defi.getTokenDecimals(this.toToken);
-
-            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            const decimals = this.$defi.getTokenDecimals(this.fromToken);
-
-            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
         },
 
         /**
@@ -433,7 +428,9 @@ export default {
 
         setFromInputValue(_value) {
             defer(() => {
+                console.log('ajaj', _value);
                 this.$refs.fromInput.value = this.formatFromInputValue(_value);
+                console.log('???', _value, this.formatFromInputValue(_value));
             });
         },
 

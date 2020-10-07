@@ -142,7 +142,6 @@ import FSelectButton from '@/components/core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import DefiTokenPickerWindow from '@/components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
-import { formatNumberByLocale } from '@/filters.js';
 export default {
     name: 'FUniswapLiquidity',
 
@@ -351,18 +350,14 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            const decimals = this.$defi.getTokenDecimals(this.toToken);
-
-            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            const decimals = this.$defi.getTokenDecimals(this.fromToken);
-
-            return _value !== 0 ? formatNumberByLocale(parseFloat(_value).toFixed(decimals), decimals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
         },
 
         /**
