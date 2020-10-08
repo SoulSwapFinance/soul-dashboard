@@ -187,7 +187,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
+        ...mapGetters(['currentAccount']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -223,9 +223,7 @@ export default {
         },
 
         maxFromInputValue() {
-            const max = this.fromTokenBalance;
-
-            return max - max * this.defiSlippageReserve;
+            return this.fromTokenBalance;
         },
 
         maxToInputValue() {

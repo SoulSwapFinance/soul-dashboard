@@ -210,7 +210,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount', 'defiSlippageReserve']),
+        ...mapGetters(['currentAccount']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -250,18 +250,15 @@ export default {
         },
 
         maxFromInputValue() {
-            let max = 0;
-
             /*
             if (this.fromToken.symbol === 'FUSD') {
                 // subtract 0.5% fee
                 max = this.fromTokenBalance - this.fromTokenBalance * 0.005;
             } else {
             */
-            max = this.fromTokenBalance;
             // }
 
-            return max - max * this.defiSlippageReserve;
+            return this.fromTokenBalance;
         },
 
         maxToInputValue() {

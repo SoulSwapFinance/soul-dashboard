@@ -55,6 +55,7 @@ const vuexLocalStorage = new VuexPersist({
         currency: _state.currency,
         fractionDigits: _state.fractionDigits,
         defiSlippageReserve: _state.defiSlippageReserve,
+        fUniswapSlippageTolerance: _state.fUniswapSlippageTolerance,
         darkMode: _state.darkMode,
         accounts: _state.accounts,
         contacts: _state.contacts,
