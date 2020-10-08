@@ -823,4 +823,133 @@ export class DeFi {
 
         return tokenPrice;
     }
+
+    /**
+     * @return {Promise<void>}
+     */
+    async fetchBlockchainState() {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetState {
+                    state
+                }
+            `,
+            fetchPolicy: 'network-only',
+        });
+
+        console.log('fetchBlockchainState', data);
+    }
+
+    /**
+     * @param {string} _address
+     * @return {Promise<void>}
+     */
+    async fetchNativeToken(_address) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetNativeToken($owner: Address!) {
+                    defiNativeToken {
+                        address
+                        name
+                        symbol
+                        totalSupply
+                        balanceOf(owner: $owner)
+                    }
+                }
+            `,
+            variables: {
+                owner: _address,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.defiNativeToken || {};
+    }
+
+    /**
+     * @param {string} _address
+     * @param {[string, string]} [_filterPair] Array of token addresses.
+     * @return {Promise<[]|undefined>}
+     */
+    async fetchUniswapPairs(_address, _filterPair = []) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetUniswapPairs($user: Address!) {
+                    defiUniswapPairs {
+                        pairAddress
+                        tokens {
+                            address
+                            name
+                            symbol
+                        }
+                        reserves
+                        totalSupply
+                        shareOf(user: $user)
+                    }
+                }
+            `,
+            variables: {
+                user: _address,
+            },
+            fetchPolicy: 'network-only',
+        });
+        const defiUniswapPairs = data.data.defiUniswapPairs || [];
+
+        if (_filterPair.length > 0) {
+            // find uniswap pair by given token addresses
+            return defiUniswapPairs.find((_pair) => {
+                const { tokens } = _pair;
+
+                return tokens.find((_token) => {
+                    return _filterPair.indexOf(_token.address) > -1;
+                });
+            });
+        }
+
+        return defiUniswapPairs;
+    }
+
+    /**
+     * @param {BN} _amountIn
+     * @param {[string]} _tokens Array of token addresses.
+     * @return {Promise<void>}
+     */
+    async fetchUniswapAmountsOut(_amountIn, _tokens) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetUniswapAmountsOut($amountIn: BigInt!, $tokens: [Address!]!) {
+                    defiUniswapAmountsOut(amountIn: $amountIn, tokens: $tokens)
+                }
+            `,
+            variables: {
+                amountIn: _amountIn,
+                tokens: _tokens,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.defiUniswapAmountsOut || {};
+    }
+
+    /**
+     * @param {BN} _amountOut
+     * @param {[string]} _tokens Array of token addresses.
+     * @return {Promise<void>}
+     */
+    async fetchUniswapAmountsIn(_amountOut, _tokens) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetUniswapAmountsIn($amountOut: BigInt!, $tokens: [Address!]!) {
+                    defiUniswapAmountsIn(amountOut: $amountOut, tokens: $tokens)
+                }
+            `,
+            variables: {
+                amountOut: _amountOut,
+                tokens: _tokens,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.defiUniswapAmountsIn || {};
+    }
 }

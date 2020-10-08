@@ -142,6 +142,7 @@ import FSelectButton from '@/components/core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import DefiTokenPickerWindow from '@/components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
+
 export default {
     name: 'FUniswapLiquidity',
 
@@ -167,7 +168,6 @@ export default {
             toValue: '',
             toPerFromPrice: 0,
             fromPerToPrice: 0,
-            shareOfPool: '-',
             /** Per price direction. true - from -> to, false - to -> from */
             perPriceDirF2T: true,
             submitBtnDisabled: true,
@@ -182,6 +182,7 @@ export default {
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
+            pair: {},
             // minimumReceived: 0,
         };
     },
@@ -233,6 +234,18 @@ export default {
         submitDisabled() {
             return this.correctFromInputValue(this.fromValue) === 0;
         },
+
+        shareOfPool() {
+            const { pair } = this;
+
+            if (pair.pairAddress) {
+                const share = parseInt(pair.shareOf, 16) / parseInt(pair.totalSupply, 16);
+
+                return `${(share * 100).toFixed(3)} %`;
+            }
+
+            return '-';
+        },
     },
 
     watch: {
@@ -267,6 +280,22 @@ export default {
                 this._fromValueChanged = false;
             }
         },
+
+        async fromToken(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                if (_value.address && this.toToken.address) {
+                    this.pair = await this.getUniswapPair();
+                }
+            }
+        },
+
+        async toToken(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                if (_value.address && this.fromToken.address) {
+                    this.pair = await this.getUniswapPair();
+                }
+            }
+        },
     },
 
     created() {
@@ -278,6 +307,21 @@ export default {
     },
 
     methods: {
+        async getUniswapPair() {
+            const addressA = this.fromToken.address;
+            const addressB = this.toToken.address;
+
+            if (addressA && addressB) {
+                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, [addressA, addressB]);
+            }
+
+            return {};
+
+            // console.log(uniswapPairs[0].reserves.map((_item) => parseInt(_item, 16)));
+            // console.log('shareOf', parseInt(uniswapPairs[0].shareOf, 16));
+            // console.log('totalSupply', parseInt(uniswapPairs[0].totalSupply, 16));
+        },
+
         async init() {
             const { $defi } = this;
             const { params } = this;

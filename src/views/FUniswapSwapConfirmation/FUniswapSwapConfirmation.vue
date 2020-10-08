@@ -170,7 +170,7 @@ export default {
             const { toToken } = params;
             let txToSign;
             const web3 = new Web3();
-            const { slippageTolerance } = params;
+            // const { slippageTolerance } = params;
 
             if (!fromToken || !toToken) {
                 return;
@@ -179,17 +179,6 @@ export default {
             if (!contractAddress) {
                 contractAddress = this.$defi.contracts.fMint;
             }
-
-            /*
-            console.log(
-                await uniswapUtils.uniswapAmountsIn(
-                    web3,
-                    this.$defi.contracts.uniswapRouter,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
-                    [fromToken.address, toToken.address]
-                )
-            );
-            */
 
             if (params.step === 1) {
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
@@ -200,10 +189,17 @@ export default {
                 );
             } else {
                 // console.log(fromToken, toToken, params.toValue);
+                const amounts = await this.$defi.fetchUniswapAmountsOut(
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
+                    [fromToken.address, toToken.address]
+                );
 
                 txToSign = uniswapUtils.uniswapExactTokensForTokens(
                     web3,
                     this.$defi.contracts.uniswapRouter,
+                    amounts[0],
+                    amounts[1],
+                    /*
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
                     // slippage 0.5%
                     Web3.utils.toHex(
@@ -212,6 +208,7 @@ export default {
                             toToken.decimals
                         )
                     ),
+                    */
                     [fromToken.address, toToken.address],
                     this.currentAccount.address,
                     (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
