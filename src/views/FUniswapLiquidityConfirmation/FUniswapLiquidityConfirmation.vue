@@ -180,7 +180,7 @@ export default {
             const { toToken } = params;
             let txToSign;
             const web3 = new Web3();
-            // const { slippageTolerance } = params;
+            const { slippageTolerance } = params;
 
             if (!fromToken || !toToken) {
                 return;
@@ -203,10 +203,27 @@ export default {
                     Web3.utils.toHex($defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
                 );
             } else {
+                /*
                 const amounts = await this.$defi.fetchUniswapAmountsOut(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
                     [fromToken.address, toToken.address]
                 );
+*/
+
+                let amounts = await this.$defi.fetchUniswapQuoteLiquidity(
+                    [fromToken.address, toToken.address],
+                    [
+                        Web3.utils.toHex($defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
+                        Web3.utils.toHex($defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
+                    ]
+                );
+
+                amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
+                amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
+                amounts = [
+                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
+                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals)),
+                ];
 
                 txToSign = uniswapUtils.uniswapAddLiquidity(
                     web3,

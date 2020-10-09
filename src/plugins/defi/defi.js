@@ -914,6 +914,28 @@ export class DeFi {
         return defiUniswapPairs;
     }
 
+    /**
+     * @param {[{}, {}]} _tokens
+     * @param {[string, string]} _amountsIn
+     * @return {Promise<*|*[]>}
+     */
+    async fetchUniswapQuoteLiquidity(_tokens, _amountsIn) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetDefiUniswapQuoteLiquidity($tokens: [Address!]!, $amountsIn: [BigInt!]!) {
+                    defiUniswapQuoteLiquidity(tokens: $tokens, amountsIn: $amountsIn)
+                }
+            `,
+            variables: {
+                tokens: _tokens,
+                amountsIn: _amountsIn,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.defiUniswapQuoteLiquidity || [];
+    }
+
     async getUniswapTokenPrice(_tokenAAddress, _pair) {
         const { tokens } = _pair;
         const tokensPair = [];

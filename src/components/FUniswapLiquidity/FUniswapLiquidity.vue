@@ -189,7 +189,7 @@ export default {
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
-            pair: {},
+            dPair: {},
             addDeciamals: 2,
         };
     },
@@ -235,7 +235,8 @@ export default {
         },
 
         maxToInputValue() {
-            return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
+            return this.convertFrom2To(this.maxFromInputValue);
+            // return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
         },
 
         submitDisabled() {
@@ -243,10 +244,10 @@ export default {
         },
 
         shareOfPool() {
-            const { pair } = this;
+            const { dPair } = this;
 
-            if (pair.pairAddress) {
-                const share = parseInt(pair.shareOf, 16) / parseInt(pair.totalSupply, 16);
+            if (dPair.pairAddress) {
+                const share = parseInt(dPair.shareOf, 16) / parseInt(dPair.totalSupply, 16);
 
                 return `${(share * 100).toFixed(3)} %`;
             }
@@ -291,7 +292,12 @@ export default {
         async fromToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.toToken.address) {
-                    this.pair = await this.getUniswapPair();
+                    const dPair = await this.getUniswapPair();
+
+                    if (dPair.pairAddress !== this.dPair.pairAddress) {
+                        this.dPair = dPair;
+                        this.setTokenPrices();
+                    }
                 }
             }
         },
@@ -299,7 +305,12 @@ export default {
         async toToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.fromToken.address) {
-                    this.pair = await this.getUniswapPair();
+                    const dPair = await this.getUniswapPair();
+
+                    if (dPair.pairAddress !== this.dPair.pairAddress) {
+                        this.dPair = dPair;
+                        this.setTokenPrices();
+                    }
                 }
             }
         },
@@ -423,6 +434,29 @@ export default {
             return Math.min(Math.max(_value, 0), Math.min(this.maxToInputValue, this.toTokenBalance));
         },
 
+        async setTokenPrices() {
+            let price = await this.$defi.getUniswapTokenPrice(this.fromToken.address, this.dPair);
+            this.fromToken = { ...this.fromToken, _perPrice: price };
+
+            price = await this.$defi.getUniswapTokenPrice(this.toToken.address, this.dPair);
+            this.toToken = { ...this.toToken, _perPrice: price };
+        },
+
+        convertFrom2To(_value) {
+            const { fromToken } = this;
+
+            return fromToken && fromToken._perPrice
+                ? _value * this.$defi.fromTokenValue(fromToken._perPrice, fromToken)
+                : 0;
+        },
+
+        convertTo2From(_value) {
+            const { toToken } = this;
+
+            return toToken && toToken._perPrice ? _value * this.$defi.fromTokenValue(toToken._perPrice, toToken) : 0;
+        },
+
+        /*
         convertFrom2To(_value) {
             return this.$defi.convertTokenValue(_value, this.fromToken, this.toToken);
         },
@@ -430,6 +464,7 @@ export default {
         convertTo2From(_value) {
             return this.$defi.convertTokenValue(_value, this.toToken, this.fromToken);
         },
+*/
 
         setFromInputValue(_value) {
             defer(() => {
@@ -600,8 +635,8 @@ export default {
             const { toToken } = this;
             // const ftmTokens = ['FTM', 'WFTM'];
             const params = {
-                fromValue: this.fromValue,
-                toValue: this.toValue,
+                fromValue: parseFloat(this.fromValue),
+                toValue: parseFloat(this.toValue),
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
                 slippageTolerance: this.slippageTolerance,

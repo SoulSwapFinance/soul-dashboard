@@ -125,15 +125,13 @@ export default {
             const currLiquidity = parseFloat(this.currLiquidity);
 
             if (share > 0 && dPair.pairAddress && currLiquidity > 0) {
-                // console.log('share', share);
-                // console.log(dPair.reserves.map((_res) => parseInt(_res, 16)));
-                // console.log(this.$defi.fromTokenValue(dPair.reserves[0], this.fromToken));
-                // console.log(this.$defi.fromTokenValue(dPair.reserves[1], this.toToken));
                 const liq =
+                    /*
                     this.$defi.fromTokenValue(dPair.tokens[0].balanceOf, this.fromToken) *
                     share *
                     (currLiquidity / 100);
-                // this.$defi.fromTokenValue(dPair.reserves[0], this.fromToken)* share * (currLiquidity / 100);
+                    */
+                    this.$defi.fromTokenValue(dPair.reserves[0], this.fromToken) * share * (currLiquidity / 100);
 
                 return liq.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals);
             }
@@ -147,9 +145,9 @@ export default {
             const currLiquidity = parseFloat(this.currLiquidity);
 
             if (share > 0 && dPair.pairAddress && currLiquidity > 0) {
-                const liq =
-                    this.$defi.fromTokenValue(dPair.tokens[1].balanceOf, this.toToken) * share * (currLiquidity / 100);
-                // const liq = this.$defi.fromTokenValue(dPair.reserves[1], this.toToken) * share * (currLiquidity / 100);
+                // const liq =
+                //     this.$defi.fromTokenValue(dPair.tokens[1].balanceOf, this.toToken) * share * (currLiquidity / 100);
+                const liq = this.$defi.fromTokenValue(dPair.reserves[1], this.toToken) * share * (currLiquidity / 100);
                 return liq.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals);
             }
 
