@@ -10,6 +10,7 @@
                             :token="fromToken"
                             :value="fromTokenBalance"
                             :use-placeholder="false"
+                            :add-decimals="addDeciamals"
                             no-currency
                         />
                     </span>
@@ -49,7 +50,13 @@
                     <span>Input</span>
                     <span class="balance">
                         Balance:
-                        <f-token-value :token="toToken" :value="toTokenBalance" :use-placeholder="false" no-currency />
+                        <f-token-value
+                            :token="toToken"
+                            :value="toTokenBalance"
+                            :use-placeholder="false"
+                            :add-decimals="addDeciamals"
+                            no-currency
+                        />
                     </span>
                 </div>
                 <div class="funiswap__token__body">
@@ -183,7 +190,7 @@ export default {
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
             pair: {},
-            // minimumReceived: 0,
+            addDeciamals: 2,
         };
     },
 
@@ -394,7 +401,7 @@ export default {
         formatToInputValue(_value) {
             const value = parseFloat(_value);
 
-            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals) : '';
         },
 
         /**
@@ -403,7 +410,7 @@ export default {
         formatFromInputValue(_value) {
             const value = parseFloat(_value);
 
-            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals) : '';
         },
 
         /**

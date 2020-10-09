@@ -50,6 +50,11 @@ export default {
             type: Number,
             default: -1,
         },
+        /** Add this number of decimals to default token decimals. */
+        addDecimals: {
+            type: Number,
+            default: 0,
+        },
     },
 
     computed: {
@@ -58,7 +63,8 @@ export default {
         },
 
         tokenValue() {
-            let decimals = this.decimals > -1 ? this.decimals : this.$defi.tokenDecimals[this.token.symbol];
+            let decimals =
+                this.decimals > -1 ? this.decimals : this.$defi.tokenDecimals[this.token.symbol] + this.addDecimals;
 
             return this.value === 0 ? 0 : formatNumberByLocale(parseFloat(this.value).toFixed(decimals), decimals);
         },

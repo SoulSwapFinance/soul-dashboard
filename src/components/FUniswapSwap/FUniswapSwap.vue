@@ -10,6 +10,7 @@
                             :token="fromToken"
                             :value="fromTokenBalance"
                             :use-placeholder="false"
+                            :add-decimals="addDeciamals"
                             no-currency
                         />
                     </span>
@@ -52,7 +53,13 @@
                     <span>To</span>
                     <span class="balance">
                         Balance:
-                        <f-token-value :token="toToken" :value="toTokenBalance" :use-placeholder="false" no-currency />
+                        <f-token-value
+                            :token="toToken"
+                            :value="toTokenBalance"
+                            :use-placeholder="false"
+                            :add-decimals="addDeciamals"
+                            no-currency
+                        />
                     </span>
                 </div>
                 <div class="funiswap__token__body">
@@ -93,7 +100,7 @@
             <div v-show="toToken.address" class="funiswap-swap__exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">
-                    <f-placeholder :content-loaded="!!perPrice" replacement-text="000.00 fUSD per fETH">
+                    <f-placeholder :content-loaded="!!perPrice" replacement-text="000.0000 fUSD per fETH">
                         {{ perPrice }}
                     </f-placeholder>
                 </div>
@@ -132,7 +139,11 @@
                         </f-info>
                     </div>
                     <div class="col align-right">
-                        <f-token-value :decimals="4" :value="fromValue * liquidityProviderFee" :token="fromToken" />
+                        <f-token-value
+                            :value="fromValue * liquidityProviderFee"
+                            :token="fromToken"
+                            :add-decimals="addDeciamals"
+                        />
                     </div>
                 </div>
             </div>
@@ -205,7 +216,7 @@ export default {
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
-            // minimumReceived: 0,
+            addDeciamals: 2,
         };
     },
 
@@ -365,14 +376,14 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken)) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken)) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals) : '';
         },
 
         /**
@@ -425,15 +436,13 @@ export default {
 
         setFromInputValue(_value) {
             defer(() => {
-                console.log('ajaj', _value);
-                this.$refs.fromInput.value = this.formatFromInputValue(_value);
-                console.log('???', _value, this.formatFromInputValue(_value));
+                this.$refs.fromInput.value = this.formatFromInputValue(_value || 0);
             });
         },
 
         setToInputValue(_value) {
             defer(() => {
-                this.$refs.toInput.value = this.formatToInputValue(_value);
+                this.$refs.toInput.value = this.formatToInputValue(_value || 0);
             });
         },
 
@@ -443,9 +452,9 @@ export default {
             const perPrice = 1 / (this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1));
             const { $defi } = this;
 
-            this.perPrice = `${perPrice.toFixed(this.$defi.getTokenDecimals(fromToken))} ${$defi.getTokenSymbol(
-                fromToken
-            )} per ${$defi.getTokenSymbol(toToken)}`;
+            this.perPrice = `${perPrice.toFixed(
+                this.$defi.getTokenDecimals(fromToken) + this.addDeciamals
+            )} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
         },
 
         swapPrice() {
