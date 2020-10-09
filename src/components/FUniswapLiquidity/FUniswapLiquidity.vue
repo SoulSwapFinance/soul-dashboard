@@ -319,14 +319,10 @@ export default {
             const addressB = this.toToken.address;
 
             if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, [addressA, addressB]);
+                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
             }
 
             return {};
-
-            // console.log(uniswapPairs[0].reserves.map((_item) => parseInt(_item, 16)));
-            // console.log('shareOf', parseInt(uniswapPairs[0].shareOf, 16));
-            // console.log('totalSupply', parseInt(uniswapPairs[0].totalSupply, 16));
         },
 
         async init() {

@@ -14,16 +14,29 @@
             </label>
         </li>
         <li>
-            <label for="funiswap-home-tabs-pool">
+            <label for="funiswap-home-tabs-add-liquidity">
                 <input
-                    id="funiswap-home-tabs-pool"
+                    id="funiswap-home-tabs-add-liquidity"
                     v-model="tab"
                     type="radio"
                     name="tab"
-                    value="pool"
+                    value="add-liquidity"
                     class="not-visible"
                 />
                 <span class="funiswap-home-tabs__title">Add Liquidity</span>
+            </label>
+        </li>
+        <li>
+            <label for="funiswap-home-tabs-remove-liquidity">
+                <input
+                    id="funiswap-home-tabs-remove-liquidity"
+                    v-model="tab"
+                    type="radio"
+                    name="tab"
+                    value="remove-liquidity"
+                    class="not-visible"
+                />
+                <span class="funiswap-home-tabs__title">Remove Liquidity</span>
             </label>
         </li>
     </ul>

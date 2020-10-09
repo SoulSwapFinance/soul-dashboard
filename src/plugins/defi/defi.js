@@ -868,21 +868,25 @@ export class DeFi {
 
     /**
      * @param {string} _address
+     * @param {string} _pairAddress
      * @param {[string, string]} [_filterPair] Array of token addresses.
      * @return {Promise<[]|undefined>}
      */
-    async fetchUniswapPairs(_address, _filterPair = []) {
+    async fetchUniswapPairs(_address, _pairAddress = '', _filterPair = []) {
         const data = await this.apolloClient.query({
             query: gql`
-                query GetUniswapPairs($user: Address!) {
+                query GetUniswapPairs($user: Address!, $owner: Address!) {
                     defiUniswapPairs {
                         pairAddress
                         tokens {
                             address
                             name
                             symbol
+                            balanceOf(owner: $owner)
                         }
+                        reservesTimeStamp
                         reserves
+                        cumulativePrices
                         totalSupply
                         shareOf(user: $user)
                     }
@@ -890,6 +894,7 @@ export class DeFi {
             `,
             variables: {
                 user: _address,
+                owner: _pairAddress || _address,
             },
             fetchPolicy: 'network-only',
         });
@@ -907,6 +912,23 @@ export class DeFi {
         }
 
         return defiUniswapPairs;
+    }
+
+    async getUniswapTokenPrice(_tokenAAddress, _pair) {
+        const { tokens } = _pair;
+        const tokensPair = [];
+
+        if (_tokenAAddress === tokens[0].address) {
+            tokensPair.push(tokens[0].address);
+            tokensPair.push(tokens[1].address);
+        } else {
+            tokensPair.push(tokens[1].address);
+            tokensPair.push(tokens[0].address);
+        }
+
+        const amounts = await this.fetchUniswapAmountsOut('0xde0b6b3a7640000', tokensPair);
+
+        return amounts[1];
     }
 
     /**
