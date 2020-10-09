@@ -21,7 +21,7 @@
             </div>
 
             <div v-if="continueTo && transactionSuccess">
-                <button class="btn large" @click="onContinueBtnClick">Continue</button>
+                <button class="btn large" @click="onContinueBtnClick">{{ continueButtonLabel }}</button>
             </div>
         </template>
     </f-card>
@@ -63,6 +63,11 @@ export default {
         continueToIsRoute: {
             type: Boolean,
             default: false,
+        },
+        /** */
+        continueButtonLabel: {
+            type: String,
+            default: 'Continue',
         },
         /** Continue to `continueTo` automatically after this number of milliseconds. */
         autoContinueToAfter: {

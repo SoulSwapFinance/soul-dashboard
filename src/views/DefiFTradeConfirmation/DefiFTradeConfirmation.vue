@@ -60,6 +60,7 @@ import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import wftmUtils from 'fantom-ledgerjs/src/wftm-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
+import appConfig from '../../../app.config.js';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -261,7 +262,9 @@ export default {
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
                 params.continueToParams = { ...this.params, step: 2 };
-                params.autoContinueToAfter = 2000;
+                params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
+                params.continueButtonLabel = 'Next Step';
+                params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
                 params.continueToParams = {

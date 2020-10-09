@@ -70,6 +70,7 @@ import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import appConfig from '../../../app.config.js';
 
 /**
  * Common component for DefiDepositFTMConfirmation a DefiManageDepositConfirmation
@@ -274,7 +275,9 @@ export default {
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
                 params.continueToParams = { ...this.params, step: 2 };
-                params.autoContinueToAfter = 2000;
+                params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
+                params.continueButtonLabel = 'Next Step';
+                params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
                 params.continueToParams = { token: { ...this.token } };

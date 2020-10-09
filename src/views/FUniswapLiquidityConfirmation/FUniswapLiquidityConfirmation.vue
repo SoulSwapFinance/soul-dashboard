@@ -70,6 +70,7 @@ import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 // import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import Web3 from 'web3';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'FUniswapLiquidityConfirmation',
@@ -257,12 +258,16 @@ export default {
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
                 params.continueToParams = { ...this.params, step: 2 };
-                params.autoContinueToAfter = 2000;
+                params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
+                params.continueButtonLabel = 'Next Step';
+                params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.confirmationCompName}-transaction-success-message2`;
                 params.continueTo = `${this.confirmationCompName}-confirmation3`;
                 params.continueToParams = { ...this.params, step: 3 };
-                params.autoContinueToAfter = 2000;
+                params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
+                params.continueButtonLabel = 'Next Step';
+                params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 3) {
                 transactionSuccessComp = `${this.confirmationCompName}-transaction-success-message3`;
                 params.continueToParams = {
