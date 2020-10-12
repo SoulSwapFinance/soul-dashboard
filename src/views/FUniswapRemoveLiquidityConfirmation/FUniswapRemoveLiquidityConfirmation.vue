@@ -66,9 +66,7 @@ import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
 import { getAppParentNode } from '../../app-structure.js';
 import FMessage from '../../components/core/FMessage/FMessage.vue';
 import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
-// import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import Web3 from 'web3';
-import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
 
 export default {
@@ -194,25 +192,18 @@ export default {
 
             // this.liquidity = liquidity;
             this.liquidity = liquidity;
-            console.log('!!!', params.pair.pairAddress);
 
             if (params.step === 1) {
-                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
-                    params.pair.pairAddress,
+                txToSign = uniswapUtils.uniswapApproveShareTransfer(
+                    web3,
                     contractAddress,
-                    Web3.utils.toHex($defi.shiftDecPointRight((liquidity + 2).toString(), 18))
+                    params.pair.pairAddress,
+                    Web3.utils.toHex($defi.shiftDecPointRight(liquidity.toString(), 18))
                 );
             } else {
-                console.log(
-                    'JO!!!!!!',
-                    params.pair.shareOf,
-                    liquidity,
-                    Web3.utils.toHex($defi.shiftDecPointRight(liquidity.toString(), fromToken.decimals))
-                );
-
                 let amounts = [params.fromTokenLiquidity, params.toTokenLiquidity];
+
                 // apply slippage tolerance
-                // amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
                 amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
                 amounts = [
                     Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
@@ -225,7 +216,6 @@ export default {
                     fromToken.address,
                     toToken.address,
                     Web3.utils.toHex($defi.shiftDecPointRight(liquidity.toString(), 18)),
-                    // params.pair.shareOf,
                     amounts[0],
                     amounts[1],
                     this.currentAccount.address,
