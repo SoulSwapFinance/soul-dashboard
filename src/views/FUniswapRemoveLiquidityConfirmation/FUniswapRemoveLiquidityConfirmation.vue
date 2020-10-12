@@ -5,7 +5,6 @@
             :tx="tx"
             card-off
             set-tmp-pwd
-            :tmp-pwd-count="params.step === 1 ? 2 : 0"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
