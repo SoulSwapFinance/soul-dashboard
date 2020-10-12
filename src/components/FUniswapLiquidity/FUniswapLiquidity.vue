@@ -440,6 +440,8 @@ export default {
 
             price = await this.$defi.getUniswapTokenPrice(this.toToken.address, this.dPair);
             this.toToken = { ...this.toToken, _perPrice: price };
+
+            this.setPrices();
         },
 
         convertFrom2To(_value) {
@@ -581,8 +583,9 @@ export default {
                 }
 
                 this.updateSubmitLabel();
-                this.setPrices();
             }
+
+            this.setPrices();
         },
 
         /**
