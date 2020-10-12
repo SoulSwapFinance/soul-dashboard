@@ -311,6 +311,8 @@ export default {
                         this.dPair = dPair;
                         this.setTokenPrices();
                     }
+
+                    this.setToValue();
                 }
             }
         },
@@ -399,6 +401,9 @@ export default {
 
             this.fromValue = this.correctFromInputValue(this.fromValue) || '';
 
+            this.setFromInputValue(this.fromValue);
+            this.setToInputValue(this.toValue);
+
             this.setPrices();
         },
 
@@ -458,16 +463,6 @@ export default {
             return toToken && toToken._perPrice ? _value * this.$defi.fromTokenValue(toToken._perPrice, toToken) : 0;
         },
 
-        /*
-        convertFrom2To(_value) {
-            return this.$defi.convertTokenValue(_value, this.fromToken, this.toToken);
-        },
-
-        convertTo2From(_value) {
-            return this.$defi.convertTokenValue(_value, this.toToken, this.fromToken);
-        },
-*/
-
         setFromInputValue(_value) {
             defer(() => {
                 this.$refs.fromInput.value = this.formatFromInputValue(_value);
@@ -478,6 +473,18 @@ export default {
             defer(() => {
                 this.$refs.toInput.value = this.formatToInputValue(_value);
             });
+        },
+
+        setToValue() {
+            const value = this.$refs.fromInput.value;
+
+            if (value !== '') {
+                this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
+                this.setToInputValue(this.toValue);
+            }
+
+            this.updateSubmitLabel();
+            this.setPrices();
         },
 
         setPrices() {
@@ -576,16 +583,7 @@ export default {
                 this.toToken = _token;
 
                 // this.resetInputValues();
-                const value = this.$refs.fromInput.value;
-
-                if (value !== '') {
-                    this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
-                }
-
-                this.updateSubmitLabel();
             }
-
-            this.setPrices();
         },
 
         /**
