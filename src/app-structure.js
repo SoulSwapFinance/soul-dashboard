@@ -527,6 +527,36 @@ const appStructure = [
                                     },
                                 ],
                             },
+                            {
+                                id: 'funiswap-remove-liquidity-confirmation',
+                                route: 'funiswap-remove-liquidity-confirmation',
+                                _c: [
+                                    {
+                                        id: 'funiswap-remove-liquidity-transaction-success-message',
+                                        route: 'funiswap-remove-liquidity-transaction-success-message',
+                                        _c: [
+                                            {
+                                                id: 'funiswap-remove-liquidity-confirmation2',
+                                                route: 'funiswap-remove-liquidity-confirmation2',
+                                                _c: [
+                                                    {
+                                                        id: 'funiswap-remove-liquidity-transaction-success-message2',
+                                                        route: 'funiswap-remove-liquidity-transaction-success-message2',
+                                                    },
+                                                    {
+                                                        id: 'funiswap-remove-liquidity-transaction-reject-message2',
+                                                        route: 'funiswap-remove-liquidity-transaction-reject-message2',
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        id: 'funiswap-remove-liquidity-transaction-reject-message',
+                                        route: 'funiswap-remove-liquidity-transaction-reject-message',
+                                    },
+                                ],
+                            },
                         ],
                     },
                 ],

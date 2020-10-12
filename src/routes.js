@@ -50,6 +50,7 @@ import FUniswap from '@/views/FUniswap/FUniswap.vue';
 import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
 import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
 import FUniswapLiquidityConfirmation from '@/views/FUniswapLiquidityConfirmation/FUniswapLiquidityConfirmation.vue';
+import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
 
 export const routes = [
     {
@@ -659,6 +660,37 @@ export const routes = [
                     {
                         name: 'funiswap-liquidity-transaction-reject-message3',
                         path: 'liquidity/confirmation3/reject3',
+                        component: TransactionRejectMessageView,
+                    },
+
+                    {
+                        name: 'funiswap-remove-liquidity-confirmation',
+                        path: 'remove-liquidity/confirmation',
+                        component: FUniswapRemoveLiquidityConfirmation,
+                    },
+                    {
+                        name: 'funiswap-remove-liquidity-confirmation2',
+                        path: 'remove-liquidity/confirmation2',
+                        component: FUniswapRemoveLiquidityConfirmation,
+                    },
+                    {
+                        name: 'funiswap-remove-liquidity-transaction-success-message',
+                        path: 'remove-liquidity/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'funiswap-remove-liquidity-transaction-success-message2',
+                        path: 'remove-liquidity/confirmation2/success2',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'funiswap-remove-liquidity-transaction-reject-message',
+                        path: 'remove-liquidity/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'funiswap-remove-liquidity-transaction-reject-message2',
+                        path: 'remove-liquidity/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
                 ],

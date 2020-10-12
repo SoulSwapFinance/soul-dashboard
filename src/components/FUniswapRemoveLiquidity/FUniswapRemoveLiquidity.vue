@@ -24,13 +24,13 @@
 
             <div class="funiswap__box funiswap-remove-liquidity__tokens">
                 <div class="row no-collapse">
-                    <div class="col">{{ fromTokenLiquidity }}</div>
+                    <div class="col">{{ fromTokenLiquidityFormatted }}</div>
                     <div class="col align-right">
                         <f-crypto-symbol :token="fromToken" img-width="24px" img-height="24px" />
                     </div>
                 </div>
                 <div class="row no-collapse">
-                    <div class="col">{{ toTokenLiquidity }}</div>
+                    <div class="col">{{ toTokenLiquidityFormatted }}</div>
                     <div class="col align-right">
                         <f-crypto-symbol :token="toToken" img-width="24px" img-height="24px" />
                     </div>
@@ -125,15 +125,21 @@ export default {
             const currLiquidity = parseFloat(this.currLiquidity);
 
             if (share > 0 && dPair.pairAddress && currLiquidity > 0) {
-                const liq =
-                    /*
-                    this.$defi.fromTokenValue(dPair.tokens[0].balanceOf, this.fromToken) *
-                    share *
-                    (currLiquidity / 100);
-                    */
-                    this.$defi.fromTokenValue(dPair.reserves[0], this.fromToken) * share * (currLiquidity / 100);
+                return (
+                    this.$defi.fromTokenValue(dPair.tokens[0].balanceOf, this.fromToken) * share * (currLiquidity / 100)
+                    // this.$defi.fromTokenValue(dPair.tokens[0].balanceOf, this.fromToken)
+                );
+                // return this.$defi.fromTokenValue(dPair.reserves[0], this.fromToken) * share * (currLiquidity / 100);
+            }
 
-                return liq.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals);
+            return 0;
+        },
+
+        fromTokenLiquidityFormatted() {
+            const { fromTokenLiquidity } = this;
+
+            if (fromTokenLiquidity > 0) {
+                return fromTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals);
             }
 
             return '-';
@@ -145,19 +151,28 @@ export default {
             const currLiquidity = parseFloat(this.currLiquidity);
 
             if (share > 0 && dPair.pairAddress && currLiquidity > 0) {
-                // const liq =
-                //     this.$defi.fromTokenValue(dPair.tokens[1].balanceOf, this.toToken) * share * (currLiquidity / 100);
-                const liq = this.$defi.fromTokenValue(dPair.reserves[1], this.toToken) * share * (currLiquidity / 100);
-                return liq.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals);
+                return (
+                    this.$defi.fromTokenValue(dPair.tokens[1].balanceOf, this.toToken) * share * (currLiquidity / 100)
+                    // this.$defi.fromTokenValue(dPair.tokens[1].balanceOf, this.toToken)
+                );
+                // return this.$defi.fromTokenValue(dPair.reserves[1], this.toToken) * share * (currLiquidity / 100);
+            }
+
+            return 0;
+        },
+
+        toTokenLiquidityFormatted() {
+            const { toTokenLiquidity } = this;
+
+            if (toTokenLiquidity > 0) {
+                return toTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals);
             }
 
             return '-';
         },
 
         submitDisabled() {
-            // return this.currLiquidity === '0';
-            // TMP
-            return true;
+            return this.currLiquidity === '0';
         },
 
         share() {
@@ -199,14 +214,19 @@ export default {
             const tokens = result[0];
 
             if (!this.dPair.pairAddress) {
-                const uniswapPairs = await this.$defi.fetchUniswapPairs(
+                let uniswapPairs = await this.$defi.fetchUniswapPairs(
                     this.currentAccount.address,
                     this.dPair.pairAddress
                 );
 
                 if (uniswapPairs && uniswapPairs.length > 0) {
-                    console.log('uniswapPairs', uniswapPairs);
+                    uniswapPairs = await this.$defi.fetchUniswapPairs(
+                        this.currentAccount.address,
+                        uniswapPairs[0].pairAddress
+                    );
+
                     this.dPair = uniswapPairs[0];
+                    console.log('pair', this.dPair);
                 }
             }
 
@@ -264,13 +284,20 @@ export default {
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
                 slippageTolerance: this.slippageTolerance,
-                steps: 3,
+                fromTokenLiquidity: this.fromTokenLiquidity,
+                toTokenLiquidity: this.toTokenLiquidity,
+                pair: { ...this.dPair },
+                currLiquidity: parseFloat(this.currLiquidity),
+                // share: this.share * (parseFloat(this.currLiquidity) / 100),
+                steps: 2,
                 step: 1,
             };
 
             if (!this.submitDisabled) {
+                console.log(params);
+
                 this.$router.push({
-                    name: 'funiswap-liquidity-confirmation',
+                    name: 'funiswap-remove-liquidity-confirmation',
                     params,
                 });
             }
