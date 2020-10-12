@@ -325,17 +325,6 @@ export default {
     },
 
     methods: {
-        async getUniswapPair() {
-            const addressA = this.fromToken.address;
-            const addressB = this.toToken.address;
-
-            if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
-            }
-
-            return {};
-        },
-
         async init() {
             const { $defi } = this;
             const { params } = this;
@@ -359,6 +348,17 @@ export default {
             }
 
             this.setPrices();
+        },
+
+        async getUniswapPair() {
+            const addressA = this.fromToken.address;
+            const addressB = this.toToken.address;
+
+            if (addressA && addressB) {
+                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
+            }
+
+            return {};
         },
 
         /**

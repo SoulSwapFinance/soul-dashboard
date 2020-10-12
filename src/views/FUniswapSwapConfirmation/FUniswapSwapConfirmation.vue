@@ -167,11 +167,12 @@ export default {
             let { contractAddress } = this;
 
             const { params } = this;
+            const { $defi } = this;
             const { fromToken } = params;
             const { toToken } = params;
             let txToSign;
             const web3 = new Web3();
-            // const { slippageTolerance } = params;
+            const { slippageTolerance } = params;
 
             if (!fromToken || !toToken) {
                 return;
@@ -190,10 +191,18 @@ export default {
                 );
             } else {
                 // console.log(fromToken, toToken, params.toValue);
-                const amounts = await this.$defi.fetchUniswapAmountsOut(
+                let amounts = await this.$defi.fetchUniswapAmountsOut(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
                     [fromToken.address, toToken.address]
                 );
+
+                // apply slippage tolerance
+                amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
+                amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
+                amounts = [
+                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
+                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals)),
+                ];
 
                 txToSign = uniswapUtils.uniswapExactTokensForTokens(
                     web3,

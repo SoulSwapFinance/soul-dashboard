@@ -216,6 +216,7 @@ export default {
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
             submitLabel: 'Enter an amount',
+            dPair: {},
             addDeciamals: 2,
         };
     },
@@ -273,7 +274,8 @@ export default {
         },
 
         maxToInputValue() {
-            return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
+            return this.convertFrom2To(this.maxFromInputValue);
+            // return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
         },
 
         submitDisabled() {
@@ -317,6 +319,34 @@ export default {
                 this._fromValueChanged = false;
             }
         },
+
+        async fromToken(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                if (_value.address && this.toToken.address) {
+                    const dPair = await this.getUniswapPair();
+
+                    if (dPair.pairAddress !== this.dPair.pairAddress) {
+                        this.dPair = dPair;
+                        this.setTokenPrices();
+                    }
+                }
+            }
+        },
+
+        async toToken(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                if (_value.address && this.fromToken.address) {
+                    const dPair = await this.getUniswapPair();
+
+                    if (dPair.pairAddress !== this.dPair.pairAddress) {
+                        this.dPair = dPair;
+                        this.setTokenPrices();
+                    }
+
+                    this.setToValue();
+                }
+            }
+        },
     },
 
     created() {
@@ -357,6 +387,17 @@ export default {
             this.setPerPrice();
         },
 
+        async getUniswapPair() {
+            const addressA = this.fromToken.address;
+            const addressB = this.toToken.address;
+
+            if (addressA && addressB) {
+                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
+            }
+
+            return {};
+        },
+
         swapTokens() {
             const hToken = this.fromToken;
             const hValue = this.fromValue;
@@ -368,6 +409,9 @@ export default {
             this.toValue = hValue || '';
 
             this.fromValue = this.correctFromInputValue(this.fromValue) || '';
+
+            this.setFromInputValue(this.fromValue);
+            this.setToInputValue(this.toValue);
 
             this.setPerPrice();
         },
@@ -400,6 +444,31 @@ export default {
             return Math.min(Math.max(_value, 0), this.maxToInputValue);
         },
 
+        /**
+         * @param {number} _value
+         */
+        convertFrom2To(_value) {
+            const { fromToken } = this;
+            const value = parseFloat(_value);
+
+            return fromToken && fromToken._perPrice && !isNaN(value)
+                ? value * this.$defi.fromTokenValue(fromToken._perPrice, fromToken)
+                : 0;
+        },
+
+        /**
+         * @param {number} _value
+         */
+        convertTo2From(_value) {
+            const { toToken } = this;
+            const value = parseFloat(_value);
+
+            return toToken && toToken._perPrice && !isNaN(value)
+                ? value * this.$defi.fromTokenValue(toToken._perPrice, toToken)
+                : 0;
+        },
+
+        /*
         convertFrom2To(_value) {
             return this.$defi.convertTokenValue(_value, this.fromToken, this.toToken);
         },
@@ -407,6 +476,7 @@ export default {
         convertTo2From(_value) {
             return this.$defi.convertTokenValue(_value, this.toToken, this.fromToken);
         },
+        */
 
         /**
          * Get token list for `defi-token-picker-window`.
@@ -446,15 +516,43 @@ export default {
             });
         },
 
+        setToValue() {
+            const value = this.$refs.fromInput.value;
+
+            if (value !== '') {
+                this.toValue = this.convertFrom2To(value);
+            }
+
+            this.setToInputValue(this.toValue);
+
+            this.updateSubmitLabel();
+            this.setPerPrice();
+        },
+
+        async setTokenPrices() {
+            let price = await this.$defi.getUniswapTokenPrice(this.fromToken.address, this.dPair);
+            this.fromToken = { ...this.fromToken, _perPrice: price };
+
+            price = await this.$defi.getUniswapTokenPrice(this.toToken.address, this.dPair);
+            this.toToken = { ...this.toToken, _perPrice: price };
+
+            this.setPerPrice();
+        },
+
         setPerPrice() {
             const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
             const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
-            const perPrice = 1 / (this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1));
+            const perPrice = this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1);
             const { $defi } = this;
 
+            this.perPrice = `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(
+                toToken
+            )}`;
+            /*
             this.perPrice = `${perPrice.toFixed(
                 this.$defi.getTokenDecimals(fromToken) + this.addDeciamals
             )} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
+            */
         },
 
         swapPrice() {
@@ -540,14 +638,6 @@ export default {
                 this.toToken = _token;
 
                 // this.resetInputValues();
-                const value = this.$refs.fromInput.value;
-
-                if (value !== '') {
-                    this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
-                }
-
-                this.updateSubmitLabel();
-                this.setPerPrice();
             }
         },
 

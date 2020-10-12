@@ -218,6 +218,7 @@ export default {
                     ]
                 );
 
+                // apply slippage tolerance
                 amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
                 amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
                 amounts = [
