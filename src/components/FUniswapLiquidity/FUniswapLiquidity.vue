@@ -298,6 +298,10 @@ export default {
                         this.dPair = dPair;
                         this.setTokenPrices();
                     }
+
+                    defer(() => {
+                        this.updateSubmitLabel();
+                    });
                 }
             }
         },
@@ -504,27 +508,25 @@ export default {
         },
 
         updateSubmitLabel() {
-            this.$nextTick(() => {
-                const fromInputValue = this.$refs.fromInput.value;
-                const toInputValue = this.$refs.toInput.value;
+            const fromInputValue = this.$refs.fromInput.value;
+            const toInputValue = this.$refs.toInput.value;
 
-                this.submitBtnDisabled = true;
+            this.submitBtnDisabled = true;
 
-                if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                    if (parseInt(fromInputValue) > Math.min(this.maxFromInputValue, this.fromTokenBalance)) {
-                        this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
-                    } else if (parseInt(toInputValue) > Math.min(this.maxToInputValue, this.toTokenBalance)) {
-                        this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
-                    } else {
-                        this.submitLabel = 'Supply';
-                        this.submitBtnDisabled = false;
-                    }
-                } else if (fromInputValue && fromInputValue !== '0') {
-                    this.submitLabel = 'Select a token';
+            if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+                if (parseInt(fromInputValue) > Math.min(this.maxFromInputValue, this.fromTokenBalance)) {
+                    this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
+                } else if (parseInt(toInputValue) > Math.min(this.maxToInputValue, this.toTokenBalance)) {
+                    this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
                 } else {
-                    this.submitLabel = 'Enter an amount';
+                    this.submitLabel = 'Supply';
+                    this.submitBtnDisabled = false;
                 }
-            });
+            } else if (fromInputValue && fromInputValue !== '0') {
+                this.submitLabel = 'Select a token';
+            } else {
+                this.submitLabel = 'Enter an amount';
+            }
         },
 
         onFromMaxAmountClick() {

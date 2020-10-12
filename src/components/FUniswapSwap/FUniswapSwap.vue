@@ -329,6 +329,10 @@ export default {
                         this.dPair = dPair;
                         this.setTokenPrices();
                     }
+
+                    defer(() => {
+                        this.updateSubmitLabel();
+                    });
                 }
             }
         },
@@ -574,33 +578,31 @@ export default {
         },
 
         updateSubmitLabel() {
-            this.$nextTick(() => {
-                const fromInputValue = this.$refs.fromInput.value;
-                const toInputValue = this.$refs.toInput.value;
+            const fromInputValue = this.$refs.fromInput.value;
+            const toInputValue = this.$refs.toInput.value;
 
-                this.submitBtnDisabled = true;
+            this.submitBtnDisabled = true;
 
-                if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                    if (
-                        parseInt(fromInputValue) > this.maxFromInputValue ||
-                        parseInt(toInputValue) > this.maxToInputValue
-                    ) {
-                        this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
-                    } else {
-                        this.submitLabel = 'Swap';
-                        this.submitBtnDisabled = false;
-                    }
-                } else if (fromInputValue && fromInputValue !== '0') {
-                    this.submitLabel = 'Select a token';
+            if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+                if (
+                    parseInt(fromInputValue) > this.maxFromInputValue ||
+                    parseInt(toInputValue) > this.maxToInputValue
+                ) {
+                    this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
                 } else {
-                    this.submitLabel = 'Enter an amount';
+                    this.submitLabel = 'Swap';
+                    this.submitBtnDisabled = false;
                 }
+            } else if (fromInputValue && fromInputValue !== '0') {
+                this.submitLabel = 'Select a token';
+            } else {
+                this.submitLabel = 'Enter an amount';
+            }
 
-                // this.$refs.submitBut.innerText = submitLabel;
-                // this.$refs.submitBut.disabled = submitBtnDisabled;
+            // this.$refs.submitBut.innerText = submitLabel;
+            // this.$refs.submitBut.disabled = submitBtnDisabled;
 
-                this.showPriceInfo = !this.submitBtnDisabled;
-            });
+            this.showPriceInfo = !this.submitBtnDisabled;
         },
 
         onMaxAmountClick() {
