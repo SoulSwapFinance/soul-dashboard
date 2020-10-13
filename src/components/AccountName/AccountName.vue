@@ -1,7 +1,7 @@
 <template>
     <span class="account-name" :class="cssClass">
         <template v-if="account.name">
-            <span class="an-name">{{ account.name }}</span>
+            <span v-if="!hideName" class="an-name">{{ account.name }}</span>
             <!--            <span class="an-address">{{ account.address | formatHash }}</span>-->
             <slot name="suffix"></slot>
 
@@ -68,6 +68,11 @@ export default {
         },
         /** Hide address when account name exists. */
         hideAddress: {
+            type: Boolean,
+            default: false,
+        },
+        /** Hide name */
+        hideName: {
             type: Boolean,
             default: false,
         },
