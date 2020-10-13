@@ -1,5 +1,5 @@
 <template>
-    <div class="funiswap-liquidity funiswap">
+    <div class="funiswap-add-liquidity funiswap">
         <f-card>
             <div class="funiswap__box">
                 <div class="funiswap__token__balance">
@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <div v-show="toToken.address" class="funiswap__box funiswap-liquidity__prices">
+            <div v-show="toToken.address" class="funiswap__box funiswap-add-liquidity__prices">
                 Prices and pool share
                 <div class="row no-collapse">
                     <div class="col">
@@ -151,7 +151,7 @@ import { eventBusMixin } from '@/mixins/event-bus.js';
 import DefiTokenPickerWindow from '@/components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 
 export default {
-    name: 'FUniswapLiquidity',
+    name: 'FUniswapAddLiquidity',
 
     components: { DefiTokenPickerWindow, FCryptoSymbol, FSelectButton, FTokenValue, FCard },
 
@@ -650,7 +650,7 @@ export default {
 
             if (!this.submitDisabled) {
                 this.$router.push({
-                    name: 'funiswap-liquidity-confirmation',
+                    name: 'funiswap-add-liquidity-confirmation',
                     params,
                 });
             }

@@ -12,7 +12,7 @@
 
 <script>
 import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
-import FUniswapLiquidity from '@/components/FUniswapLiquidity/FUniswapLiquidity.vue';
+import FUniswapAddLiquidity from '@/components/FUniswapAddLiquidity/FUniswapAddLiquidity.vue';
 import FUniswapRemoveLiquidity from '@/components/FUniswapRemoveLiquidity/FUniswapRemoveLiquidity.vue';
 import { mapGetters } from 'vuex';
 import FUniswapHomeTabs from '@/components/FUniswapHomeTabs/FUniswapHomeTabs.vue';
@@ -23,7 +23,7 @@ const DEFAULT_COMPONENT = 'f-uniswap-swap';
 export default {
     name: 'FUniswapHome',
 
-    components: { FUniswapHomeTabs, FUniswapSwap, FUniswapLiquidity, FUniswapRemoveLiquidity },
+    components: { FUniswapHomeTabs, FUniswapSwap, FUniswapAddLiquidity, FUniswapRemoveLiquidity },
 
     mixins: [eventBusMixin],
 
@@ -39,7 +39,7 @@ export default {
         currentComponentProperties() {
             switch (this.currentComponent) {
                 case 'f-uniswap-swap':
-                case 'f-uniswap-liquidity':
+                case 'f-uniswap-add-liquidity':
                 case 'f-uniswap-remove-liquidity':
                     return {
                         slippageTolerance: this.fUniswapSlippageTolerance,
@@ -75,7 +75,7 @@ export default {
             if (_tabCode === 'swap') {
                 this.currentComponent = 'f-uniswap-swap';
             } else if (_tabCode === 'add-liquidity') {
-                this.currentComponent = 'f-uniswap-liquidity';
+                this.currentComponent = 'f-uniswap-add-liquidity';
             } else if (_tabCode === 'remove-liquidity') {
                 this.currentComponent = 'f-uniswap-remove-liquidity';
             }

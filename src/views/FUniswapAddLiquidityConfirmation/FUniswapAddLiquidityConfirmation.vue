@@ -1,5 +1,5 @@
 <template>
-    <div class="funiswap-liquidity-confirmation">
+    <div class="funiswap-add-liquidity-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -73,7 +73,7 @@ import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
 
 export default {
-    name: 'FUniswapLiquidityConfirmation',
+    name: 'FUniswapAddLiquidityConfirmation',
 
     components: { FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
@@ -88,7 +88,7 @@ export default {
     data() {
         return {
             compName: 'funiswap-home',
-            confirmationCompName: 'funiswap-liquidity',
+            confirmationCompName: 'funiswap-add-liquidity',
             priceDecimals: 6,
             tx: {},
             gasLimit: GAS_LIMITS.default,

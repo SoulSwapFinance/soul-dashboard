@@ -1,5 +1,5 @@
 <template>
-    <div class="funiswap-liquidity-confirmation">
+    <div class="funiswap-remove-liquidity-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"

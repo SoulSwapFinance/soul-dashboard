@@ -478,52 +478,52 @@ const appStructure = [
                                 ],
                             },
                             {
-                                id: 'funiswap-liquidity-confirmation',
-                                route: 'funiswap-liquidity-confirmation',
+                                id: 'funiswap-add-liquidity-confirmation',
+                                route: 'funiswap-add-liquidity-confirmation',
                                 _c: [
                                     {
-                                        id: 'funiswap-liquidity-transaction-success-message',
-                                        route: 'funiswap-liquidity-transaction-success-message',
+                                        id: 'funiswap-add-liquidity-transaction-success-message',
+                                        route: 'funiswap-add-liquidity-transaction-success-message',
                                         _c: [
                                             {
-                                                id: 'funiswap-liquidity-confirmation2',
-                                                route: 'funiswap-liquidity-confirmation2',
+                                                id: 'funiswap-add-liquidity-confirmation2',
+                                                route: 'funiswap-add-liquidity-confirmation2',
                                                 _c: [
                                                     {
-                                                        id: 'funiswap-liquidity-transaction-success-message2',
-                                                        route: 'funiswap-liquidity-transaction-success-message2',
+                                                        id: 'funiswap-add-liquidity-transaction-success-message2',
+                                                        route: 'funiswap-add-liquidity-transaction-success-message2',
                                                         _c: [
                                                             {
-                                                                id: 'funiswap-liquidity-confirmation3',
-                                                                route: 'funiswap-liquidity-confirmation3',
+                                                                id: 'funiswap-add-liquidity-confirmation3',
+                                                                route: 'funiswap-add-liquidity-confirmation3',
                                                                 _c: [
                                                                     {
                                                                         id:
-                                                                            'funiswap-liquidity-transaction-success-message3',
+                                                                            'funiswap-add-liquidity-transaction-success-message3',
                                                                         route:
-                                                                            'funiswap-liquidity-transaction-success-message3',
+                                                                            'funiswap-add-liquidity-transaction-success-message3',
                                                                     },
                                                                     {
                                                                         id:
-                                                                            'funiswap-liquidity-transaction-reject-message3',
+                                                                            'funiswap-add-liquidity-transaction-reject-message3',
                                                                         route:
-                                                                            'funiswap-liquidity-transaction-reject-message3',
+                                                                            'funiswap-add-liquidity-transaction-reject-message3',
                                                                     },
                                                                 ],
                                                             },
                                                         ],
                                                     },
                                                     {
-                                                        id: 'funiswap-liquidity-transaction-reject-message2',
-                                                        route: 'funiswap-liquidity-transaction-reject-message2',
+                                                        id: 'funiswap-add-liquidity-transaction-reject-message2',
+                                                        route: 'funiswap-add-liquidity-transaction-reject-message2',
                                                     },
                                                 ],
                                             },
                                         ],
                                     },
                                     {
-                                        id: 'funiswap-liquidity-transaction-reject-message',
-                                        route: 'funiswap-liquidity-transaction-reject-message',
+                                        id: 'funiswap-add-liquidity-transaction-reject-message',
+                                        route: 'funiswap-add-liquidity-transaction-reject-message',
                                     },
                                 ],
                             },

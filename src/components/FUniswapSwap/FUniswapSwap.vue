@@ -313,6 +313,7 @@ export default {
 
                 if (!this._fromValueChanged) {
                     // correct 'from' input value
+                    // this.fromValue = this.correctFromInputValue(this.convertTo2From(_value));
                     this.setFromInputValue(this.correctFromInputValue(this.convertTo2From(_value)));
                 }
 
@@ -534,11 +535,17 @@ export default {
         },
 
         async setTokenPrices() {
-            let price = await this.$defi.getUniswapTokenPrice(this.fromToken.address, this.dPair);
-            this.fromToken = { ...this.fromToken, _perPrice: price };
+            const { dPair } = this;
+            let price = dPair.pairAddress ? await this.$defi.getUniswapTokenPrice(this.fromToken.address, dPair) : '';
 
-            price = await this.$defi.getUniswapTokenPrice(this.toToken.address, this.dPair);
-            this.toToken = { ...this.toToken, _perPrice: price };
+            if (price && price !== this.fromToken._perPrice) {
+                this.fromToken = { ...this.fromToken, _perPrice: price };
+            }
+
+            price = dPair.pairAddress ? await this.$defi.getUniswapTokenPrice(this.toToken.address, dPair) : '';
+            if (price && price !== this.toToken._perPrice) {
+                this.toToken = { ...this.toToken, _perPrice: price };
+            }
 
             this.setPerPrice();
         },
