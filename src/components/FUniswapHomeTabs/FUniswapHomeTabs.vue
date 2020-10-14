@@ -46,15 +46,30 @@
 export default {
     name: 'FUniswapHomeTabs',
 
+    props: {
+        activeTab: {
+            type: String,
+            default: '',
+        },
+    },
+
     data() {
         return {
-            tab: 'swap',
+            tab: this.activeTab,
         };
     },
 
     watch: {
-        tab(_value) {
-            this.$emit('tab-selected', _value);
+        activeTab(_value, _oldValue) {
+            if (_value !== _oldValue && _value) {
+                this.tab = _value;
+            }
+        },
+
+        tab(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this.$emit('tab-selected', _value);
+            }
         },
     },
 };

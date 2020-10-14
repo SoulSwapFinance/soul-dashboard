@@ -1,7 +1,7 @@
 <template>
     <div class="view-funiswap-home">
         <h1>fUniswap</h1>
-        <f-uniswap-home-tabs @tab-selected="onTabSelected" />
+        <f-uniswap-home-tabs :active-tab="activeTab" @tab-selected="onTabSelected" />
         <component
             :is="currentComponent"
             v-bind="currentComponentProperties"
@@ -17,6 +17,7 @@ import FUniswapRemoveLiquidity from '@/components/FUniswapRemoveLiquidity/FUnisw
 import { mapGetters } from 'vuex';
 import FUniswapHomeTabs from '@/components/FUniswapHomeTabs/FUniswapHomeTabs.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
+import { defer } from '@/utils';
 
 const DEFAULT_COMPONENT = 'f-uniswap-swap';
 
@@ -30,6 +31,7 @@ export default {
     data() {
         return {
             currentComponent: DEFAULT_COMPONENT,
+            activeTab: 'swap',
         };
     },
 
@@ -59,6 +61,22 @@ export default {
 
     methods: {
         /**
+         * @param {string} _componentName
+         * @return {string}
+         */
+        getTabCodeByComponentName(_componentName) {
+            if (_componentName === 'f-uniswap-swap') {
+                return 'swap';
+            } else if (_componentName === 'f-uniswap-add-liquidity') {
+                return 'add-liquidity';
+            } else if (_componentName === 'f-uniswap-remove-liquidity') {
+                return 'remove-liquidity';
+            }
+
+            return '';
+        },
+
+        /**
          * @param {Object} _data
          */
         onChangeComponent(_data) {
@@ -82,15 +100,19 @@ export default {
         },
 
         onAccountPicked() {
-            if (this.currentComponent !== DEFAULT_COMPONENT) {
-                this.currentComponent = DEFAULT_COMPONENT;
-            } else {
-                // to reset send-transaction-form properly
-                this.currentComponent = '';
-                this.$nextTick(() => {
-                    this.currentComponent = DEFAULT_COMPONENT;
-                });
+            const { currentComponent } = this;
+
+            if (!currentComponent) {
+                return;
             }
+
+            this.activeTab = '';
+            this.currentComponent = '';
+
+            defer(() => {
+                this.currentComponent = currentComponent;
+                this.activeTab = this.getTabCodeByComponentName(this.currentComponent);
+            });
         },
     },
 };
