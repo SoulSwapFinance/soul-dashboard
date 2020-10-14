@@ -164,7 +164,6 @@ import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import { defer, getUniqueId } from '../../utils';
-import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
@@ -182,8 +181,6 @@ export default {
         FSelectButton,
         FCryptoSymbol,
     },
-
-    mixins: [eventBusMixin],
 
     props: {
         slippageTolerance: {
@@ -347,14 +344,18 @@ export default {
                 }
             }
         },
+
+        currentAccount(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this.onAccountPicked();
+            }
+        },
     },
 
     created() {
         this.init();
 
         this._fromValueChanged = false;
-
-        this._eventBus.on('account-picked', this.onAccountPicked);
 
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';

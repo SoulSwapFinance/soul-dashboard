@@ -68,7 +68,6 @@
 import FCard from '@/components/core/FCard/FCard.vue';
 import { getUniqueId } from '@/utils';
 import { mapGetters } from 'vuex';
-import { eventBusMixin } from '@/mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
@@ -77,8 +76,6 @@ export default {
     name: 'FUniswapRemoveLiquidity',
 
     components: { FCryptoSymbol, FSlider, FTokenValue, FCard },
-
-    mixins: [eventBusMixin],
 
     props: {
         slippageTolerance: {
@@ -173,7 +170,7 @@ export default {
         },
 
         submitDisabled() {
-            return !this.currentAccount || this.currLiquidity === '0';
+            return !this.currentAccount || this.fromTokenLiquidity === 0 || this.toTokenLiquidity === 0;
         },
 
         share() {
@@ -199,12 +196,18 @@ export default {
         },
     },
 
+    watch: {
+        currentAccount(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this.onAccountPicked();
+            }
+        },
+    },
+
     created() {
         this.dPair = this.pair;
 
         this.init();
-
-        this._eventBus.on('account-picked', this.onAccountPicked);
 
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';

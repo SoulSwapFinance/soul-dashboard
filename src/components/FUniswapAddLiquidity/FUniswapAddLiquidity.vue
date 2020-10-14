@@ -147,15 +147,12 @@ import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FSelectButton from '@/components/core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import { eventBusMixin } from '@/mixins/event-bus.js';
 import DefiTokenPickerWindow from '@/components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 
 export default {
     name: 'FUniswapAddLiquidity',
 
     components: { DefiTokenPickerWindow, FCryptoSymbol, FSelectButton, FTokenValue, FCard },
-
-    mixins: [eventBusMixin],
 
     props: {
         slippageTolerance: {
@@ -314,14 +311,18 @@ export default {
                 }
             }
         },
+
+        currentAccount(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this.onAccountPicked();
+            }
+        },
     },
 
     created() {
         this.init();
 
         this._fromValueChanged = false;
-
-        this._eventBus.on('account-picked', this.onAccountPicked);
 
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';
