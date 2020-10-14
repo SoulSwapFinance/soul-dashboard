@@ -553,7 +553,7 @@ export default {
         setPerPrice() {
             const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
             const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
-            const perPrice = this.perPriceDirF2T ? this.convertFrom2To(1) : this.convertTo2From(1);
+            const perPrice = this.perPriceDirF2T ? this.convertTo2From(1) : this.convertFrom2To(1);
             const { $defi } = this;
 
             this.perPrice = `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(
