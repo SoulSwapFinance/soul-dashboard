@@ -166,11 +166,6 @@ export default {
 
     data() {
         return {
-            /** @type {FMintAccount} */
-            fMintAccount: {
-                collateral: [],
-                debt: [],
-            },
             fromValue: '',
             toValue: '',
             toPerFromPrice: 0,
@@ -240,13 +235,13 @@ export default {
         },
 
         submitDisabled() {
-            return this.correctFromInputValue(this.fromValue) === 0;
+            return !this.currentAccount || this.correctFromInputValue(this.fromValue) === 0;
         },
 
         shareOfPool() {
             const { dPair } = this;
 
-            if (dPair.pairAddress) {
+            if (dPair.pairAddress && dPair.shareOf) {
                 const share = parseInt(dPair.shareOf, 16) / parseInt(dPair.totalSupply, 16);
 
                 return `${(share * 100).toFixed(3)} %`;
@@ -328,6 +323,10 @@ export default {
         this._fromValueChanged = false;
 
         this._eventBus.on('account-picked', this.onAccountPicked);
+
+        if (!this.currentAccount) {
+            this.submitLabel = 'Connect Wallet';
+        }
     },
 
     methods: {
@@ -335,14 +334,11 @@ export default {
             const { $defi } = this;
             const { params } = this;
             const result = await Promise.all([
-                $defi.fetchFMintAccount(this.currentAccount.address),
-                $defi.fetchTokens(this.currentAccount.address),
+                $defi.fetchTokens(this.currentAccount ? this.currentAccount.address : ''),
                 $defi.init(),
             ]);
 
-            this.fMintAccount = result[0];
-
-            this.tokens = result[1];
+            this.tokens = result[0];
 
             // if (params.fromToken && params.toToken) {
             if (params.fromToken) {
@@ -361,7 +357,10 @@ export default {
             const addressB = this.toToken.address;
 
             if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
+                return await this.$defi.fetchUniswapPairs(this.currentAccount ? this.currentAccount.address : '', '', [
+                    addressA,
+                    addressB,
+                ]);
             }
 
             return {};
@@ -513,7 +512,9 @@ export default {
 
             this.submitBtnDisabled = true;
 
-            if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+            if (!this.currentAccount) {
+                this.submitLabel = 'Connect Wallet';
+            } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
                 if (parseInt(fromInputValue) > Math.min(this.maxFromInputValue, this.fromTokenBalance)) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
                 } else if (parseInt(toInputValue) > Math.min(this.maxToInputValue, this.toTokenBalance)) {

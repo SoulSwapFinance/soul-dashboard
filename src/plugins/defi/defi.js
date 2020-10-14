@@ -666,28 +666,49 @@ export class DeFi {
      */
     async fetchTokens(_ownerAddress, _symbol) {
         const data = await this.apolloClient.query({
-            query: gql`
-                query DefiTokens($owner: Address!) {
-                    defiTokens {
-                        address
-                        name
-                        symbol
-                        logoUrl
-                        decimals
-                        price
-                        priceDecimals
-                        totalSupply
-                        isActive
-                        canWrapFTM
-                        canDeposit
-                        canMint
-                        canBorrow
-                        canTrade
-                        availableBalance(owner: $owner)
-                        allowance(owner: $owner)
-                    }
-                }
-            `,
+            query: _ownerAddress
+                ? gql`
+                      query DefiTokens($owner: Address!) {
+                          defiTokens {
+                              address
+                              name
+                              symbol
+                              logoUrl
+                              decimals
+                              price
+                              priceDecimals
+                              totalSupply
+                              isActive
+                              canWrapFTM
+                              canDeposit
+                              canMint
+                              canBorrow
+                              canTrade
+                              availableBalance(owner: $owner)
+                              allowance(owner: $owner)
+                          }
+                      }
+                  `
+                : gql`
+                      query DefiTokens {
+                          defiTokens {
+                              address
+                              name
+                              symbol
+                              logoUrl
+                              decimals
+                              price
+                              priceDecimals
+                              totalSupply
+                              isActive
+                              canWrapFTM
+                              canDeposit
+                              canMint
+                              canBorrow
+                              canTrade
+                          }
+                      }
+                  `,
             variables: {
                 owner: _ownerAddress,
             },
@@ -874,24 +895,41 @@ export class DeFi {
      */
     async fetchUniswapPairs(_address, _pairAddress = '', _filterPair = []) {
         const data = await this.apolloClient.query({
-            query: gql`
-                query GetUniswapPairs($user: Address!, $owner: Address!) {
-                    defiUniswapPairs {
-                        pairAddress
-                        tokens {
-                            address
-                            name
-                            symbol
-                            balanceOf(owner: $owner)
-                        }
-                        reservesTimeStamp
-                        reserves
-                        cumulativePrices
-                        totalSupply
-                        shareOf(user: $user)
-                    }
-                }
-            `,
+            query: _address
+                ? gql`
+                      query GetUniswapPairs($user: Address!, $owner: Address!) {
+                          defiUniswapPairs {
+                              pairAddress
+                              tokens {
+                                  address
+                                  name
+                                  symbol
+                                  balanceOf(owner: $owner)
+                              }
+                              reservesTimeStamp
+                              reserves
+                              cumulativePrices
+                              totalSupply
+                              shareOf(user: $user)
+                          }
+                      }
+                  `
+                : gql`
+                      query GetUniswapPairs {
+                          defiUniswapPairs {
+                              pairAddress
+                              tokens {
+                                  address
+                                  name
+                                  symbol
+                              }
+                              reservesTimeStamp
+                              reserves
+                              cumulativePrices
+                              totalSupply
+                          }
+                      }
+                  `,
             variables: {
                 user: _address,
                 owner: _pairAddress || _address,

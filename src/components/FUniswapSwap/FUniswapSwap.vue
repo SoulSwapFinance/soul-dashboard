@@ -194,11 +194,6 @@ export default {
 
     data() {
         return {
-            /** @type {FMintAccount} */
-            fMintAccount: {
-                collateral: [],
-                debt: [],
-            },
             fromValue: '',
             toValue: '',
             perPrice: 0,
@@ -279,7 +274,7 @@ export default {
         },
 
         submitDisabled() {
-            return this.correctFromInputValue(this.fromValue) === 0;
+            return !this.currentAccount || this.correctFromInputValue(this.fromValue) === 0;
         },
 
         minimumReceived() {
@@ -360,6 +355,10 @@ export default {
         this._fromValueChanged = false;
 
         this._eventBus.on('account-picked', this.onAccountPicked);
+
+        if (!this.currentAccount) {
+            this.submitLabel = 'Connect Wallet';
+        }
     },
 
     mounted() {
@@ -371,14 +370,11 @@ export default {
             const { $defi } = this;
             const { params } = this;
             const result = await Promise.all([
-                $defi.fetchFMintAccount(this.currentAccount.address),
-                $defi.fetchTokens(this.currentAccount.address),
+                $defi.fetchTokens(this.currentAccount ? this.currentAccount.address : ''),
                 $defi.init(),
             ]);
 
-            this.fMintAccount = result[0];
-
-            this.tokens = result[1];
+            this.tokens = result[0];
 
             // if (params.fromToken && params.toToken) {
             if (params.fromToken) {
@@ -397,7 +393,10 @@ export default {
             const addressB = this.toToken.address;
 
             if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, '', [addressA, addressB]);
+                return await this.$defi.fetchUniswapPairs(this.currentAccount ? this.currentAccount.address : '', '', [
+                    addressA,
+                    addressB,
+                ]);
             }
 
             return {};
@@ -590,7 +589,9 @@ export default {
 
             this.submitBtnDisabled = true;
 
-            if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+            if (!this.currentAccount) {
+                this.submitLabel = 'Connect Wallet';
+            } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
                 if (
                     parseInt(fromInputValue) > this.maxFromInputValue ||
                     parseInt(toInputValue) > this.maxToInputValue

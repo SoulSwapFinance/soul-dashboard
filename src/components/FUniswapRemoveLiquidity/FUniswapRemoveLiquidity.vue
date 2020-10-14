@@ -52,7 +52,7 @@
 
             <div class="funiswap__submit-cont">
                 <button ref="submitBut" class="btn large" :disabled="submitDisabled" @click="onSubmit">
-                    Remove
+                    {{ submitLabel }}
                 </button>
             </div>
         </f-card>
@@ -104,6 +104,7 @@ export default {
             dPair: {},
             addDeciamals: 2,
             currLiquidity: '0',
+            submitLabel: 'Remove',
         };
     },
 
@@ -172,7 +173,7 @@ export default {
         },
 
         submitDisabled() {
-            return this.currLiquidity === '0';
+            return !this.currentAccount || this.currLiquidity === '0';
         },
 
         share() {
@@ -204,29 +205,27 @@ export default {
         this.init();
 
         this._eventBus.on('account-picked', this.onAccountPicked);
+
+        if (!this.currentAccount) {
+            this.submitLabel = 'Connect Wallet';
+        }
     },
 
     methods: {
         async init() {
             const { $defi } = this;
-            const result = await Promise.all([$defi.fetchTokens(this.currentAccount.address), $defi.init()]);
+            const address = this.currentAccount ? this.currentAccount.address : '';
+            const result = await Promise.all([$defi.fetchTokens(address), $defi.init()]);
 
             const tokens = result[0];
 
             if (!this.dPair.pairAddress) {
-                let uniswapPairs = await this.$defi.fetchUniswapPairs(
-                    this.currentAccount.address,
-                    this.dPair.pairAddress
-                );
+                let uniswapPairs = await this.$defi.fetchUniswapPairs(address, this.dPair.pairAddress);
 
                 if (uniswapPairs && uniswapPairs.length > 0) {
-                    uniswapPairs = await this.$defi.fetchUniswapPairs(
-                        this.currentAccount.address,
-                        uniswapPairs[0].pairAddress
-                    );
+                    uniswapPairs = await this.$defi.fetchUniswapPairs(address, uniswapPairs[0].pairAddress);
 
                     this.dPair = uniswapPairs[0];
-                    console.log('pair', this.dPair);
                 }
             }
 
@@ -244,14 +243,13 @@ export default {
             const addressB = this.toToken.address;
 
             if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount.address, [addressA, addressB]);
+                return await this.$defi.fetchUniswapPairs(this.currentAccount ? this.currentAccount.address : '', [
+                    addressA,
+                    addressB,
+                ]);
             }
 
             return {};
-
-            // console.log(uniswapPairs[0].reserves.map((_item) => parseInt(_item, 16)));
-            // console.log('shareOf', parseInt(uniswapPairs[0].shareOf, 16));
-            // console.log('totalSupply', parseInt(uniswapPairs[0].totalSupply, 16));
         },
 
         async setTokenPrices() {
