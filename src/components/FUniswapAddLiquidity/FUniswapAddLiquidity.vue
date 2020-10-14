@@ -230,8 +230,7 @@ export default {
         },
 
         maxToInputValue() {
-            return this.convertFrom2To(this.maxFromInputValue);
-            // return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
+            return this.toTokenBalance;
         },
 
         submitDisabled() {
@@ -515,9 +514,9 @@ export default {
             if (!this.currentAccount) {
                 this.submitLabel = 'Connect Wallet';
             } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                if (parseInt(fromInputValue) > Math.min(this.maxFromInputValue, this.fromTokenBalance)) {
+                if (parseFloat(fromInputValue) > this.maxFromInputValue) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
-                } else if (parseInt(toInputValue) > Math.min(this.maxToInputValue, this.toTokenBalance)) {
+                } else if (parseFloat(toInputValue) > this.maxToInputValue) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
                 } else {
                     this.submitLabel = 'Supply';

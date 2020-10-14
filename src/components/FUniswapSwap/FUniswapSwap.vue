@@ -584,24 +584,21 @@ export default {
         },
 
         updateSubmitLabel() {
-            const fromInputValue = this.$refs.fromInput.value;
-            const toInputValue = this.$refs.toInput.value;
+            const { fromValue } = this;
+            const { toValue } = this;
 
             this.submitBtnDisabled = true;
 
             if (!this.currentAccount) {
                 this.submitLabel = 'Connect Wallet';
-            } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                if (
-                    parseInt(fromInputValue) > this.maxFromInputValue ||
-                    parseInt(toInputValue) > this.maxToInputValue
-                ) {
+            } else if (fromValue && fromValue !== '0' && toValue && toValue !== '0') {
+                if (parseFloat(fromValue) > this.maxFromInputValue || parseFloat(toValue) > this.maxToInputValue) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
                 } else {
                     this.submitLabel = 'Swap';
                     this.submitBtnDisabled = false;
                 }
-            } else if (fromInputValue && fromInputValue !== '0') {
+            } else if (fromValue && fromValue !== '0') {
                 this.submitLabel = 'Select a token';
             } else {
                 this.submitLabel = 'Enter an amount';
