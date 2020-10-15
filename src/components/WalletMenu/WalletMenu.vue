@@ -116,7 +116,7 @@ export default {
                     url: {
                         name: 'funiswap',
                     },
-                    title: 'fUniswap',
+                    title: 'fUNI',
                     icon: swapIcon,
                     fill: true,
                     fUniswapLink: true,
