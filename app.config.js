@@ -57,7 +57,7 @@ const appConfig = {
     // tmp
     tmpSwapEnabled: false,
     //
-    useTestnet: true,
+    useTestnet: false,
     // testnet config
     testnet: {
         // list of providers. if one of them is unavailable, another is randomly picked
@@ -119,6 +119,7 @@ if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
     appConfig.chainId = appConfig.testnet.chainId;
+    appConfig.tmpSwapEnabled = true;
 }
 
 //
