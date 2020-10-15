@@ -36,7 +36,7 @@
                         class="bigger-arrow"
                         @click.native="onFromTokenSelectorClick"
                     >
-                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="24px" />
+                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="auto" />
                     </f-select-button>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                             class="bigger-arrow"
                             @click.native="onToTokenSelectorClick"
                         >
-                            <f-crypto-symbol :token="toToken" img-width="24px" img-height="24px" />
+                            <f-crypto-symbol :token="toToken" img-width="24px" img-height="auto" />
                         </f-select-button>
                     </template>
                     <button
@@ -165,6 +165,8 @@ export default {
         return {
             fromValue: '',
             toValue: '',
+            fromValue_: 0,
+            toValue_: 0,
             toPerFromPrice: 0,
             fromPerToPrice: 0,
             /** Per price direction. true - from -> to, false - to -> from */
@@ -231,7 +233,7 @@ export default {
         },
 
         submitDisabled() {
-            return !this.currentAccount || this.correctFromInputValue(this.fromValue) === 0;
+            return !this.currentAccount || this.correctFromInputValue(this.fromValue_) === 0;
         },
 
         shareOfPool() {
@@ -250,33 +252,33 @@ export default {
     watch: {
         fromValue(_value, _oldValue) {
             if (_value !== _oldValue) {
-                this.updateInputColor(parseFloat(_value));
+                this.fromValue_ = !_value ? 0 : parseFloat(_value);
+
+                this.toValue_ = this.convertFrom2To(this.fromValue_);
+
+                this.updateInputColor(this.fromValue_);
+                this.updateInputColor(this.toValue_, true);
                 this.updateSubmitLabel();
 
                 this.setPrices();
 
-                this._fromValueChanged = true;
-
-                this.toValue = this.convertFrom2To(_value);
-
-                defer(() => {
-                    this.$refs.toInput.value = this.formatToInputValue(this.toValue);
-                    this._fromValueChanged = false;
-                });
+                this.setToInputValue(this.correctToInputValue(this.toValue_));
             }
         },
 
         toValue(_value, _oldValue) {
             if (_value !== _oldValue) {
-                this.updateInputColor(parseFloat(_value), true);
+                this.toValue_ = !_value ? 0 : parseFloat(_value);
+
+                this.fromValue_ = this.convertTo2From(this.toValue_);
+
+                this.updateInputColor(this.toValue_, true);
+                this.updateInputColor(this.fromValue_);
                 this.updateSubmitLabel();
 
-                if (!this._fromValueChanged) {
-                    // correct 'from' input value
-                    this.setFromInputValue(this.correctFromInputValue(this.convertTo2From(_value)));
-                }
+                this.setPrices();
 
-                this._fromValueChanged = false;
+                this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
             }
         },
 
@@ -321,8 +323,6 @@ export default {
 
     created() {
         this.init();
-
-        this._fromValueChanged = false;
 
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';
@@ -507,8 +507,10 @@ export default {
         },
 
         updateSubmitLabel() {
-            const fromInputValue = this.$refs.fromInput.value;
-            const toInputValue = this.$refs.toInput.value;
+            // const fromInputValue = this.$refs.fromInput.value;
+            // const toInputValue = this.$refs.toInput.value;
+            const fromInputValue = this.fromValue_;
+            const toInputValue = this.toValue_;
 
             this.submitBtnDisabled = true;
 
@@ -539,8 +541,6 @@ export default {
             } else {
                 this.fromValue = fromValue;
             }
-
-            this.setFromInputValue(this.fromValue);
         },
 
         onToMaxAmountClick() {
@@ -552,8 +552,6 @@ export default {
             } else {
                 this.toValue = toValue;
             }
-
-            this.setToInputValue(this.toValue);
         },
 
         onFromTokenSelectorClick() {
@@ -594,16 +592,13 @@ export default {
          */
         onFromInputChange(_event) {
             const cValue = this.correctFromInputValue(_event.target.value);
+            const toValue = this.convertFrom2To(cValue);
 
-            if (this.fromValue === cValue) {
-                this.$nextTick(() => {
-                    this.$refs.fromInput.value = this.formatFromInputValue(cValue);
-                });
+            if (toValue > this.toTokenBalance) {
+                this.toValue = this.toTokenBalance;
+            } else {
+                this.fromValue = cValue;
             }
-
-            this.fromValue = cValue;
-
-            this.updateInputColor(this.fromValue);
         },
 
         /**
@@ -611,17 +606,13 @@ export default {
          */
         onToInputChange(_event) {
             const cValue = this.correctToInputValue(_event.target.value);
+            const fromValue = this.convertTo2From(cValue);
 
-            if (this.toValue === cValue) {
-                this.$nextTick(() => {
-                    this.$refs.toInput.value = this.formatToInputValue(cValue);
-                });
+            if (fromValue > this.fromTokenBalance) {
+                this.fromValue = this.fromTokenBalance;
+            } else {
+                this.toValue = cValue;
             }
-
-            this.toValue = cValue;
-            // this.fromValue = this.convertTo2From(this.toValue);
-
-            this.updateInputColor(this.toValue, true);
         },
 
         /**
@@ -639,8 +630,8 @@ export default {
             const { toToken } = this;
             // const ftmTokens = ['FTM', 'WFTM'];
             const params = {
-                fromValue: parseFloat(this.fromValue),
-                toValue: parseFloat(this.toValue),
+                fromValue: this.fromValue_,
+                toValue: this.toValue_,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
                 slippageTolerance: this.slippageTolerance,

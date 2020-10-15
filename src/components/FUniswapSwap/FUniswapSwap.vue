@@ -37,7 +37,7 @@
                         class="bigger-arrow"
                         @click.native="onFromTokenSelectorClick"
                     >
-                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="24px" />
+                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="auto" />
                     </f-select-button>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                         class="bigger-arrow"
                         @click.native="onToTokenSelectorClick"
                     >
-                        <f-crypto-symbol :token="toToken" img-width="24px" img-height="24px" />
+                        <f-crypto-symbol :token="toToken" img-width="24px" img-height="auto" />
                     </f-select-button>
                     <button
                         v-else
@@ -193,6 +193,8 @@ export default {
         return {
             fromValue: '',
             toValue: '',
+            fromValue_: 0,
+            toValue_: 0,
             perPrice: 0,
             /** Per price direction. true - from -> to, false - to -> from */
             perPriceDirF2T: true,
@@ -271,7 +273,7 @@ export default {
         },
 
         submitDisabled() {
-            return !this.currentAccount || this.correctFromInputValue(this.fromValue) === 0;
+            return !this.currentAccount || this.correctFromInputValue(this.fromValue_) === 0;
         },
 
         minimumReceived() {
@@ -282,6 +284,19 @@ export default {
     watch: {
         fromValue(_value, _oldValue) {
             if (_value !== _oldValue) {
+                this.fromValue_ = !_value ? 0 : parseFloat(_value);
+
+                this.toValue_ = this.convertFrom2To(this.fromValue_);
+
+                this.updateInputColor(this.fromValue_);
+                this.updateInputColor(this.toValue_, true);
+                this.updateSubmitLabel();
+
+                this.setPerPrice();
+
+                this.setToInputValue(this.correctToInputValue(this.toValue_));
+
+                /*
                 this.updateInputColor(parseFloat(_value));
                 this.updateSubmitLabel();
 
@@ -295,11 +310,25 @@ export default {
                     this.$refs.toInput.value = this.formatToInputValue(this.toValue);
                     this._fromValueChanged = false;
                 });
+*/
             }
         },
 
         toValue(_value, _oldValue) {
             if (_value !== _oldValue) {
+                this.toValue_ = !_value ? 0 : parseFloat(_value);
+
+                this.fromValue_ = this.convertTo2From(this.toValue_);
+
+                this.updateInputColor(this.toValue_, true);
+                this.updateInputColor(this.fromValue_);
+                this.updateSubmitLabel();
+
+                this.setPerPrice();
+
+                this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
+
+                /*
                 this.updateInputColor(parseFloat(_value), true);
                 this.updateSubmitLabel();
 
@@ -310,6 +339,7 @@ export default {
                 }
 
                 this._fromValueChanged = false;
+*/
             }
         },
 
@@ -585,8 +615,8 @@ export default {
         },
 
         updateSubmitLabel() {
-            const { fromValue } = this;
-            const { toValue } = this;
+            const fromValue = this.fromValue_;
+            const toValue = this.toValue_;
 
             this.submitBtnDisabled = true;
 
@@ -654,16 +684,13 @@ export default {
          */
         onFromInputChange(_event) {
             const cValue = this.correctFromInputValue(_event.target.value);
+            const toValue = this.convertFrom2To(cValue);
 
-            if (this.fromValue === cValue) {
-                this.$nextTick(() => {
-                    this.$refs.fromInput.value = this.formatFromInputValue(cValue);
-                });
+            if (toValue > this.toTokenBalance) {
+                this.toValue = this.toTokenBalance;
+            } else {
+                this.fromValue = cValue;
             }
-
-            this.fromValue = cValue;
-
-            this.updateInputColor(this.fromValue);
         },
 
         /**
@@ -671,17 +698,13 @@ export default {
          */
         onToInputChange(_event) {
             const cValue = this.correctToInputValue(_event.target.value);
+            const fromValue = this.convertTo2From(cValue);
 
-            if (this.toValue === cValue) {
-                this.$nextTick(() => {
-                    this.$refs.toInput.value = this.formatToInputValue(cValue);
-                });
+            if (fromValue > this.fromTokenBalance) {
+                this.fromValue = this.fromTokenBalance;
+            } else {
+                this.toValue = cValue;
             }
-
-            this.toValue = cValue;
-            // this.fromValue = this.convertTo2From(this.toValue);
-
-            this.updateInputColor(this.toValue, true);
         },
 
         /**
@@ -699,8 +722,8 @@ export default {
             const { toToken } = this;
             // const ftmTokens = ['FTM', 'WFTM'];
             const params = {
-                fromValue: this.fromValue,
-                toValue: this.toValue,
+                fromValue: this.fromValue_,
+                toValue: this.toValue_,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
                 slippageTolerance: this.slippageTolerance,

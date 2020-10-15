@@ -26,13 +26,13 @@
                 <div class="row no-collapse">
                     <div class="col">{{ fromTokenLiquidityFormatted }}</div>
                     <div class="col align-right">
-                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="24px" />
+                        <f-crypto-symbol :token="fromToken" img-width="24px" img-height="auto" />
                     </div>
                 </div>
                 <div class="row no-collapse">
                     <div class="col">{{ toTokenLiquidityFormatted }}</div>
                     <div class="col align-right">
-                        <f-crypto-symbol :token="toToken" img-width="24px" img-height="24px" />
+                        <f-crypto-symbol :token="toToken" img-width="24px" img-height="auto" />
                     </div>
                 </div>
             </div>
@@ -295,8 +295,6 @@ export default {
             };
 
             if (!this.submitDisabled) {
-                console.log(params);
-
                 this.$router.push({
                     name: 'funiswap-remove-liquidity-confirmation',
                     params,
