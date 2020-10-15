@@ -18,8 +18,9 @@ import { mapGetters } from 'vuex';
 import FUniswapHomeTabs from '@/components/FUniswapHomeTabs/FUniswapHomeTabs.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { defer } from '@/utils';
+import appConfig from '../../../app.config.js';
 
-const DEFAULT_COMPONENT = 'f-uniswap-swap';
+const DEFAULT_COMPONENT = appConfig.tmpSwapEnabled ? 'f-uniswap-swap' : 'f-uniswap-add-liquidity';
 
 export default {
     name: 'FUniswapHome',
@@ -31,7 +32,7 @@ export default {
     data() {
         return {
             currentComponent: DEFAULT_COMPONENT,
-            activeTab: 'swap',
+            activeTab: appConfig.tmpSwapEnabled ? 'swap' : 'add-liquidity',
         };
     },
 

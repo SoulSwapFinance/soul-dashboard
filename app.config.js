@@ -54,6 +54,8 @@ const appConfig = {
     },
     // tmp
     tmpWFTM: true,
+    // tmp
+    tmpSwapEnabled: false,
     //
     useTestnet: true,
     // testnet config

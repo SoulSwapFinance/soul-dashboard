@@ -1,6 +1,6 @@
 <template>
     <ul class="funiswap-home-tabs no-markers">
-        <li>
+        <li v-if="appConfig.tmpSwapEnabled">
             <label for="funiswap-home-tabs-swap">
                 <input
                     id="funiswap-home-tabs-swap"
@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import appConfig from '../../../app.config.js';
+
 export default {
     name: 'FUniswapHomeTabs',
 
@@ -56,6 +58,7 @@ export default {
     data() {
         return {
             tab: this.activeTab,
+            appConfig: appConfig,
         };
     },
 
