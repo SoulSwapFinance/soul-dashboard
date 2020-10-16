@@ -1,6 +1,6 @@
 <template>
     <ul class="funiswap-home-tabs no-markers">
-        <li v-if="appConfig.tmpSwapEnabled">
+        <li>
             <label for="funiswap-home-tabs-swap">
                 <input
                     id="funiswap-home-tabs-swap"
