@@ -295,22 +295,6 @@ export default {
                 this.setPerPrice();
 
                 this.setToInputValue(this.correctToInputValue(this.toValue_));
-
-                /*
-                this.updateInputColor(parseFloat(_value));
-                this.updateSubmitLabel();
-
-                this.setPerPrice();
-
-                this._fromValueChanged = true;
-
-                this.toValue = this.convertFrom2To(_value);
-
-                defer(() => {
-                    this.$refs.toInput.value = this.formatToInputValue(this.toValue);
-                    this._fromValueChanged = false;
-                });
-*/
             }
         },
 
@@ -327,19 +311,6 @@ export default {
                 this.setPerPrice();
 
                 this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
-
-                /*
-                this.updateInputColor(parseFloat(_value), true);
-                this.updateSubmitLabel();
-
-                if (!this._fromValueChanged) {
-                    // correct 'from' input value
-                    // this.fromValue = this.correctFromInputValue(this.convertTo2From(_value));
-                    this.setFromInputValue(this.correctFromInputValue(this.convertTo2From(_value)));
-                }
-
-                this._fromValueChanged = false;
-*/
             }
         },
 
@@ -370,7 +341,15 @@ export default {
                         this.setTokenPrices();
                     }
 
-                    this.setToValue();
+                    this.toValue_ = this.convertFrom2To(this.fromValue_);
+
+                    this.updateInputColor(this.fromValue_);
+                    this.updateInputColor(this.toValue_, true);
+                    this.updateSubmitLabel();
+
+                    this.setPerPrice();
+
+                    this.setToInputValue(this.correctToInputValue(this.toValue_));
                 }
             }
         },
@@ -384,8 +363,6 @@ export default {
 
     created() {
         this.init();
-
-        this._fromValueChanged = false;
 
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';
@@ -551,19 +528,6 @@ export default {
             });
         },
 
-        setToValue() {
-            const value = this.$refs.fromInput.value;
-
-            if (value !== '') {
-                this.toValue = this.convertFrom2To(value);
-            }
-
-            this.setToInputValue(this.toValue);
-
-            this.updateSubmitLabel();
-            this.setPerPrice();
-        },
-
         async setTokenPrices() {
             const { dPair } = this;
             let price = dPair.pairAddress ? await this.$defi.getUniswapTokenPrice(this.fromToken.address, dPair) : '';
@@ -674,8 +638,6 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
-
-                // this.resetInputValues();
             }
         },
 

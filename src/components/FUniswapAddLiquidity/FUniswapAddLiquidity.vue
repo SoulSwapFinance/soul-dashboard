@@ -309,7 +309,15 @@ export default {
                         this.setTokenPrices();
                     }
 
-                    this.setToValue();
+                    this.toValue_ = this.convertFrom2To(this.fromValue_);
+
+                    this.updateInputColor(this.fromValue_);
+                    this.updateInputColor(this.toValue_, true);
+                    this.updateSubmitLabel();
+
+                    this.setPrices();
+
+                    this.setToInputValue(this.correctToInputValue(this.toValue_));
                 }
             }
         },
@@ -476,18 +484,6 @@ export default {
             defer(() => {
                 this.$refs.toInput.value = this.formatToInputValue(_value);
             });
-        },
-
-        setToValue() {
-            const value = this.$refs.fromInput.value;
-
-            if (value !== '') {
-                this.toValue = this.convertFrom2To(this.$refs.fromInput.value);
-                this.setToInputValue(this.toValue);
-            }
-
-            this.updateSubmitLabel();
-            this.setPrices();
         },
 
         setPrices() {
