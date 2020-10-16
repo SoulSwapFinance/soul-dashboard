@@ -8,6 +8,7 @@
 import PopupManager from './popup';
 
 const popupManager = new PopupManager();
+let sentRequest = null;
 
 chrome.runtime.onInstalled.addListener(function () {
     /*
@@ -33,6 +34,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method === 'wallet_init') { // internal, called by inpage on page load
         sendResponse({ method: 'wallet_chainIdChanged', result:"0xf3" });
     }
+    else if (request.method === 'wallet_sendTransaction_ready') {
+        sendResponse(sentRequest);
+    }
 
     else if (request.method === 'eth_accounts') {
         sendResponse({"jsonrpc":"2.0","id":request.id,"result":[
@@ -44,6 +48,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     } else if (request.method === 'net_version') {
         sendResponse({"jsonrpc": "2.0", "id": request.id, "result": 250}); // Fantom mainnet
     } else if (request.method === 'eth_sendTransaction') {
+        sentRequest = request;
         popupManager.showPopup('app/index.html#/eip-send-transaction');
         popupManager.showTab('app/index.html#/eip-send-transaction');
     } else {
