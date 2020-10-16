@@ -318,6 +318,7 @@ export default {
                     this.setPrices();
 
                     this.setToInputValue(this.correctToInputValue(this.toValue_));
+                    this.setFromInputValue(this.fromValue_);
                 }
             }
         },
@@ -536,6 +537,10 @@ export default {
                 this.toValue = this.toTokenBalance;
             } else {
                 this.fromValue = fromValue;
+
+                defer(() => {
+                    this.setFromInputValue(this.fromValue_);
+                });
             }
         },
 
@@ -547,6 +552,10 @@ export default {
                 this.fromValue = this.fromTokenBalance;
             } else {
                 this.toValue = toValue;
+
+                defer(() => {
+                    this.setToInputValue(this.toValue_);
+                });
             }
         },
 
@@ -594,6 +603,10 @@ export default {
                 this.toValue = this.toTokenBalance;
             } else {
                 this.fromValue = cValue;
+
+                defer(() => {
+                    this.setFromInputValue(this.fromValue_);
+                });
             }
         },
 
@@ -608,6 +621,10 @@ export default {
                 this.fromValue = this.fromTokenBalance;
             } else {
                 this.toValue = cValue;
+
+                defer(() => {
+                    this.setToInputValue(this.toValue_);
+                });
             }
         },
 

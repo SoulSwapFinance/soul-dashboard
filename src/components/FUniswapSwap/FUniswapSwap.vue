@@ -277,7 +277,7 @@ export default {
         },
 
         minimumReceived() {
-            return this.formatToInputValue(this.toValue * (1 - this.slippageTolerance));
+            return this.formatToInputValue(this.toValue_ * (1 - this.slippageTolerance));
         },
     },
 
@@ -350,6 +350,7 @@ export default {
                     this.setPerPrice();
 
                     this.setToInputValue(this.correctToInputValue(this.toValue_));
+                    this.setFromInputValue(this.fromValue_);
                 }
             }
         },
@@ -645,14 +646,11 @@ export default {
          * @param {InputEvent} _event
          */
         onFromInputChange(_event) {
-            const cValue = this.correctFromInputValue(_event.target.value);
-            const toValue = this.convertFrom2To(cValue);
+            this.fromValue = this.correctFromInputValue(_event.target.value);
 
-            if (toValue > this.toTokenBalance) {
-                this.toValue = this.toTokenBalance;
-            } else {
-                this.fromValue = cValue;
-            }
+            defer(() => {
+                this.setFromInputValue(this.fromValue_);
+            });
         },
 
         /**
@@ -666,6 +664,10 @@ export default {
                 this.fromValue = this.fromTokenBalance;
             } else {
                 this.toValue = cValue;
+
+                defer(() => {
+                    this.setToInputValue(this.toValue_);
+                });
             }
         },
 
