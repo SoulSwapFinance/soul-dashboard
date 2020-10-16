@@ -112,9 +112,7 @@
                     </div>
                     <div class="col">
                         <div>{{ shareOfPool }}</div>
-                        <div class="defi-label">
-                            Share of Pool
-                        </div>
+                        <div class="defi-label">Share of Pool</div>
                     </div>
                 </div>
             </div>
@@ -317,6 +315,11 @@ export default {
 
                     this.setPrices();
 
+                    const cValue = this.correctToInputValue(this.toValue_);
+                    if (this.toValue_ > cValue) {
+                        this.toValue = cValue;
+                    }
+
                     this.setToInputValue(this.correctToInputValue(this.toValue_));
                     this.setFromInputValue(this.fromValue_);
                 }
@@ -403,15 +406,13 @@ export default {
 
         swapTokens() {
             const hToken = this.fromToken;
-            const hValue = this.fromValue;
+            const hValue = this.fromValue_;
 
             this.fromToken = this.toToken;
             this.toToken = hToken;
 
-            this.fromValue = this.toValue || '';
-            this.toValue = hValue || '';
-
-            this.fromValue = this.correctFromInputValue(this.fromValue) || '';
+            this.fromValue = this.correctFromInputValue(this.toValue_) || '';
+            this.toValue = this.correctToInputValue(hValue) || '';
 
             this.setFromInputValue(this.fromValue);
             this.setToInputValue(this.toValue);
@@ -535,6 +536,10 @@ export default {
 
             if (toValue > this.toTokenBalance) {
                 this.toValue = this.toTokenBalance;
+
+                defer(() => {
+                    this.setToInputValue(this.toValue_);
+                });
             } else {
                 this.fromValue = fromValue;
 
@@ -550,6 +555,10 @@ export default {
 
             if (fromValue > this.fromTokenBalance) {
                 this.fromValue = this.fromTokenBalance;
+
+                defer(() => {
+                    this.setFromInputValue(this.fromValue_);
+                });
             } else {
                 this.toValue = toValue;
 
