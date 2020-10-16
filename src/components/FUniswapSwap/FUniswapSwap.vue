@@ -413,15 +413,13 @@ export default {
 
         swapTokens() {
             const hToken = this.fromToken;
-            const hValue = this.fromValue;
+            const hValue = this.fromValue_;
 
             this.fromToken = this.toToken;
             this.toToken = hToken;
 
-            this.fromValue = this.toValue || '';
-            this.toValue = hValue || '';
-
-            this.fromValue = this.correctFromInputValue(this.fromValue) || '';
+            this.fromValue = this.correctFromInputValue(this.toValue_) || '';
+            this.toValue = this.correctToInputValue(hValue) || '';
 
             this.setFromInputValue(this.fromValue);
             this.setToInputValue(this.toValue);
