@@ -128,7 +128,9 @@
                             confirmed.
                         </f-info>
                     </div>
-                    <div class="col align-right"><f-token-value :value="minimumReceived" :token="toToken" /></div>
+                    <div class="col align-right">
+                        <f-token-value :value="minimumReceived" :token="toToken" />
+                    </div>
                 </div>
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
@@ -163,11 +165,12 @@ import { mapGetters } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
-import { defer, getUniqueId } from '../../utils';
+import { debounce, defer, getUniqueId } from '../../utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
+import Web3 from 'web3';
 
 export default {
     name: 'FUniswapSwap',
@@ -212,6 +215,7 @@ export default {
             submitLabel: 'Enter an amount',
             dPair: {},
             addDeciamals: 2,
+            minimumReceived: 0,
         };
     },
 
@@ -275,10 +279,6 @@ export default {
         submitDisabled() {
             return !this.currentAccount || this.correctFromInputValue(this.fromValue_) === 0;
         },
-
-        minimumReceived() {
-            return this.formatToInputValue(this.toValue_ * (1 - this.slippageTolerance));
-        },
     },
 
     watch: {
@@ -311,6 +311,12 @@ export default {
                 this.setPerPrice();
 
                 this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
+            }
+        },
+
+        toValue_(_value, _oldValue) {
+            if (_value !== _oldValue) {
+                this._setMinimumReceived();
             }
         },
 
@@ -368,13 +374,47 @@ export default {
         if (!this.currentAccount) {
             this.submitLabel = 'Connect Wallet';
         }
+
+        this._setMinimumReceivedDebounced = debounce(() => {
+            this.setMinimumReceived();
+        }, 250);
     },
+
+    /*
+    asyncComputed: {
+        async minr() {
+        },
+    },
+*/
 
     mounted() {
         this.$refs.submitBut.disabled = true;
     },
 
     methods: {
+        _setMinimumReceived() {
+            this._setMinimumReceivedDebounced();
+        },
+
+        async setMinimumReceived() {
+            const { fromToken } = this;
+            const { toToken } = this;
+
+            if (!fromToken.address || !toToken.address || !this.fromValue_) {
+                return 0;
+            }
+
+            let amounts = await this.$defi.fetchUniswapAmountsOut(
+                Web3.utils.toHex(this.$defi.shiftDecPointRight(this.fromValue_.toString(), fromToken.decimals)),
+                [fromToken.address, toToken.address]
+            );
+
+            this.minimumReceived = this.$defi.fromTokenValue(amounts[1], toToken) * (1 - this.slippageTolerance);
+
+            // fix disappearing value in `to` input
+            this.fromValue = this.fromValue_;
+        },
+
         async init() {
             const { $defi } = this;
             const { params } = this;
