@@ -1,24 +1,24 @@
 'use strict';
+/* global chrome */
 
 if (shouldInjectProvider()) {
-    injectScript(INPAGE_SCRIPT);
+    injectScriptFile('inpage.js');
 }
 
 /**
  * Injects a script tag into the current document
  *
- * @param {string} content - Code to be executed in the current document
+ * @param {string} url - Url of script to be executed in the current document
  */
-function injectScript(content) {
+function injectScriptFile(url) {
     try {
         const container = document.head || document.documentElement;
         const scriptTag = document.createElement('script');
-        scriptTag.setAttribute('async', 'false');
-        scriptTag.textContent = content;
+        scriptTag.src = chrome.extension.getURL(url);
         container.insertBefore(scriptTag, container.children[0]);
         container.removeChild(scriptTag);
     } catch (e) {
-        console.error('Fantom provider injection failed.', e);
+        console.error('Fantom-PWA-Wallet inpage injection failed.', e);
     }
 }
 
@@ -114,4 +114,4 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }, location.origin);
 });
 
-console.log("Fantom contentscript OK");
+console.log("Fantom-PWA-Wallet contentscript OK");
