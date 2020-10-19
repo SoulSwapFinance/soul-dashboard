@@ -104,14 +104,13 @@
             <div v-show="toToken.address" class="funiswap-swap__exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">
-                    <f-placeholder :content-loaded="!!perPrice" replacement-text="000.0000 fUSD per fETH">
-                        {{ perPrice }}
-                    </f-placeholder>
-                </div>
-                <div class="swap-price">
-                    <button class="btn light same-size round" @click="swapPrice">
-                        <icon data="@/assets/svg/exchange-alt.svg" />
-                    </button>
+                    <f-token-value :value="1" :token="fromToken" :decimals="0" />
+                    =
+                    <f-token-value :value="convertFrom2To(1)" :token="toToken" :add-decimals="addDeciamals" />
+                    <br />
+                    <f-token-value :value="1" :token="toToken" :decimals="0" />
+                    =
+                    <f-token-value :value="convertTo2From(1)" :token="fromToken" :add-decimals="addDeciamals" />
                 </div>
             </div>
 
@@ -171,7 +170,6 @@ import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue
 import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import { debounce, defer, getUniqueId } from '../../utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
-import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import Web3 from 'web3';
@@ -183,7 +181,6 @@ export default {
     components: {
         FInfo,
         FCard,
-        FPlaceholder,
         FTokenValue,
         DefiTokenPickerWindow,
         FSelectButton,
@@ -205,9 +202,6 @@ export default {
             toValue: '',
             fromValue_: 0,
             toValue_: 0,
-            perPrice: 0,
-            /** Per price direction. true - from -> to, false - to -> from */
-            perPriceDirF2T: true,
             submitBtnDisabled: true,
             showPriceInfo: false,
             /** @type {DefiToken} */
@@ -298,8 +292,6 @@ export default {
                 this.updateInputColor(this.toValue_, true);
                 this.updateSubmitLabel();
 
-                this.setPerPrice();
-
                 this.setToInputValue(this.correctToInputValue(this.toValue_));
             }
         },
@@ -313,8 +305,6 @@ export default {
                 this.updateInputColor(this.toValue_, true);
                 this.updateInputColor(this.fromValue_);
                 this.updateSubmitLabel();
-
-                this.setPerPrice();
 
                 this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
             }
@@ -358,8 +348,6 @@ export default {
                     this.updateInputColor(this.fromValue_);
                     this.updateInputColor(this.toValue_, true);
                     this.updateSubmitLabel();
-
-                    this.setPerPrice();
 
                     this.setToInputValue(this.correctToInputValue(this.toValue_));
                     this.setFromInputValue(this.fromValue_);
@@ -442,8 +430,6 @@ export default {
                 this.fromToken = this.tokens[0];
                 // this.toToken = this.tokens[1];
             }
-
-            this.setPerPrice();
         },
 
         async getUniswapPair() {
@@ -472,8 +458,6 @@ export default {
 
             this.setFromInputValue(this.fromValue);
             this.setToInputValue(this.toValue);
-
-            this.setPerPrice();
         },
 
         /**
@@ -599,29 +583,9 @@ export default {
                     this.toToken = { ...toToken, _perPrice: price };
                 }
             }
-
-            this.setPerPrice();
-        },
-
-        setPerPrice() {
-            const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
-            const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
-            const perPrice = this.perPriceDirF2T ? this.convertTo2From(1) : this.convertFrom2To(1);
-            const { $defi } = this;
-
-            this.perPrice = `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(
-                toToken
-            )}`;
-            /*
-            this.perPrice = `${perPrice.toFixed(
-                this.$defi.getTokenDecimals(fromToken) + this.addDeciamals
-            )} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
-            */
         },
 
         swapPrice() {
-            this.perPriceDirF2T = !this.perPriceDirF2T;
-            this.setPerPrice();
             this.setFromInputValue(this.fromValue);
             this.setToInputValue(this.toValue);
         },
