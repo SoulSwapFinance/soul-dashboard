@@ -129,7 +129,7 @@
                         </f-info>
                     </div>
                     <div class="col align-right">
-                        <f-token-value :value="minimumReceived" :token="toToken" />
+                        <f-token-value ref="minimumReceived" :value="0" :token="toToken" />
                     </div>
                 </div>
                 <div class="row no-vert-col-padding no-collapse">
@@ -215,7 +215,6 @@ export default {
             submitLabel: 'Enter an amount',
             dPair: {},
             addDeciamals: 2,
-            minimumReceived: 0,
         };
     },
 
@@ -380,13 +379,6 @@ export default {
         }, 250);
     },
 
-    /*
-    asyncComputed: {
-        async minr() {
-        },
-    },
-*/
-
     mounted() {
         this.$refs.submitBut.disabled = true;
     },
@@ -409,10 +401,12 @@ export default {
                 [fromToken.address, toToken.address]
             );
 
-            this.minimumReceived = this.$defi.fromTokenValue(amounts[1], toToken) * (1 - this.slippageTolerance);
-
-            // fix disappearing value in `to` input
-            this.fromValue = this.fromValue_;
+            const eValue = this.$refs.minimumReceived.$el.querySelector('.value');
+            if (eValue) {
+                eValue.textContent = this.$refs.minimumReceived.formatTokenValue(
+                    this.$defi.fromTokenValue(amounts[1], toToken) * (1 - this.slippageTolerance)
+                );
+            }
         },
 
         async init() {
