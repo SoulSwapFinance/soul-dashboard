@@ -175,6 +175,7 @@ import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import Web3 from 'web3';
+import { pollingMixin } from '@/mixins/polling.js';
 
 export default {
     name: 'FUniswapSwap',
@@ -188,6 +189,8 @@ export default {
         FSelectButton,
         FCryptoSymbol,
     },
+
+    mixins: [pollingMixin],
 
     props: {
         slippageTolerance: {
@@ -385,6 +388,14 @@ export default {
 
     mounted() {
         this.$refs.submitBut.disabled = true;
+
+        this._polling.start(
+            'update-funiswap-swap-prices',
+            () => {
+                this.setTokenPrices();
+            },
+            4000
+        );
     },
 
     methods: {
@@ -566,16 +577,27 @@ export default {
         },
 
         async setTokenPrices() {
+            const { fromToken } = this;
+            const { toToken } = this;
             const { dPair } = this;
-            let price = dPair.pairAddress ? await this.$defi.getUniswapTokenPrice(this.fromToken.address, dPair) : '';
+            let price = '';
 
-            if (price && price !== this.fromToken._perPrice) {
-                this.fromToken = { ...this.fromToken, _perPrice: price };
+            if (!dPair.pairAddress) {
+                return;
             }
 
-            price = dPair.pairAddress ? await this.$defi.getUniswapTokenPrice(this.toToken.address, dPair) : '';
-            if (price && price !== this.toToken._perPrice) {
-                this.toToken = { ...this.toToken, _perPrice: price };
+            if (fromToken.address) {
+                price = await this.$defi.getUniswapTokenPrice(fromToken.address, dPair);
+                if (price && price !== fromToken._perPrice) {
+                    this.fromToken = { ...fromToken, _perPrice: price };
+                }
+            }
+
+            if (toToken.address) {
+                price = await this.$defi.getUniswapTokenPrice(toToken.address, dPair);
+                if (price && price !== toToken._perPrice) {
+                    this.toToken = { ...toToken, _perPrice: price };
+                }
             }
 
             this.setPerPrice();
