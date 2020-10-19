@@ -6,11 +6,13 @@
                     <legend v-if="token.address" class="h2">
                         Send {{ tokenSymbol }} <span class="f-steps"><b>1</b> / 2</span>
                     </legend>
-                    <legend v-else class="h2 cont-with-back-btn">
-                        <span>
-                            Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
-                        </span>
-                        <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
+                    <legend v-else class="h2">
+                        <div class="cont-with-back-btn">
+                            <span>
+                                Send Opera FTM <span class="f-steps"><b>2</b> / 3</span>
+                            </span>
+                            <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
+                        </div>
                     </legend>
 
                     <div class="form-body">
