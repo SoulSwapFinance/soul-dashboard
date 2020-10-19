@@ -26,15 +26,17 @@ class Storage {
     get length() {
         throw new Error('Not implemented method');
     }
-    key(keyIndex) {
+    key() {
         throw new Error('Not implemented method');
     }
 }
 
-export default appConfig.isChromeExtension ? {
-            storage: new Storage(),
-            asyncStorage: true,
-        } : {
-            storage: window.localStorage,
-            asyncStorage: false,
-        };
+export default appConfig.isChromeExtension
+    ? {
+          storage: new Storage(),
+          asyncStorage: true,
+      }
+    : {
+          storage: window.localStorage,
+          asyncStorage: false,
+      };

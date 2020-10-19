@@ -4,7 +4,7 @@
         <p>From: {{ from }}</p>
         <p>To: {{ to }}</p>
         <p>Value: {{ value }}</p>
-        <button v-on:click="confirm">Confirm</button>
+        <button @click="confirm">Confirm</button>
     </div>
 </template>
 
@@ -25,6 +25,10 @@ export default {
 
     computed: {},
 
+    created() {
+        chrome.runtime.sendMessage({ method: 'wallet_sendTransaction_ready' }, this.init);
+    },
+
     methods: {
         init(request) {
             this.from = request.params[0].from;
@@ -35,10 +39,6 @@ export default {
         confirm() {
             alert('ok');
         },
-    },
-
-    created() {
-        chrome.runtime.sendMessage({ method: 'wallet_sendTransaction_ready' }, this.init);
     },
 };
 </script>
