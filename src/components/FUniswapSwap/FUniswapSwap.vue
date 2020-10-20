@@ -404,7 +404,7 @@ export default {
                 [fromToken.address, toToken.address]
             );
 
-            const eValue = this.$refs.minimumReceived.$el.querySelector('.value');
+            const eValue = this.$refs.minimumReceived.$el.querySelector('.f-token-value__value');
             if (eValue) {
                 eValue.textContent = this.$refs.minimumReceived.formatTokenValue(
                     this.$defi.fromTokenValue(amounts[1], toToken) * (1 - this.slippageTolerance)
