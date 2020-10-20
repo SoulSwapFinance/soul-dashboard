@@ -6,8 +6,10 @@
     --f-funiswap-home-tabs-font-size: 18px;
     --f-funiswap-active-color: inherit;
     --f-funiswap-home-tabs-hover-color: var(--f-primary-color);
+    --f-funiswap-home-tabs-focus-background-color: #eee;
 
     display: flex;
+    justify-content: space-between;
 
     label {
         display: block;
@@ -22,7 +24,7 @@
             }
 
             &:focus.focus-visible + .funiswap-home-tabs__title {
-                background: #eee;
+                background: var(--f-funiswap-home-tabs-focus-background-color);
             }
         }
     }
@@ -32,6 +34,7 @@
         font-size: var(--f-funiswap-home-tabs-font-size);
         color: var(--f-funiswap-home-tabs-color);
         padding: 12px 16px;
+        white-space: nowrap;
 
         &:hover {
             color: var(--f-funiswap-home-tabs-hover-color);

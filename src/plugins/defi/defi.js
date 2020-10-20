@@ -867,17 +867,28 @@ export class DeFi {
      */
     async fetchNativeToken(_address) {
         const data = await this.apolloClient.query({
-            query: gql`
-                query GetNativeToken($owner: Address!) {
-                    defiNativeToken {
-                        address
-                        name
-                        symbol
-                        totalSupply
-                        balanceOf(owner: $owner)
-                    }
-                }
-            `,
+            query: _address
+                ? gql`
+                      query GetNativeToken($owner: Address!) {
+                          defiNativeToken {
+                              address
+                              name
+                              symbol
+                              totalSupply
+                              balanceOf(owner: $owner)
+                          }
+                      }
+                  `
+                : gql`
+                      query GetNativeToken {
+                          defiNativeToken {
+                              address
+                              name
+                              symbol
+                              totalSupply
+                          }
+                      }
+                  `,
             variables: {
                 owner: _address,
             },
@@ -943,9 +954,10 @@ export class DeFi {
             return defiUniswapPairs.find((_pair) => {
                 const { tokens } = _pair;
 
-                return tokens.find((_token) => {
-                    return _filterPair.indexOf(_token.address) > -1;
-                });
+                return (
+                    (tokens[0].address === _filterPair[0] && tokens[1].address === _filterPair[1]) ||
+                    (tokens[0].address === _filterPair[1] && tokens[1].address === _filterPair[0])
+                );
             });
         }
 

@@ -14,7 +14,7 @@
             </label>
         </li>
         <li>
-            <label for="funiswap-home-tabs-add-liquidity">
+            <label for="funiswap-home-tabs-add-liquidity" class="align-center">
                 <input
                     id="funiswap-home-tabs-add-liquidity"
                     v-model="tab"
@@ -27,7 +27,7 @@
             </label>
         </li>
         <li>
-            <label for="funiswap-home-tabs-remove-liquidity">
+            <label for="funiswap-home-tabs-remove-liquidity" class="align-right">
                 <input
                     id="funiswap-home-tabs-remove-liquidity"
                     v-model="tab"
