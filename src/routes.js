@@ -81,7 +81,7 @@ export const routes = [
             },
             {
                 name: 'eip-send-transaction',
-                path: '/eip-send-transaction',
+                path: '/eip-send-transaction/:id',
                 component: EipSendTransaction,
             },
         ],
