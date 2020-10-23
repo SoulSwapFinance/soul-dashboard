@@ -561,6 +561,16 @@ const appStructure = [
                     },
                 ],
             },
+            {
+                id: 'gov',
+                route: 'gov',
+                _c: [
+                    {
+                        id: 'gov-home',
+                        route: 'gov-home',
+                    },
+                ],
+            },
         ],
     },
 ];

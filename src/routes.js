@@ -52,6 +52,8 @@ import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
 import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
 import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
+import Gov from '@/views/Gov/Gov.vue';
+import GovHome from '@/views/GovHome/GovHome.vue';
 
 export const routes = [
     {
@@ -698,6 +700,18 @@ export const routes = [
                         name: 'funiswap-remove-liquidity-transaction-reject-message2',
                         path: 'remove-liquidity/confirmation2/reject2',
                         component: TransactionRejectMessageView,
+                    },
+                ],
+            },
+            {
+                name: 'gov',
+                path: '/gov/:address',
+                component: Gov,
+                children: [
+                    {
+                        name: 'gov-home',
+                        path: '',
+                        component: GovHome,
                     },
                 ],
             },
