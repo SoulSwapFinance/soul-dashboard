@@ -17,6 +17,7 @@ import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.
 import { FNano } from './plugins/fantom-nano.js';
 import { DeFi } from './plugins/defi/defi.js';
 import { Metamask } from '@/plugins/metamask/metamask.js';
+import { Governance } from '@/plugins/governance/governance.js';
 import 'focus-visible';
 
 import './wallet.types.js';
@@ -29,10 +30,9 @@ Vue.use(BNBridgeExchange, {
     apiToken: appConfig.bnbridgeApi.token,
 });
 Vue.use(FNano);
-Vue.use(DeFi, {
-    apolloClient,
-});
+Vue.use(DeFi, { apolloClient });
 Vue.use(Metamask);
+Vue.use(Governance, { apolloClient });
 
 Vue.config.productionTip = false;
 
