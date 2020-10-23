@@ -90,6 +90,49 @@ export class Governance {
     }
 
     /**
+     * @param {string} _cursor
+     * @param {number} [_count]
+     * @return {Promise<Object>}
+     */
+    async fetchProposals(_cursor, _count = 20) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GovernanceProposals($cursor: Cursor, $count: Int!) {
+                    govProposals(cursor: $cursor, count: $count) {
+                        totalCount
+                        pageInfo {
+                            first
+                            last
+                            hasNext
+                            hasPrevious
+                        }
+                        edges {
+                            proposal {
+                                name
+                                description
+                                contract
+                                minVotes
+                                minAgreement
+                                votingStarts
+                                votingMayEnd
+                                votingMustEnd
+                            }
+                            cursor
+                        }
+                    }
+                }
+            `,
+            variables: {
+                cursor: _cursor,
+                count: _count,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.govProposals || {};
+    }
+
+    /**
      * @return {Promise<*>}
      */
     /*
