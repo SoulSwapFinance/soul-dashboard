@@ -46,7 +46,7 @@
                         <f-input
                             name="funiswap_slippage_tolerance"
                             :value="$store.state.fUniswapSlippageTolerance.toString()"
-                            label="fUniswap Slippage Tolerance"
+                            label="fUNI Slippage Tolerance"
                             type="number"
                             min="0.1"
                             max="100"
@@ -59,8 +59,8 @@
                                 <div class="input-label-layout">
                                     <label :for="sProps.inputId">{{ sProps.label }}</label>
                                     <f-info window-closeable window-class="light" style="margin-left: 8px;">
-                                        Your transaction in fUniswap will revert if the price changes unfavorable by
-                                        more than this percentage.
+                                        Your transaction in fUNI will revert if the price changes unfavorable by more
+                                        than this percentage.
                                     </f-info>
                                 </div>
                             </template>
