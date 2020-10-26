@@ -111,6 +111,7 @@ export class Governance {
                                 name
                                 description
                                 contract
+                                governanceId
                                 minVotes
                                 minAgreement
                                 votingStarts
@@ -130,6 +131,55 @@ export class Governance {
         });
 
         return data.data.govProposals || {};
+    }
+
+    /**
+     * @param {string} _govAddress
+     * @param {string} _accountAddress
+     * @param {string} _proposalId
+     * @return {Promise<Object>}
+     */
+    async fetchProposal(_govAddress, _accountAddress, _proposalId) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GovernanceContract($address: Address!, $from: Address, $id: BigInt!) {
+                    govContract(address: $address) {
+                        name
+                        address
+                        totalProposals
+                        canVote(from: $from)
+                        delegationsBy(from: $from)
+                        proposal(id: $id) {
+                            name
+                            description
+                            contract
+                            state {
+                                isResolved
+                                status
+                                winnerId
+                            }
+                            minVotes
+                            minAgreement
+                            votingStarts
+                            votingMayEnd
+                            votingMustEnd
+                            vote(from: $from) {
+                                weight
+                                choices
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _govAddress,
+                from: _accountAddress,
+                id: _proposalId,
+            },
+            fetchPolicy: 'network-only',
+        });
+
+        return data.data.govContract || {};
     }
 
     /**

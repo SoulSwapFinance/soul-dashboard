@@ -1,0 +1,25 @@
+.gov-proposal-detail {
+    &__options {
+        margin-top: 40px;
+        margin-bottom: 32px;
+
+        li {
+            margin-bottom: 24px;
+        }
+    }
+
+    &__dates {
+        margin-top: 32px;
+        text-align: center;
+
+        .label {
+            font-weight: normal;
+        }
+    }
+
+    .f-slider {
+        label {
+            padding-bottom: 8px;
+        }
+    }
+}

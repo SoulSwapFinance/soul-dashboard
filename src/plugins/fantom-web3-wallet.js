@@ -3,6 +3,7 @@ import fileDownload from 'js-file-download';
 import gql from 'graphql-tag';
 import web3utils from 'web3-utils';
 import Accounts from 'web3-eth-accounts';
+import { isArray } from '@/utils';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -433,6 +434,34 @@ export class FantomWeb3Wallet {
      */
     WEIToFTM(_value) {
         return Web3.utils.fromWei(_value, 'ether');
+    }
+
+    /**
+     * @param {number|string|array} _value
+     * @return {string}
+     */
+    toWei(_value) {
+        if (isArray(_value)) {
+            return _value.map((_item) => this.toWei(_item));
+        }
+
+        if (typeof _value === 'string' && _value.indexOf('0x') === 0) {
+            _value = parseInt(_value, 16);
+        }
+
+        return Web3.utils.toHex(Web3.utils.toWei(_value.toString(), 'ether'));
+    }
+
+    /**
+     * @param {String|Number|BN|array} _value
+     * @return {number}
+     */
+    fromWei(_value) {
+        if (isArray(_value)) {
+            return _value.map((_item) => this.fromWei(_item));
+        }
+
+        return parseFloat(Web3.utils.fromWei(_value, 'ether'));
     }
 
     /**

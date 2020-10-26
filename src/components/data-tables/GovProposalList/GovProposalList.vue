@@ -1,10 +1,9 @@
 <template>
     <div class="gov-proposal-list">
+        <h2 v-if="!windowMode" class="dt-heading">
+            Proposals <span class="f-records-count">({{ totalCount }})</span>
+        </h2>
         <f-card class="account-transaction-list-dt" :off="windowMode">
-            <h2 v-if="!windowMode" class="dt-heading">
-                Proposals <span class="f-records-count">({{ totalCount }})</span>
-            </h2>
-
             <template v-if="!proposalsError">
                 <f-data-table
                     :columns="columns"
@@ -14,10 +13,11 @@
                     :loading="loading"
                     infinite-scroll
                     fixed-header
+                    action-on-row
                     f-card-off
                     class="f-data-table-body-bg-color"
                     @fetch-more="fetchMore"
-                    @click.native="onDataTableClick"
+                    @row-action="onRowAction"
                 >
                     <template v-slot:column-startend="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
@@ -30,6 +30,18 @@
                         <template v-else>
                             {{ formatDate(timestampToDate(item.proposal.votingStarts), true, true) }} <br />
                             {{ formatDate(timestampToDate(item.proposal.votingMayEnd), true, true) }}
+                        </template>
+                    </template>
+
+                    <template v-slot:column-detail="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-5 f-row-label">{{ column.label }}</div>
+                            <div class="col break-word">
+                                <button class="btn">Detail</button>
+                            </div>
+                        </div>
+                        <template v-else>
+                            <button class="btn">Detail</button>
                         </template>
                     </template>
                 </f-data-table>
@@ -88,7 +100,11 @@ export default {
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), true, true);
                     },
-                    width: '220px',
+                    width: '260px',
+                },
+                {
+                    name: 'detail',
+                    css: { textAlign: 'right' },
                 },
             ],
         };
@@ -124,7 +140,8 @@ export default {
             this.loading = true;
 
             try {
-                const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
+                // const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
+                const data = this.getTmpData(_cursor, _count);
                 const edges = data.edges;
 
                 if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
@@ -158,22 +175,78 @@ export default {
             }
         },
 
-        /**
-         * @param {Event} _event
-         */
-        onDataTableClick(_event) {
-            const eVoteBtn = _event.target.closest('.vote-btn');
+        getTmpData() {
+            // const { $fWallet } = this;
+            const data = {
+                edges: [],
+                totalCount: '0x0',
+                pageInfo: {
+                    hasNext: false,
+                },
+            };
 
-            if (eVoteBtn) {
-                /*
-                const proposalAddress = eVoteBtn.getAttribute('data-proposal-address');
-                const proposal = this.dItems.find((_item) => _item.proposal.address === proposalAddress);
+            data.edges.push({
+                proposal: {
+                    name: 'Proposal 1',
+                    contract: '0xb910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
+                    votingStarts: '0x5F969E20',
+                    votingMayEnd: '0x5FAA8ED0',
+                    votingMustEnd: '0x5FB7BDD0',
+                },
+            });
 
-                if (proposal && proposal.proposal.isOpen && !proposal.proposal._proposal) {
-                    this.$emit('proposal-selected', proposal.proposal);
-                }
-            */
+            data.totalCount = data.edges.length.toString(16);
+
+            return data;
+        },
+
+        tmpProposalDetail(_proposal) {
+            const { $fWallet } = this;
+            const params = {
+                proposal: {
+                    contract: '???',
+                    name: 'Proposal 1',
+                    // tmp
+                    options: ['Option 1', 'Option 2', 'Option 3'],
+                    // opinionScales: [0, 20, 30, 40, 50],
+                    opinionScales: [
+                        $fWallet.toWei(0),
+                        $fWallet.toWei(2),
+                        $fWallet.toWei(3),
+                        $fWallet.toWei(4),
+                        $fWallet.toWei(5),
+                    ],
+                    // votingStarts: '0x5F996B50',
+                    votingStarts: '0x5F969E20',
+                    votingMayEnd: '0x5FAA8ED0',
+                    votingMustEnd: '0x5FB7BDD0',
+                    state: {
+                        isResolved: false,
+                        state: $fWallet.toWei(0),
+                    },
+                    vote: {
+                        weight: $fWallet.toWei(0.2),
+                        choices: [$fWallet.toWei(2), $fWallet.toWei(3), $fWallet.toWei(5)],
+                    },
+                    governanceId: '0xc9838f60b2dbfba3efbf7b042335947f78e8fd6a',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
+                },
+            };
+
+            if (_proposal) {
+                params.proposal = { ...params.proposal, _proposal };
             }
+
+            this.$router.push({
+                name: 'gov-proposal-detail',
+                params,
+            });
+        },
+
+        onRowAction(_item) {
+            console.log(_item);
+
+            this.tmpProposalDetail(_item);
         },
 
         formatDate,

@@ -54,6 +54,7 @@ import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidity
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import Gov from '@/views/Gov/Gov.vue';
 import GovHome from '@/views/GovHome/GovHome.vue';
+import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
 
 export const routes = [
     {
@@ -712,6 +713,11 @@ export const routes = [
                         name: 'gov-home',
                         path: '',
                         component: GovHome,
+                    },
+                    {
+                        name: 'gov-proposal-detail',
+                        path: 'proposal-detail',
+                        component: GovProposalDetail,
                     },
                 ],
             },
