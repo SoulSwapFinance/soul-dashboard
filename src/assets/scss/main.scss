@@ -241,7 +241,7 @@ legend.h2 {
     line-height: 1.23;
 }
 
-.form-buttons {
+.form-b.uttons {
     padding-top: 24px;
     padding-bottom: 8px;
 
@@ -253,6 +253,11 @@ legend.h2 {
             margin-right: 0;
         }
     }
+}
+
+.cont-600 {
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .f-window {

@@ -17,6 +17,22 @@
         }
     }
 
+    &__cont-resolved {
+        margin-top: 40px;
+        margin-bottom: 32px;
+
+        .gov-proposal-detail__options {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+
+    &__vote {
+        font-weight: bold;
+        font-size: 28px;
+        text-align: right;
+    }
+
     .f-slider {
         label {
             padding-bottom: 8px;

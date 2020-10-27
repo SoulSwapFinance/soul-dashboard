@@ -6,7 +6,7 @@
                 {{ d_proposal.name }}
             </h1>
 
-            <f-form center-form @f-form-submit="onFormSubmit">
+            <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
                 <fieldset>
                     <legend class="h2 perex">{{ d_proposal.description }}</legend>
 
@@ -33,6 +33,19 @@
                     </div>
                 </fieldset>
             </f-form>
+            <div v-else class="cont-600">
+                <h2 class="perex">{{ d_proposal.description }}</h2>
+                <div class="gov-proposal-detail__cont-resolved">
+                    <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                        <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
+                            <div class="row align-items-center">
+                                <div class="col col-8">{{ item }}</div>
+                                <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
             <div class="row gov-proposal-detail__dates">
                 <div class="col df-data-item">
@@ -132,13 +145,14 @@ export default {
 
         votingDisabled() {
             const votingStarts = this.d_proposal.votingStarts || '';
+
+            return (votingStarts ? prepareTimestamp(votingStarts) > this.now() : true) || this.votingResolved;
+        },
+
+        votingResolved() {
             const { state } = this.d_proposal;
 
-            if (state) {
-                console.log(state.isResolved, state.state);
-            }
-
-            return votingStarts ? prepareTimestamp(votingStarts) > this.now() : true;
+            return state && state.isResolved;
         },
 
         hasCorrectParams() {
@@ -179,11 +193,28 @@ export default {
             }
         },
 
+        /**
+         * @param {number} _index Option index
+         */
+        getVote(_index) {
+            const { $fWallet } = this;
+            const { vote } = this.d_proposal;
+            const { opinionScales } = this.d_proposal;
+
+            if (opinionScales && vote && vote.choices && vote.choices[_index] !== undefined) {
+                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(vote.choices[_index])]);
+                // return this.$fWallet.fromWei(vote.choices[_index]);
+            } else {
+                return '-';
+            }
+        },
+
         now() {
             return new Date().getTime();
         },
 
         onFormSubmit(_event) {
+            const { $fWallet } = this;
             const { options } = this.d_proposal;
             const { opinionScales } = this.d_proposal;
             const { data } = _event.detail;
@@ -203,7 +234,8 @@ export default {
                 }
 
                 if (optionIdxs.length > 0) {
-                    this.tmpSelected = optionIdxs.map((_idx) => opinionScales[_idx]);
+                    // this.tmpSelected = optionIdxs.map((_idx) => opinionScales[_idx]);
+                    this.tmpSelected = optionIdxs.map((_idx) => $fWallet.toWei(_idx));
                     console.log('onSubmit', this.tmpSelected);
                 }
             }

@@ -176,7 +176,7 @@ export default {
         },
 
         getTmpData() {
-            // const { $fWallet } = this;
+            const { $fWallet } = this;
             const data = {
                 edges: [],
                 totalCount: '0x0',
@@ -187,11 +187,72 @@ export default {
 
             data.edges.push({
                 proposal: {
-                    name: 'Proposal 1',
+                    name: 'In progress',
                     contract: '0xb910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
                     votingStarts: '0x5F969E20',
                     votingMayEnd: '0x5FAA8ED0',
                     votingMustEnd: '0x5FB7BDD0',
+                },
+            });
+
+            data.edges.push({
+                proposal: {
+                    name: 'Not started yet',
+                    contract: '0xc910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
+                    votingStarts: '0x5F996B50',
+                    votingMayEnd: '0x5FAA8ED0',
+                    votingMustEnd: '0x5FB7BDD0',
+                },
+            });
+
+            data.edges.push({
+                proposal: {
+                    name: 'Resolved, voted',
+                    contract: '0xd910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
+                    votingStarts: '0x5F71DE50',
+                    votingMayEnd: '0x5F81B050',
+                    votingMustEnd: '0x5F8EDF50',
+                    state: {
+                        isResolved: true,
+                        state: $fWallet.toWei(1),
+                    },
+                    vote: {
+                        weight: $fWallet.toWei(0.2),
+                        // choices: [$fWallet.toWei(2), $fWallet.toWei(3), $fWallet.toWei(5)],
+                        choices: [$fWallet.toWei(1), $fWallet.toWei(2), $fWallet.toWei(4)],
+                    },
+                },
+            });
+
+            data.edges.push({
+                proposal: {
+                    name: 'Resolved, not voted',
+                    contract: '0xe910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
+                    votingStarts: '0x5F71DE50',
+                    votingMayEnd: '0x5F81B050',
+                    votingMustEnd: '0x5F8EDF50',
+                    state: {
+                        isResolved: true,
+                        state: $fWallet.toWei(1),
+                    },
+                    vote: {
+                        weight: $fWallet.toWei(0),
+                        choices: [],
+                    },
+                },
+            });
+
+            data.edges.push({
+                proposal: {
+                    name: 'Proposal - resolved, canceled',
+                    contract: '0xf910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
+                    votingStarts: '0x5F969E20',
+                    votingMayEnd: '0x5F81B050',
+                    votingMustEnd: '0x5F8EDF50',
+                    state: {
+                        isResolved: true,
+                        state: $fWallet.toWei(4),
+                    },
                 },
             });
 
@@ -207,7 +268,11 @@ export default {
                     contract: '???',
                     name: 'Proposal 1',
                     // tmp
-                    options: ['Option 1', 'Option 2', 'Option 3'],
+                    options: [
+                        'Option 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
+                        'Option 2',
+                        'Option 3',
+                    ],
                     // opinionScales: [0, 20, 30, 40, 50],
                     opinionScales: [
                         $fWallet.toWei(0),
@@ -224,17 +289,13 @@ export default {
                         isResolved: false,
                         state: $fWallet.toWei(0),
                     },
-                    vote: {
-                        weight: $fWallet.toWei(0.2),
-                        choices: [$fWallet.toWei(2), $fWallet.toWei(3), $fWallet.toWei(5)],
-                    },
                     governanceId: '0xc9838f60b2dbfba3efbf7b042335947f78e8fd6a',
                     description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
                 },
             };
 
             if (_proposal) {
-                params.proposal = { ...params.proposal, _proposal };
+                params.proposal = { ...params.proposal, ..._proposal };
             }
 
             this.$router.push({
@@ -246,7 +307,7 @@ export default {
         onRowAction(_item) {
             console.log(_item);
 
-            this.tmpProposalDetail(_item);
+            this.tmpProposalDetail(_item.proposal);
         },
 
         formatDate,
