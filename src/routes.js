@@ -716,7 +716,7 @@ export const routes = [
                     },
                     {
                         name: 'gov-proposal-detail',
-                        path: 'proposal-detail',
+                        path: 'proposal-detail/:contract?/:governanceId?',
                         component: GovProposalDetail,
                     },
                 ],

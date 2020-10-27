@@ -24,7 +24,7 @@
                                         v-else
                                         :to="{
                                             name: routeName,
-                                            params: { address: account.address },
+                                            params: { ...routeParams, address: account.address },
                                         }"
                                         class="value clickable"
                                         aria-label="Address"
@@ -164,6 +164,7 @@ export default {
     data() {
         return {
             routeName: 'account-history',
+            routeParams: {},
             accountData: {
                 address: '',
                 index: -1,
@@ -195,9 +196,11 @@ export default {
             routeName.indexOf('account-') > -1 ||
             routeName.indexOf('defi-') > -1 ||
             routeName.indexOf('staking') > -1 ||
-            routeName.indexOf('funiswap') > -1
+            routeName.indexOf('funiswap') > -1 ||
+            routeName.indexOf('gov-') > -1
         ) {
             this.routeName = routeName;
+            this.routeParams = this.$route.params;
         }
     },
 

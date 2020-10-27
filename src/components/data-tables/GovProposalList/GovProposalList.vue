@@ -325,6 +325,9 @@ export default {
                 params.proposal = { ...params.proposal, ..._proposal };
             }
 
+            params.contract = params.proposal.contract;
+            params.governanceId = params.proposal.governanceId;
+
             this.$router.push({
                 name: 'gov-proposal-detail',
                 params,

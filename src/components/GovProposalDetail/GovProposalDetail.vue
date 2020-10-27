@@ -6,78 +6,83 @@
                 {{ d_proposal.name }}
             </h1>
 
-            <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
-                <fieldset>
-                    <legend class="h2 perex">{{ d_proposal.description }}</legend>
+            <h2 v-if="loading || votingResolved" class="perex">{{ d_proposal.description }}</h2>
 
-                    <div class="form-body">
-                        <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                            <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                                <f-slider
-                                    :label="item"
-                                    :name="`option${index}`"
-                                    :max="sliderMax"
-                                    :value="sliderInitialValue"
-                                    :labels="sliderLabels"
-                                    clickable-labels
-                                    use-lower-fill-bar
-                                />
-                            </li>
-                        </ul>
+            <div v-if="loading" class="gov-proposal-detail__loader">
+                <pulse-loader color="#1969ff"></pulse-loader>
+            </div>
+            <template v-else>
+                <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
+                    <fieldset>
+                        <legend class="h2 perex">{{ d_proposal.description }}</legend>
 
-                        <div class="align-center form-buttons">
-                            <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                        <div class="form-body">
+                            <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
+                                    <f-slider
+                                        :label="item"
+                                        :name="`option${index}`"
+                                        :max="sliderMax"
+                                        :value="sliderInitialValue"
+                                        :labels="sliderLabels"
+                                        clickable-labels
+                                        use-lower-fill-bar
+                                    />
+                                </li>
+                            </ul>
+
+                            <div class="align-center form-buttons">
+                                <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                            </div>
+
+                            <div>{{ tmpSelected }}</div>
                         </div>
-
-                        <div>{{ tmpSelected }}</div>
+                    </fieldset>
+                </f-form>
+                <div v-else class="cont-600">
+                    <div class="gov-proposal-detail__winner">
+                        <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                        <b>{{ winner }}</b>
                     </div>
-                </fieldset>
-            </f-form>
-            <div v-else class="cont-600">
-                <h2 class="perex">{{ d_proposal.description }}</h2>
 
-                <div class="gov-proposal-detail__winner">
-                    <h3 class="gov-proposal-detail__sub-title">Winner</h3>
-                    <b>{{ winner }}</b>
-                </div>
-
-                <div class="gov-proposal-detail__voter-votes">
-                    <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
-                    <div class="gov-proposal-detail__cont-resolved">
-                        <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                            <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                                <div class="row align-items-center">
-                                    <div class="col col-8">{{ item }}</div>
-                                    <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
-                                </div>
-                            </li>
-                        </ul>
+                    <div class="gov-proposal-detail__voter-votes">
+                        <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
+                        <div class="gov-proposal-detail__cont-resolved">
+                            <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
+                                    <div class="row align-items-center">
+                                        <div class="col col-8">{{ item }}</div>
+                                        <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <hr />
+                <hr />
 
-            <div class="row gov-proposal-detail__dates">
-                <div class="col df-data-item">
-                    <div class="label">Voting Starts</div>
-                    <div class="date">
-                        {{ formatDate(timestampToDate(d_proposal.votingStarts), true, true) }}
+                <div class="row gov-proposal-detail__dates">
+                    <div class="col df-data-item">
+                        <div class="label">Voting Starts</div>
+                        <div class="date">
+                            {{ formatDate(timestampToDate(d_proposal.votingStarts), true, true) }}
+                        </div>
+                    </div>
+                    <div class="col df-data-item">
+                        <div class="label">Voting May End</div>
+                        <div class="date">
+                            {{ formatDate(timestampToDate(d_proposal.votingMayEnd), true, true) }}
+                        </div>
+                    </div>
+                    <div class="col df-data-item">
+                        <div class="label">Voting Ends</div>
+                        <div class="date">
+                            {{ formatDate(timestampToDate(d_proposal.votingMustEnd), true, true) }}
+                        </div>
                     </div>
                 </div>
-                <div class="col df-data-item">
-                    <div class="label">Voting May End</div>
-                    <div class="date">
-                        {{ formatDate(timestampToDate(d_proposal.votingMayEnd), true, true) }}
-                    </div>
-                </div>
-                <div class="col df-data-item">
-                    <div class="label">Voting Ends</div>
-                    <div class="date">
-                        {{ formatDate(timestampToDate(d_proposal.votingMustEnd), true, true) }}
-                    </div>
-                </div>
-            </div>
+            </template>
 
             <div v-if="proposalError" class="query-error">{{ proposalError }}</div>
         </template>
@@ -95,11 +100,12 @@ import FForm from '@/components/core/FForm/FForm.vue';
 import { formatDate, prepareTimestamp, timestampToDate } from '@/filters.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 export default {
     name: 'GovProposalDetail',
 
-    components: { FMessage, FForm, FSlider, FBackButton },
+    components: { FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
     mixins: [viewHelpersMixin],
 
@@ -111,7 +117,13 @@ export default {
                 return {};
             },
         },
-        govAddress: {
+        /** Proposal's contract */
+        contract: {
+            type: String,
+            default: '',
+        },
+        /** Governance contract address */
+        governanceId: {
             type: String,
             default: '',
         },
@@ -126,7 +138,10 @@ export default {
         return {
             /**@type {GovernanceProposal} */
             d_proposal: this.proposal,
-            d_govAddress: this.govAddress,
+            /** Proposal's contract */
+            d_contract: this.contract,
+            /** Governance contract address */
+            d_governanceId: this.governanceId,
             loading: false,
             proposalError: '',
             tmpSelected: null,
@@ -177,9 +192,7 @@ export default {
         },
 
         hasCorrectParams() {
-            const { d_proposal } = this;
-
-            return !!d_proposal.contract && !!d_proposal.governanceId;
+            return !!this.d_contract && !!this.d_governanceId;
         },
     },
 
@@ -197,7 +210,7 @@ export default {
     },
 
     methods: {
-        async fetchProposal(_govAddress = this.d_proposal.governanceId, _proposalContract = this.d_proposal.contract) {
+        async fetchProposal(_govAddress = this.d_contract, _proposalContract = this.d_contract) {
             if (!_govAddress || !_proposalContract) {
                 return;
             }
