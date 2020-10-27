@@ -156,6 +156,7 @@ class FantomInpageProvider extends FantomEventEmitter {
             this._rpcRequest(
                 { method, params },
                 (error, response) => {
+                    console.log('request response', response);
                     if (error || response.error) {
                         reject(error || response.error)
                     } else {

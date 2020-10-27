@@ -87,11 +87,10 @@ export default {
             console.log('transaction sent', _data);
             chrome.runtime.sendMessage({
                 method: 'wallet_sendTransaction_done',
-                id: this.$route.params.id,
-                response: { result: _data.data.sendTransaction.hash },
+                stid: this.$route.params.id, // send transaction id
+                response: _data.data.sendTransaction.hash,
             });
-            alert('success');
-            //window.close();
+            window.close();
         },
     },
 };

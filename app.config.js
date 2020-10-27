@@ -94,6 +94,8 @@ const appConfig = {
         outputDirApp: 'app',
         // output directory for background js bundle script (relative to outputDir)
         outputDirBackgroundJs: 'background-js',
+        // JSON-RPC endpoint
+        rpc: 'https://rpcapi.fantom.network/',
     },
     // default options for production build
     build: {

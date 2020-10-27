@@ -3,7 +3,7 @@
 
 import PopupManager from './popup';
 import appConfig from '../../app.config';
-import { arrayEquals } from "@/utils/array";
+import { arrayEquals } from '@/utils/array';
 
 const STORAGE_KEY = 'vuex';
 
@@ -20,6 +20,29 @@ const errorCodes = {
     internal: -32603
 };
 
+const proxiedMethods = [
+    'eth_gasPrice',
+    'eth_blockNumber',
+    'eth_getBalance',
+    'eth_getStorageAt',
+    'eth_getTransactionCount',
+    'eth_getBlockTransactionCountByHash',
+    'eth_getBlockTransactionCountByNumber',
+    'eth_getUncleCountByBlockHash',
+    'eth_getUncleCountByBlockNumber',
+    'eth_getCode',
+    'eth_call',
+    'eth_estimateGas',
+    'eth_getBlockByHash',
+    'eth_getBlockByNumber',
+    'eth_getTransactionByHash',
+    'eth_getTransactionByBlockHashAndIndex',
+    'eth_getTransactionByBlockNumberAndIndex',
+    'eth_getTransactionReceipt',
+    'eth_getUncleByBlockHashAndIndex',
+    'eth_getUncleByBlockNumberAndIndex',
+];
+
 const popupManager = new PopupManager();
 let sendTransactionRequestCounter = 0;
 let sendTransactionRequests = {};
@@ -35,19 +58,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse(sendTransactionRequests[request.id]);
     }
     else if (request.method === 'wallet_sendTransaction_done' && sender.origin === window.origin) { // from popup
-        sendTransactionResponseCallbacks[request.id](request.response);
-        delete sendTransactionRequests[request.id];
-        delete sendTransactionResponseCallbacks[request.id];
+        console.log('wallet_sendTransaction_done', request);
+        sendTransactionResponseCallbacks[request.stid]({ 'jsonrpc': '2.0', 'id': sendTransactionRequests[request.stid].id, 'result': request.response });
+        delete sendTransactionRequests[request.stid];
+        delete sendTransactionResponseCallbacks[request.stid];
     }
 
     // implementation of Ethereum RPC API: https://eth.wiki/json-rpc/API#json-rpc-methods
     // and EIP-1102: Opt-in account exposure: https://eips.ethereum.org/EIPS/eip-1102
+
     else if (request.method === 'eth_accounts') { // get list of addresses owned by client
         getState((state) => {
             sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': accountsIds(state) });
         });
         return true;
     }
+
     else if (request.method === 'eth_requestAccounts') { // trigger user interface to get account access
         getState((state) => {
             if (state.accounts) {
@@ -61,37 +87,35 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         });
         return true;
     }
-    else if (request.method === 'eth_getBalance') { // get balance of the account of given address
-        let accountId = request.params[0];
-        getState((state) => {
-            let account = state.accounts ? state.accounts.find((account) => account.address === accountId) : null;
-            if (account) {
-                sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': account.balance });
-            } else {
-                sendResponse({ 'jsonrpc': '2.0', 'id':request.id, 'error':
-                        { 'code': errorCodes.resourceUnavailable, 'message': 'only balance of opened wallets can be queried' }
-                });
-            }
+
+    else if (request.method === 'net_version') { // current network id (decimal string)
+        sendResponse({ jsonrpc: '2.0', id: request.id, result: parseInt(appConfig.chainId).toString() });
+    }
+
+    else if (request.method === 'eth_sendTransaction') {
+        console.log('eth_sendTransaction', request);
+        let stid = ++sendTransactionRequestCounter;
+        sendTransactionRequests[stid] = request;
+        sendTransactionResponseCallbacks[stid] = sendResponse;
+        popupManager.showPopup('app/index.html#/eip-send-transaction/' + stid);
+        return true;
+    }
+
+    else if (proxiedMethods.includes(request.method)) {
+        sendToRpc({
+            jsonrpc: '2.0',
+            id: request.id,
+            method: request.method,
+            params: request.params,
+        }).then(response => {
+            console.log('eth_getTransactionReceipt', request, response);
+            sendResponse(response);
         });
         return true;
     }
-    else if (request.method === 'net_version') { // get current network id (decimal string)
-        sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': parseInt(appConfig.chainId).toString() });
-    }
-    else if (request.method === 'eth_sendTransaction') {
-        console.log('eth_sendTransaction', request);
-        let id = ++sendTransactionRequestCounter;
-        sendTransactionRequests[id] = request;
-        sendTransactionResponseCallbacks[id] = sendResponse;
-        popupManager.showPopup('app/index.html#/eip-send-transaction/' + id);
-        popupManager.showTab('app/index.html#/eip-send-transaction/' + id);
-        return true;
-    }
-    else if (request.method === 'eth_call') { // execute message call (without transaction on blockchain)
-        console.log('eth_call', request);
-        sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': null }); // TODO
-    }
+
     else {
+        console.log('Unsupported method', request);
         sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
                 { 'code': errorCodes.methodNotFound, 'message': 'the method ' + request.method + ' does not exist/is not available' }
         });
@@ -125,6 +149,14 @@ function accountsIds(state) {
         state.accounts.forEach((account) => result.push(account.address));
     }
     return result;
+}
+
+async function sendToRpc(request) {
+    return fetch(appConfig.chromeExtension.rpc, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request)
+    }).then((response) => response.json());
 }
 
 function broadcastMessage(payload) {
