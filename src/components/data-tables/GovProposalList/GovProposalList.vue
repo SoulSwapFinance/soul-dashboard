@@ -225,7 +225,7 @@ export default {
                 proposal: {
                     name: 'Not started yet',
                     contract: '0xc910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F996B50',
+                    votingStarts: '0x5F9ABCD0',
                     votingMayEnd: '0x5FAA8ED0',
                     votingMustEnd: '0x5FB7BDD0',
                     options,

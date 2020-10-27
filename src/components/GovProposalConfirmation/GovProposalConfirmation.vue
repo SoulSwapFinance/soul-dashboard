@@ -1,0 +1,200 @@
+<template>
+    <div class="gov-proposal-confirmation">
+        <tx-confirmation
+            v-if="hasCorrectParams"
+            :tx="tx"
+            card-off
+            send-button-label="Submit"
+            password-label="Please enter your wallet password to vote"
+            :gas-limit="gasLimit"
+            :on-send-transaction-success="onSendTransactionSuccess"
+            @change-component="onChangeComponent"
+        >
+            <h1 class="with-back-btn">
+                <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
+                Confirmation
+            </h1>
+
+            <div class="confirmation-info__">
+                <div class="gov-proposal-detail__voter-votes">
+                    <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
+                    <div class="gov-proposal-detail__cont-resolved">
+                        <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                            <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
+                                <div class="row align-items-center">
+                                    <div class="col col-8 gov-proposal-detail__option">{{ item }}</div>
+                                    <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <template #window-content>
+                <ledger-confirmation-content :to="tx.to" :amount="0" />
+            </template>
+        </tx-confirmation>
+        <template v-else>
+            <f-message type="info" role="alert" class="big"> Bad parameters. </f-message>
+        </template>
+    </div>
+</template>
+
+<script>
+import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
+import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
+import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
+import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
+import { mapGetters } from 'vuex';
+import { viewHelpersMixin } from '@/mixins/view-helpers.js';
+import { toKebabCase } from '@/utils';
+
+export default {
+    name: 'GovProposalConfirmation',
+
+    components: { FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
+
+    mixins: [viewHelpersMixin],
+
+    props: {
+        /** @type {GovernanceProposal} */
+        proposal: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
+        /** Proposal's contract */
+        contract: {
+            type: String,
+            default: '',
+        },
+        /** Governance contract address */
+        governanceId: {
+            type: String,
+            default: '',
+        },
+        /** Voter's votes */
+        votes: {
+            type: Array,
+            default() {
+                return [];
+            },
+        },
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: true,
+        },
+    },
+
+    data() {
+        return {
+            tx: {},
+            gasLimit: GAS_LIMITS.claimRewards,
+            compName: toKebabCase(this.$options.name),
+            /**@type {GovernanceProposal} */
+            d_proposal: this.proposal,
+            /** Proposal's contract */
+            d_contract: this.contract,
+            /** Governance contract address */
+            d_governanceId: this.governanceId,
+            /** Voter's votes */
+            d_votes: this.votes,
+        };
+    },
+
+    computed: {
+        ...mapGetters(['currentAccount']),
+
+        /**
+         * @return {{pendingRewards: number, token: DefiToken}}
+         */
+        params() {
+            const { $route } = this;
+            let params = {};
+
+            if ($route) {
+                if ($route.query && $route.query.token) {
+                    params = $route.query;
+                } else if ($route.params) {
+                    params = $route.params;
+                }
+            }
+
+            return params;
+        },
+
+        hasCorrectParams() {
+            return !!this.d_contract && !!this.d_governanceId;
+        },
+    },
+
+    created() {
+        this.setDataFromParams();
+
+        if (!this.hasCorrectParams && this.isView) {
+            // redirect
+            setTimeout(() => {
+                this.$router.replace({ name: this.getBackButtonRoute(this.compName) });
+            }, 3000);
+        }
+
+        this.setTx();
+    },
+
+    methods: {
+        async setTx() {},
+
+        /**
+         * @param {number} _index Option index
+         */
+        getVote(_index) {
+            const { $fWallet } = this;
+            const { d_votes } = this;
+            const { opinionScales } = this.d_proposal;
+
+            if (opinionScales && d_votes && d_votes[_index] !== undefined) {
+                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(d_votes[_index])]);
+                // return this.$fWallet.fromWei(d_votes[_index]);
+            } else {
+                return '-';
+            }
+        },
+
+        onSendTransactionSuccess(_data) {
+            const params = {
+                tx: _data.data.sendTransaction.hash,
+                title: 'Success',
+                continueTo: this.getBackButtonRoute(this.compName),
+            };
+
+            this.$router.replace({
+                name: `gov-proposal-transaction-success-message`,
+                params,
+            });
+        },
+
+        /**
+         * Re-target `'change-component'` event.
+         *
+         * @param {object} _data
+         */
+        onChangeComponent(_data) {
+            let transactionRejectComp = `gov-proposal-transaction-reject-message`;
+
+            if (_data.to === 'transaction-reject-message') {
+                this.$router.replace({
+                    name: transactionRejectComp,
+                    params: {
+                        continueTo: this.getBackButtonRoute(this.compName),
+                        continueToParams: this.$route.params,
+                    },
+                });
+            }
+        },
+    },
+};
+</script>

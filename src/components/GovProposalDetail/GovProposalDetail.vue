@@ -1,7 +1,7 @@
 <template>
     <div class="gov-proposal-detail">
         <template v-if="hasCorrectParams">
-            <h1 class="with-back-btn">
+            <h1 v-if="isView" class="with-back-btn">
                 <f-back-button :route-name="getBackButtonRoute('gov-proposal-detail')" />
                 {{ d_proposal.name }}
             </h1>
@@ -34,8 +34,6 @@
                             <div class="align-center form-buttons">
                                 <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
                             </div>
-
-                            <div>{{ tmpSelected }}</div>
                         </div>
                     </fieldset>
                 </f-form>
@@ -51,7 +49,7 @@
                             <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
                                 <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
                                     <div class="row align-items-center">
-                                        <div class="col col-8">{{ item }}</div>
+                                        <div class="col col-8 gov-proposal-detail__option">{{ item }}</div>
                                         <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
                                     </div>
                                 </li>
@@ -101,6 +99,7 @@ import { formatDate, prepareTimestamp, timestampToDate } from '@/filters.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import { cloneObject } from '@/utils';
 
 export default {
     name: 'GovProposalDetail',
@@ -144,7 +143,6 @@ export default {
             d_governanceId: this.governanceId,
             loading: false,
             proposalError: '',
-            tmpSelected: null,
         };
     },
 
@@ -268,9 +266,16 @@ export default {
                 }
 
                 if (optionIdxs.length > 0) {
-                    // this.tmpSelected = optionIdxs.map((_idx) => opinionScales[_idx]);
-                    this.tmpSelected = optionIdxs.map((_idx) => $fWallet.toWei(_idx));
-                    console.log('onSubmit', this.tmpSelected);
+                    this.$router.push({
+                        name: 'gov-proposal-confirmation',
+                        params: {
+                            contract: this.d_contract,
+                            governanceId: this.d_governanceId,
+                            proposal: cloneObject(this.d_proposal),
+                            // votes: optionIdxs.map((_idx) => opinionScales[_idx]),
+                            votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
+                        },
+                    });
                 }
             }
         },

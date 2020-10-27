@@ -23,6 +23,18 @@
         }
     }
 
+    &__voter-votes {
+        --f-data-layout-cols-padding: 8px;
+
+        li {
+            margin-bottom: 8px;
+        }
+    }
+
+    &__option {
+        font-weight: normal !important;
+    }
+
     &__vote {
         font-weight: bold;
         font-size: 21px;

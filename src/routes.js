@@ -55,6 +55,7 @@ import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import Gov from '@/views/Gov/Gov.vue';
 import GovHome from '@/views/GovHome/GovHome.vue';
 import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
+import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 
 export const routes = [
     {
@@ -718,6 +719,21 @@ export const routes = [
                         name: 'gov-proposal-detail',
                         path: 'proposal-detail/:contract?/:governanceId?',
                         component: GovProposalDetail,
+                    },
+                    {
+                        name: 'gov-proposal-confirmation',
+                        path: 'proposal-detail/:contract?/:governanceId?/confirmation',
+                        component: GovProposalConfirmation,
+                    },
+                    {
+                        name: 'gov-proposal-transaction-success-message',
+                        path: 'proposal-detail/:contract?/:governanceId?/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'gov-proposal-transaction-reject-message',
+                        path: 'proposal-detail/:contract?/:governanceId?/confirmation/reject',
+                        component: TransactionRejectMessageView,
                     },
                 ],
             },

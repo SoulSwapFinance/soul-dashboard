@@ -572,6 +572,22 @@ const appStructure = [
                             {
                                 id: 'gov-proposal-detail',
                                 route: 'gov-proposal-detail',
+                                _c: [
+                                    {
+                                        id: 'gov-proposal-confirmation',
+                                        route: 'gov-proposal-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'gov-proposal-transaction-success-message',
+                                                route: 'gov-proposal-transaction-success-message',
+                                            },
+                                            {
+                                                id: 'gov-proposal-transaction-reject-message',
+                                                route: 'gov-proposal-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
+                                ],
                             },
                         ],
                     },
