@@ -1,24 +1,20 @@
 .gov-proposal-detail {
     &__options {
         margin-top: 40px;
-        margin-bottom: 32px;
+        //margin-bottom: 32px;
 
         li {
             margin-bottom: 24px;
         }
     }
 
-    &__dates {
-        margin-top: 32px;
+    &__sub-title {
         text-align: center;
-
-        .label {
-            font-weight: normal;
-        }
+        margin-top: 40px;
     }
 
     &__cont-resolved {
-        margin-top: 40px;
+        //margin-top: 40px;
         margin-bottom: 32px;
 
         .gov-proposal-detail__options {
@@ -29,8 +25,26 @@
 
     &__vote {
         font-weight: bold;
-        font-size: 28px;
+        font-size: 21px;
         text-align: right;
+    }
+
+    &__winner {
+        text-align: center;
+    }
+
+    &__dates {
+        margin-top: 24px;
+        text-align: center;
+
+        .label {
+            font-weight: normal;
+        }
+    }
+
+
+    hr {
+        margin-top: 48px;
     }
 
     .f-slider {

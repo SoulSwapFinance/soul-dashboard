@@ -35,17 +35,28 @@
             </f-form>
             <div v-else class="cont-600">
                 <h2 class="perex">{{ d_proposal.description }}</h2>
-                <div class="gov-proposal-detail__cont-resolved">
-                    <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                        <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                            <div class="row align-items-center">
-                                <div class="col col-8">{{ item }}</div>
-                                <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
-                            </div>
-                        </li>
-                    </ul>
+
+                <div class="gov-proposal-detail__winner">
+                    <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                    <b>{{ winner }}</b>
+                </div>
+
+                <div class="gov-proposal-detail__voter-votes">
+                    <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
+                    <div class="gov-proposal-detail__cont-resolved">
+                        <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                            <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
+                                <div class="row align-items-center">
+                                    <div class="col col-8">{{ item }}</div>
+                                    <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+
+            <hr />
 
             <div class="row gov-proposal-detail__dates">
                 <div class="col df-data-item">
@@ -153,6 +164,16 @@ export default {
             const { state } = this.d_proposal;
 
             return state && state.isResolved;
+        },
+
+        winner() {
+            const { d_proposal } = this;
+
+            if (d_proposal.state && d_proposal.state.isResolved && d_proposal.state.winnerId && d_proposal.options) {
+                return d_proposal.options[this.$fWallet.fromWei(d_proposal.state.winnerId)];
+            }
+
+            return '-';
         },
 
         hasCorrectParams() {

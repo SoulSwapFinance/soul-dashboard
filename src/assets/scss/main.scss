@@ -101,6 +101,13 @@ a:not(.btn):hover {
     font-size: $fs-huge;
 }
 
+hr {
+    border: none;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--f-hr-border-color);
+}
+
 form {
     .f-input, .f-select {
         margin-bottom: 16px;
