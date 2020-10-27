@@ -91,7 +91,7 @@ export default {
                     name: 'name',
                     label: 'Name',
                     itemProp: 'proposal.name',
-                    width: '320px',
+                    // width: '320px',
                 },
                 {
                     name: 'startend',
@@ -103,7 +103,27 @@ export default {
                     width: '260px',
                 },
                 {
+                    name: 'winner',
+                    label: 'Winner',
+                    formatter: (_value, _item) => {
+                        const { proposal } = _item;
+
+                        if (
+                            proposal &&
+                            proposal.state &&
+                            proposal.state.isResolved &&
+                            proposal.state.winnerId &&
+                            proposal.options
+                        ) {
+                            return proposal.options[this.$fWallet.fromWei(proposal.state.winnerId)];
+                        }
+
+                        return '-';
+                    },
+                },
+                {
                     name: 'detail',
+                    width: '130px',
                     css: { textAlign: 'right' },
                 },
             ],
@@ -184,6 +204,11 @@ export default {
                     hasNext: false,
                 },
             };
+            const options = [
+                'Option 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
+                'Option 2',
+                'Option 3',
+            ];
 
             data.edges.push({
                 proposal: {
@@ -192,6 +217,7 @@ export default {
                     votingStarts: '0x5F969E20',
                     votingMayEnd: '0x5FAA8ED0',
                     votingMustEnd: '0x5FB7BDD0',
+                    options,
                 },
             });
 
@@ -202,6 +228,7 @@ export default {
                     votingStarts: '0x5F996B50',
                     votingMayEnd: '0x5FAA8ED0',
                     votingMustEnd: '0x5FB7BDD0',
+                    options,
                 },
             });
 
@@ -214,6 +241,7 @@ export default {
                     votingMustEnd: '0x5F8EDF50',
                     state: {
                         isResolved: true,
+                        winnerId: $fWallet.toWei(1),
                         state: $fWallet.toWei(1),
                     },
                     vote: {
@@ -221,6 +249,7 @@ export default {
                         // choices: [$fWallet.toWei(2), $fWallet.toWei(3), $fWallet.toWei(5)],
                         choices: [$fWallet.toWei(1), $fWallet.toWei(2), $fWallet.toWei(4)],
                     },
+                    options,
                 },
             });
 
@@ -233,12 +262,14 @@ export default {
                     votingMustEnd: '0x5F8EDF50',
                     state: {
                         isResolved: true,
+                        winnerId: $fWallet.toWei(0),
                         state: $fWallet.toWei(1),
                     },
                     vote: {
                         weight: $fWallet.toWei(0),
                         choices: [],
                     },
+                    options,
                 },
             });
 
@@ -253,6 +284,7 @@ export default {
                         isResolved: true,
                         state: $fWallet.toWei(4),
                     },
+                    options,
                 },
             });
 
@@ -268,11 +300,6 @@ export default {
                     contract: '???',
                     name: 'Proposal 1',
                     // tmp
-                    options: [
-                        'Option 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
-                        'Option 2',
-                        'Option 3',
-                    ],
                     // opinionScales: [0, 20, 30, 40, 50],
                     opinionScales: [
                         $fWallet.toWei(0),

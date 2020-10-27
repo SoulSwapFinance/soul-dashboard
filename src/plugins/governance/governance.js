@@ -112,6 +112,11 @@ export class Governance {
                                 description
                                 contract
                                 governanceId
+                                state {
+                                    isResolved
+                                    status
+                                    winnerId
+                                }
                                 minVotes
                                 minAgreement
                                 votingStarts
