@@ -5,7 +5,7 @@ const path = require('path');
 const appConfig = require('../../app.config.js');
 
 const chromeExtensionManifest = {
-    permissions: ['activeTab', 'declarativeContent', 'storage', 'https://*/'],
+    permissions: ['activeTab', 'tabs', 'declarativeContent', 'storage', 'https://*/'],
     background: {
         scripts: [`${appConfig.chromeExtension.outputDirBackgroundJs}/background.umd.js`],
         persistent: false,
