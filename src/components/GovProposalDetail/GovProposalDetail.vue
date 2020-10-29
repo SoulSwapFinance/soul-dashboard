@@ -116,8 +116,8 @@ export default {
                 return {};
             },
         },
-        /** Proposal's contract */
-        contract: {
+        /** Proposal's id */
+        proposalId: {
             type: String,
             default: '',
         },
@@ -137,10 +137,11 @@ export default {
         return {
             /**@type {GovernanceProposal} */
             d_proposal: this.proposal,
-            /** Proposal's contract */
-            d_contract: this.contract,
+            /** Proposal's id */
+            d_proposalId: this.proposalId,
             /** Governance contract address */
             d_governanceId: this.governanceId,
+            governance: {},
             loading: false,
             proposalError: '',
         };
@@ -164,13 +165,16 @@ export default {
         sliderLabels() {
             const { opinionScales } = this.d_proposal;
 
-            return opinionScales ? this.$fWallet.fromWei(opinionScales) : [];
+            return opinionScales ? opinionScales.map((_item) => parseInt(_item, 16)) : [];
         },
 
         votingDisabled() {
             const votingStarts = this.d_proposal.votingStarts || '';
 
-            return (votingStarts ? prepareTimestamp(votingStarts) > this.now() : true) || this.votingResolved;
+            return (
+                (votingStarts ? prepareTimestamp(votingStarts) > this.now() || !this.governance.canVote : true) ||
+                this.votingResolved
+            );
         },
 
         votingResolved() {
@@ -190,7 +194,7 @@ export default {
         },
 
         hasCorrectParams() {
-            return !!this.d_contract && !!this.d_governanceId;
+            return !!this.d_proposalId && !!this.d_governanceId;
         },
     },
 
@@ -204,21 +208,29 @@ export default {
             }, 3000);
         }
 
-        // this.fetchProposal();
+        this.fetchProposal();
     },
 
     methods: {
-        async fetchProposal(_govAddress = this.d_contract, _proposalContract = this.d_contract) {
-            if (!_govAddress || !_proposalContract) {
+        async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
+            if (!_govAddress || !_proposalId) {
                 return;
             }
 
             this.loading = true;
 
             try {
-                const data = await this.$governance.fetchProposal(_govAddress, this.currentAccount, _proposalContract);
+                const data = await this.$governance.fetchProposal(
+                    _govAddress,
+                    this.currentAccount.address,
+                    _proposalId
+                );
 
                 console.log(data);
+                this.governance = data;
+                this.d_proposal = data.proposal;
+
+                this.loading = false;
             } catch (_error) {
                 this.loading = false;
                 this.proposalError = _error;
@@ -246,7 +258,7 @@ export default {
         },
 
         onFormSubmit(_event) {
-            const { $fWallet } = this;
+            // const { $fWallet } = this;
             const { options } = this.d_proposal;
             const { opinionScales } = this.d_proposal;
             const { data } = _event.detail;
@@ -269,11 +281,12 @@ export default {
                     this.$router.push({
                         name: 'gov-proposal-confirmation',
                         params: {
-                            contract: this.d_contract,
+                            proposalId: this.d_proposalId,
                             governanceId: this.d_governanceId,
                             proposal: cloneObject(this.d_proposal),
                             // votes: optionIdxs.map((_idx) => opinionScales[_idx]),
-                            votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
+                            // votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
+                            votes: optionIdxs.map((_idx) => _idx.toString(16)),
                         },
                     });
                 }

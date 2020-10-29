@@ -160,8 +160,8 @@ export default {
             this.loading = true;
 
             try {
-                // const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
-                const data = this.getTmpData(_cursor, _count);
+                const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
+                // const data = this.getTmpData(_cursor, _count);
                 const edges = data.edges;
 
                 if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
@@ -172,6 +172,8 @@ export default {
                 this.pageInfo = cloneObject(data.pageInfo);
 
                 this.loading = false;
+
+                // console.log(edges);
 
                 if (this.dItems.length === 0) {
                     this.dItems = edges;
@@ -299,6 +301,7 @@ export default {
                 proposal: {
                     contract: '???',
                     name: 'Proposal 1',
+                    id: '0x1',
                     // tmp
                     // opinionScales: [0, 20, 30, 40, 50],
                     opinionScales: [
@@ -308,6 +311,12 @@ export default {
                         $fWallet.toWei(4),
                         $fWallet.toWei(5),
                     ],
+                    /*
+                    delegationsBy: [
+                        '0x93419fcb5d9dc7989439f0512d4f737421ed48d9',
+                        '0x308da42e39552dbfe82d8013b3ff6f88c6864603',
+                    ],
+*/
                     // votingStarts: '0x5F996B50',
                     votingStarts: '0x5F969E20',
                     votingMayEnd: '0x5FAA8ED0',
@@ -325,7 +334,7 @@ export default {
                 params.proposal = { ...params.proposal, ..._proposal };
             }
 
-            params.contract = params.proposal.contract;
+            params.proposalId = params.proposal.id;
             params.governanceId = params.proposal.governanceId;
 
             this.$router.push({
@@ -334,10 +343,20 @@ export default {
             });
         },
 
+        /**
+         * @param {{proposal: GovernanceProposal}} _item
+         */
         onRowAction(_item) {
-            console.log(_item);
+            this.$router.push({
+                name: 'gov-proposal-detail',
+                params: {
+                    proposal: cloneObject(_item.proposal),
+                    proposalId: _item.proposal.id,
+                    governanceId: _item.proposal.governanceId,
+                },
+            });
 
-            this.tmpProposalDetail(_item.proposal);
+            // this.tmpProposalDetail(_item.proposal);
         },
 
         formatDate,

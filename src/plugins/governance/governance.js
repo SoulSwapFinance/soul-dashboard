@@ -108,6 +108,7 @@ export class Governance {
                         }
                         edges {
                             proposal {
+                                id
                                 name
                                 description
                                 contract
@@ -145,9 +146,10 @@ export class Governance {
      * @return {Promise<Object>}
      */
     async fetchProposal(_govAddress, _accountAddress, _proposalId) {
+        console.log({ _govAddress, _accountAddress, _proposalId });
         const data = await this.apolloClient.query({
             query: gql`
-                query GovernanceContract($address: Address!, $from: Address, $id: BigInt!) {
+                query GovernanceContract($address: Address!, $from: Address!, $id: BigInt!) {
                     govContract(address: $address) {
                         name
                         address
@@ -158,6 +160,8 @@ export class Governance {
                             name
                             description
                             contract
+                            opinionScales
+                            options
                             state {
                                 isResolved
                                 status

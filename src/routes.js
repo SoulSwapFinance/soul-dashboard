@@ -717,22 +717,22 @@ export const routes = [
                     },
                     {
                         name: 'gov-proposal-detail',
-                        path: 'proposal-detail/:contract?/:governanceId?',
+                        path: 'proposal-detail/:proposalId?/:governanceId?',
                         component: GovProposalDetail,
                     },
                     {
                         name: 'gov-proposal-confirmation',
-                        path: 'proposal-detail/:contract?/:governanceId?/confirmation',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation',
                         component: GovProposalConfirmation,
                     },
                     {
                         name: 'gov-proposal-transaction-success-message',
-                        path: 'proposal-detail/:contract?/:governanceId?/confirmation/success',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation/success',
                         component: TransactionSuccessMessageView,
                     },
                     {
                         name: 'gov-proposal-transaction-reject-message',
-                        path: 'proposal-detail/:contract?/:governanceId?/confirmation/reject',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },
                 ],

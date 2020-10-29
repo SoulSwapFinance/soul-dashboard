@@ -66,8 +66,8 @@ export default {
                 return {};
             },
         },
-        /** Proposal's contract */
-        contract: {
+        /** Proposal's id */
+        proposalId: {
             type: String,
             default: '',
         },
@@ -97,8 +97,8 @@ export default {
             compName: toKebabCase(this.$options.name),
             /**@type {GovernanceProposal} */
             d_proposal: this.proposal,
-            /** Proposal's contract */
-            d_contract: this.contract,
+            /** Proposal's od */
+            d_proposalId: this.proposalId,
             /** Governance contract address */
             d_governanceId: this.governanceId,
             /** Voter's votes */
@@ -128,7 +128,7 @@ export default {
         },
 
         hasCorrectParams() {
-            return !!this.d_contract && !!this.d_governanceId;
+            return !!this.d_proposalId && !!this.d_governanceId;
         },
     },
 
@@ -152,12 +152,14 @@ export default {
          * @param {number} _index Option index
          */
         getVote(_index) {
-            const { $fWallet } = this;
+            // const { $fWallet } = this;
             const { d_votes } = this;
             const { opinionScales } = this.d_proposal;
 
             if (opinionScales && d_votes && d_votes[_index] !== undefined) {
-                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(d_votes[_index])]);
+                console.log(d_votes[_index]);
+                return parseInt(opinionScales[parseInt(d_votes[_index], 16)], 16);
+                // return $fWallet.fromWei(opinionScales[$fWallet.fromWei(d_votes[_index])]);
                 // return this.$fWallet.fromWei(d_votes[_index]);
             } else {
                 return '-';
