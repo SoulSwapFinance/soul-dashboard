@@ -5,17 +5,23 @@ const POPUP_HEIGHT = 620;
 
 export default class PopupManager {
 
-    openedWindowId = null;
+    concurrentLock = 0;
     openedTabId = null;
 
-    constructor() {}
-
+    /**
+     * Open popup window or replace its content if it is already opened
+     * @param url URL to be opened
+     */
     showOrUpdatePopup(url) {
+        // prevent opening multiple popups by concurrent calls
+        if (this.concurrentLock > Date.now()) return;
+        this.concurrentLock = Date.now() + 500;
+
         if (!this.openedTabId) {
             this.showPopup(url);
         } else {
             chrome.tabs.update(this.openedTabId, { url: url }, (tab) => {
-                if (chrome.runtime.lastError) { // window not exist already
+                if (chrome.runtime.lastError) { // window already closed
                     this.showPopup(url);
                 } else {
                     chrome.windows.update(tab.windowId, { focused: true });
@@ -24,6 +30,10 @@ export default class PopupManager {
         }
     }
 
+    /**
+     * Open popup window
+     * @param url URL to be opened
+     */
     showPopup(url) {
         chrome.windows.getLastFocused((lastFocused) => {
             let top = lastFocused.top ? lastFocused.top : null;
@@ -39,8 +49,8 @@ export default class PopupManager {
                     left: left,
                 },
                 (win) => {
-                    this.openedWindowId = win.id;
                     this.openedTabId = win.tabs[0].id;
+                    this.concurrentLock = 0;
                     if (left && win.left !== left) {
                         chrome.windows.update(win.id, {
                             top: top,
