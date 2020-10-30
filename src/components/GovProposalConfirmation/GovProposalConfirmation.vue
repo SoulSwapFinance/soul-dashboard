@@ -16,6 +16,15 @@
             </h1>
 
             <div class="confirmation-info__">
+                <div v-if="d_validator.stakerAddress" class="gov-proposal-detail__validator-info align-center">
+                    <h3>
+                        Validator: {{ d_validator.stakerInfo.name }}
+                        <span v-if="d_validator.stakerInfo._unknown" class="perex">
+                            ({{ d_validator.stakerAddress }})
+                        </span>
+                    </h3>
+                </div>
+
                 <div class="gov-proposal-detail__voter-votes">
                     <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
                     <div class="gov-proposal-detail__cont-resolved">
@@ -76,6 +85,12 @@ export default {
             type: String,
             default: '',
         },
+        validator: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
         /** Voter's votes */
         votes: {
             type: Array,
@@ -101,6 +116,7 @@ export default {
             d_proposalId: this.proposalId,
             /** Governance contract address */
             d_governanceId: this.governanceId,
+            d_validator: this.validator,
             /** Voter's votes */
             d_votes: this.votes,
         };
@@ -128,7 +144,7 @@ export default {
         },
 
         hasCorrectParams() {
-            return !!this.d_proposalId && !!this.d_governanceId;
+            return !!this.d_proposalId && !!this.d_governanceId && !!this.d_proposal.options;
         },
     },
 
@@ -138,9 +154,14 @@ export default {
         if (!this.hasCorrectParams && this.isView) {
             // redirect
             setTimeout(() => {
-                this.$router.replace({ name: this.getBackButtonRoute(this.compName) });
+                this.$router.replace({
+                    name: this.getBackButtonRoute(this.compName),
+                    params: this.$route.params,
+                });
             }, 3000);
         }
+
+        console.log('eee', this.d_validator);
 
         this.setTx();
     },

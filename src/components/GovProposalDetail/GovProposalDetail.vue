@@ -6,59 +6,81 @@
                 {{ d_proposal.name }}
             </h1>
 
-            <h2 v-if="loading || votingResolved" class="perex">{{ d_proposal.description }}</h2>
+            <h2 class="perex">{{ d_proposal.description }}</h2>
+            <!--<h2 v-if="loading || votingResolved" class="perex">{{ d_proposal.description }}</h2>-->
 
             <div v-if="loading" class="gov-proposal-detail__loader">
                 <pulse-loader color="#1969ff"></pulse-loader>
             </div>
             <template v-else>
-                <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
-                    <fieldset>
-                        <legend class="h2 perex">{{ d_proposal.description }}</legend>
+                <div v-for="(item, index) in items" :key="item.id" class="gov-proposal-detail__item">
+                    <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
+                        <fieldset>
+                            <legend class="h2 perex not-visible">{{ d_proposal.description }}</legend>
 
-                        <div class="form-body">
-                            <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                                <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                                    <f-slider
-                                        :label="item"
-                                        :name="`option${index}`"
-                                        :max="sliderMax"
-                                        :value="sliderInitialValue"
-                                        :labels="sliderLabels"
-                                        clickable-labels
-                                        use-lower-fill-bar
-                                    />
-                                </li>
-                            </ul>
+                            <div class="form-body">
+                                <div v-if="item.validator" class="gov-proposal-detail__validator-info">
+                                    <h3>
+                                        Validator: {{ item.validator.stakerInfo.name }}
+                                        <span v-if="item.validator.stakerInfo._unknown" class="perex">
+                                            ({{ item.validator.stakerAddress }})
+                                        </span>
+                                    </h3>
+                                </div>
 
-                            <div class="align-center form-buttons">
-                                <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                                <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                    <li
+                                        v-for="(optionItem, optionIdx) in d_proposal.options"
+                                        :key="`govprpsl${optionIdx}`"
+                                    >
+                                        <f-slider
+                                            :label="optionItem"
+                                            :name="`option_${optionIdx}_${index}`"
+                                            :max="sliderMax"
+                                            :value="sliderInitialValue"
+                                            :labels="sliderLabels"
+                                            clickable-labels
+                                            use-lower-fill-bar
+                                        />
+                                    </li>
+                                </ul>
+
+                                <div class="align-center form-buttons">
+                                    <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="formIndex" :value="index" />
+                        </fieldset>
+                    </f-form>
+                    <div v-else class="cont-600">
+                        <div class="gov-proposal-detail__winner">
+                            <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                            <b>{{ winner }}</b>
+                        </div>
+
+                        <div class="gov-proposal-detail__voter-votes">
+                            <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
+                            <div class="gov-proposal-detail__cont-resolved">
+                                <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                    <li
+                                        v-for="(optionItem, optionIdx) in d_proposal.options"
+                                        :key="`govprpsl${optionIdx}`"
+                                    >
+                                        <div class="row align-items-center">
+                                            <div class="col col-8 gov-proposal-detail__option">{{ optionItem }}</div>
+                                            <div class="col col-4 gov-proposal-detail__vote">
+                                                {{ getVote(optionIdx) }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                    </fieldset>
-                </f-form>
-                <div v-else class="cont-600">
-                    <div class="gov-proposal-detail__winner">
-                        <h3 class="gov-proposal-detail__sub-title">Winner</h3>
-                        <b>{{ winner }}</b>
                     </div>
 
-                    <div class="gov-proposal-detail__voter-votes">
-                        <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
-                        <div class="gov-proposal-detail__cont-resolved">
-                            <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                                <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                                    <div class="row align-items-center">
-                                        <div class="col col-8 gov-proposal-detail__option">{{ item }}</div>
-                                        <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <hr />
                 </div>
-
-                <hr />
 
                 <div class="row gov-proposal-detail__dates">
                     <div class="col df-data-item">
@@ -99,14 +121,16 @@ import { formatDate, prepareTimestamp, timestampToDate } from '@/filters.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import { cloneObject } from '@/utils';
+import { cloneObject, getUniqueId } from '@/utils';
+import { eventBusMixin } from '@/mixins/event-bus.js';
+import gql from 'graphql-tag';
 
 export default {
     name: 'GovProposalDetail',
 
     components: { FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
-    mixins: [viewHelpersMixin],
+    mixins: [viewHelpersMixin, eventBusMixin],
 
     props: {
         /** @type {GovernanceProposal} */
@@ -142,6 +166,8 @@ export default {
             /** Governance contract address */
             d_governanceId: this.governanceId,
             governance: {},
+            validators: [],
+            items: [],
             loading: false,
             proposalError: '',
         };
@@ -198,7 +224,7 @@ export default {
         },
     },
 
-    created() {
+    async created() {
         this.setDataFromParams();
 
         if (!this.hasCorrectParams && this.isView) {
@@ -208,10 +234,46 @@ export default {
             }, 3000);
         }
 
-        this.fetchProposal();
+        this._eventBus.on('account-picked', this.onAccountPicked);
+
+        this.init();
     },
 
     methods: {
+        async init() {
+            const promises = await Promise.all([this.fetchProposal(), this.fetchValidators()]);
+
+            this.validators = promises[1];
+
+            // set items
+            const items = [];
+            const { delegationsBy } = this.governance;
+
+            if (delegationsBy && delegationsBy.length > 0) {
+                delegationsBy.forEach((_validatorAddress) => {
+                    const validator = this.validators.find(
+                        (_validator) => _validator.stakerAddress === _validatorAddress
+                    );
+
+                    if (validator) {
+                        items.push({
+                            validator,
+                        });
+                    }
+                });
+            } else {
+                items.push({
+                    validator: null,
+                });
+            }
+
+            items.forEach((_item) => {
+                _item.id = getUniqueId();
+            });
+
+            this.items = items;
+        },
+
         async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
             if (!_govAddress || !_proposalId) {
                 return;
@@ -226,7 +288,7 @@ export default {
                     _proposalId
                 );
 
-                console.log(data);
+                // console.log(data);
                 this.governance = data;
                 this.d_proposal = data.proposal;
 
@@ -235,6 +297,49 @@ export default {
                 this.loading = false;
                 this.proposalError = _error;
             }
+        },
+
+        /**
+         * @return {Promise<Array>}
+         */
+        async fetchValidators() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query Stakers {
+                        stakers {
+                            id
+                            stakerAddress
+                            createdTime
+                            stake
+                            totalStake
+                            delegatedMe
+                            poi
+                            stakerInfo {
+                                name
+                                website
+                                contact
+                                logoUrl
+                            }
+                        }
+                    }
+                `,
+                fetchPolicy: 'network-only',
+            });
+            const tUnknown = this.$t('view_validator_list.unknown');
+            const { stakers } = data.data;
+
+            stakers.forEach((_staker) => {
+                if (!_staker.stakerInfo) {
+                    _staker.stakerInfo = {};
+                }
+
+                if (!_staker.stakerInfo.name) {
+                    _staker.stakerInfo.name = tUnknown;
+                    _staker.stakerInfo._unknown = true;
+                }
+            });
+
+            return stakers || [];
         },
 
         /**
@@ -262,12 +367,21 @@ export default {
             const { options } = this.d_proposal;
             const { opinionScales } = this.d_proposal;
             const { data } = _event.detail;
+            const formIndex = parseInt(data.formIndex);
             let optionIdxs = [];
             let value = 0;
+            let validator = null;
 
-            if (!this.votingDisabled && options && options.length > 0 && opinionScales && opinionScales.length > 0) {
+            if (
+                !this.votingDisabled &&
+                options &&
+                options.length > 0 &&
+                opinionScales &&
+                opinionScales.length > 0 &&
+                !isNaN(formIndex)
+            ) {
                 for (let i = 0, len1 = options.length; i < len1; i++) {
-                    value = parseInt(data[`option${i}`], 10);
+                    value = parseInt(data[`option_${i}_${formIndex}`], 10);
 
                     if (!isNaN(value)) {
                         optionIdxs.push(value);
@@ -278,11 +392,14 @@ export default {
                 }
 
                 if (optionIdxs.length > 0) {
+                    validator = this.items[formIndex];
+
                     this.$router.push({
                         name: 'gov-proposal-confirmation',
                         params: {
                             proposalId: this.d_proposalId,
                             governanceId: this.d_governanceId,
+                            validator: validator ? cloneObject(validator.validator) : {},
                             proposal: cloneObject(this.d_proposal),
                             // votes: optionIdxs.map((_idx) => opinionScales[_idx]),
                             // votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
@@ -291,6 +408,10 @@ export default {
                     });
                 }
             }
+        },
+
+        onAccountPicked() {
+            this.init();
         },
 
         timestampToDate,

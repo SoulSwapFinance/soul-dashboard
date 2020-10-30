@@ -51,7 +51,7 @@ export default {
 
             if (address && address.toLowerCase() !== this.currentAccount.address.toLowerCase()) {
                 this.setActiveAccount(address);
-                this._eventBus.emit('account-picked', address);
+                // this._eventBus.emit('account-picked', address);
             }
         },
     },
