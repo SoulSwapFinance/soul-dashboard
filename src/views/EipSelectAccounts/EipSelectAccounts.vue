@@ -1,18 +1,19 @@
 <template>
     <div class="view-settings">
         <h1>Select accounts to use</h1>
-        <p>For: {{ $route.params.origin }}</p>
+        <p>For: {{ site }}</p>
         <div class="settings-form">
             <f-card class="f-card-double-padding">
                 <f-form @f-form-submit="onSubmit">
                     <fieldset>
-                        <f-toggle-button
-                            v-for="account in accounts"
-                            :key="account"
-                            :name="account.address"
-                            :label="account.name + ' (' + account.address + ')'"
-                            :checked="account.sites && account.sites.includes(site)"
-                        />
+                        <div v-for="account in accounts" :key="account">
+                            <f-toggle-button
+                                :name="account.address"
+                                :label="account.name"
+                                :checked="account.sites && account.sites.includes(site)"
+                            />
+                            <account-name :account="account" hide-name="true" />
+                        </div>
 
                         <div class="align-center form-buttons">
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
@@ -32,11 +33,12 @@ import FToggleButton from '@/components/core/FToggleButton/FToggleButton';
 import FForm from '@/components/core/FForm/FForm';
 import FCard from '@/components/core/FCard/FCard';
 import { SET_ACCOUNT } from '@/store/mutations.type';
+import AccountName from '@/components/AccountName/AccountName';
 
 export default {
     name: 'EipSelectAccounts',
 
-    components: { FForm, FCard, FToggleButton },
+    components: { FForm, FCard, FToggleButton, AccountName },
 
     computed: {
         ...mapGetters(['currentAccount', 'accounts']),

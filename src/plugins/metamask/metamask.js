@@ -40,7 +40,7 @@ export class Metamask {
     }
 
     async init() {
-        if (!this._initialized) {
+        if (!this._initialized && !appConfig.isChromeExtension) {
             this._initialized = true;
 
             await this._detectProvider();

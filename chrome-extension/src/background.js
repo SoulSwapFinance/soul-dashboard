@@ -54,7 +54,6 @@ const requiresLatestMethods = [ // requires block number as 2th param
 const popupManager = new PopupManager();
 let sendTransactionRequestCounter = 0;
 let sendTransactionRequests = {};
-let sendTransactionResponseCallbacks = {};
 let accountsChangedCallbacks = {};
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -62,31 +61,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method === 'wallet_init') { // internal, called by inpage on page load
         sendResponse(appConfig.chainId); // in hex
     }
-    else if (request.method === 'wallet_selectAccounts') { // from EipSelectAccounts
-        getState(EIP_STORAGE_KEY, (state) => {
-            if (request.selected) {
-                state[sender.origin] = request.selected;
-            } else {
-                delete state[sender.origin];
-            }
-            chrome.storage.local.set({ [EIP_STORAGE_KEY]: state });
-            handleAccountsChanged(sender.origin, request.selected);
-        });
-    }
     else if (request.method === 'wallet_sendTransaction_ready' && sender.origin === window.origin) { // from EipSendTransaction
-        sendResponse(sendTransactionRequests[request.id]);
+        sendResponse(sendTransactionRequests[request.id].request);
     }
     else if (request.method === 'wallet_sendTransaction_done' && sender.origin === window.origin) { // from EipSendTransaction
         console.log('wallet_sendTransaction_done', request);
-        sendTransactionResponseCallbacks[request.stid]({ 'jsonrpc': '2.0', 'id': sendTransactionRequests[request.stid].id, 'result': request.response });
+        sendTransactionRequests[request.stid].sendResponse(
+            { 'jsonrpc': '2.0', 'id': sendTransactionRequests[request.stid].request.id, 'result': request.response }
+        );
         delete sendTransactionRequests[request.stid];
-        delete sendTransactionResponseCallbacks[request.stid];
     }
 
     // implementation of Ethereum RPC API: https://eth.wiki/json-rpc/API#json-rpc-methods
     // and EIP-1102: Opt-in account exposure: https://eips.ethereum.org/EIPS/eip-1102
 
     else if (request.method === 'eth_accounts' || request.method === 'eth_requestAccounts') { // list of addresses owned by client
+        console.log(request.method, request);
         getOriginAccounts(sender.origin, (accounts, haveAccounts) => {
             if (accounts.length === 0 || request.method === 'eth_requestAccounts') {
                 if (haveAccounts) { // select accounts from already opened accounts
@@ -112,10 +102,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     else if (request.method === 'eth_sendTransaction') {
         console.log('eth_sendTransaction', request);
-        let stid = ++sendTransactionRequestCounter;
-        sendTransactionRequests[stid] = request;
-        sendTransactionResponseCallbacks[stid] = sendResponse;
-        popupManager.showOrUpdatePopup('app/index.html#/eip-send-transaction/' + stid);
+        getOriginAccounts(sender.origin, (accounts) => {
+            let from = request.params[0].from.toLowerCase();
+            if (accounts.filter((account) => account.address.toLowerCase() === from).length === 0) {
+                sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
+                        { 'code': errorCodes.invalidParams, 'message': 'Invalid parameters: unauthorized "from" address: ' + from }
+                });
+                return;
+            }
+
+            let stid = ++sendTransactionRequestCounter;
+            sendTransactionRequests[stid] = { request, sendResponse };
+            popupManager.showOrUpdatePopup('app/index.html#/eip-send-transaction/' + stid);
+
+        });
         return true;
     }
 

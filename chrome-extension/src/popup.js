@@ -1,12 +1,13 @@
 /* global chrome */
 
-const POPUP_WIDTH = 400;
-const POPUP_HEIGHT = 620;
+const POPUP_WIDTH = 360;
+const POPUP_HEIGHT = 750;
 
 export default class PopupManager {
 
     concurrentLock = 0;
     openedTabId = null;
+    lastOpenedUrl = null;
 
     /**
      * Open popup window or replace its content if it is already opened
@@ -19,13 +20,18 @@ export default class PopupManager {
 
         if (!this.openedTabId) {
             this.showPopup(url);
+            this.lastOpenedUrl = url;
         } else {
-            chrome.tabs.update(this.openedTabId, { url: url }, (tab) => {
+            chrome.tabs.get(this.openedTabId, (tab) => {
                 if (chrome.runtime.lastError) { // window already closed
                     this.showPopup(url);
                 } else {
-                    chrome.windows.update(tab.windowId, { focused: true });
+                    if (this.lastOpenedUrl !== url) { // prevent infinite refreshing
+                        chrome.tabs.update(this.openedTabId, { url: url });
+                    }
+                    chrome.windows.update(tab.windowId, { drawAttention: true });
                 }
+                this.lastOpenedUrl = url;
             });
         }
     }

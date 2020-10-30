@@ -12,13 +12,6 @@
 
             <div class="transaction-info">
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">Send From</div>
-                    <div class="col break-word">
-                        {{ tx.from }}
-                    </div>
-                </div>
-
-                <div class="row no-collapse">
                     <div class="col-3 f-row-label">Send To</div>
                     <div class="col break-word">
                         {{ tx.to ? tx.to : '(new contract)' }}
@@ -26,8 +19,15 @@
                 </div>
 
                 <div class="row no-collapse">
+                    <div class="col-3 f-row-label">Send From</div>
+                    <div class="col break-word">
+                        {{ tx.from }}
+                    </div>
+                </div>
+
+                <div class="row no-collapse">
                     <div class="col-3 f-row-label">Amount</div>
-                    <div class="col">{{ tx.value }}</div>
+                    <div class="col">{{ amount }} FTM</div>
                 </div>
 
                 <div class="row no-collapse">
@@ -44,6 +44,8 @@
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation';
 import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet';
 import { mapGetters } from 'vuex';
+import { SET_ACTIVE_ACCOUNT_BY_ADDRESS } from '@/store/mutations.type';
+import { Web3 } from '@/plugins/fantom-web3-wallet';
 
 export default {
     name: 'EipSendTransaction',
@@ -59,6 +61,9 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount', 'accounts']),
+        amount() {
+            return this.tx.value ? Web3.utils.fromWei(this.tx.value) : '';
+        },
     },
 
     created() {
@@ -68,14 +73,8 @@ export default {
     methods: {
         async init(request) {
             let payload = request.params[0];
-            if (!payload.from && this.currentAccount) {
-                payload.from = this.currentAccount.address;
-            }
-            if (!payload.from && this.accounts) {
-                payload.from = this.accounts[0];
-            }
-            if (!payload.from) {
-                throw 'No active account to send transaction from!';
+            if (payload.from && (!this.currentAccount || payload.from !== this.currentAccount.address)) {
+                this.$store.commit(SET_ACTIVE_ACCOUNT_BY_ADDRESS, payload.from);
             }
             if (payload.gasLimit) {
                 this.gasLimit = payload.gasLimit;
