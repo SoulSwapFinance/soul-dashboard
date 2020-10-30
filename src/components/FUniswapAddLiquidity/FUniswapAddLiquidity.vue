@@ -357,6 +357,7 @@ export default {
             this.submitLabel = 'Connect Wallet';
         }
 
+        /*
         this._polling.start(
             'update-funiswap-add-liquidity-prices',
             () => {
@@ -364,6 +365,7 @@ export default {
             },
             4000
         );
+*/
     },
 
     methods: {
@@ -493,25 +495,28 @@ export default {
             return Math.min(Math.max(_value, 0), Math.min(this.maxToInputValue, this.toTokenBalance));
         },
 
-        async setTokenPrices() {
+        setTokenPrices() {
             const { fromToken } = this;
             const { toToken } = this;
             const { dPair } = this;
-            let price = '';
+            let price = 0;
 
             if (!dPair.pairAddress) {
                 return;
             }
 
+            const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, dPair);
+            const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, dPair);
+
             if (fromToken.address) {
-                price = await this.$defi.getUniswapTokenPrice(fromToken.address, dPair);
+                price = toTokenTotal / fromTokenTotal;
                 if (price && price !== fromToken._perPrice) {
                     this.fromToken = { ...fromToken, _perPrice: price };
                 }
             }
 
             if (toToken.address) {
-                price = await this.$defi.getUniswapTokenPrice(toToken.address, dPair);
+                price = fromTokenTotal / toTokenTotal;
                 if (price && price !== toToken._perPrice) {
                     this.toToken = { ...toToken, _perPrice: price };
                 }
@@ -523,15 +528,19 @@ export default {
         convertFrom2To(_value) {
             const { fromToken } = this;
 
+            return fromToken && fromToken._perPrice ? _value * fromToken._perPrice : 0;
+            /*
             return fromToken && fromToken._perPrice
                 ? _value * this.$defi.fromTokenValue(fromToken._perPrice, fromToken)
                 : 0;
+            */
         },
 
         convertTo2From(_value) {
             const { toToken } = this;
 
-            return toToken && toToken._perPrice ? _value * this.$defi.fromTokenValue(toToken._perPrice, toToken) : 0;
+            return toToken && toToken._perPrice ? _value * toToken._perPrice : 0;
+            // return toToken && toToken._perPrice ? _value * this.$defi.fromTokenValue(toToken._perPrice, toToken) : 0;
         },
 
         setFromInputValue(_value) {
