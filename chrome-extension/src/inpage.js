@@ -126,6 +126,11 @@ class FantomInpageProvider extends FantomEventEmitter {
             this.chainId = result;
             this.emit('chainChanged', this.chainId);
         });
+
+        // bind functions (fix unbound calls)
+        this.request = this.request.bind(this)
+        this.sendAsync = this.sendAsync.bind(this)
+        this.enable = this.enable.bind(this)
     }
 
     /**
@@ -153,22 +158,29 @@ class FantomInpageProvider extends FantomEventEmitter {
         const { method, params } = args
 
         return new Promise((resolve, reject) => {
-            this._rpcRequest(
-                { method, params },
-                (error, response) => {
-                    if (error || response.error) {
-                        reject(error || response.error)
-                    } else {
-                        Array.isArray(response)
-                            ? resolve(response)
-                            : resolve(response.result)
-                    }
-                },
-            )
+            try {
+                this._rpcRequest(
+                    {method, params},
+                    (error, response) => {
+                        if (error || response.error) {
+                            reject(error || response.error)
+                        } else {
+                            Array.isArray(response)
+                                ? resolve(response)
+                                : resolve(response.result)
+                        }
+                    },
+                );
+            } catch (error) {
+                reject(error);
+            }
         })
     }
 
     /**
+     * DEPRECATED.
+     * Use ethereum.request() instead.
+     *
      * Submit a JSON-RPC request object and a callback to make an RPC method call.
      *
      * @param {Object} payload - The RPC request object.
@@ -176,6 +188,16 @@ class FantomInpageProvider extends FantomEventEmitter {
      */
     sendAsync (payload, cb) {
         this._rpcRequest(payload, cb)
+    }
+
+    /**
+     * DEPRECATED.
+     * Equivalent to: ethereum.request('eth_requestAccounts')
+     *
+     * @returns {Promise<Array<string>>} - A promise that resolves to an array of addresses.
+     */
+    enable () {
+        return this.request({ method: 'eth_requestAccounts' });
     }
 
     /**
