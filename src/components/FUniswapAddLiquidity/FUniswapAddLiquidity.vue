@@ -566,6 +566,9 @@ export default {
             this.fromPerToPrice = this.convertTo2From(1).toFixed(4);
         },
 
+        updateInputColor() {},
+
+        /*
         updateInputColor(_value, _toInput = false) {
             const cValue = _toInput ? this.correctToInputValue(_value) : this.correctFromInputValue(_value);
             const eInput = _toInput ? this.$refs.toInput : this.$refs.fromInput;
@@ -576,6 +579,7 @@ export default {
                 eInput.classList.remove('invalid');
             }
         },
+        */
 
         updateSubmitLabel() {
             // const fromInputValue = this.$refs.fromInput.value;

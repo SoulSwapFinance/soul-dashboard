@@ -105,18 +105,24 @@
                 </div>
             </div>
 
-            <div v-show="showPriceInfo" class="funiswap-swap__exchange-price">
-                <div class="defi-label">Price</div>
-                <div class="value">
-                    <f-token-value :value="1" :token="fromToken" :decimals="0" />
-                    =
-                    <f-token-value :value="toTokenPrice" :token="toToken" :add-decimals="addDeciamals" />
-                    <br />
-                    <f-token-value :value="1" :token="toToken" :decimals="0" />
-                    =
-                    <f-token-value :value="fromTokenPrice" :token="fromToken" :add-decimals="addDeciamals" />
+            <template v-if="showPriceInfo">
+                <div class="funiswap-swap__exchange-price">
+                    <div class="defi-label">Price</div>
+                    <div class="value">
+                        <f-token-value :value="1" :token="fromToken" :decimals="0" />
+                        =
+                        <f-token-value :value="toTokenPrice" :token="toToken" :add-decimals="addDeciamals" />
+                        <br />
+                        <f-token-value :value="1" :token="toToken" :decimals="0" />
+                        =
+                        <f-token-value :value="fromTokenPrice" :token="fromToken" :add-decimals="addDeciamals" />
+                    </div>
                 </div>
-            </div>
+                <div class="funiswap-swap__exchange-price">
+                    <div class="defi-label">Slippage Tolerance</div>
+                    <div class="value">{{ slippageTolerance * 100 }}%</div>
+                </div>
+            </template>
 
             <div class="funiswap__submit-cont">
                 <button ref="submitBut" class="btn large" :disabled="submitBtnDisabled" @click="onSubmit">
@@ -141,6 +147,15 @@
                         <f-token-value v-if="minimumReceived > 0" :value="minimumReceived" :token="toToken" />
                         <f-token-value v-else :value="maximumSold" :token="fromToken" />
                     </div>
+                </div>
+                <div class="row no-vert-col-padding no-collapse">
+                    <div class="col defi-label">
+                        Price impact
+                        <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
+                            The difference between the market price and estimated price due to trade size.
+                        </f-info>
+                    </div>
+                    <div class="col align-right">{{ priceImpact }}</div>
                 </div>
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
@@ -217,6 +232,7 @@ export default {
             submitBtnDisabled: true,
             fromValueLoading: false,
             toValueLoading: false,
+            priceImpact: '0%',
             /** @type {DefiToken} */
             fromToken: {},
             /** @type {DefiToken} */
@@ -304,6 +320,18 @@ export default {
             return this.toToken.address && this.toValue_ > 0;
         },
     },
+
+    /*
+    asyncComputed: {
+        async priceImpact() {
+            const tokenPrice = await this.$fWallet.getTokenPrice('CZK');
+
+            console.log({ tokenPrice });
+
+            return '0%';
+        },
+    },
+*/
 
     watch: {
         fromValue(_value, _oldValue) {
@@ -413,6 +441,8 @@ export default {
             this.setToInputValue(this.toValue_);
             // this.setToInputValue(this.correctToInputValue(this.toValue_));
             this.toValueLoading = false;
+
+            this.setPriceImpact();
         },
 
         async toValueChanged() {
@@ -431,6 +461,8 @@ export default {
 
             this.fromValueLoading = false;
             // this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
+
+            this.setPriceImpact();
         },
 
         async init() {
@@ -592,18 +624,54 @@ export default {
                 this.minimumReceived = this.toValue_ * (1 - this.slippageTolerance);
                 this.maximumSold = 0;
             } else {
-                this.maximumSold = this.fromValue_ * (1 - this.slippageTolerance);
+                this.maximumSold = this.fromValue_ * (1 + this.slippageTolerance);
                 this.minimumReceived = 0;
             }
         },
 
         setTPrices() {
-            const value = this.toValue_ / this.fromValue_;
-
-            this.toTokenPrice = value;
-            this.fromTokenPrice = 1 / value;
+            this.toTokenPrice = this.toValue_ / this.fromValue_;
+            this.fromTokenPrice = this.fromValue_ / this.toValue_;
         },
 
+        async setPriceImpact() {
+            // const tokenPrices = await this.$defi.fetchTokenPrices([this.fromToken.symbol, this.toToken.symbol]);
+            const { dPair } = this;
+            const address = this.currentAccount ? this.currentAccount.address : '';
+            let value = 0;
+            let priceImpact = 0;
+
+            if (!dPair.pairAddress) {
+                return;
+            }
+
+            const pair = await this.$defi.fetchUniswapPairs(address, dPair.pairAddress, [
+                this.fromToken.address,
+                this.toToken.address,
+            ]);
+
+            const fromTokenTotal = this.$defi.totalTokenLiquidity(this.fromToken, pair);
+            const toTokenTotal = this.$defi.totalTokenLiquidity(this.toToken, pair);
+            const tokenPrices = [toTokenTotal / fromTokenTotal, fromTokenTotal / toTokenTotal];
+
+            console.log(tokenPrices);
+
+            if (this.showFromEstimated) {
+                value = tokenPrices[1] / tokenPrices[0];
+                priceImpact = (this.fromValue_ / (this.toValue_ * value)) * 100;
+                // priceImpact = (1 - this.fromValue_ / (this.toValue_ * value)) * 100;
+            } else if (this.showToEstimated) {
+                value = tokenPrices[0] / tokenPrices[1];
+                priceImpact = ((this.fromValue_ * value) / this.toValue_) * 100;
+                // priceImpact = (1 - (this.fromValue_ * value) / this.toValue_) * 100;
+            }
+
+            this.priceImpact = `${priceImpact.toFixed(2)}%`;
+        },
+
+        updateInputColor() {},
+
+        /*
         updateInputColor(_value, _toInput = false) {
             const cValue = _toInput ? this.correctToInputValue(_value) : this.correctFromInputValue(_value);
             const eInput = _toInput ? this.$refs.toInput : this.$refs.fromInput;
@@ -614,6 +682,7 @@ export default {
                 eInput.classList.remove('invalid');
             }
         },
+        */
 
         updateSubmitLabel() {
             const fromValue = this.fromValue_;

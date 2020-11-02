@@ -759,6 +759,44 @@ export class DeFi {
     }
 
     /**
+     * @param {string|array} [_symbol]
+     * @return {Promise<number[]>}
+     */
+    async fetchTokenPrices(_symbol) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query DefiTokens {
+                    defiTokens {
+                        address
+                        symbol
+                        decimals
+                        price
+                        priceDecimals
+                        isActive
+                    }
+                }
+            `,
+            fetchPolicy: 'network-only',
+        });
+        let defiTokens = data.data.defiTokens || [];
+        let tokens = [];
+
+        this._setTokens(defiTokens);
+
+        if (_symbol) {
+            if (typeof _symbol === 'string') {
+                tokens = defiTokens.find((_item) => _item.symbol === _symbol);
+            } else if (_symbol.length) {
+                tokens = defiTokens.filter((_item) => _symbol.indexOf(_item.symbol) > -1);
+            }
+        } else {
+            tokens = defiTokens;
+        }
+
+        return tokens.map((_token) => this.fromTokenValue(_token.price, _token, true));
+    }
+
+    /**
      * @param {string} _ownerAddress
      * @return {Promise<FMintAccount>}
      */
