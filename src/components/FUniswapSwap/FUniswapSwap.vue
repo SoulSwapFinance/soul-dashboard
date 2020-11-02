@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div v-show="toToken.address && toValue_ > 0" class="funiswap-swap__exchange-price">
+            <div v-show="showPriceInfo" class="funiswap-swap__exchange-price">
                 <div class="defi-label">Price</div>
                 <div class="value">
                     <f-token-value :value="1" :token="fromToken" :decimals="0" />
@@ -215,7 +215,6 @@ export default {
             minimumReceived: 0,
             maximumSold: 0,
             submitBtnDisabled: true,
-            showPriceInfo: false,
             fromValueLoading: false,
             toValueLoading: false,
             /** @type {DefiToken} */
@@ -299,6 +298,10 @@ export default {
 
         submitDisabled() {
             return !this.currentAccount || this.correctFromInputValue(this.fromValue_) === 0;
+        },
+
+        showPriceInfo() {
+            return this.toToken.address && this.toValue_ > 0;
         },
     },
 
@@ -515,8 +518,6 @@ export default {
             const value = parseFloat(_value);
 
             if (toToken.address && value > 0) {
-                console.log('TED', value);
-
                 let amounts = await this.$defi.fetchUniswapAmountsOut(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), fromToken.decimals)),
                     [fromToken.address, toToken.address]
@@ -537,8 +538,6 @@ export default {
             const value = parseFloat(_value);
 
             if (toToken.address && value > 0) {
-                console.log('TED22', value);
-
                 const amounts = await this.$defi.fetchUniswapAmountsIn(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), toToken.decimals)),
                     [fromToken.address, toToken.address]
@@ -639,8 +638,6 @@ export default {
 
             // this.$refs.submitBut.innerText = submitLabel;
             // this.$refs.submitBut.disabled = submitBtnDisabled;
-
-            this.showPriceInfo = !this.submitBtnDisabled;
         },
 
         onMaxAmountClick() {

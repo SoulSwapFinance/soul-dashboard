@@ -277,7 +277,8 @@ export default {
 
                 this.setPrices();
 
-                this.setToInputValue(this.correctToInputValue(this.toValue_));
+                this.setToInputValue(this.toValue_);
+                // this.setToInputValue(this.correctToInputValue(this.toValue_));
             }
         },
 
@@ -293,7 +294,8 @@ export default {
 
                 this.setPrices();
 
-                this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
+                this.setFromInputValue(this.fromValue_);
+                // this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
             }
         },
 
@@ -357,7 +359,6 @@ export default {
             this.submitLabel = 'Connect Wallet';
         }
 
-        /*
         this._polling.start(
             'update-funiswap-add-liquidity-prices',
             () => {
@@ -365,7 +366,6 @@ export default {
             },
             4000
         );
-*/
     },
 
     methods: {
@@ -495,18 +495,24 @@ export default {
             return Math.min(Math.max(_value, 0), Math.min(this.maxToInputValue, this.toTokenBalance));
         },
 
-        setTokenPrices() {
+        async setTokenPrices() {
             const { fromToken } = this;
             const { toToken } = this;
             const { dPair } = this;
+            const address = this.currentAccount ? this.currentAccount.address : '';
             let price = 0;
 
             if (!dPair.pairAddress) {
                 return;
             }
 
-            const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, dPair);
-            const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, dPair);
+            const pair = await this.$defi.fetchUniswapPairs(address, dPair.pairAddress, [
+                fromToken.address,
+                toToken.address,
+            ]);
+
+            const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, pair);
+            const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, pair);
 
             if (fromToken.address) {
                 price = toTokenTotal / fromTokenTotal;

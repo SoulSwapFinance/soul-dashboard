@@ -243,18 +243,24 @@ export default {
             }
         },
 
-        setTokenPrices() {
+        async setTokenPrices() {
             const { fromToken } = this;
             const { toToken } = this;
             const { dPair } = this;
+            const address = this.currentAccount ? this.currentAccount.address : '';
             let price = 0;
 
             if (!dPair.pairAddress) {
                 return;
             }
 
-            const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, dPair);
-            const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, dPair);
+            const pair = await this.$defi.fetchUniswapPairs(address, dPair.pairAddress, [
+                fromToken.address,
+                toToken.address,
+            ]);
+
+            const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, pair);
+            const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, pair);
 
             if (fromToken.address) {
                 price = toTokenTotal / fromTokenTotal;
