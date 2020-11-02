@@ -1,11 +1,45 @@
 /* global chrome */
 
-const POPUP_WIDTH = 400;
-const POPUP_HEIGHT = 620;
+const POPUP_WIDTH = 360;
+const POPUP_HEIGHT = 750;
 
 export default class PopupManager {
-    constructor() {}
 
+    concurrentLock = 0;
+    openedTabId = null;
+    lastOpenedUrl = null;
+
+    /**
+     * Open popup window or replace its content if it is already opened
+     * @param url URL to be opened
+     */
+    showOrUpdatePopup(url) {
+        // prevent opening multiple popups by concurrent calls
+        if (this.concurrentLock > Date.now()) return;
+        this.concurrentLock = Date.now() + 500;
+
+        if (!this.openedTabId) {
+            this.showPopup(url);
+            this.lastOpenedUrl = url;
+        } else {
+            chrome.tabs.get(this.openedTabId, (tab) => {
+                if (chrome.runtime.lastError) { // window already closed
+                    this.showPopup(url);
+                } else {
+                    if (this.lastOpenedUrl !== url) { // prevent infinite refreshing
+                        chrome.tabs.update(this.openedTabId, { url: url });
+                    }
+                    chrome.windows.update(tab.windowId, { drawAttention: true });
+                }
+                this.lastOpenedUrl = url;
+            });
+        }
+    }
+
+    /**
+     * Open popup window
+     * @param url URL to be opened
+     */
     showPopup(url) {
         chrome.windows.getLastFocused((lastFocused) => {
             let top = lastFocused.top ? lastFocused.top : null;
@@ -21,6 +55,8 @@ export default class PopupManager {
                     left: left,
                 },
                 (win) => {
+                    this.openedTabId = win.tabs[0].id;
+                    this.concurrentLock = 0;
                     if (left && win.left !== left) {
                         chrome.windows.update(win.id, {
                             top: top,
@@ -29,12 +65,6 @@ export default class PopupManager {
                     }
                 }
             );
-        });
-    }
-
-    showTab(url) {
-        chrome.tabs.create({
-            url: url,
         });
     }
 }

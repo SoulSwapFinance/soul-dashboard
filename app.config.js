@@ -35,6 +35,8 @@ const appConfig = {
     },
     // Opera chain id
     chainId: '0xfa',
+    // JSON-RPC endpoint
+    rpc: 'https://rpcapi.fantom.network/',
     // used in links pointing to fantom explorer
     explorerUrl: 'https://explorer.fantom.network/',
     // used in links pointing to ethereum explorer
@@ -66,6 +68,8 @@ const appConfig = {
                 ws: '',
             },
         ],
+        // JSON-RPC endpoint
+        rpc: 'https://xapi.testnet.fantom.network/lachesis',
         // used in links pointing to fantom explorer
         explorerUrl: 'https://explorer.testnet.fantom.network/',
         // chain id for testnet
@@ -116,6 +120,7 @@ const appConfig = {
 if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
+    appConfig.rpc = appConfig.testnet.rpc;
     appConfig.chainId = appConfig.testnet.chainId;
 }
 

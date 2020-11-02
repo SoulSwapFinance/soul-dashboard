@@ -1,70 +1,206 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 /* global chrome */
 
 import PopupManager from './popup';
+import appConfig from '../../app.config';
+import { arrayEquals } from '@/utils/array';
+
+const STORAGE_KEY = 'vuex';
+
+const errorCodes = {
+    invalidInput: -32000,
+    resourceNotFound: -32001,
+    resourceUnavailable: -32002,
+    transactionRejected: -32003,
+    methodNotSupported: -32004,
+    parse: -32700,
+    invalidRequest: -32600,
+    methodNotFound: -32601,
+    invalidParams: -32602,
+    internal: -32603
+};
+
+const proxiedMethods = [
+    'eth_gasPrice',
+    'eth_blockNumber',
+    'eth_getBalance',
+    'eth_getStorageAt',
+    'eth_getTransactionCount',
+    'eth_getBlockTransactionCountByHash',
+    'eth_getBlockTransactionCountByNumber',
+    'eth_getUncleCountByBlockHash',
+    'eth_getUncleCountByBlockNumber',
+    'eth_getCode',
+    'eth_call',
+    'eth_estimateGas',
+    'eth_getBlockByHash',
+    'eth_getBlockByNumber',
+    'eth_getTransactionByHash',
+    'eth_getTransactionByBlockHashAndIndex',
+    'eth_getTransactionByBlockNumberAndIndex',
+    'eth_getTransactionReceipt',
+    'eth_getUncleByBlockHashAndIndex',
+    'eth_getUncleByBlockNumberAndIndex',
+];
+
+const requiresLatestMethods = [ // requires block number as 2th param
+    'eth_call',
+    'eth_estimateGas',
+    'eth_getBalance',
+    'eth_getTransactionCount',
+    'eth_getCode',
+];
 
 const popupManager = new PopupManager();
-let sentRequest = null;
+let sendTransactionRequestCounter = 0;
+let sendTransactionRequests = {};
+let accountsChangedCallbacks = {};
 
-chrome.runtime.onInstalled.addListener(function () {
-    /*
-      chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-        chrome.declarativeContent.onPageChanged.addRules([{
-          conditions: [new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: {hostEquals: 'developer.chrome.com'},
-          })
-          ],
-          actions: [new chrome.declarativeContent.ShowBrowserAction()]
-        }]);
-      });
-    */
-});
-
-// mock for demo
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
-    //console.log(request, sender);
-    //sender.origin = "http://www.example.com"
-    //sender.url = "http://www.example.com/test.htm"
-
     if (request.method === 'wallet_init') { // internal, called by inpage on page load
-        sendResponse({ method: 'wallet_chainIdChanged', result:"0xf3" });
+        sendResponse(appConfig.chainId); // in hex
     }
-    else if (request.method === 'wallet_sendTransaction_ready') {
-        sendResponse(sentRequest);
+    else if (request.method === 'wallet_sendTransaction_ready' && sender.origin === window.origin) { // from EipSendTransaction
+        sendResponse(sendTransactionRequests[request.id].request);
     }
-
-    else if (request.method === 'eth_accounts') {
-        sendResponse({"jsonrpc":"2.0","id":request.id,"result":[
-            "0x83A6524Be9213B1Ce36bCc0DCEfb5eb51D87aD10",
-            "0x51A6524Be9213B1Ce36bCc0DCEfb5eb51D87aD12",
-            ]});
-    } else if (request.method === 'eth_getBalance') {
-        sendResponse({"jsonrpc":"2.0","id":request.id,"result":"0x3728019d78a47600"}); // 3.974428447 FTM
-    } else if (request.method === 'net_version') {
-        sendResponse({"jsonrpc": "2.0", "id": request.id, "result": 250}); // Fantom mainnet
-    } else if (request.method === 'eth_sendTransaction') {
-        sentRequest = request;
-        popupManager.showPopup('app/index.html#/eip-send-transaction');
-        popupManager.showTab('app/index.html#/eip-send-transaction');
-    } else {
-        sendResponse({"jsonrpc":"2.0","id":request.id,"error":{"code":-32601,"message":"the method "+request.method+" does not exist/is not available"}});
+    else if (request.method === 'wallet_sendTransaction_done' && sender.origin === window.origin) { // from EipSendTransaction
+        console.log('wallet_sendTransaction_done', request);
+        sendTransactionRequests[request.stid].sendResponse(
+            { 'jsonrpc': '2.0', 'id': sendTransactionRequests[request.stid].request.id, 'result': request.response }
+        );
+        delete sendTransactionRequests[request.stid];
     }
 
+    // implementation of Ethereum RPC API: https://eth.wiki/json-rpc/API#json-rpc-methods
+    // and EIP-1102: Opt-in account exposure: https://eips.ethereum.org/EIPS/eip-1102
+
+    else if (request.method === 'eth_accounts' || request.method === 'eth_requestAccounts') { // list of addresses owned by client
+        console.log(request.method, request);
+        getOriginAccounts(sender.origin, (accounts, haveAccounts) => {
+            if (accounts.length === 0 || request.method === 'eth_requestAccounts') {
+                if (haveAccounts) { // select accounts from already opened accounts
+                    popupManager.showOrUpdatePopup('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
+                } else { // need to add new account
+                    popupManager.showOrUpdatePopup('app/index.html');
+                }
+
+                if (!accountsChangedCallbacks[sender.origin]) accountsChangedCallbacks[sender.origin] = [];
+                accountsChangedCallbacks[sender.origin].push((accounts) => {
+                    sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': accounts });
+                });
+            } else {
+                sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': accounts.map((account) => account.address) });
+            }
+        });
+        return true;
+    }
+
+    else if (request.method === 'net_version') { // current network id (decimal string)
+        sendResponse({ jsonrpc: '2.0', id: request.id, result: parseInt(appConfig.chainId).toString() });
+    }
+
+    else if (request.method === 'eth_sendTransaction') {
+        console.log('eth_sendTransaction', request);
+        getOriginAccounts(sender.origin, (accounts) => {
+            let from = request.params[0].from.toLowerCase();
+            if (accounts.filter((account) => account.address.toLowerCase() === from).length === 0) {
+                sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
+                        { 'code': errorCodes.invalidParams, 'message': 'Invalid parameters: unauthorized "from" address: ' + from }
+                });
+                return;
+            }
+
+            let stid = ++sendTransactionRequestCounter;
+            sendTransactionRequests[stid] = { request, sendResponse };
+            popupManager.showOrUpdatePopup('app/index.html#/eip-send-transaction/' + stid);
+
+        });
+        return true;
+    }
+
+    else if (proxiedMethods.includes(request.method)) {
+        if (requiresLatestMethods.includes(request.method) && !request.params[1]) {
+            request.params[1] = 'latest';
+        }
+        sendToRpc({
+            jsonrpc: '2.0',
+            id: request.id || 0, // requests without id are ignored
+            method: request.method,
+            params: request.params,
+        }).then(response => {
+            console.log('sendToRpc', request, response);
+            sendResponse(response);
+        });
+        return true;
+    }
+
+    else {
+        console.log('Unsupported method', request);
+        sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
+                { 'code': errorCodes.methodNotFound, 'message': 'the method ' + request.method + ' does not exist/is not available' }
+        });
+    }
 });
 
-function broadcastMessage(payload) {
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+    if (areaName !== 'local' || !(STORAGE_KEY in changes)) return;
+    let change = changes[STORAGE_KEY];
+    console.log('state changed', change);
+
     chrome.tabs.query({}, function(tabs) {
         tabs.forEach(function(tab) {
-            chrome.tabs.sendMessage(tab.id, payload);
+            if (!tab.url) return;
+            let origin = (new URL(tab.url)).origin;
+
+            let oldAccounts = getOriginAccountsFromState(origin, change.oldValue).map((account) => account.address);
+            let newAccounts = getOriginAccountsFromState(origin, change.newValue).map((account) => account.address);
+
+            if (!arrayEquals(oldAccounts, newAccounts)) {
+                console.log('wallet_accountsChanged', origin, change);
+                chrome.tabs.sendMessage(tab.id, { method: 'wallet_accountsChanged', result: newAccounts });
+                handleAccountsChanged(origin, newAccounts);
+            }
         });
+    });
+});
+
+function handleAccountsChanged(origin, accountIds) {
+    if (accountsChangedCallbacks[origin]) {
+        accountsChangedCallbacks[origin].forEach((callback) => callback(accountIds));
+        delete accountsChangedCallbacks[origin];
+    }
+}
+
+function getOriginAccounts(origin, callback) {
+    getState((state) => {
+        callback(getOriginAccountsFromState(origin, state), state.accounts && state.accounts.length > 0);
     });
 }
 
-// call when chain/account switched in extension UI
-broadcastMessage({ method: 'wallet_chainIdChanged', result:"0xf3" });
-broadcastMessage({ method: 'wallet_accountsChanged', result:"0x83A6524Be9213B1Ce36bCc0DCEfb5eb51D87aD10" });
+function getOriginAccountsFromState(origin, state) {
+    if (state && state.accounts) {
+        return state.accounts.filter((account) => account.sites && account.sites.includes(origin));
+    } else {
+        return [];
+    }
+}
+
+function getState(callback) {
+    chrome.storage.local.get([STORAGE_KEY], (data) => callback(data[STORAGE_KEY] || {}));
+}
+
+async function sendToRpc(request) {
+    console.log(appConfig.rpc, request);
+    return fetch(appConfig.rpc, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request)
+    }).then((response) => response.json())
+        .catch((ex) => {
+            return { 'jsonrpc':'2.0', 'id': request.id, 'error':
+                    { 'code': errorCodes.internal, 'message': 'RPC error: ' + ex }};
+        });
+}
+
+console.log('background page loaded');

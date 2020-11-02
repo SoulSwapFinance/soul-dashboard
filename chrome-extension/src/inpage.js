@@ -122,7 +122,15 @@ class FantomInpageProvider extends FantomEventEmitter {
 
         setTimeout(() => this.emit('connect', { chainId: this.chainId }));
 
-        this._sendToContentScript({ method: 'wallet_init'});
+        this._sendToContentScript({ method: 'wallet_init'}, (error, result) => {
+            this.chainId = result;
+            this.emit('chainChanged', this.chainId);
+        });
+
+        // bind functions (fix unbound calls)
+        this.request = this.request.bind(this)
+        this.sendAsync = this.sendAsync.bind(this)
+        this.enable = this.enable.bind(this)
     }
 
     /**
@@ -150,22 +158,29 @@ class FantomInpageProvider extends FantomEventEmitter {
         const { method, params } = args
 
         return new Promise((resolve, reject) => {
-            this._rpcRequest(
-                { method, params },
-                (error, response) => {
-                    if (error || response.error) {
-                        reject(error || response.error)
-                    } else {
-                        Array.isArray(response)
-                            ? resolve(response)
-                            : resolve(response.result)
-                    }
-                },
-            )
+            try {
+                this._rpcRequest(
+                    {method, params},
+                    (error, response) => {
+                        if (error || response.error) {
+                            reject(error || response.error)
+                        } else {
+                            Array.isArray(response)
+                                ? resolve(response)
+                                : resolve(response.result)
+                        }
+                    },
+                );
+            } catch (error) {
+                reject(error);
+            }
         })
     }
 
     /**
+     * DEPRECATED.
+     * Use ethereum.request() instead.
+     *
      * Submit a JSON-RPC request object and a callback to make an RPC method call.
      *
      * @param {Object} payload - The RPC request object.
@@ -176,8 +191,17 @@ class FantomInpageProvider extends FantomEventEmitter {
     }
 
     /**
+     * DEPRECATED.
+     * Equivalent to: ethereum.request('eth_requestAccounts')
+     *
+     * @returns {Promise<Array<string>>} - A promise that resolves to an array of addresses.
+     */
+    enable () {
+        return this.request({ method: 'eth_requestAccounts' });
+    }
+
+    /**
      * Internal RPC method. Forwards requests to background via the RPC engine.
-     * Also remap ids inbound and outbound.
      *
      * @param {Object} payload - The RPC request object.
      * @param {Function} callback - The consumer's callback.
@@ -230,25 +254,21 @@ class FantomInpageProvider extends FantomEventEmitter {
         if (typeof msg !== 'object') return
         if (msg.target !== 'FantomPWAwalletInpage') return
         if (!msg.data) return
-        let payload = msg.data;
+        let data = msg.data;
 
         if (msg.msgId && typeof this.messageCallbacks[msg.msgId] !== 'undefined') {
             let callback = this.messageCallbacks[msg.msgId];
             delete this.messageCallbacks[msg.msgId];
-            callback(null, payload); // (error, result)
+            callback(null, data); // (error, result)
         }
 
-        if (payload.method === 'wallet_accountsChanged') {
-            this._handleAccountsChanged(payload.result);
+        if (data.method === 'wallet_accountsChanged') {
+            this._handleAccountsChanged(data.result);
         }
-        if (payload.method === 'wallet_chainIdChanged') {
-            this.chainId = payload.result;
-            this.emit('chainChanged', this.chainId);
-        }
-        if (payload.method === 'eth_subscription') {
+        if (data.method === 'eth_subscription') {
             this.emit('message', {
                 type: 'eth_subscription',
-                data: payload.params,
+                data: data.params,
             });
         }
     }

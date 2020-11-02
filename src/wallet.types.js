@@ -20,6 +20,7 @@
  * @property {boolean} isLedgerAccount
  * @property {number} accountId Ledger account id.
  * @property {number} addressId Ledger address id.
+ * @property {string[]} sites Connected sites (WebExtension only).
  */
 
 /**
