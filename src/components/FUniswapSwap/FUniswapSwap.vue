@@ -153,7 +153,7 @@
                 </div>
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
-                        Price impact
+                        Price Impact
                         <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
                             The difference between the market price and estimated price due to trade size.
                         </f-info>
@@ -648,8 +648,6 @@ export default {
             // const tokenPrices = await this.$defi.fetchTokenPrices([this.fromToken.symbol, this.toToken.symbol]);
             const { dPair } = this;
             const address = this.currentAccount ? this.currentAccount.address : '';
-            let value = 0;
-            let priceImpact = 0;
 
             if (!dPair.pairAddress) {
                 return;
@@ -662,16 +660,19 @@ export default {
 
             const fromTokenTotal = this.$defi.totalTokenLiquidity(this.fromToken, pair);
             const toTokenTotal = this.$defi.totalTokenLiquidity(this.toToken, pair);
-            const tokenPrices = [toTokenTotal / fromTokenTotal, fromTokenTotal / toTokenTotal];
+            const tokenPrices = [fromTokenTotal / toTokenTotal, toTokenTotal / fromTokenTotal];
+            let p1 = 0;
+            let p2 = 0;
+            let priceImpact = 0;
 
             if (this.showFromEstimated) {
-                value = tokenPrices[1] / tokenPrices[0];
-                priceImpact = (this.fromValue_ / (this.toValue_ * value)) * 100;
-                // priceImpact = (1 - this.fromValue_ / (this.toValue_ * value)) * 100;
+                p1 = tokenPrices[0] * this.toValue_;
+                p2 = this.fromTokenPrice * this.toValue_;
+                priceImpact = ((p2 - p1) / p2) * 100;
             } else if (this.showToEstimated) {
-                value = tokenPrices[0] / tokenPrices[1];
-                priceImpact = ((this.fromValue_ * value) / this.toValue_) * 100;
-                // priceImpact = (1 - (this.fromValue_ * value) / this.toValue_) * 100;
+                p1 = tokenPrices[1] * this.fromValue_;
+                p2 = this.toTokenPrice * this.fromValue_;
+                priceImpact = ((p1 - p2) / p1) * 100;
             }
 
             this.priceImpact = `${priceImpact.toFixed(2)}%`;

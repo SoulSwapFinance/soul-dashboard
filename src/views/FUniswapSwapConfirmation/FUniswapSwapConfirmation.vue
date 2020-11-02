@@ -29,7 +29,7 @@
                     </span>
                 </template>
                 <template v-else>
-                    You're trading
+                    You're trading expected
                     <span class="price">
                         {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
                     </span>
