@@ -107,20 +107,23 @@
 
             <template v-if="showPriceInfo">
                 <div class="funiswap-swap__exchange-price">
-                    <div class="defi-label">Price</div>
-                    <div class="value">
-                        <f-token-value :value="1" :token="fromToken" :decimals="0" />
-                        =
-                        <f-token-value :value="toTokenPrice" :token="toToken" :add-decimals="addDeciamals" />
-                        <br />
-                        <f-token-value :value="1" :token="toToken" :decimals="0" />
-                        =
-                        <f-token-value :value="fromTokenPrice" :token="fromToken" :add-decimals="addDeciamals" />
+                    <div class="funiswap-swap__exchange-price__row">
+                        <div class="defi-label">Price</div>
+                        <div class="value">
+                            <f-placeholder :content-loaded="!!perPrice" replacement-text="000.0000 fUSD per fETH">
+                                {{ perPrice }}
+                            </f-placeholder>
+                        </div>
+                        <div class="swap-price">
+                            <button class="btn light same-size round" @click="swapPerPrice">
+                                <icon data="@/assets/svg/exchange-alt.svg" />
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="funiswap-swap__exchange-price">
-                    <div class="defi-label">Slippage Tolerance</div>
-                    <div class="value">{{ slippageTolerance * 100 }}%</div>
+                    <div class="funiswap-swap__exchange-price__row">
+                        <div class="defi-label">Slippage Tolerance</div>
+                        <div class="value">{{ slippageTolerance * 100 }}%</div>
+                    </div>
                 </div>
             </template>
 
@@ -197,11 +200,13 @@ import FInfo from '@/components/core/FInfo/FInfo.vue';
 import Web3 from 'web3';
 import { debounce, defer, getUniqueId } from '../../utils';
 import { pollingMixin } from '@/mixins/polling.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'FUniswapSwap',
 
     components: {
+        FPlaceholder,
         FInfo,
         FCard,
         FTokenValue,
@@ -229,6 +234,9 @@ export default {
             fromTokenPrice: 0,
             minimumReceived: 0,
             maximumSold: 0,
+            // perPrice: 0,
+            /** Per price direction. true - from -> to, false - to -> from */
+            perPriceDirF2T: true,
             submitBtnDisabled: true,
             fromValueLoading: false,
             toValueLoading: false,
@@ -319,19 +327,21 @@ export default {
         showPriceInfo() {
             return this.toToken.address && this.toValue_ > 0;
         },
-    },
 
-    /*
-    asyncComputed: {
-        async priceImpact() {
-            const tokenPrice = await this.$fWallet.getTokenPrice('CZK');
+        perPrice() {
+            const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
+            const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
 
-            console.log({ tokenPrice });
+            if (!fromToken.address || !toToken.address) {
+                return '';
+            }
 
-            return '0%';
+            const perPrice = this.perPriceDirF2T ? this.fromTokenPrice : this.toTokenPrice;
+            const { $defi } = this;
+
+            return `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
         },
     },
-*/
 
     watch: {
         fromValue(_value, _oldValue) {
@@ -654,8 +664,6 @@ export default {
             const toTokenTotal = this.$defi.totalTokenLiquidity(this.toToken, pair);
             const tokenPrices = [toTokenTotal / fromTokenTotal, fromTokenTotal / toTokenTotal];
 
-            console.log(tokenPrices);
-
             if (this.showFromEstimated) {
                 value = tokenPrices[1] / tokenPrices[0];
                 priceImpact = (this.fromValue_ / (this.toValue_ * value)) * 100;
@@ -707,6 +715,10 @@ export default {
 
             // this.$refs.submitBut.innerText = submitLabel;
             // this.$refs.submitBut.disabled = submitBtnDisabled;
+        },
+
+        swapPerPrice() {
+            this.perPriceDirF2T = !this.perPriceDirF2T;
         },
 
         onMaxAmountClick() {
