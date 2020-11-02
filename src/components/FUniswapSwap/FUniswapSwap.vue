@@ -794,6 +794,8 @@ export default {
                 slippageTolerance: this.slippageTolerance,
                 steps: 2,
                 step: 1,
+                minimumReceived: this.minimumReceived,
+                maximumSold: this.maximumSold,
                 max: this.maxFromInputValue === this.fromValue,
             };
 
