@@ -24,11 +24,10 @@
                         <input
                             :id="`text-input-${id}`"
                             ref="fromInput"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
                             placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxFromInputValue"
                             class="text-input no-style"
                             @input="onFromInput"
                             @keydown="onInputKeydown"
@@ -75,11 +74,10 @@
                         <input
                             :id="`text-input-${id}`"
                             ref="toInput"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
                             placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxFromInputValue"
                             class="text-input no-style"
                             @input="onToInput"
                             @keydown="onInputKeydown"
@@ -170,7 +168,7 @@
                     </div>
                     <div class="col align-right">
                         <f-token-value
-                            :value="fromValue * liquidityProviderFee"
+                            :value="fromValue_ * liquidityProviderFee"
                             :token="fromToken"
                             :add-decimals="addDeciamals"
                         />
