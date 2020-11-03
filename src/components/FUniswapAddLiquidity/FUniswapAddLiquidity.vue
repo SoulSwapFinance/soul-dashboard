@@ -26,7 +26,6 @@
                             autocomplete="off"
                             placeholder="0"
                             class="text-input no-style"
-                            @change="onFromInputChange"
                             @keydown="onInputKeydown"
                         />
                     </span>
@@ -63,7 +62,7 @@
                 <div class="funiswap__token__body">
                     <span>
                         <input
-                            :id="`text-input-${id}`"
+                            :id="`text-input-${id}-2`"
                             ref="toInput"
                             v-model="toValue"
                             type="text"
@@ -71,7 +70,6 @@
                             autocomplete="off"
                             placeholder="0"
                             class="text-input no-style"
-                            @change="onToInputChange"
                             @keydown="onInputKeydown"
                         />
                     </span>
@@ -248,8 +246,8 @@ export default {
             const pairToken = this.getPairTokenByAddress(this.fromToken.address);
             let share = 0;
 
-            if (dPair.pairAddress && dPair.shareOf) {
-                share = parseInt(dPair.shareOf, 16) / parseInt(dPair.totalSupply, 16);
+            if (dPair.pairAddress) {
+                share = dPair.shareOf ? parseInt(dPair.shareOf, 16) / parseInt(dPair.totalSupply, 16) : 0;
 
                 if (pairToken && this.fromValue_ > 0) {
                     share += this.fromValue_ / this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken);
@@ -673,42 +671,6 @@ export default {
                 this.toToken = _token;
 
                 // this.resetInputValues();
-            }
-        },
-
-        /**
-         * @param {InputEvent} _event
-         */
-        onFromInputChange(_event) {
-            const cValue = this.correctFromInputValue(_event.target.value);
-            const toValue = this.convertFrom2To(cValue);
-
-            if (toValue > this.toTokenBalance) {
-                this.toValue = this.toTokenBalance;
-            } else {
-                this.fromValue = cValue;
-
-                defer(() => {
-                    this.setFromInputValue(this.fromValue_);
-                });
-            }
-        },
-
-        /**
-         * @param {InputEvent} _event
-         */
-        onToInputChange(_event) {
-            const cValue = this.correctToInputValue(_event.target.value);
-            const fromValue = this.convertTo2From(cValue);
-
-            if (fromValue > this.fromTokenBalance) {
-                this.fromValue = this.fromTokenBalance;
-            } else {
-                this.toValue = cValue;
-
-                defer(() => {
-                    this.setToInputValue(this.toValue_);
-                });
             }
         },
 

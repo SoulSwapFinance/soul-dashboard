@@ -963,42 +963,64 @@ export class DeFi {
      * @return {Promise<[]|undefined>}
      */
     async fetchUniswapPairs(_address, _pairAddress = '', _filterPair = []) {
+        let query = gql`
+            query GetUniswapPairs {
+                defiUniswapPairs {
+                    pairAddress
+                    tokens {
+                        address
+                        name
+                        symbol
+                    }
+                    reservesTimeStamp
+                    reserves
+                    cumulativePrices
+                    totalSupply
+                }
+            }
+        `;
+
+        if (_address) {
+            query = gql`
+                query GetUniswapPairs($user: Address!, $owner: Address!) {
+                    defiUniswapPairs {
+                        pairAddress
+                        tokens {
+                            address
+                            name
+                            symbol
+                            balanceOf(owner: $owner)
+                        }
+                        reservesTimeStamp
+                        reserves
+                        cumulativePrices
+                        totalSupply
+                        shareOf(user: $user)
+                    }
+                }
+            `;
+        } else if (_pairAddress) {
+            query = gql`
+                query GetUniswapPairs($owner: Address!) {
+                    defiUniswapPairs {
+                        pairAddress
+                        tokens {
+                            address
+                            name
+                            symbol
+                            balanceOf(owner: $owner)
+                        }
+                        reservesTimeStamp
+                        reserves
+                        cumulativePrices
+                        totalSupply
+                    }
+                }
+            `;
+        }
+
         const data = await this.apolloClient.query({
-            query: _address
-                ? gql`
-                      query GetUniswapPairs($user: Address!, $owner: Address!) {
-                          defiUniswapPairs {
-                              pairAddress
-                              tokens {
-                                  address
-                                  name
-                                  symbol
-                                  balanceOf(owner: $owner)
-                              }
-                              reservesTimeStamp
-                              reserves
-                              cumulativePrices
-                              totalSupply
-                              shareOf(user: $user)
-                          }
-                      }
-                  `
-                : gql`
-                      query GetUniswapPairs {
-                          defiUniswapPairs {
-                              pairAddress
-                              tokens {
-                                  address
-                                  name
-                                  symbol
-                              }
-                              reservesTimeStamp
-                              reserves
-                              cumulativePrices
-                              totalSupply
-                          }
-                      }
-                  `,
+            query,
             variables: {
                 user: _address,
                 owner: _pairAddress || _address,

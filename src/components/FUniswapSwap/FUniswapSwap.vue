@@ -72,7 +72,7 @@
                     <div class="funiswap__token__sign">+</div>
                     <span>
                         <input
-                            :id="`text-input-${id}`"
+                            :id="`text-input-${id}-2`"
                             ref="toInput"
                             type="text"
                             inputmode="decimal"
