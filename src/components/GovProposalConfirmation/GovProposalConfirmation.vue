@@ -59,6 +59,8 @@ import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import { toKebabCase } from '@/utils';
+import governanceUtils from 'fantom-ledgerjs/src/governance-utils.js';
+import Web3 from 'web3';
 
 export default {
     name: 'GovProposalConfirmation',
@@ -161,13 +163,35 @@ export default {
             }, 3000);
         }
 
-        console.log('eee', this.d_validator);
-
         this.setTx();
     },
 
     methods: {
-        async setTx() {},
+        async setTx() {
+            const web3 = new Web3();
+            const { params } = this;
+
+            console.log(
+                'tx params:',
+                params.governanceId,
+                this.d_validator.stakerAddress || this.currentAccount.address,
+                params.proposalId,
+                params.votes
+            );
+
+            this.tx = await this.$fWallet.getDefiTransactionToSign(
+                governanceUtils.governanceVote(
+                    web3,
+                    params.governanceId,
+                    this.d_validator.stakerAddress || this.currentAccount.address,
+                    params.proposalId,
+                    params.votes
+                ),
+                this.currentAccount.address,
+                '0x4C4B40'
+                // GAS_LIMITS.uniswap
+            );
+        },
 
         /**
          * @param {number} _index Option index

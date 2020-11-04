@@ -146,7 +146,6 @@ export class Governance {
      * @return {Promise<Object>}
      */
     async fetchProposal(_govAddress, _accountAddress, _proposalId) {
-        console.log({ _govAddress, _accountAddress, _proposalId });
         const data = await this.apolloClient.query({
             query: gql`
                 query GovernanceContract($address: Address!, $from: Address!, $id: BigInt!) {
@@ -172,10 +171,6 @@ export class Governance {
                             votingStarts
                             votingMayEnd
                             votingMustEnd
-                            vote(from: $from) {
-                                weight
-                                choices
-                            }
                         }
                     }
                 }
@@ -189,6 +184,43 @@ export class Governance {
         });
 
         return data.data.govContract || {};
+    }
+
+    /**
+     * @param {string} _govAddress
+     * @param {string} _accountAddress
+     * @param {string} _delegatedTo
+     * @param {string} _proposalId
+     * @return {Promise<Object>}
+     */
+    async fetchProposalVote(_govAddress, _accountAddress, _delegatedTo, _proposalId) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GovernanceContract($address: Address!, $from: Address!, $delegatedTo: Address, $id: BigInt!) {
+                    govContract(address: $address) {
+                        proposal(id: $id) {
+                            contract
+                            vote(from: $from, delegatedTo: $delegatedTo) {
+                                weight
+                                choices
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _govAddress,
+                from: _accountAddress,
+                delegatedTo: _delegatedTo,
+                id: _proposalId,
+            },
+            fetchPolicy: 'network-only',
+        });
+        const govContract = data.data.govContract || {};
+
+        return govContract.proposal && govContract.proposal.vote
+            ? { vote: govContract.proposal.vote, delegatedTo: _delegatedTo }
+            : {};
     }
 
     /**

@@ -13,8 +13,13 @@
                 <pulse-loader color="#1969ff"></pulse-loader>
             </div>
             <template v-else>
+                <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-600">
+                    <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                    <b>{{ winner }}</b>
+                </f-card>
+
                 <div v-for="(item, index) in items" :key="item.id" class="gov-proposal-detail__item">
-                    <f-form v-if="!votingResolved" center-form @f-form-submit="onFormSubmit">
+                    <f-form v-if="!votingResolved && !item.vote" center-form @f-form-submit="onFormSubmit">
                         <fieldset>
                             <legend class="h2 perex not-visible">{{ d_proposal.description }}</legend>
 
@@ -54,9 +59,13 @@
                         </fieldset>
                     </f-form>
                     <div v-else class="cont-600">
-                        <div class="gov-proposal-detail__winner">
-                            <h3 class="gov-proposal-detail__sub-title">Winner</h3>
-                            <b>{{ winner }}</b>
+                        <div v-if="item.validator" class="gov-proposal-detail__validator-info">
+                            <h3>
+                                Validator: {{ item.validator.stakerInfo.name }}
+                                <span v-if="item.validator.stakerInfo._unknown" class="perex">
+                                    ({{ item.validator.stakerAddress }})
+                                </span>
+                            </h3>
                         </div>
 
                         <div class="gov-proposal-detail__voter-votes">
@@ -70,7 +79,7 @@
                                         <div class="row align-items-center">
                                             <div class="col col-8 gov-proposal-detail__option">{{ optionItem }}</div>
                                             <div class="col col-4 gov-proposal-detail__vote">
-                                                {{ getVote(optionIdx) }}
+                                                {{ formatVote(optionIdx, item.vote) }}
                                             </div>
                                         </div>
                                     </li>
@@ -124,11 +133,12 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { cloneObject, getUniqueId } from '@/utils';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import gql from 'graphql-tag';
+import FCard from '@/components/core/FCard/FCard.vue';
 
 export default {
     name: 'GovProposalDetail',
 
-    components: { FMessage, FForm, FSlider, FBackButton, PulseLoader },
+    components: { FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
     mixins: [viewHelpersMixin, eventBusMixin],
 
@@ -269,9 +279,15 @@ export default {
 
             items.forEach((_item) => {
                 _item.id = getUniqueId();
+                _item.vote = null;
             });
 
             this.items = items;
+
+            this.setVotes();
+
+            console.log('items', items);
+            console.log('proposal', this.d_proposal);
         },
 
         async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
@@ -296,6 +312,58 @@ export default {
             } catch (_error) {
                 this.loading = false;
                 this.proposalError = _error;
+            }
+        },
+
+        async getVotesPromise(_delegatedTo = '', _govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
+            if (!_govAddress || !_delegatedTo || !_proposalId) {
+                return;
+            }
+
+            return this.$governance.fetchProposalVote(
+                _govAddress,
+                this.currentAccount.address,
+                _delegatedTo,
+                _proposalId
+            );
+        },
+
+        async setVotes() {
+            const { items } = this;
+            const delegators = [];
+            const promises = [];
+
+            items.forEach((_item) => {
+                const { validator } = _item;
+
+                if (validator && validator.stakerAddress && !_item.vote) {
+                    delegators.push(validator.stakerAddress);
+                }
+            });
+
+            delegators.forEach((_delegatorAddress) => {
+                promises.push(this.getVotesPromise(_delegatorAddress));
+            });
+
+            if (promises.length > 0) {
+                try {
+                    const data = await Promise.all(promises);
+                    const { votingResolved } = this;
+
+                    data.forEach((_vote) => {
+                        const item = items.find(
+                            (_item) => _item.validator && _item.validator.stakerAddress === _vote.delegatedTo
+                        );
+
+                        if (item) {
+                            if (votingResolved || (_vote.vote.choices && _vote.vote.choices.length > 0)) {
+                                item.vote = cloneObject(_vote.vote);
+                            }
+                        }
+                    });
+                } catch (_error) {
+                    this.proposalError = _error;
+                }
             }
         },
 
@@ -345,13 +413,12 @@ export default {
         /**
          * @param {number} _index Option index
          */
-        getVote(_index) {
+        formatVote(_index, _vote) {
             const { $fWallet } = this;
-            const { vote } = this.d_proposal;
             const { opinionScales } = this.d_proposal;
 
-            if (opinionScales && vote && vote.choices && vote.choices[_index] !== undefined) {
-                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(vote.choices[_index])]);
+            if (opinionScales && _vote && _vote.choices && _vote.choices[_index] !== undefined) {
+                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(_vote.choices[_index])]);
                 // return this.$fWallet.fromWei(vote.choices[_index]);
             } else {
                 return '-';
@@ -399,11 +466,11 @@ export default {
                         params: {
                             proposalId: this.d_proposalId,
                             governanceId: this.d_governanceId,
-                            validator: validator ? cloneObject(validator.validator) : {},
+                            validator: validator && validator.validator ? cloneObject(validator.validator) : {},
                             proposal: cloneObject(this.d_proposal),
                             // votes: optionIdxs.map((_idx) => opinionScales[_idx]),
                             // votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
-                            votes: optionIdxs.map((_idx) => _idx.toString(16)),
+                            votes: optionIdxs.map((_idx) => `0x${_idx.toString(16)}`),
                         },
                     });
                 }
