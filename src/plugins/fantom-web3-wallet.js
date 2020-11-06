@@ -3,6 +3,7 @@ import fileDownload from 'js-file-download';
 import gql from 'graphql-tag';
 import web3utils from 'web3-utils';
 import Accounts from 'web3-eth-accounts';
+import { fFetch } from '@/plugins/ffetch.js';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -173,12 +174,18 @@ export class FantomWeb3Wallet {
      */
     async getBalance(_address, _withDelegations, _justBalance) {
         let query = gql`
-            query AccountByAddress($address: Address!) {
+            query AccountByAddress($address: Address!, $cursor: Cursor) {
                 account(address: $address) {
                     address
                     balance
                     totalValue
-                    delegations {
+                    delegations(cursor: $cursor) {
+                        pageInfo {
+                            first
+                            last
+                            hasNext
+                            hasPrevious
+                        }
                         totalCount
                         edges {
                             delegation {
@@ -195,11 +202,17 @@ export class FantomWeb3Wallet {
 
         if (_justBalance) {
             query = gql`
-                query AccountByAddress($address: Address!) {
+                query AccountByAddress($address: Address!, $cursor: Cursor) {
                     account(address: $address) {
                         address
                         balance
-                        delegations {
+                        delegations(cursor: $cursor) {
+                            pageInfo {
+                                first
+                                last
+                                hasNext
+                                hasPrevious
+                            }
                             totalCount
                             edges {
                                 delegation {
@@ -215,7 +228,7 @@ export class FantomWeb3Wallet {
             `;
         } else if (_withDelegations) {
             query = gql`
-                query AccountByAddress($address: Address!) {
+                query AccountByAddress($address: Address!, $cursor: Cursor) {
                     account(address: $address) {
                         address
                         balance
@@ -227,7 +240,13 @@ export class FantomWeb3Wallet {
                             createdTime
                             isActive
                         }
-                        delegations {
+                        delegations(cursor: $cursor) {
+                            pageInfo {
+                                first
+                                last
+                                hasNext
+                                hasPrevious
+                            }
                             totalCount
                             edges {
                                 delegation {
@@ -285,13 +304,27 @@ export class FantomWeb3Wallet {
             `;
         }
 
+        /*
         const data = await this.apolloClient.query({
             query,
             variables: {
                 address: _address,
+                cursor: null,
             },
             fetchPolicy: 'network-only',
         });
+        */
+
+        const data = await fFetch.fetchAllGQLQuery(
+            {
+                query,
+                variables: {
+                    address: _address,
+                    cursor: null,
+                },
+            },
+            'account.delegations'
+        );
 
         return data.data.account;
     }
