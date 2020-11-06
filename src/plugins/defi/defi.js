@@ -91,6 +91,7 @@ export class DeFi {
         contracts.fMintReward = _settings.fMintRewardDistribution;
         contracts.uniswapCoreFactory = _settings.uniswapCoreFactory;
         contracts.uniswapRouter = _settings.uniswapRouter;
+        contracts.StakeTokenizerContract = _settings.StakeTokenizerContract;
     }
 
     /**
@@ -670,6 +671,7 @@ export class DeFi {
                         fMintContract
                         fMintRewardDistribution
                         decimals
+                        StakeTokenizerContract
                     }
                 }
             `,
