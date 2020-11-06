@@ -9,6 +9,7 @@
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
+            :tmp-pwd-code="tmpPwdCode"
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
@@ -60,6 +61,7 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -101,6 +103,7 @@ export default {
         return {
             tx: {},
             gasLimit: GAS_LIMITS.default,
+            tmpPwdCode: '',
         };
     },
 
@@ -191,6 +194,8 @@ export default {
                 return;
             }
 
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = this.$defi.contracts.fMint;
             }
@@ -276,7 +281,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -308,7 +313,7 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.compName,
-                        continueToParams: { token: { ...this.token } },
+                        continueToParams: { token: { ...this.token }, tmpPwdCode: this.tmpPwdCode },
                     },
                 });
             }

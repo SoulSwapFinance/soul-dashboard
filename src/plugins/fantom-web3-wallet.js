@@ -48,6 +48,7 @@ const pwdO = {
     pwd: '',
     timeout: 0,
     count: 0,
+    code: '',
 };
 
 /**
@@ -61,22 +62,30 @@ class PWDStorage {
     /**
      * @param {string} _pwd
      * @param {number} [_count] Count of usage of the password
+     * @param {string} [_code]
      */
-    set(_pwd = '', _count = 1) {
+    set(_pwd = '', _count = 1, _code = '') {
         pwdO.pwd = _pwd;
         pwdO.count = _count;
+        pwdO.code = _code;
     }
 
     /**
+     * @param {string} _code
      * @return {boolean}
      */
-    isSet() {
+    isSet(_code = '') {
+        if (pwdO.code && pwdO.code !== _code) {
+            this.clear();
+        }
+
         return !!pwdO.pwd;
     }
 
     clear() {
         pwdO.pwd = '';
         pwdO.count = 0;
+        pwdO.code = '';
     }
 
     /**
@@ -654,11 +663,11 @@ export class FantomWeb3Wallet {
         };
     }
 
-    async signTransaction(_tx, _keystore, _password) {
+    async signTransaction(_tx, _keystore, _password, _tmpPwdCode) {
         const { pwdStorage } = this;
         let password = _password;
 
-        if (pwdStorage.isSet()) {
+        if (pwdStorage.isSet(_tmpPwdCode)) {
             if (!pwdStorage.isTimeoutSet()) {
                 if (pwdO.count-- > 0) {
                     password = pwdO.pwd;
@@ -672,7 +681,7 @@ export class FantomWeb3Wallet {
 
         password = '';
 
-        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet() && pwdO.count === 0) {
+        if (pwdStorage.isSet(_tmpPwdCode) && !pwdStorage.isTimeoutSet() && pwdO.count === 0) {
             pwdStorage.clear();
         }
 

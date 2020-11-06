@@ -11,6 +11,7 @@
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
                 :waiting="waiting"
+                :tmp-pwd-code="tmpPwdCode"
                 @f-form-submit="onFFormSubmit"
             />
         </f-card>
@@ -124,6 +125,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** */
+        tmpPwdCode: {
+            type: String,
+            default: '',
+        },
         /** Count of usage of temporary password */
         tmpPwdCount: {
             type: Number,
@@ -210,18 +216,23 @@ export default {
                 this.tx.nonce = `0x${this.tx.nonce.toString(16)}`;
                 this.tx.chainId = appConfig.chainId;
 
-                console.log('tx', this.tx);
-                console.log(currentAccount);
+                // console.log('tx', this.tx);
+                // console.log(currentAccount);
 
                 if (currentAccount.keystore) {
                     delete this.tx.gasLimit;
 
-                    if (pwd || fWallet.pwdStorage.isSet()) {
+                    if (pwd || fWallet.pwdStorage.isSet(this.tmpPwdCode)) {
                         try {
-                            rawTx = await fWallet.signTransaction(this.tx, currentAccount.keystore, pwd);
+                            rawTx = await fWallet.signTransaction(
+                                this.tx,
+                                currentAccount.keystore,
+                                pwd,
+                                this.tmpPwdCode
+                            );
 
                             if (this.setTmpPwd && this.tmpPwdCount > 0) {
-                                fWallet.pwdStorage.set(pwd, this.tmpPwdCount);
+                                fWallet.pwdStorage.set(pwd, this.tmpPwdCount, this.tmpPwdCode);
                             }
                         } catch (_error) {
                             console.error(_error);

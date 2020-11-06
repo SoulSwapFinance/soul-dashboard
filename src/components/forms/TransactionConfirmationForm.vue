@@ -6,7 +6,7 @@
 
                 <div class="form-body">
                     <f-password-field
-                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet()"
+                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet(tmpPwdCode)"
                         :label="passwordLabel"
                         field-size="large"
                         autocomplete="off"
@@ -89,6 +89,11 @@ export default {
         waiting: {
             type: Boolean,
             default: false,
+        },
+        /** */
+        tmpPwdCode: {
+            type: String,
+            default: '',
         },
     },
 

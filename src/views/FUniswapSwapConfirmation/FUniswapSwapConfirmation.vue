@@ -5,6 +5,7 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
@@ -76,6 +77,7 @@ import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import Web3 from 'web3';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapSwapConfirmation',
@@ -100,6 +102,7 @@ export default {
             minimumReceived: 0,
             maximumSold: 0,
             allowValue: 0,
+            tmpPwdCode: '',
         };
     },
 
@@ -195,6 +198,8 @@ export default {
                 return;
             }
 
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = this.$defi.contracts.fMint;
             }
@@ -289,7 +294,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -327,6 +332,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });

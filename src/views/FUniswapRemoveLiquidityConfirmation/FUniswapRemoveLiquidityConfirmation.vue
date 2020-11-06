@@ -5,6 +5,7 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
             :gas-limit="gasLimit"
@@ -68,6 +69,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import Web3 from 'web3';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapRemoveLiquidityConfirmation',
@@ -90,6 +92,7 @@ export default {
             tx: {},
             gasLimit: GAS_LIMITS.default,
             liquidity: 0,
+            tmpPwdCode: '',
         };
     },
 
@@ -185,6 +188,8 @@ export default {
                 return;
             }
 
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = $defi.contracts.uniswapRouter;
             }
@@ -247,7 +252,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -285,6 +290,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });

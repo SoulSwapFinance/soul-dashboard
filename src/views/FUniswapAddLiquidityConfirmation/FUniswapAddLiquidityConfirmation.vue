@@ -5,6 +5,7 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :tmp-pwd-count="params.step === 1 ? 2 : 0"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
@@ -71,6 +72,7 @@ import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import Web3 from 'web3';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapAddLiquidityConfirmation',
@@ -92,6 +94,7 @@ export default {
             priceDecimals: 6,
             tx: {},
             gasLimit: GAS_LIMITS.default,
+            tmpPwdCode: '',
         };
     },
 
@@ -186,6 +189,8 @@ export default {
                 return;
             }
 
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = $defi.contracts.uniswapRouter;
             }
@@ -275,14 +280,14 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.confirmationCompName}-transaction-success-message2`;
                 params.continueTo = `${this.confirmationCompName}-confirmation3`;
-                params.continueToParams = { ...this.params, step: 3 };
+                params.continueToParams = { ...this.params, step: 3, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -291,6 +296,7 @@ export default {
                 params.continueToParams = {
                     fromToken: { ...this.params.fromToken },
                     toToken: { ...this.params.toToken },
+                    tmpPwdCode: this.tmpPwdCode,
                 };
             }
 
@@ -320,6 +326,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });
