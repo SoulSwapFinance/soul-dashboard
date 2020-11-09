@@ -171,14 +171,6 @@ export default {
             const web3 = new Web3();
             const { params } = this;
 
-            console.log(
-                'tx params:',
-                params.governanceId,
-                this.d_validator.stakerAddress || this.currentAccount.address,
-                params.proposalId,
-                params.votes
-            );
-
             this.tx = await this.$fWallet.getDefiTransactionToSign(
                 governanceUtils.governanceVote(
                     web3,
@@ -188,8 +180,7 @@ export default {
                     params.votes
                 ),
                 this.currentAccount.address,
-                '0x4C4B40'
-                // GAS_LIMITS.uniswap
+                GAS_LIMITS.governance
             );
         },
 
@@ -202,7 +193,6 @@ export default {
             const { opinionScales } = this.d_proposal;
 
             if (opinionScales && d_votes && d_votes[_index] !== undefined) {
-                console.log(d_votes[_index]);
                 return parseInt(opinionScales[parseInt(d_votes[_index], 16)], 16);
                 // return $fWallet.fromWei(opinionScales[$fWallet.fromWei(d_votes[_index])]);
                 // return this.$fWallet.fromWei(d_votes[_index]);
@@ -216,6 +206,7 @@ export default {
                 tx: _data.data.sendTransaction.hash,
                 title: 'Success',
                 continueTo: this.getBackButtonRoute(this.compName),
+                continueToParams: this.$route.params,
             };
 
             this.$router.replace({

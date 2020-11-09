@@ -26,6 +26,7 @@ export const GAS_LIMITS = {
     ballot: '0x3D0900',
     defi: '0xF4240', // 1 000 000
     uniswap: '0xF4240', // 1 000 000
+    governance: '0xF4240', // 1 000 000
 };
 
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs

@@ -50,6 +50,19 @@
                                     </li>
                                 </ul>
 
+                                <div v-if="!canVote" class="align-center">
+                                    <f-message type="warning" with-icon>
+                                        You can't vote, you have no delegations.
+                                    </f-message>
+                                    <br />
+                                </div>
+                                <div v-else-if="!votingStarts">
+                                    <f-message type="warning" with-icon>
+                                        You can't vote, voting doesn't start yet.
+                                    </f-message>
+                                    <br />
+                                </div>
+
                                 <div class="align-center form-buttons">
                                     <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
                                 </div>
@@ -204,13 +217,27 @@ export default {
             return opinionScales ? opinionScales.map((_item) => parseInt(_item, 16)) : [];
         },
 
+        canVote() {
+            return this.governance.canVote;
+        },
+
+        votingStarts() {
+            const votingStarts = this.d_proposal.votingStarts || '';
+
+            return votingStarts && prepareTimestamp(votingStarts) <= this.now();
+        },
+
         votingDisabled() {
+            return !this.votingStarts || !this.canVote || this.votingResolved;
+
+            /*
             const votingStarts = this.d_proposal.votingStarts || '';
 
             return (
-                (votingStarts ? prepareTimestamp(votingStarts) > this.now() || !this.governance.canVote : true) ||
+                (votingStarts ? prepareTimestamp(votingStarts) > this.now() || !this.canVote : true) ||
                 this.votingResolved
             );
+*/
         },
 
         votingResolved() {
@@ -286,8 +313,8 @@ export default {
 
             this.setVotes();
 
-            console.log('items', items);
-            console.log('proposal', this.d_proposal);
+            // console.log('items', items);
+            // console.log('proposal', this.d_proposal);
         },
 
         async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
@@ -414,12 +441,11 @@ export default {
          * @param {number} _index Option index
          */
         formatVote(_index, _vote) {
-            const { $fWallet } = this;
             const { opinionScales } = this.d_proposal;
 
             if (opinionScales && _vote && _vote.choices && _vote.choices[_index] !== undefined) {
-                return $fWallet.fromWei(opinionScales[$fWallet.fromWei(_vote.choices[_index])]);
-                // return this.$fWallet.fromWei(vote.choices[_index]);
+                return parseInt(opinionScales[parseInt(_vote.choices[_index], 16)], 16);
+                // return parseInt(vote.choices[_index], 16);
             } else {
                 return '-';
             }
