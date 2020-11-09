@@ -412,12 +412,9 @@ export default {
         },
 
         fSliderMax() {
-            return this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
-            /*
-            return this.repay && this.availableBalance > 0
-                ? Math.min(this.maxDebt, this.availableBalance)
-                : this.maxDebt;
-            */
+            const maxValue = this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
+
+            return isNaN(maxValue) || maxValue < 0 ? 0 : maxValue;
         },
 
         inputValue() {
