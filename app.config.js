@@ -54,10 +54,9 @@ const appConfig = {
         // use Binance chain
         useBNB: true,
     },
-    // tmp
-    tmpWFTM: true,
+    disableFLend: true,
     //
-    useTestnet: true,
+    useTestnet: false,
     // testnet config
     testnet: {
         // list of providers. if one of them is unavailable, another is randomly picked

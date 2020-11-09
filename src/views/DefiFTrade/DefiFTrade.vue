@@ -339,31 +339,29 @@ export default {
 
             this.fMintAccount = result[0];
 
-            if ($defi.tmpWFTM) {
-                const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
+            const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
 
-                const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
-                const ftmToken = {
-                    address: '0xfc00face00000000000000000000000000000000',
-                    symbol: 'FTM',
-                    name: 'Fantom',
-                    isActive: true,
-                    decimals: 18,
-                    price: wFTM[0].price,
-                    priceDecimals: wFTM[0].priceDecimals,
-                    availableBalance: account.balance,
-                    allowance: '0x0',
-                    logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
-                };
-                this.$defi._setTokenDecimals(ftmToken);
+            const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
+            const ftmToken = {
+                address: '0xfc00face00000000000000000000000000000000',
+                symbol: 'FTM',
+                name: 'Fantom',
+                isActive: true,
+                decimals: 18,
+                price: wFTM[0].price,
+                priceDecimals: wFTM[0].priceDecimals,
+                availableBalance: account.balance,
+                allowance: '0x0',
+                logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
+            };
+            this.$defi._setTokenDecimals(ftmToken);
 
-                // add FTM
-                result[1].unshift(ftmToken);
+            // add FTM
+            result[1].unshift(ftmToken);
 
-                this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
-            } else {
-                this.tokens = result[1].filter($defi.canTokenBeTraded);
-            }
+            this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
+
+            // this.tokens = result[1].filter($defi.canTokenBeTraded);
 
             if (params.fromToken && params.toToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
