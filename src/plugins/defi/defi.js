@@ -53,6 +53,7 @@ export class DeFi {
             fMintReward: '',
             uniswapCoreFactory: '',
             uniswapRouter: '',
+            StakeTokenizerContract: '',
         };
     }
 
@@ -663,26 +664,10 @@ export class DeFi {
                         fMintContract
                         fMintRewardDistribution
                         decimals
-                    }
-                }
-            `,
-            /*
-            query: gql`
-                query DefiSettings {
-                    defiConfiguration {
-                        mintFee4
-                        rewardCollateralRatio4
-                        minCollateralRatio4
-                        uniswapCoreFactory
-                        uniswapRouter
-                        fMintContract
-                        fMintRewardDistribution
-                        decimals
                         StakeTokenizerContract
                     }
                 }
             `,
-*/
             fetchPolicy: 'network-only',
         });
 

@@ -175,6 +175,22 @@
                                 >
                                     Lock Delegation
                                 </button>
+                                <button
+                                    v-show="canMintSFTM"
+                                    class="btn large"
+                                    :disabled="!canMintSFTM"
+                                    @click="mintSFTM()"
+                                >
+                                    Mint sFTM
+                                </button>
+                                <button
+                                    v-show="canRepaySFTM"
+                                    class="btn large"
+                                    :disabled="!canRepaySFTM"
+                                    @click="repaySFTM()"
+                                >
+                                    Mint sFTM
+                                </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
                                     You need to claim all pending rewards before
@@ -214,7 +230,7 @@
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { toFTM, WeiToFtm } from '../../utils/transactions.js';
-import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
+import { formatHexToInt, timestampToDate, formatDate, prepareTimestamp } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
@@ -313,7 +329,24 @@ export default {
         },
 
         canLockDelegation() {
-            return this.canUndelegate && this.lockedUntil && this.lockedUntil === '0x0';
+            return (
+                this.canUndelegate &&
+                this.lockedUntil &&
+                (this.lockedUntil === '0x0' || prepareTimestamp(this.lockedUntil) < this.now())
+            );
+        },
+
+        canMintSFTM() {
+            return (
+                this.canUndelegate &&
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                prepareTimestamp(this.lockedUntil) > this.now()
+            );
+        },
+
+        canRepaySFTM() {
+            return this.canUndelegate && this.lockedUntil && this.lockedUntil !== '0x0' && false;
         },
 
         /**
@@ -525,10 +558,37 @@ export default {
             });
         },
 
+        mintSFTM() {
+            if (!this.canMintSFTM) {
+                return;
+            }
+
+            // const stakerInfo = await this.stakerInfo;
+
+            this.$emit('change-component', {
+                to: 'defi-mint-s-f-t-m-confirmation',
+                from: 'staking-info',
+                data: {
+                    stakerId: this.stakerId,
+                    // stakerAddress: stakerInfo ? stakerInfo.stakerAddress : '',
+                },
+            });
+        },
+
+        repaySFTM() {
+            if (!this.canRepaySFTM) {
+                return;
+            }
+        },
+
         increaseDelegation() {
             if (this.canIncreaseDelegation) {
                 this.stake(true);
             }
+        },
+
+        now() {
+            return new Date().getTime();
         },
 
         async claimRewards() {
