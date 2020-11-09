@@ -161,7 +161,6 @@ export default {
 
             try {
                 const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
-                // const data = this.getTmpData(_cursor, _count);
                 const edges = data.edges;
 
                 if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
@@ -197,152 +196,6 @@ export default {
             }
         },
 
-        getTmpData() {
-            const { $fWallet } = this;
-            const data = {
-                edges: [],
-                totalCount: '0x0',
-                pageInfo: {
-                    hasNext: false,
-                },
-            };
-            const options = [
-                'Option 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
-                'Option 2',
-                'Option 3',
-            ];
-
-            data.edges.push({
-                proposal: {
-                    name: 'In progress',
-                    contract: '0xb910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F969E20',
-                    votingMayEnd: '0x5FAA8ED0',
-                    votingMustEnd: '0x5FB7BDD0',
-                    options,
-                },
-            });
-
-            data.edges.push({
-                proposal: {
-                    name: 'Not started yet',
-                    contract: '0xc910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F9ABCD0',
-                    votingMayEnd: '0x5FAA8ED0',
-                    votingMustEnd: '0x5FB7BDD0',
-                    options,
-                },
-            });
-
-            data.edges.push({
-                proposal: {
-                    name: 'Resolved, voted',
-                    contract: '0xd910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F71DE50',
-                    votingMayEnd: '0x5F81B050',
-                    votingMustEnd: '0x5F8EDF50',
-                    state: {
-                        isResolved: true,
-                        winnerId: $fWallet.toWei(1),
-                        state: $fWallet.toWei(1),
-                    },
-                    vote: {
-                        weight: $fWallet.toWei(0.2),
-                        // choices: [$fWallet.toWei(2), $fWallet.toWei(3), $fWallet.toWei(5)],
-                        choices: [$fWallet.toWei(1), $fWallet.toWei(2), $fWallet.toWei(4)],
-                    },
-                    options,
-                },
-            });
-
-            data.edges.push({
-                proposal: {
-                    name: 'Resolved, not voted',
-                    contract: '0xe910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F71DE50',
-                    votingMayEnd: '0x5F81B050',
-                    votingMustEnd: '0x5F8EDF50',
-                    state: {
-                        isResolved: true,
-                        winnerId: $fWallet.toWei(0),
-                        state: $fWallet.toWei(1),
-                    },
-                    vote: {
-                        weight: $fWallet.toWei(0),
-                        choices: [],
-                    },
-                    options,
-                },
-            });
-
-            data.edges.push({
-                proposal: {
-                    name: 'Proposal - resolved, canceled',
-                    contract: '0xf910b4c8fd8767bc4e53b2ec324e9e6f3fa5c157',
-                    votingStarts: '0x5F969E20',
-                    votingMayEnd: '0x5F81B050',
-                    votingMustEnd: '0x5F8EDF50',
-                    state: {
-                        isResolved: true,
-                        state: $fWallet.toWei(4),
-                    },
-                    options,
-                },
-            });
-
-            data.totalCount = data.edges.length.toString(16);
-
-            return data;
-        },
-
-        tmpProposalDetail(_proposal) {
-            const { $fWallet } = this;
-            const params = {
-                proposal: {
-                    contract: '???',
-                    name: 'Proposal 1',
-                    id: '0x1',
-                    // tmp
-                    // opinionScales: [0, 20, 30, 40, 50],
-                    opinionScales: [
-                        $fWallet.toWei(0),
-                        $fWallet.toWei(2),
-                        $fWallet.toWei(3),
-                        $fWallet.toWei(4),
-                        $fWallet.toWei(5),
-                    ],
-                    /*
-                    delegationsBy: [
-                        '0x93419fcb5d9dc7989439f0512d4f737421ed48d9',
-                        '0x308da42e39552dbfe82d8013b3ff6f88c6864603',
-                    ],
-*/
-                    // votingStarts: '0x5F996B50',
-                    votingStarts: '0x5F969E20',
-                    votingMayEnd: '0x5FAA8ED0',
-                    votingMustEnd: '0x5FB7BDD0',
-                    state: {
-                        isResolved: false,
-                        state: $fWallet.toWei(0),
-                    },
-                    governanceId: '0xc9838f60b2dbfba3efbf7b042335947f78e8fd6a',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex non officia tempore.',
-                },
-            };
-
-            if (_proposal) {
-                params.proposal = { ...params.proposal, ..._proposal };
-            }
-
-            params.proposalId = params.proposal.id;
-            params.governanceId = params.proposal.governanceId;
-
-            this.$router.push({
-                name: 'gov-proposal-detail',
-                params,
-            });
-        },
-
         /**
          * @param {{proposal: GovernanceProposal}} _item
          */
@@ -355,8 +208,6 @@ export default {
                     governanceId: _item.proposal.governanceId,
                 },
             });
-
-            // this.tmpProposalDetail(_item.proposal);
         },
 
         formatDate,
