@@ -250,7 +250,7 @@ export default {
             const { d_proposal } = this;
 
             if (d_proposal.state && d_proposal.state.isResolved && d_proposal.state.winnerId && d_proposal.options) {
-                return d_proposal.options[this.$fWallet.fromWei(d_proposal.state.winnerId)];
+                return d_proposal.options[parseInt(d_proposal.state.winnerId, 16)];
             }
 
             return '-';

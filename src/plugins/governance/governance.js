@@ -113,6 +113,7 @@ export class Governance {
                                 description
                                 contract
                                 governanceId
+                                options
                                 state {
                                     isResolved
                                     status

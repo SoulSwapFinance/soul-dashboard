@@ -115,7 +115,7 @@ export default {
                             proposal.state.winnerId &&
                             proposal.options
                         ) {
-                            return proposal.options[this.$fWallet.fromWei(proposal.state.winnerId)];
+                            return proposal.options[parseInt(proposal.state.winnerId, 16)];
                         }
 
                         return '-';
