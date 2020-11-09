@@ -24,12 +24,12 @@
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col-8">
                                 {{ formatDate(timestampToDate(item.proposal.votingStarts), true, true) }} <br />
-                                {{ formatDate(timestampToDate(item.proposal.votingMayEnd), true, true) }}
+                                {{ formatDate(timestampToDate(item.proposal.votingMustEnd), true, true) }}
                             </div>
                         </div>
                         <template v-else>
                             {{ formatDate(timestampToDate(item.proposal.votingStarts), true, true) }} <br />
-                            {{ formatDate(timestampToDate(item.proposal.votingMayEnd), true, true) }}
+                            {{ formatDate(timestampToDate(item.proposal.votingMustEnd), true, true) }}
                         </template>
                     </template>
 
