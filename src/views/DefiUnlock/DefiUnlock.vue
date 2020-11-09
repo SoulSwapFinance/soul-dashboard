@@ -2,19 +2,16 @@
     <div class="view-defi-unlock">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Unlock wFTM
+            Unlock {{ $defi.getTokenSymbol(params.token) }}
         </h1>
 
-        <h2 class="perex">
-            Unlock wFTM after you repaid fUSD.
-        </h2>
+        <h2 class="perex">Unlock {{ $defi.getTokenSymbol(params.token) }} after you repaid fUSD.</h2>
 
         <defi-deposit
             :token="params.token"
             withdraw
             lock-unlock-mode
             single-token
-            token-symbol="WFTM"
             on-submit-route="defi-unlock-confirmation"
         />
     </div>

@@ -2,11 +2,11 @@
     <div class="view-defi-lock">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Lock wFTM
+            Lock {{ $defi.getTokenSymbol(params.token) }}
         </h1>
 
         <h2 class="perex">
-            Lock wFTM to increase the collateral ratio and mint fUSD.
+            Lock {{ $defi.getTokenSymbol(params.token) }} to increase the collateral ratio and mint fUSD.
         </h2>
 
         <defi-deposit
@@ -14,7 +14,6 @@
             deposit
             lock-unlock-mode
             single-token
-            token-symbol="WFTM"
             on-submit-route="defi-lock-confirmation"
         />
     </div>

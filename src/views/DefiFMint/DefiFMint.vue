@@ -83,11 +83,14 @@
         <div class="form-buttons">
             <div class="row">
                 <div class="col align-left align-center-md">
-                    <router-link :to="{ name: 'defi-lock' }" class="btn large">
+                    <router-link :to="{ name: 'defi-lock', params: { token: { ...wftmToken } } }" class="btn large">
                         Lock {{ wftmTokenSymbol }}
                     </router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-unlock' }" class="btn large secondary">
+                    <router-link
+                        :to="{ name: 'defi-unlock', params: { token: { ...wftmToken } } }"
+                        class="btn large secondary"
+                    >
                         Unlock {{ wftmTokenSymbol }}
                     </router-link>
                 </div>
