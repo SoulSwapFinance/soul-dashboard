@@ -27,12 +27,14 @@
                     </span>
                 </span>
                 <button v-if="d_step === 1" type="button" class="btn light" @click="onBackBtnClick">Back</button>
-                <button v-else disabled></button>
+                <span v-else></span>
             </h2>
 
             <div class="confirmation-info">
-                <template v-if="d_step === 1">You’re allowing {{ dOutstandingSFTM }} sFTM</template>
-                <template v-else>You’re repaying {{ dOutstandingSFTM }} sFTM</template>
+                <template v-if="d_step === 1"
+                    >You’re allowing {{ parseFloat(dOutstandingSFTM).toFixed(2) }} sFTM</template
+                >
+                <template v-else>You’re repaying {{ parseFloat(dOutstandingSFTM).toFixed(2) }} sFTM</template>
             </div>
 
             <template #window-content>

@@ -200,6 +200,12 @@
                                     You can claim rewards for a maximum of {{ claimMaxEpochs }} epochs at once (use
                                     repeatedly if needed).
                                 </f-message>
+                                <f-message v-if="showRepaySFTMMessage" type="info" with-icon class="align-left">
+                                    Can't repay sFTM, not enough unlocked sFTM
+                                </f-message>
+                                <f-message v-if="showUndelegateMessage" type="info" with-icon class="align-left">
+                                    Can't undelegate, repay sFTM first please
+                                </f-message>
                             </template>
                         </template>
                         <template v-else>
@@ -237,7 +243,6 @@ import FMessage from '../core/FMessage/FMessage.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import gql from 'graphql-tag';
 import { SFC_CLAIM_MAX_EPOCHS } from '@/plugins/fantom-web3-wallet.js';
-import { defer } from '@/utils';
 
 export default {
     name: 'StakingInfo',
@@ -263,6 +268,8 @@ export default {
             lockedUntil: '',
             explorerUrl: appConfig.explorerUrl,
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
+            /** @type {DefiToken} */
+            sftmToken: {},
         };
     },
 
@@ -313,11 +320,12 @@ export default {
             const { accountInfo } = this;
 
             if (!this.isFluidStakingActive) {
-                return accountInfo.delegation
+                return accountInfo && accountInfo.delegation
                     ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                     : false;
             } else {
                 return (
+                    this._delegation &&
                     this._delegation.tokenizerAllowedToWithdraw &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
@@ -327,6 +335,27 @@ export default {
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true)
                 );
+            }
+        },
+
+        showUndelegateMessage() {
+            const { accountInfo } = this;
+
+            if (!this.isFluidStakingActive) {
+                return false;
+            } else {
+                return (
+                    accountInfo &&
+                    accountInfo.pendingRewards &&
+                    accountInfo.pendingRewards === '0x0' &&
+                    accountInfo.stashed === '0x0' &&
+                    (accountInfo.delegation
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        : true) &&
+                    this._delegation &&
+                    !this._delegation.tokenizerAllowedToWithdraw
+                );
+                // return !this.canUndelegate;
             }
         },
 
@@ -340,10 +369,11 @@ export default {
 
         canMintSFTM() {
             return (
-                this.canUndelegate &&
+                // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
                 prepareTimestamp(this.lockedUntil) > this.now() &&
+                this._delegation &&
                 this._delegation.tokenizerAllowedToWithdraw
             );
         },
@@ -351,8 +381,32 @@ export default {
         canRepaySFTM() {
             return (
                 // this.canUndelegate &&
-                this.lockedUntil && this.lockedUntil !== '0x0' && this._delegation.outstandingSFTM !== '0x0'
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                this._delegation &&
+                this._delegation.outstandingSFTM !== '0x0' &&
+                this.outstandingSFTM <= this.availableSFTM
             );
+        },
+
+        showRepaySFTMMessage() {
+            return (
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                this._delegation &&
+                this._delegation.outstandingSFTM !== '0x0' &&
+                this.outstandingSFTM > this.availableSFTM
+            );
+        },
+
+        availableSFTM() {
+            return this.sftmToken ? this.$defi.fromTokenValue(this.sftmToken.availableBalance, this.sftmToken) || 0 : 0;
+        },
+
+        outstandingSFTM() {
+            return this.sftmToken && this._delegation
+                ? this.$defi.fromTokenValue(this._delegation.outstandingSFTM, this.sftmToken) || 0
+                : 0;
         },
 
         /**
@@ -509,12 +563,18 @@ export default {
     mounted() {
         this.$refs.doc.focus();
 
-        defer(() => {
-            this.$defi.init();
-        });
+        this.init();
     },
 
     methods: {
+        async init() {
+            const { $defi } = this;
+            const { address } = this.currentAccount;
+            const result = await Promise.all([$defi.fetchTokens(address), $defi.init()]);
+
+            this.sftmToken = result[0].find((_item) => _item.symbol === 'SFTM') || {};
+        },
+
         /**
          * @param {boolean} [_increaseDelegation]
          */
