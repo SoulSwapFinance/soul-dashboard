@@ -189,7 +189,7 @@
                                     :disabled="!canRepaySFTM"
                                     @click="repaySFTM()"
                                 >
-                                    Mint sFTM
+                                    Repay sFTM
                                 </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
@@ -317,6 +317,7 @@ export default {
                     : false;
             } else {
                 return (
+                    this._delegation.tokenizerAllowedToWithdraw &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
@@ -337,16 +338,22 @@ export default {
         },
 
         canMintSFTM() {
+            console.log(this._delegation.tokenizerAllowedToWithdraw, this._delegation);
             return (
                 this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
-                prepareTimestamp(this.lockedUntil) > this.now()
+                prepareTimestamp(this.lockedUntil) > this.now() &&
+                this._delegation.tokenizerAllowedToWithdraw
             );
         },
 
         canRepaySFTM() {
-            return this.canUndelegate && this.lockedUntil && this.lockedUntil !== '0x0' && false;
+            console.log('222', this._delegation.outstandingSFTM);
+            return (
+                // this.canUndelegate &&
+                this.lockedUntil && this.lockedUntil !== '0x0' && this._delegation.outstandingSFTM !== '0x0'
+            );
         },
 
         /**
@@ -579,6 +586,16 @@ export default {
             if (!this.canRepaySFTM) {
                 return;
             }
+
+            this.$emit('change-component', {
+                to: 'defi-repay-s-f-t-m-confirmation',
+                from: 'staking-info',
+                data: {
+                    stakerId: this.stakerId,
+                    outstandingSFTM: this._delegation.outstandingSFTM,
+                    // stakerAddress: stakerInfo ? stakerInfo.stakerAddress : '',
+                },
+            });
         },
 
         increaseDelegation() {
@@ -692,6 +709,8 @@ export default {
                             amountDelegated
                             amountInWithdraw
                             claimedReward
+                            outstandingSFTM
+                            tokenizerAllowedToWithdraw
                             paidUntilEpoch
                             isFluidStakingActive
                             isDelegationLocked

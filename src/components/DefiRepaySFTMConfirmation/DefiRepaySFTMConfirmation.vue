@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-mint-sftm-confirmation">
+    <div class="defi-repay-sftm-confirmation">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -16,7 +16,7 @@
             </h1>
             <h2 v-else class="cont-with-back-btn">
                 <span>
-                    Mint sFTM - Confirmation
+                    Repay sFTM - Confirmation
                 </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
@@ -44,7 +44,7 @@ import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import Web3 from 'web3';
 
 export default {
-    name: 'DefiMintSFTMConfirmation',
+    name: 'DefiRepaySFTMConfirmation',
 
     components: { FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
 
@@ -53,6 +53,11 @@ export default {
     props: {
         /***/
         stakerId: {
+            type: String,
+            default: '',
+        },
+        /***/
+        outstandingSFTM: {
             type: String,
             default: '',
         },
@@ -69,6 +74,7 @@ export default {
             gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
             d_stakerId: this.stakerId,
+            d_outstandingSFTM: this.outstandingSFTM,
         };
     },
 
@@ -76,7 +82,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         hasCorrectParams() {
-            return !!this.d_stakerId;
+            return !!this.d_stakerId && !!this.d_outstandingSFTM;
         },
     },
 
@@ -107,10 +113,11 @@ export default {
             }
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(
-                sfcUtils.sfcTokenizeLockedStake(
+                sfcUtils.sfcRedeemTokenizedStake(
                     web3,
                     this.$defi.contracts.StakeTokenizerContract,
-                    parseInt(this.d_stakerId, 16)
+                    parseInt(this.d_stakerId, 16),
+                    this.d_outstandingSFTM
                 ),
                 this.currentAccount.address,
                 GAS_LIMITS.defi
@@ -140,7 +147,7 @@ export default {
                 };
 
                 this.$router.replace({
-                    name: `defi-mint-sftm-transaction-success-message`,
+                    name: `defi-repay-sftm-transaction-success-message`,
                     params,
                 });
             }
@@ -162,7 +169,7 @@ export default {
          * @param {object} _data
          */
         onChangeComponent(_data) {
-            let transactionRejectComp = `defi-mint-sftm-transaction-reject-message`;
+            let transactionRejectComp = `defi-repay-sftm-transaction-reject-message`;
 
             if (!this.isView) {
                 this.$emit('change-component', _data);

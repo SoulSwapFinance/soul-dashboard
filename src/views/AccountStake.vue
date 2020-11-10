@@ -25,6 +25,7 @@ import UnstashConfirmation from '../components/UnstashConfirmation/UnstashConfir
 import DelegationLock from '@/components/DelegationLock/DelegationLock.vue';
 import DelegationLockConfirmation from '@/components/DelegationLockConfirmation/DelegationLockConfirmation.vue';
 import DefiMintSFTMConfirmation from '@/components/DefiMintSFTMConfirmation/DefiMintSFTMConfirmation.vue';
+import DefiRepaySFTMConfirmation from '@/components/DefiRepaySFTMConfirmation/DefiRepaySFTMConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
 
 const DEFAULT_COMPONENT = 'delegations-info';
@@ -45,6 +46,7 @@ export default {
         DelegationLock,
         DelegationLockConfirmation,
         DefiMintSFTMConfirmation,
+        DefiRepaySFTMConfirmation,
     },
 
     mixins: [eventBusMixin],
@@ -91,6 +93,7 @@ export default {
                 case 'delegation-lock':
                 case 'delegation-lock-confirmation':
                 case 'defi-mint-s-f-t-m-confirmation':
+                case 'defi-repay-s-f-t-m-confirmation':
                     return this._data_;
                 default:
                     return null;
