@@ -10,12 +10,15 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">
                         <router-link :to="{ name: 'defi-ftrade' }"> Available {{ wftmTokenSymbol }} </router-link>
+                        + {{ sftmTokenSymbol }}
                     </h3>
-                    <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
+                    <div class="value">
+                        <f-token-value :token="wftmToken" :value="availableWFTM + availableSFTM" no-currency />
+                    </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked {{ wftmTokenSymbol }}</h3>
-                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
+                    <h3 class="label">Locked {{ wftmTokenSymbol }} + {{ sftmTokenSymbol }}</h3>
+                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" no-currency /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Current {{ wftmTokenSymbol }} price</h3>
@@ -84,14 +87,14 @@
             <div class="row">
                 <div class="col align-left align-center-md">
                     <router-link :to="{ name: 'defi-lock', params: { token: { ...wftmToken } } }" class="btn large">
-                        Lock {{ wftmTokenSymbol }}
+                        Lock {{ wftmTokenSymbol }}, {{ sftmTokenSymbol }}
                     </router-link>
                     <br />
                     <router-link
                         :to="{ name: 'defi-unlock', params: { token: { ...wftmToken } } }"
                         class="btn large secondary"
                     >
-                        Unlock {{ wftmTokenSymbol }}
+                        Unlock {{ wftmTokenSymbol }}, {{ sftmTokenSymbol }}
                     </router-link>
                 </div>
                 <div class="col">
@@ -213,6 +216,8 @@ export default {
             /** @type {DefiToken} */
             wftmToken: {},
             /** @type {DefiToken} */
+            sftmToken: {},
+            /** @type {DefiToken} */
             fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
@@ -237,13 +242,21 @@ export default {
 
         collateral() {
             /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
+            const wFTMtokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
+            /** @type {FMintTokenBalance} */
+            const sFTMtokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.sftmToken);
+            const wFTMtokenBalanceValue = this.$defi.fromTokenValue(wFTMtokenBalance.balance, this.wftmToken) || 0;
+            const sFTMtokenBalanceValue = this.$defi.fromTokenValue(sFTMtokenBalance.balance, this.sftmToken) || 0;
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
+            return wFTMtokenBalanceValue + sFTMtokenBalanceValue;
         },
 
-        availableFTM() {
+        availableWFTM() {
             return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
+        },
+
+        availableSFTM() {
+            return this.sftmToken ? this.$defi.fromTokenValue(this.sftmToken.availableBalance, this.sftmToken) || 0 : 0;
         },
 
         currentPrice() {
@@ -329,6 +342,10 @@ export default {
             return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
+        sftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.sftmToken);
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-fmint');
 
@@ -367,8 +384,9 @@ export default {
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
-            this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM');
-            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
+            this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
 
             this.rewards = await $defi.fetchFMintAccountRewards(address);
