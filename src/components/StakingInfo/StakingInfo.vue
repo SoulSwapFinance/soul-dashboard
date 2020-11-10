@@ -214,7 +214,7 @@
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { toFTM, WeiToFtm } from '../../utils/transactions.js';
-import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
+import { formatHexToInt, timestampToDate, formatDate, prepareTimestamp } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
@@ -313,7 +313,11 @@ export default {
         },
 
         canLockDelegation() {
-            return this.canUndelegate && this.lockedUntil && this.lockedUntil === '0x0';
+            return (
+                this.canUndelegate &&
+                this.lockedUntil &&
+                (this.lockedUntil === '0x0' || prepareTimestamp(this.lockedUntil) < this.now())
+            );
         },
 
         /**
@@ -529,6 +533,10 @@ export default {
             if (this.canIncreaseDelegation) {
                 this.stake(true);
             }
+        },
+
+        now() {
+            return new Date().getTime();
         },
 
         async claimRewards() {
