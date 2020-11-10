@@ -21,6 +21,8 @@
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
+            <div class="confirmation-info">You’re minting {{ dAmountDelegated }} sFTM</div>
+
             <template #window-content>
                 <ledger-confirmation-content :to="tx.to" :amount="0" />
             </template>
@@ -56,6 +58,11 @@ export default {
             type: String,
             default: '',
         },
+        /***/
+        amountDelegated: {
+            type: String,
+            default: '',
+        },
         /** Identifies if component is view (has route). */
         isView: {
             type: Boolean,
@@ -68,7 +75,9 @@ export default {
             tx: {},
             gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
+            dAmountDelegated: 0,
             d_stakerId: this.stakerId,
+            d_amountDelegated: this.amountDelegated,
         };
     },
 
@@ -105,6 +114,8 @@ export default {
             if (!this.$defi.contracts.StakeTokenizerContract) {
                 return;
             }
+
+            this.dAmountDelegated = this.$fWallet.WEIToFTM(this.d_amountDelegated);
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(
                 sfcUtils.sfcTokenizeLockedStake(

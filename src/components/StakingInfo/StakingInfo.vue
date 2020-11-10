@@ -580,6 +580,7 @@ export default {
                 from: 'staking-info',
                 data: {
                     stakerId: this.stakerId,
+                    amountDelegated: this._delegation.amountDelegated,
                     // stakerAddress: stakerInfo ? stakerInfo.stakerAddress : '',
                 },
             });

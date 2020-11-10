@@ -5,21 +5,35 @@
             :tx="tx"
             :card-off="isView"
             send-button-label="Submit"
-            password-label="Please enter your wallet password to mint sFTM"
+            set-tmp-pwd
+            :tmp-pwd-code="d_tmpPwdCode"
+            :password-label="passwordLabel"
             :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
             <h1 v-if="isView" class="with-back-btn">
-                <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
+                <f-back-button v-if="d_step === 1" :route-name="getBackButtonRoute(compName)" :params="$route.params" />
                 Confirmation
+                <span class="f-steps">
+                    <b>{{ d_step }}</b> / 2
+                </span>
             </h1>
             <h2 v-else class="cont-with-back-btn">
                 <span>
                     Repay sFTM - Confirmation
+                    <span class="f-steps">
+                        <b>{{ d_step }}</b> / 2
+                    </span>
                 </span>
-                <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
+                <button v-if="d_step === 1" type="button" class="btn light" @click="onBackBtnClick">Back</button>
+                <button v-else disabled></button>
             </h2>
+
+            <div class="confirmation-info">
+                <template v-if="d_step === 1">You’re allowing {{ dOutstandingSFTM }} sFTM</template>
+                <template v-else>You’re repaying {{ dOutstandingSFTM }} sFTM</template>
+            </div>
 
             <template #window-content>
                 <ledger-confirmation-content :to="tx.to" :amount="0" />
@@ -39,8 +53,9 @@ import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 // import { viewHelpersMixin } from '@/mixins/view-helpers.js';
-import { toKebabCase } from '@/utils';
+import { getUniqueId, toKebabCase } from '@/utils';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import Web3 from 'web3';
 
 export default {
@@ -61,6 +76,16 @@ export default {
             type: String,
             default: '',
         },
+        /***/
+        step: {
+            type: Number,
+            default: 1,
+        },
+        /***/
+        tmpPwdCode: {
+            type: String,
+            default: '',
+        },
         /** Identifies if component is view (has route). */
         isView: {
             type: Boolean,
@@ -73,8 +98,11 @@ export default {
             tx: {},
             gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
+            dOutstandingSFTM: 0,
             d_stakerId: this.stakerId,
             d_outstandingSFTM: this.outstandingSFTM,
+            d_step: this.step,
+            d_tmpPwdCode: this.tmpPwdCode,
         };
     },
 
@@ -83,6 +111,18 @@ export default {
 
         hasCorrectParams() {
             return !!this.d_stakerId && !!this.d_outstandingSFTM;
+        },
+
+        passwordLabel() {
+            let label = '';
+
+            if (this.d_step === 1) {
+                label = 'Please enter your wallet password to allow your token';
+            } else {
+                label = 'Please enter your wallet password to mint sFTM';
+            }
+
+            return label;
         },
     },
 
@@ -105,39 +145,74 @@ export default {
     methods: {
         async setTx() {
             const web3 = new Web3();
+            const { $defi } = this;
+            const { address } = this.currentAccount;
+            const result = await Promise.all([$defi.fetchTokens(address), $defi.init()]);
+            let txToSign;
 
-            await this.$defi.init();
+            this.sftmToken = result[0].find((_item) => _item.symbol === 'SFTM');
 
-            if (!this.$defi.contracts.StakeTokenizerContract) {
+            if (!this.sftmToken || !$defi.contracts.StakeTokenizerContract) {
                 return;
             }
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(
-                sfcUtils.sfcRedeemTokenizedStake(
+            this.dOutstandingSFTM = $defi.fromTokenValue(this.d_outstandingSFTM, this.sftmToken);
+
+            if (!this.d_tmpPwdCode) {
+                this.d_tmpPwdCode = getUniqueId();
+            }
+
+            if (this.d_step === 1) {
+                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
+                    this.sftmToken.address,
+                    $defi.contracts.StakeTokenizerContract,
+                    Web3.utils.toHex(
+                        $defi.shiftDecPointRight((this.dOutstandingSFTM * 1.05).toString(), this.sftmToken.decimals)
+                    )
+                );
+            } else {
+                txToSign = sfcUtils.sfcRedeemTokenizedStake(
                     web3,
-                    this.$defi.contracts.StakeTokenizerContract,
+                    $defi.contracts.StakeTokenizerContract,
                     parseInt(this.d_stakerId, 16),
                     this.d_outstandingSFTM
-                ),
-                this.currentAccount.address,
-                GAS_LIMITS.defi
-            );
+                );
+            }
+
+            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, address, GAS_LIMITS.defi);
         },
 
         onSendTransactionSuccess(_data) {
             if (!this.isView) {
-                this.$emit('change-component', {
-                    to: 'transaction-success-message',
-                    from: this.compName,
-                    data: {
-                        tx: _data.data.sendTransaction.hash,
-                        // successMessage: 'Undelegation Successful',
-                        continueTo: 'staking-info',
-                        continueToParams: {
-                            stakerId: this.d_stakerId,
+                if (this.d_step === 1) {
+                    this.$emit('change-component', {
+                        to: 'transaction-success-message',
+                        from: this.compName,
+                        data: {
+                            tx: _data.data.sendTransaction.hash,
+                            continueTo: this.compName,
+                            continueToParams: {
+                                step: 2,
+                                stakerId: this.d_stakerId,
+                                outstandingSFTM: this.d_outstandingSFTM,
+                                tmpPwdCode: this.d_tmpPwdCode,
+                            },
                         },
-                    },
-                });
+                    });
+                } else {
+                    this.$emit('change-component', {
+                        to: 'transaction-success-message',
+                        from: this.compName,
+                        data: {
+                            tx: _data.data.sendTransaction.hash,
+                            // successMessage: 'Undelegation Successful',
+                            continueTo: 'staking-info',
+                            continueToParams: {
+                                stakerId: this.d_stakerId,
+                            },
+                        },
+                    });
+                }
             } else {
                 const params = {
                     tx: _data.data.sendTransaction.hash,
@@ -178,7 +253,10 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.getBackButtonRoute(this.compName),
-                        continueToParams: this.$route.params,
+                        continueToParams: {
+                            ...this.$route.params,
+                            tmpPwdCode: this.d_tmpPwdCode,
+                        },
                     },
                 });
             }

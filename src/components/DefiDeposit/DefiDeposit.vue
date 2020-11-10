@@ -548,10 +548,10 @@ export default {
 
             if (!this.singleToken) {
                 // get tokens that are possible to deposit
-                this.tokens = tokens.filter($defi.canTokenBeDeposited);
+                this.tokens = this.tokens.filter($defi.canTokenBeDeposited);
 
                 if (this.lockUnlockMode) {
-                    this.tokens = tokens.filter((_token) => _token.symbol !== 'FUSD');
+                    this.tokens = this.tokens.filter((_token) => _token.symbol !== 'FUSD');
                 }
             }
 
