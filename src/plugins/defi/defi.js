@@ -2,6 +2,7 @@ import './defi.types.js';
 import gql from 'graphql-tag';
 import { isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
+import { fFetch } from '@/plugins/ffetch.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -695,7 +696,7 @@ export class DeFi {
      * @return {Promise<DefiToken[]>}
      */
     async fetchTokens(_ownerAddress, _symbol) {
-        const data = await this.apolloClient.query({
+        const query = {
             query: _ownerAddress
                 ? gql`
                       query DefiTokens($owner: Address!) {
@@ -742,8 +743,11 @@ export class DeFi {
             variables: {
                 owner: _ownerAddress,
             },
-            fetchPolicy: 'network-only',
-        });
+            // fetchPolicy: 'network-only',
+        };
+        // const data = await this.apolloClient.query(query);
+        const data = await fFetch.fetchGQLQuery(query, 'defiTokens');
+
         let defiTokens = data.data.defiTokens || [];
 
         if (filterTokens.length > 0) {
