@@ -237,6 +237,7 @@ import FMessage from '../core/FMessage/FMessage.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import gql from 'graphql-tag';
 import { SFC_CLAIM_MAX_EPOCHS } from '@/plugins/fantom-web3-wallet.js';
+import { defer } from '@/utils';
 
 export default {
     name: 'StakingInfo',
@@ -338,7 +339,6 @@ export default {
         },
 
         canMintSFTM() {
-            console.log(this._delegation.tokenizerAllowedToWithdraw, this._delegation);
             return (
                 this.canUndelegate &&
                 this.lockedUntil &&
@@ -349,7 +349,6 @@ export default {
         },
 
         canRepaySFTM() {
-            console.log('222', this._delegation.outstandingSFTM);
             return (
                 // this.canUndelegate &&
                 this.lockedUntil && this.lockedUntil !== '0x0' && this._delegation.outstandingSFTM !== '0x0'
@@ -509,6 +508,10 @@ export default {
 
     mounted() {
         this.$refs.doc.focus();
+
+        defer(() => {
+            this.$defi.init();
+        });
     },
 
     methods: {
