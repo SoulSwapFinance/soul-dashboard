@@ -28,6 +28,7 @@
 </template>
 
 <script>
+/* global chrome */
 import { mapGetters } from 'vuex';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton';
 import FForm from '@/components/core/FForm/FForm';
@@ -65,6 +66,11 @@ export default {
                     let sites = account.sites.filter((value) => value !== site);
                     this.$store.commit(SET_ACCOUNT, { ...account, sites, index });
                 }
+            });
+            chrome.runtime.sendMessage({
+                method: 'wallet_requestAccounts_done',
+                origin: site,
+                accounts: selectedAccounts,
             });
             window.close();
         },
