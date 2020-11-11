@@ -87,14 +87,14 @@
             <div class="row">
                 <div class="col align-left align-center-md">
                     <router-link :to="{ name: 'defi-lock', params: { token: { ...wftmToken } } }" class="btn large">
-                        Lock {{ wftmTokenSymbol }}, {{ sftmTokenSymbol }}
+                        Lock Collateral
                     </router-link>
                     <br />
                     <router-link
                         :to="{ name: 'defi-unlock', params: { token: { ...wftmToken } } }"
                         class="btn large secondary"
                     >
-                        Unlock {{ wftmTokenSymbol }}, {{ sftmTokenSymbol }}
+                        Unlock Collateral
                     </router-link>
                 </div>
                 <div class="col">

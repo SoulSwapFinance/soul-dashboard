@@ -368,7 +368,7 @@ export default {
                 _item._debt = debt;
                 _item._fMintAccount = fMintAccount;
 
-                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM';
+                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM' && _item.symbol !== 'SFTM';
             });
 
             await this.setRewards(fMintAccount, items);
