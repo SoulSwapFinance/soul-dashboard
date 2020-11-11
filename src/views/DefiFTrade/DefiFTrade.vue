@@ -27,7 +27,8 @@
                             :id="`text-input-${id}`"
                             ref="fromInput"
                             :value="fromInputValue === 0 ? '' : fromInputValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
                             placeholder="0"
                             step="any"
                             min="0"
@@ -69,7 +70,8 @@
                             :id="`text-input-${id}`"
                             ref="toInput"
                             :value="toInputValue === 0 ? '' : toInputValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
                             placeholder="0"
                             step="any"
                             min="0"
@@ -251,8 +253,7 @@ export default {
 
         fromTokenBalance() {
             const { fromToken } = this;
-            let balance =
-                this.$defi.fromTokenValue(fromToken.availableBalance, fromToken) - (fromToken.symbol === 'FTM' ? 2 : 0);
+            let balance = this.$defi.fromTokenValue(fromToken.availableBalance, fromToken);
 
             if (balance < 0) {
                 balance = 0;
@@ -270,13 +271,18 @@ export default {
         },
 
         maxFromInputValue() {
+            const fromTokenSymbol = this.fromToken.symbol;
             let max = 0;
 
-            if (this.fromToken.symbol === 'FUSD') {
+            if (fromTokenSymbol === 'FUSD') {
                 // subtract 0.5% fee
                 max = this.fromTokenBalance - this.fromTokenBalance * 0.005;
             } else {
                 max = this.fromTokenBalance;
+            }
+
+            if (fromTokenSymbol === 'FTM') {
+                max -= 2;
             }
 
             return max - max * this.defiSlippageReserve;
