@@ -293,7 +293,7 @@ export default {
                 ? parseFloat(this.maxRemainingErc20TokenBalance)
                 : parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
-            const minFTMToETH = 50001;
+            const minFTMToETH = 5001;
             const operatToEthereum = this.sendDirection === 'OperaToEthereum';
             const { tokenSymbol } = this;
             let ok = false;
