@@ -183,8 +183,6 @@ export default {
 
     methods: {
         async setTx() {
-            let { contractAddress } = this;
-
             const { params } = this;
             const { $defi } = this;
             const { fromToken } = params;
@@ -200,10 +198,6 @@ export default {
 
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
 
-            if (!contractAddress) {
-                contractAddress = this.$defi.contracts.fMint;
-            }
-
             if (params.step === 1) {
                 this.allowValue =
                     params.maximumSold > 0 ? params.fromValue * (1 + slippageTolerance) : params.fromValue;
@@ -211,17 +205,21 @@ export default {
 
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     fromToken.address,
-                    this.$defi.contracts.uniswapRouter,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(this.allowValue.toString(), fromToken.decimals))
+                    $defi.contracts.uniswapRouter,
+                    params.max && !params.maximumSold
+                        ? fromToken.availableBalance
+                        : Web3.utils.toHex($defi.shiftDecPointRight(this.allowValue.toString(), fromToken.decimals))
                     // Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
                 // console.log(fromToken, toToken, params.toValue);
                 if (params.minimumReceived > 0) {
-                    amounts = await this.$defi.fetchUniswapAmountsOut(
-                        Web3.utils.toHex(
-                            this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)
-                        ),
+                    amounts = await $defi.fetchUniswapAmountsOut(
+                        params.max
+                            ? fromToken.availableBalance
+                            : Web3.utils.toHex(
+                                  this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)
+                              ),
                         [fromToken.address, toToken.address]
                     );
 
@@ -239,7 +237,7 @@ export default {
 
                     txToSign = uniswapUtils.uniswapExactTokensForTokens(
                         web3,
-                        this.$defi.contracts.uniswapRouter,
+                        $defi.contracts.uniswapRouter,
                         amounts[0],
                         amounts[1],
                         [fromToken.address, toToken.address],
@@ -247,8 +245,8 @@ export default {
                         (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
                     );
                 } else {
-                    amounts = await this.$defi.fetchUniswapAmountsIn(
-                        Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
+                    amounts = await $defi.fetchUniswapAmountsIn(
+                        Web3.utils.toHex($defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
                         [fromToken.address, toToken.address]
                     );
 
@@ -265,7 +263,7 @@ export default {
 
                     txToSign = uniswapUtils.uniswapTokensForExactTokens(
                         web3,
-                        this.$defi.contracts.uniswapRouter,
+                        $defi.contracts.uniswapRouter,
                         amounts[1],
                         amounts[0],
                         [fromToken.address, toToken.address],
