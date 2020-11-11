@@ -67,7 +67,7 @@
                     <div ref="toSign" class="sign">+</div>
                     <f-auto-resize-input ref="toARInput" min-width="48px">
                         <input
-                            :id="`text-input-${id}`"
+                            :id="`text-input-${id}-2`"
                             ref="toInput"
                             :value="toInputValue === 0 ? '' : toInputValue"
                             type="text"
@@ -285,7 +285,13 @@ export default {
                 max -= 2;
             }
 
-            return max - max * this.defiSlippageReserve;
+            max -= max * this.defiSlippageReserve;
+
+            if (max < 0) {
+                max = 0;
+            }
+
+            return max;
         },
 
         maxToInputValue() {

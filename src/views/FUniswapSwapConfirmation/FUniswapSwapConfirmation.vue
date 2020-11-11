@@ -224,16 +224,12 @@ export default {
                     );
 
                     // apply slippage tolerance
-                    amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
+                    amounts[1] = $defi.fromTokenValue(amounts[1], toToken);
                     amounts[1] *= 1 - slippageTolerance;
-                    // amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
 
                     this.minimumReceived = amounts[1];
 
-                    amounts = [
-                        Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
-                        Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals)),
-                    ];
+                    amounts[1] = Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals));
 
                     txToSign = uniswapUtils.uniswapExactTokensForTokens(
                         web3,
@@ -251,15 +247,12 @@ export default {
                     );
 
                     // apply slippage tolerance
-                    amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
+                    amounts[0] = [$defi.fromTokenValue(amounts[0], fromToken)];
                     amounts[0] *= 1 + slippageTolerance;
 
                     this.maximumSold = amounts[0];
 
-                    amounts = [
-                        Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
-                        Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals)),
-                    ];
+                    amounts[0] = Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals));
 
                     txToSign = uniswapUtils.uniswapTokensForExactTokens(
                         web3,
