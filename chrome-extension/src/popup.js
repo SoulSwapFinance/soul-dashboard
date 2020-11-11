@@ -1,8 +1,5 @@
 /* global chrome */
 
-const POPUP_WIDTH = 360;
-const POPUP_HEIGHT = 750;
-
 export default class PopupManager {
 
     concurrentLock = 0;
@@ -41,30 +38,17 @@ export default class PopupManager {
      * @param url URL to be opened
      */
     showPopup(url) {
-        chrome.windows.getLastFocused((lastFocused) => {
-            let top = lastFocused.top ? lastFocused.top : null;
-            let left = lastFocused.width ? lastFocused.left + (lastFocused.width - POPUP_WIDTH) : null;
-
-            chrome.windows.create(
-                {
-                    url: url,
-                    type: 'popup',
-                    width: POPUP_WIDTH,
-                    height: POPUP_HEIGHT,
-                    top: top,
-                    left: left,
-                },
-                (win) => {
-                    this.openedTabId = win.tabs[0].id;
-                    this.concurrentLock = 0;
-                    if (left && win.left !== left) {
-                        chrome.windows.update(win.id, {
-                            top: top,
-                            left: left,
-                        });
-                    }
-                }
-            );
-        });
+        chrome.windows.create(
+            {
+                url: url,
+                type: 'popup',
+                width: 360,
+                height: 750,
+            },
+            (win) => {
+                this.openedTabId = win.tabs[0].id;
+                this.concurrentLock = 0;
+            }
+        );
     }
 }
