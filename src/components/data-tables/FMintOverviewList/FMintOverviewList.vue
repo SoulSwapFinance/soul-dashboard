@@ -139,7 +139,7 @@
                             </template>
                         </template>
                         <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
+                            <template v-if="usedInFMint(item)">
                                 <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/mint` }">
                                     Mint
                                 </router-link>
@@ -182,12 +182,22 @@
                         </template>
                     </template>
                     <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/mint` }">
+                        <template v-if="usedInFMint(item)">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/mint`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
                                 Mint
                             </router-link>
                             <br />
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/repay` }">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/repay`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
                                 Repay
                             </router-link>
                         </template>
@@ -351,7 +361,9 @@ export default {
             ]);
 
             const fMintAccount = result[0];
-            const tokens = result[1].filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            const tokens = result[1].filter(
+                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
+            );
 
             this.wftmToken = tokens.find((_item) => _item.symbol === 'WFTM');
 
@@ -465,7 +477,7 @@ export default {
          * @return {boolean}
          */
         usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+            return _token.symbol === 'WFTM' || _token.canMint;
         },
 
         /**

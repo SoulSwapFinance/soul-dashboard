@@ -12,7 +12,7 @@
 
         <defi-borrow
             :token="params.token"
-            :token-symbol="params.tokenSymbol"
+            :token-symbol="params.tokenSymbol || query.tokenSymbol"
             borrow
             mint-repay-mode
             on-submit-route="defi-mint-confirmation"
@@ -38,6 +38,15 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        query() {
+            const { $route } = this;
+
+            return $route && $route.query ? $route.query : {};
         },
 
         backButtonRoute() {
