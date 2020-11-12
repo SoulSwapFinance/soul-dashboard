@@ -34,13 +34,13 @@
                 </ratio-info>
             </div>
             <div class="align-right">
-                <h2>fUSD</h2>
+                <h2>Synths</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Minted fUSD</h3>
+                    <h3 class="label">Minted</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
@@ -120,9 +120,9 @@
                     </template>
                 </div>
                 <div class="col align-right align-center-md">
-                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
+                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint Synths</router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
+                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay Synths</router-link>
                 </div>
             </div>
             <!--
