@@ -229,7 +229,7 @@ export default {
 
         debtFUSD() {
             return this.mintableTokens.reduce((_prev, _token) => {
-                return _prev + this.getDebt(_token);
+                return _prev + this.$defi.convertTokenValue(this.getDebt(_token), _token, this.fusdToken);
             }, 0);
         },
 

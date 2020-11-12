@@ -2,7 +2,7 @@
     <div class="view-defi-repay">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Repay fUSD
+            Repay Synths
         </h1>
 
         <h2 class="perex">
@@ -12,10 +12,9 @@
 
         <defi-borrow
             :token="params.token"
+            :token-symbol="params.tokenSymbol"
             repay
             mint-repay-mode
-            single-token
-            token-symbol="FUSD"
             on-submit-route="defi-repay-confirmation"
         />
     </div>

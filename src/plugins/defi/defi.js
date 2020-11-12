@@ -118,8 +118,10 @@ export class DeFi {
             decimals = 1;
         } else if (tokenPrice < 100) {
             decimals = 2;
+        } else if (tokenPrice < 1000) {
+            decimals = 4;
         } else {
-            decimals = 3;
+            decimals = 6;
         }
 
         this.tokenDecimals[_token.symbol] = decimals;
