@@ -2,7 +2,7 @@
     <div class="view-defi-fmint">
         <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fMint</h1>
 
-        <h2 class="perex">Manage your collateral and minted fUSD</h2>
+        <h2 class="perex">Manage your collateral and minted synths</h2>
 
         <div class="grid">
             <div>

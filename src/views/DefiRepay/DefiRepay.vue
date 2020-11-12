@@ -6,8 +6,7 @@
         </h1>
 
         <h2 class="perex">
-            Repay fUSD to unlock your wFTM. You can use fUSD to trade synths, lend it to the liquidity pool to earn
-            interest, and use it as a collateral to borrow synths.
+            Repay synths to unlock your collateral.
         </h2>
 
         <defi-borrow

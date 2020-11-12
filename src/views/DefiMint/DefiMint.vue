@@ -6,8 +6,7 @@
         </h1>
 
         <h2 class="perex">
-            Mint fUSD with your locked wFTM. You can use fUSD to trade synths, lend it to the liquidity pool to earn
-            interest, and use it as a collateral to borrow synths.
+            Mint synths with your locked collateral.
         </h2>
 
         <defi-borrow
