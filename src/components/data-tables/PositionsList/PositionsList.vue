@@ -105,9 +105,14 @@
                             </template>
                         </template>
                         <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
-                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <template v-if="usedInFMint(item) && item.canMint">
+                                <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                    Mint
+                                </router-link>
+                                ,
+                                <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                    Repay
+                                </router-link>
                             </template>
                         </template>
                         <template v-if="canClaimRewards(item.rewards)">
@@ -137,10 +142,14 @@
                         </template>
                     </template>
                     <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
+                        <template v-if="usedInFMint(item) && item.canMint">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                Mint
+                            </router-link>
                             <br />
-                            <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                Repay
+                            </router-link>
                         </template>
                     </template>
                     <template v-if="canClaimRewards(item.rewards)">
@@ -311,7 +320,9 @@ export default {
          * @param {DefiToken[]} _value
          */
         async tokens(_value) {
-            let tokens = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            let tokens = _value.filter(
+                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
+            );
 
             this.wftmToken = _value.find((_item) => _item.symbol === 'WFTM');
 
@@ -421,7 +432,15 @@ export default {
          * @return {boolean}
          */
         usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+            return this.usedAsCollateral(_token) || _token.canMint;
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {boolean}
+         */
+        usedAsCollateral(_token) {
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
 
         /**
