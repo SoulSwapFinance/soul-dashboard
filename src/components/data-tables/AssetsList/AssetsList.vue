@@ -53,23 +53,28 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <template v-if="item._collateral > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
+                            <template v-if="item.symbol === 'WFTM'">
                                 <router-link :to="{ name: 'defi-lock' }">Lock</router-link>,
                                 <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>,
                                 <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                             </template>
                         </template>
                         <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
-                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <template v-if="item.canMint">
+                                <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                    Mint
+                                </router-link>
+                                ,
+                                <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                    Repay
+                                </router-link>
                             </template>
                         </template>
                     </div>
                 </div>
                 <template v-else>
                     <template v-if="item._collateral > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
+                        <template v-if="item.symbol === 'WFTM'">
                             <router-link :to="{ name: 'defi-lock' }">Lock</router-link>
                             <br />
                             <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>
@@ -78,10 +83,14 @@
                         </template>
                     </template>
                     <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
+                        <template v-if="item.canMint">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                Mint
+                            </router-link>
                             <br />
-                            <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                Repay
+                            </router-link>
                         </template>
                     </template>
                 </template>
@@ -242,7 +251,20 @@ export default {
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
-            this.items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            let tokens = _value.filter(
+                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
+            );
+
+            tokens.forEach((_item) => {
+                const collateral = this.getCollateral(_item);
+                const debt = this.getDebt(_item);
+
+                // store collateral and debt for later use
+                _item._collateral = collateral;
+                _item._debt = debt;
+            });
+
+            this.items = tokens;
 
             this.$emit('records-count', this.items.length);
         },
@@ -269,14 +291,6 @@ export default {
             const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
 
             return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
-        },
-
-        /**
-         * @param {DefiToken} _token
-         * @return {boolean}
-         */
-        usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
         },
     },
 };
