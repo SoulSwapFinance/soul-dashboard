@@ -98,6 +98,8 @@ const appConfig = {
         outputDirApp: 'app',
         // output directory for background js bundle script (relative to outputDir)
         outputDirBackgroundJs: 'background-js',
+        // show extension prompts in new tab, instead of popup window
+        tabNotPopup: true,
     },
     // default options for production build
     build: {

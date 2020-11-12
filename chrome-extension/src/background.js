@@ -55,6 +55,13 @@ let sendTransactionRequestCounter = 0;
 let sendTransactionRequests = {};
 let accountsChangedCallbacks = {};
 
+chrome.browserAction.onClicked.addListener((tab) => {
+    chrome.tabs.create({
+        url: 'app/index.html',
+        active: true,
+    });
+});
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     if (request.method === 'wallet_init') { // internal, called by inpage on page load
@@ -83,9 +90,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         getAccounts(sender.origin, (accounts, haveAccounts) => {
             if (accounts.length === 0 || request.method === 'eth_requestAccounts') {
                 if (haveAccounts) { // select accounts from already opened accounts
-                    popupManager.showOrUpdatePopup('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
+                    popupManager.goto('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
                 } else { // need to add new account
-                    popupManager.showOrUpdatePopup('app/index.html');
+                    popupManager.goto('app/index.html');
                 }
 
                 if (!accountsChangedCallbacks[sender.origin]) accountsChangedCallbacks[sender.origin] = [];
@@ -116,7 +123,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
             let stid = ++sendTransactionRequestCounter;
             sendTransactionRequests[stid] = { request, sendResponse };
-            popupManager.showOrUpdatePopup('app/index.html#/eip-send-transaction/' + stid);
+            popupManager.goto('app/index.html#/eip-send-transaction/' + stid);
 
         });
         return true;

@@ -31,7 +31,7 @@ const chromeExtensionManifest = {
         '48': 'app/favicon.png',
     },
     browser_action: {
-        default_popup: 'app/index.html',
+        //default_popup: 'app/index.html',
         default_icon: {
             '48': 'app/favicon.png',
         },
