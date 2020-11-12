@@ -6,7 +6,7 @@
 
                 <div class="form-body">
                     <f-password-field
-                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet(tmpPwdCode)"
+                        v-if="showPasswordField && showPwdField"
                         :label="passwordLabel"
                         field-size="large"
                         autocomplete="off"
@@ -100,6 +100,7 @@ export default {
     data() {
         return {
             gasPrice: '',
+            showPwdField: true,
         };
     },
 
@@ -124,9 +125,27 @@ export default {
     },
 
     created() {
+        this._tid = -1;
+
+        this.showPwdField = !this.$fWallet.pwdStorage.isSet(this.tmpPwdCode);
+
         this.$fWallet.getGasPrice().then((_gasPrice) => {
             this.gasPrice = _gasPrice;
         });
+
+        if (this.showPasswordField && !this.showPwdField) {
+            this._tid = setTimeout(() => {
+                this.$fWallet.pwdStorage.clear();
+                this.showPwdField = true;
+            }, 30000);
+        }
+    },
+
+    beforeDestroy() {
+        if (this._tid > -1) {
+            clearTimeout(this._tid);
+            this._tid = -1;
+        }
     },
 
     methods: {
