@@ -213,6 +213,8 @@ export default {
             fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
+            /** @type {DefiToken[]} */
+            mintableTokens: [],
             id: getUniqueId(),
         };
     },
@@ -226,10 +228,9 @@ export default {
         },
 
         debtFUSD() {
-            /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
-
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
+            return this.mintableTokens.reduce((_prev, _token) => {
+                return _prev + this.getDebt(_token);
+            }, 0);
         },
 
         collateral() {
@@ -368,7 +369,20 @@ export default {
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
 
+            this.mintableTokens = this.tokens.filter($defi.canTokenBeMinted);
+
             this.rewards = await $defi.fetchFMintAccountRewards(address);
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {number}
+         */
+        getDebt(_token) {
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },
 
         onAccountPicked() {
