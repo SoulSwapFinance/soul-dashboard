@@ -514,7 +514,7 @@ export default {
             const tokens = result[1];
 
             this.fMintAccount = result[0];
-            this.wftmToken = tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.wftmToken = tokens.find((_item) => _item.symbol === 'WFTM');
             this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {

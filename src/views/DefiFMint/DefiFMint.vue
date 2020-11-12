@@ -81,60 +81,50 @@
         </div>
 
         <div class="form-buttons">
-            <template v-if="$defi.tmpWFTM">
-                <div class="row">
-                    <div class="col align-left align-center-md">
-                        <router-link :to="{ name: 'defi-lock' }" class="btn large">
-                            Lock {{ wftmTokenSymbol }}
-                        </router-link>
-                        <br />
-                        <router-link :to="{ name: 'defi-unlock' }" class="btn large secondary">
-                            Unlock {{ wftmTokenSymbol }}
-                        </router-link>
-                    </div>
-                    <div class="col">
-                        <router-link
-                            v-if="canClaimRewards"
-                            :to="{
-                                name: 'defi-fmint-claim-rewards-confirmation',
-                                params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
-                            }"
-                            class="btn large"
-                        >
-                            Claim Rewards
-                        </router-link>
-                        <template v-else>
-                            <button type="button" class="btn large" disabled>Claim Rewards</button>
-                        </template>
-                        <router-link
-                            v-if="canPushRewards"
-                            :to="{
-                                name: 'defi-fmint-push-rewards-confirmation',
-                                params: { token: { ...wftmToken } },
-                            }"
-                            class="btn large secondary"
-                        >
-                            Push Rewards
-                        </router-link>
-                        <template v-else>
-                            <button type="button" class="btn large secondary" disabled>Push Rewards</button>
-                        </template>
-                    </div>
-                    <div class="col align-right align-center-md">
-                        <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
-                        <br />
-                        <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
-                    </div>
+            <div class="row">
+                <div class="col align-left align-center-md">
+                    <router-link :to="{ name: 'defi-lock' }" class="btn large">
+                        Lock {{ wftmTokenSymbol }}
+                    </router-link>
+                    <br />
+                    <router-link :to="{ name: 'defi-unlock' }" class="btn large secondary">
+                        Unlock {{ wftmTokenSymbol }}
+                    </router-link>
                 </div>
-            </template>
-            <template v-else>
-                <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
-                    Lock/Unlock {{ wftmTokenSymbol }}
-                </router-link>
-                <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">
-                    Mint/Repay fUSD
-                </router-link>
-            </template>
+                <div class="col">
+                    <router-link
+                        v-if="canClaimRewards"
+                        :to="{
+                            name: 'defi-fmint-claim-rewards-confirmation',
+                            params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
+                        }"
+                        class="btn large"
+                    >
+                        Claim Rewards
+                    </router-link>
+                    <template v-else>
+                        <button type="button" class="btn large" disabled>Claim Rewards</button>
+                    </template>
+                    <router-link
+                        v-if="canPushRewards"
+                        :to="{
+                            name: 'defi-fmint-push-rewards-confirmation',
+                            params: { token: { ...wftmToken } },
+                        }"
+                        class="btn large secondary"
+                    >
+                        Push Rewards
+                    </router-link>
+                    <template v-else>
+                        <button type="button" class="btn large secondary" disabled>Push Rewards</button>
+                    </template>
+                </div>
+                <div class="col align-right align-center-md">
+                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
+                    <br />
+                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
+                </div>
+            </div>
             <!--
             <router-link
                 :to="{ name: $defi.tmpWFTM ? 'defi-lock-unlock' : 'defi-manage-collateral' }"
@@ -374,7 +364,7 @@ export default {
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
-            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM');
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
 

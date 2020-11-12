@@ -2,14 +2,12 @@ import './defi.types.js';
 import gql from 'graphql-tag';
 import { isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
-import appConfig from '../../../app.config.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
 
 // TMP!!
-const tmpWFTM = appConfig.tmpWFTM;
-const filterTokens = tmpWFTM ? ['FTM', 'WFTM', 'FUSD'] : [];
+const filterTokens = [];
 
 /**
  * Plugin for various DeFi requests and calculations.
@@ -56,9 +54,6 @@ export class DeFi {
             uniswapCoreFactory: '',
             uniswapRouter: '',
         };
-
-        // TMP!!
-        this.tmpWFTM = tmpWFTM;
     }
 
     /**
@@ -91,6 +86,7 @@ export class DeFi {
         contracts.fMintReward = _settings.fMintRewardDistribution;
         contracts.uniswapCoreFactory = _settings.uniswapCoreFactory;
         contracts.uniswapRouter = _settings.uniswapRouter;
+        contracts.StakeTokenizerContract = _settings.StakeTokenizerContract;
     }
 
     /**
@@ -619,11 +615,8 @@ export class DeFi {
      */
     canTokenBeTraded(_token) {
         // return _token && _token.isActive && _token.canTrade;
-        if (tmpWFTM) {
-            return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FTM');
-        } else {
-            return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
-        }
+        return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FTM');
+        // return _token && _token.isActive && (_token.canTrade || _token.symbol === 'FUSD');
     }
 
     /**
@@ -673,6 +666,23 @@ export class DeFi {
                     }
                 }
             `,
+            /*
+            query: gql`
+                query DefiSettings {
+                    defiConfiguration {
+                        mintFee4
+                        rewardCollateralRatio4
+                        minCollateralRatio4
+                        uniswapCoreFactory
+                        uniswapRouter
+                        fMintContract
+                        fMintRewardDistribution
+                        decimals
+                        StakeTokenizerContract
+                    }
+                }
+            `,
+*/
             fetchPolicy: 'network-only',
         });
 
