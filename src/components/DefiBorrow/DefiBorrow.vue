@@ -606,7 +606,7 @@ export default {
 
         onDefiTokenPicked(_token) {
             this.dToken = _token;
-            console.log('picked token', _token);
+            this.currDebt = '0';
         },
 
         onMinBtnClick() {

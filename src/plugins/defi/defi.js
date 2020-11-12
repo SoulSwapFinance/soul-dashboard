@@ -119,7 +119,7 @@ export class DeFi {
         } else if (tokenPrice < 100) {
             decimals = 2;
         } else if (tokenPrice < 1000) {
-            decimals = 4;
+            decimals = 5;
         } else {
             decimals = 6;
         }
