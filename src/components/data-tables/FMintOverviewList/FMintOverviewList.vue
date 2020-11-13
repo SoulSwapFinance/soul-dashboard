@@ -377,16 +377,20 @@ export default {
                 const collateral = this.getCollateral(_item, fMintAccount);
                 const debt = this.getDebt(_item, fMintAccount);
 
-                _item.accountName = _account.name;
-                _item.accountAddress = _account.address;
-                _item.cratio = this.collateralRatio(fMintAccount);
+                if ((collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM') {
+                    _item.accountName = _account.name;
+                    _item.accountAddress = _account.address;
+                    _item.cratio = this.collateralRatio(fMintAccount);
 
-                // store collateral and debt for later use
-                _item._collateral = collateral;
-                _item._debt = debt;
-                _item._fMintAccount = fMintAccount;
+                    // store collateral and debt for later use
+                    _item._collateral = collateral;
+                    _item._debt = debt;
+                    _item._fMintAccount = fMintAccount;
 
-                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM';
+                    return true;
+                }
+
+                return false;
             });
 
             await this.setRewards(fMintAccount, items);

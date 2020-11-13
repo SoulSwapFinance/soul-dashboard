@@ -59,11 +59,11 @@
                                 <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                             </template>
                         </template>
-                        <template v-if="item._debt > 0">
-                            <template v-if="item.canMint">
-                                <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
-                                    Mint
-                                </router-link>
+                        <template v-if="item.canMint">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                Mint
+                            </router-link>
+                            <template v-if="item._debt > 0">
                                 ,
                                 <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
                                     Repay
@@ -82,11 +82,11 @@
                             <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                         </template>
                     </template>
-                    <template v-if="item._debt > 0">
-                        <template v-if="item.canMint">
-                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
-                                Mint
-                            </router-link>
+                    <template v-if="item.canMint">
+                        <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                            Mint
+                        </router-link>
+                        <template v-if="item._debt > 0">
                             <br />
                             <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
                                 Repay

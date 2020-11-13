@@ -330,11 +330,15 @@ export default {
                 const collateral = this.getCollateral(_item);
                 const debt = this.getDebt(_item);
 
-                // store collateral and debt for later use
-                _item._collateral = collateral;
-                _item._debt = debt;
+                if (collateral !== 0 || debt !== 0) {
+                    // store collateral and debt for later use
+                    _item._collateral = collateral;
+                    _item._debt = debt;
 
-                return collateral !== 0 || debt !== 0;
+                    return true;
+                }
+
+                return false;
             });
 
             await this.setRewards(items);
