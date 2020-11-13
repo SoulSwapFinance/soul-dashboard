@@ -138,16 +138,22 @@
             -->
         </div>
 
-        <div class="fmint-overview">
-            <h3>Overview</h3>
-            <f-mint-overview-list
-                :tokens="tokens"
-                no-f-l-padding
-                deposit-route-name="defi-lock-unlock"
-                borrow-route-name="defi-mint-repay"
-                @records-count="onFMintOverviewRecordsCount"
-            />
-        </div>
+        <f-tabs>
+            <template #fmint-overview>
+                fMint Overview
+                <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
+            </template>
+
+            <f-tab title-slot="fmint-overview">
+                <f-mint-overview-list
+                    :tokens="tokens"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onFMintOverviewRecordsCount"
+                />
+            </f-tab>
+        </f-tabs>
+
         <!--
         <defi-menu v-else>
             <li class="col-4">
@@ -200,11 +206,23 @@ import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
 import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
+import FTabs from '@/components/core/FTabs/FTabs.vue';
+import FTab from '@/components/core/FTabs/FTab.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { FMintOverviewList, CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
+    components: {
+        FTab,
+        FTabs,
+        FMintOverviewList,
+        CRatioInfo,
+        RatioInfo,
+        FPlaceholder,
+        FTokenValue,
+        FBackButton,
+        FMessage,
+    },
 
     mixins: [eventBusMixin],
 
@@ -226,6 +244,7 @@ export default {
             tokens: [],
             /** @type {DefiToken[]} */
             mintableTokens: [],
+            fMintOverviewRecordsCount: 0,
             id: getUniqueId(),
         };
     },
