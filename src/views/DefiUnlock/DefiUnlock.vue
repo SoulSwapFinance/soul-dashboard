@@ -5,7 +5,7 @@
             Unlock Collateral
         </h1>
 
-        <h2 class="perex">Unlock wFTM, sFTM after you repaid fUSD.</h2>
+        <h2 class="perex">Unlock collateral after you repaid minted synths.</h2>
 
         <defi-deposit
             :token="params.token"

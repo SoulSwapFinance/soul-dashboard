@@ -6,7 +6,7 @@
         </h1>
 
         <h2 class="perex">
-            Lock wFTM, sFTM to increase the collateral ratio and mint fUSD.
+            Lock collateral to increase the collateral ratio and mint synths.
         </h2>
 
         <defi-deposit
