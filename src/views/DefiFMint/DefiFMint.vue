@@ -143,6 +143,10 @@
                 fMint Overview
                 <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
             </template>
+            <template #collateral-positions>
+                Collateral Positions
+                <span class="f-records-count">({{ collateralPositionsRecordsCount }})</span>
+            </template>
 
             <f-tab title-slot="fmint-overview">
                 <f-mint-overview-list
@@ -150,6 +154,15 @@
                     deposit-route-name="defi-lock-unlock"
                     borrow-route-name="defi-mint-repay"
                     @records-count="onFMintOverviewRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="collateral-positions">
+                <collateral-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onCollateralPositionsRecordsCount"
                 />
             </f-tab>
         </f-tabs>
@@ -208,11 +221,13 @@ import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
 import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
+import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
 
 export default {
     name: 'DefiFMint',
 
     components: {
+        CollateralPositionsList,
         FTab,
         FTabs,
         FMintOverviewList,
@@ -245,6 +260,7 @@ export default {
             /** @type {DefiToken[]} */
             mintableTokens: [],
             fMintOverviewRecordsCount: 0,
+            collateralPositionsRecordsCount: 0,
             id: getUniqueId(),
         };
     },
@@ -421,6 +437,10 @@ export default {
 
         onFMintOverviewRecordsCount(_count) {
             this.fMintOverviewRecordsCount = _count;
+        },
+
+        onCollateralPositionsRecordsCount(_count) {
+            this.collateralPositionsRecordsCount = _count;
         },
     },
 };
