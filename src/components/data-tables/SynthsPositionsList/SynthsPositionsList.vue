@@ -1,5 +1,5 @@
 <template>
-    <div class="collateral-positions-list-dt">
+    <div class="synths-positions-list-dt">
         <f-data-table
             :columns="columns"
             :items="items"
@@ -23,48 +23,40 @@
             <template v-slot:column-amount="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
-                    <div class="col break-word">{{ formatCollateral(item) }}</div>
+                    <div class="col break-word">{{ formatDebt(item) }}</div>
                 </div>
-                <template v-else>{{ formatCollateral(item) }}</template>
+                <template v-else>{{ formatDebt(item) }}</template>
             </template>
 
             <template v-slot:column-amount_fusd="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
-                    <div class="col break-word">{{ formatCollateralFUSD(item) }}</div>
+                    <div class="col break-word">{{ formatDebtFUSD(item) }}</div>
                 </div>
-                <template v-else>{{ formatCollateralFUSD(item) }}</template>
+                <template v-else>{{ formatDebtFUSD(item) }}</template>
             </template>
 
             <template v-slot:column-actions="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
-                            Lock
+                        <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                            Mint
                         </router-link>
                         ,
-                        <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
-                            Unlock
+                        <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                            Repay
                         </router-link>
-                        <template v-if="item.symbol === 'WFTM'">
-                            ,
-                            <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
-                        </template>
                     </div>
                 </div>
                 <template v-else>
-                    <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
-                        Lock
+                    <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                        Mint
                     </router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
-                        Unlock
+                    <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                        Repay
                     </router-link>
-                    <template v-if="item.symbol === 'WFTM'">
-                        <br />
-                        <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
-                    </template>
                 </template>
             </template>
         </f-data-table>
@@ -84,10 +76,9 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
 import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowTokenWindow/DepositOrBorrowTokenWindow.vue';
 import { formatNumberByLocale } from '@/filters.js';
-import { mapGetters } from 'vuex';
 
 export default {
-    name: 'CollateralPositionsList',
+    name: 'SynthsPositionsList',
 
     components: { DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
 
@@ -179,30 +170,28 @@ export default {
         };
     },
 
-    computed: {
-        ...mapGetters(['currentAccount']),
-    },
-
     watch: {
         /**
          * @param {DefiToken[]} _value
          */
         async tokens(_value) {
-            let tokens = _value.filter((_item) => _item.isActive && _item.canDeposit && this.usedAsCollateral(_item));
+            let tokens = _value.filter((_item) => _item.isActive && _item.canMint && _item.symbol !== 'FTM');
 
             this.wftmToken = _value.find((_item) => _item.symbol === 'WFTM');
 
-            this.items = tokens.filter((_item) => {
-                const collateral = this.getCollateral(_item);
+            const items = tokens.filter((_item) => {
+                const debt = this.getDebt(_item);
 
-                if (collateral !== 0) {
-                    _item._collateral = collateral;
+                if (debt !== 0) {
+                    _item._debt = debt;
 
                     return true;
                 }
 
                 return false;
             });
+
+            this.items = items;
 
             this.$emit('records-count', this.items.length);
         },
@@ -224,33 +213,22 @@ export default {
          * @param {DefiToken} _token
          * @return {*|number}
          */
-        getCollateral(_token) {
-            /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, _token);
+        formatDebt(_token) {
+            const debt = '_debt' in _token ? _token._debt : this.getDebt(_token);
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+            return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_token)) : 0;
         },
 
         /**
          * @param {DefiToken} _token
          * @return {*|number}
          */
-        formatCollateral(_token) {
-            const collateral = '_collateral' in _token ? _token._collateral : this.getCollateral(_token);
+        formatDebtFUSD(_token) {
+            const debt = this.getDebt(_token);
 
-            return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_token)) : 0;
-        },
-
-        /**
-         * @param {DefiToken} _token
-         * @return {*|number}
-         */
-        formatCollateralFUSD(_token) {
-            const collateral = this.getCollateral(_token);
-
-            return collateral > 0
+            return debt > 0
                 ? formatNumberByLocale(
-                      collateral * this.defi.getTokenPrice(_token),
+                      debt * this.defi.getTokenPrice(_token),
                       this.defi.getTokenDecimals({ symbol: 'FUSD' })
                   )
                 : 0;
@@ -258,10 +236,13 @@ export default {
 
         /**
          * @param {DefiToken} _token
-         * @return {boolean}
+         * @return {*|number}
          */
-        usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM'; // || _token.symbol === 'SFTM';
+        getCollateral(_token) {
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },
     },
 };

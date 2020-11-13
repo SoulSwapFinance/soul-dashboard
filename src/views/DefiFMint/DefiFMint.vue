@@ -147,6 +147,10 @@
                 Collateral Positions
                 <span class="f-records-count">({{ collateralPositionsRecordsCount }})</span>
             </template>
+            <template #synths-positions>
+                Synths Positions
+                <span class="f-records-count">({{ synthsPositionsRecordsCount }})</span>
+            </template>
 
             <f-tab title-slot="fmint-overview">
                 <f-mint-overview-list
@@ -163,6 +167,15 @@
                     deposit-route-name="defi-lock-unlock"
                     borrow-route-name="defi-mint-repay"
                     @records-count="onCollateralPositionsRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="synths-positions">
+                <synths-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onSynthsPositionsRecordsCount"
                 />
             </f-tab>
         </f-tabs>
@@ -222,11 +235,13 @@ import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintO
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
 import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
+import SynthsPositionsList from '@/components/data-tables/SynthsPositionsList/SynthsPositionsList.vue';
 
 export default {
     name: 'DefiFMint',
 
     components: {
+        SynthsPositionsList,
         CollateralPositionsList,
         FTab,
         FTabs,
@@ -261,6 +276,7 @@ export default {
             mintableTokens: [],
             fMintOverviewRecordsCount: 0,
             collateralPositionsRecordsCount: 0,
+            synthsPositionsRecordsCount: 0,
             id: getUniqueId(),
         };
     },
@@ -441,6 +457,10 @@ export default {
 
         onCollateralPositionsRecordsCount(_count) {
             this.collateralPositionsRecordsCount = _count;
+        },
+
+        onSynthsPositionsRecordsCount(_count) {
+            this.synthsPositionsRecordsCount = _count;
         },
     },
 };
