@@ -138,6 +138,16 @@
             -->
         </div>
 
+        <div class="fmint-overview">
+            <h3>Overview</h3>
+            <f-mint-overview-list
+                :tokens="tokens"
+                no-f-l-padding
+                deposit-route-name="defi-lock-unlock"
+                borrow-route-name="defi-mint-repay"
+                @records-count="onFMintOverviewRecordsCount"
+            />
+        </div>
         <!--
         <defi-menu v-else>
             <li class="col-4">
@@ -189,11 +199,12 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
+import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
+    components: { FMintOverviewList, CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
 
     mixins: [eventBusMixin],
 
@@ -387,6 +398,10 @@ export default {
 
         onAccountPicked() {
             this.init();
+        },
+
+        onFMintOverviewRecordsCount(_count) {
+            this.fMintOverviewRecordsCount = _count;
         },
     },
 };

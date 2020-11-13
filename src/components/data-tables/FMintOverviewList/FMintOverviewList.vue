@@ -6,6 +6,7 @@
             :action-on-row="actionOnRow"
             :loading="loading"
             :force-loading="true"
+            :no-f-l-padding="noFLPadding"
             first-m-v-column-width="6"
             f-card-off
             class="f-data-table-body-bg-color"
@@ -263,6 +264,11 @@ export default {
         },
         /** If `true`, row will become clickable. */
         actionOnRow: {
+            type: Boolean,
+            default: false,
+        },
+        /** No left padding on the first column and right padding on the last column. */
+        noFLPadding: {
             type: Boolean,
             default: false,
         },

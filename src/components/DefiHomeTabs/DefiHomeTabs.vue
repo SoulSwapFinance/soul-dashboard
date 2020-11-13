@@ -10,10 +10,6 @@
                     Positions
                     <span class="f-records-count">({{ positionsRecordsCount }})</span>
                 </template>
-                <template #fmint-overview>
-                    fMint Overview
-                    <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
-                </template>
 
                 <f-tab title-slot="assets">
                     <assets-list
@@ -32,14 +28,6 @@
                         @records-count="onPositionsRecordsCount"
                     />
                 </f-tab>
-                <f-tab title-slot="fmint-overview">
-                    <f-mint-overview-list
-                        :tokens="tokens"
-                        deposit-route-name="defi-lock-unlock"
-                        borrow-route-name="defi-mint-repay"
-                        @records-count="onFMintOverviewRecordsCount"
-                    />
-                </f-tab>
             </f-tabs>
         </div>
     </div>
@@ -52,12 +40,11 @@ import { eventBusMixin } from '@/mixins/event-bus.js';
 import { mapGetters } from 'vuex';
 import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
 import PositionsList from '@/components/data-tables/PositionsList/PositionsList.vue';
-import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
 
 export default {
     name: 'DefiHomeTabs',
 
-    components: { FMintOverviewList, PositionsList, AssetsList, FTab, FTabs },
+    components: { PositionsList, AssetsList, FTab, FTabs },
 
     mixins: [eventBusMixin],
 
@@ -72,7 +59,6 @@ export default {
             tokens: [],
             assetsRecordsCount: 0,
             positionsRecordsCount: 0,
-            fMintOverviewRecordsCount: 0,
             showTabs: true,
         };
     },
@@ -106,10 +92,6 @@ export default {
 
         onPositionsRecordsCount(_count) {
             this.positionsRecordsCount = _count;
-        },
-
-        onFMintOverviewRecordsCount(_count) {
-            this.fMintOverviewRecordsCount = _count;
         },
 
         onAccountPicked() {
