@@ -9,7 +9,7 @@
 
         <defi-deposit
             :token="params.token"
-            :token-symbol="params.tokenSymbol"
+            :token-symbol="params.tokenSymbol || query.tokenSymbol"
             withdraw
             lock-unlock-mode
             on-submit-route="defi-unlock-confirmation"
@@ -35,6 +35,14 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        query() {
+            const { $route } = this;
+            return $route && $route.query ? $route.query : {};
         },
 
         backButtonRoute() {
