@@ -52,14 +52,16 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <template v-if="item._collateral > 0 && usedAsCollateral(item)">
+                        <template v-if="usedAsCollateral(item)">
                             <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
                                 Lock
                             </router-link>
-                            ,
-                            <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
-                                Unlock
-                            </router-link>
+                            <template v-if="item._collateral > 0">
+                                ,
+                                <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                                    Unlock
+                                </router-link>
+                            </template>
                             <template v-if="item.symbol === 'WFTM'">
                                 ,
                                 <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
@@ -74,14 +76,16 @@
                     </div>
                 </div>
                 <template v-else>
-                    <template v-if="item._collateral > 0 && usedAsCollateral(item)">
+                    <template v-if="usedAsCollateral(item)">
                         <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
                             Lock
                         </router-link>
-                        <br />
-                        <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
-                            Unlock
-                        </router-link>
+                        <template v-if="item._collateral > 0">
+                            <br />
+                            <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                                Unlock
+                            </router-link>
+                        </template>
                         <template v-if="item.symbol === 'WFTM'">
                             <br />
                             <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
