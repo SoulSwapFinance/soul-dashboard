@@ -345,6 +345,13 @@ input.no-style {
     body {
         //width: 360px;
     }
+    .open-tab {
+        text-align: right;
+    }
+} @else {
+    .open-tab {
+        display: none;
+    }
 }
 
 

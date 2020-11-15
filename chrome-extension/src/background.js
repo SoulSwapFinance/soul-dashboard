@@ -55,13 +55,6 @@ let sendTransactionRequestCounter = 0;
 let sendTransactionRequests = {};
 let accountsChangedCallbacks = {};
 
-chrome.browserAction.onClicked.addListener((tab) => {
-    chrome.tabs.create({
-        url: 'app/index.html',
-        active: true,
-    });
-});
-
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     if (request.method === 'wallet_init') { // internal, called by inpage on page load
