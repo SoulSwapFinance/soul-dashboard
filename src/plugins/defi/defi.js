@@ -775,6 +775,69 @@ export class DeFi {
     }
 
     /**
+     * @param {string} _ownerAddress
+     * @param {string|array} [_symbol]
+     * @return {Promise<DefiToken[]>}
+     */
+    async fetchERC20Tokens(_ownerAddress, _symbol) {
+        const query = {
+            query: _ownerAddress
+                ? gql`
+                      query ERC20TokenList($owner: Address!) {
+                          erc20TokenList {
+                              address
+                              name
+                              symbol
+                              decimals
+                              totalSupply
+                              balanceOf(owner: $owner)
+                          }
+                      }
+                  `
+                : gql`
+                      query ERC20TokenList {
+                          erc20TokenList {
+                              address
+                              name
+                              symbol
+                              decimals
+                              totalSupply
+                          }
+                      }
+                  `,
+            variables: {
+                owner: _ownerAddress,
+            },
+            // fetchPolicy: 'network-only',
+        };
+        // const data = await this.apolloClient.query(query);
+        const data = await fFetch.fetchGQLQuery(query, 'erc20TokenList');
+
+        let erc20TokenList = data.data.erc20TokenList || [];
+
+        if (filterTokens.length > 0) {
+            erc20TokenList = erc20TokenList.filter(this.filterTokensBySymbol);
+        }
+        console.log('erc20', erc20TokenList);
+
+        let tokens = [];
+
+        this._setTokens(erc20TokenList);
+
+        if (_symbol) {
+            if (typeof _symbol === 'string') {
+                tokens = erc20TokenList.find((_item) => _item.symbol === _symbol);
+            } else if (_symbol.length) {
+                tokens = erc20TokenList.filter((_item) => _symbol.indexOf(_item.symbol) > -1);
+            }
+        } else {
+            tokens = erc20TokenList;
+        }
+
+        return tokens;
+    }
+
+    /**
      * @param {string|array} [_symbol]
      * @return {Promise<number[]>}
      */
