@@ -98,11 +98,11 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <template v-if="item._collateral > 0 && usedAsCollateral(item)">
-                            <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
+                            <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
                                 Lock
                             </router-link>
                             ,
-                            <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                            <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
                                 Unlock
                             </router-link>
                             <template v-if="item.symbol === 'WFTM'">
@@ -112,11 +112,11 @@
                         </template>
                         <template v-if="item._debt > 0">
                             <template v-if="usedInFMint(item) && item.canMint">
-                                <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
                                     Mint
                                 </router-link>
                                 ,
-                                <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
                                     Repay
                                 </router-link>
                             </template>
@@ -139,11 +139,11 @@
                 </div>
                 <template v-else>
                     <template v-if="item._collateral > 0 && usedAsCollateral(item)">
-                        <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
                             Lock
                         </router-link>
                         <br />
-                        <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
                             Unlock
                         </router-link>
                         <template v-if="item.symbol === 'WFTM'">
@@ -153,11 +153,11 @@
                     </template>
                     <template v-if="item._debt > 0">
                         <template v-if="usedInFMint(item) && item.canMint">
-                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
                                 Mint
                             </router-link>
                             <br />
-                            <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                            <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
                                 Repay
                             </router-link>
                         </template>

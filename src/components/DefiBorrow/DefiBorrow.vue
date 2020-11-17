@@ -248,6 +248,11 @@ export default {
             type: String,
             default: '',
         },
+        /** */
+        tokenAddress: {
+            type: String,
+            default: '',
+        },
         /** Follow this route on submit. */
         onSubmitRoute: {
             type: String,
@@ -525,7 +530,9 @@ export default {
             }
 
             if (this.token === null) {
-                if (this.tokenSymbol) {
+                if (this.tokenAddress) {
+                    this.dToken = tokens.find((_token) => _token.address === this.tokenAddress);
+                } else if (this.tokenSymbol) {
                     this.dToken = tokens.find((_token) => _token.symbol === this.tokenSymbol);
                 } else {
                     // get first token that can be borrowed
@@ -556,6 +563,7 @@ export default {
                 } else if (debtDiff < 0) {
                     this.decreasedDebt = -debtDiff;
                 }
+                ``;
             }
         },
 

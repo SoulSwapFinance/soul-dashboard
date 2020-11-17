@@ -128,7 +128,7 @@
                             <router-link
                                 :to="{
                                     path: `/defi/${item._fMintAccount.address}/fmint/lock`,
-                                    query: { tokenSymbol: item.symbol },
+                                    query: { tokenAddress: item.address },
                                 }"
                             >
                                 Lock
@@ -138,7 +138,7 @@
                                 <router-link
                                     :to="{
                                         path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
-                                        query: { tokenSymbol: item.symbol },
+                                        query: { tokenAddress: item.address },
                                     }"
                                 >
                                     Unlock
@@ -153,11 +153,21 @@
                         </template>
                         <template v-if="item._debt > 0">
                             <template v-if="usedInFMint(item)">
-                                <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/mint` }">
+                                <router-link
+                                    :to="{
+                                        path: `/defi/${item._fMintAccount.address}/fmint/mint`,
+                                        query: { tokenAddress: item.address },
+                                    }"
+                                >
                                     Mint
                                 </router-link>
                                 ,
-                                <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/repay` }">
+                                <router-link
+                                    :to="{
+                                        path: `/defi/${item._fMintAccount.address}/fmint/repay`,
+                                        query: { tokenAddress: item.address },
+                                    }"
+                                >
                                     Repay
                                 </router-link>
                             </template>
@@ -183,7 +193,7 @@
                         <router-link
                             :to="{
                                 path: `/defi/${item._fMintAccount.address}/fmint/lock`,
-                                query: { tokenSymbol: item.symbol },
+                                query: { tokenAddress: item.address },
                             }"
                         >
                             Lock
@@ -193,7 +203,7 @@
                             <router-link
                                 :to="{
                                     path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
-                                    query: { tokenSymbol: item.symbol },
+                                    query: { tokenAddress: item.address },
                                 }"
                             >
                                 Unlock
@@ -211,7 +221,7 @@
                             <router-link
                                 :to="{
                                     path: `/defi/${item._fMintAccount.address}/fmint/mint`,
-                                    query: { tokenSymbol: item.symbol },
+                                    query: { tokenAddress: item.address },
                                 }"
                             >
                                 Mint
@@ -220,7 +230,7 @@
                             <router-link
                                 :to="{
                                     path: `/defi/${item._fMintAccount.address}/fmint/repay`,
-                                    query: { tokenSymbol: item.symbol },
+                                    query: { tokenAddress: item.address },
                                 }"
                             >
                                 Repay

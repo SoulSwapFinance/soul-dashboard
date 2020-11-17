@@ -40,21 +40,21 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
                             Mint
                         </router-link>
                         ,
-                        <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
                             Repay
                         </router-link>
                     </div>
                 </div>
                 <template v-else>
-                    <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                    <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
                         Mint
                     </router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                    <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
                         Repay
                     </router-link>
                 </template>

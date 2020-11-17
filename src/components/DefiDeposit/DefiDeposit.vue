@@ -254,6 +254,11 @@ export default {
             type: String,
             default: '',
         },
+        /** */
+        tokenAddress: {
+            type: String,
+            default: '',
+        },
         /** Follow this route on submit. */
         onSubmitRoute: {
             type: String,
@@ -541,7 +546,6 @@ export default {
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
-            const tokens = result[1];
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
@@ -562,14 +566,16 @@ export default {
             }
 
             if (this.token === null) {
-                if (this.tokenSymbol) {
+                if (this.tokenAddress) {
+                    this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
+                } else if (this.tokenSymbol) {
                     this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
                 } else {
                     // get first token that can be deposited
                     this.dToken = this.tokens[0];
                 }
             } else {
-                this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
+                this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 

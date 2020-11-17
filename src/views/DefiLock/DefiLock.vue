@@ -12,6 +12,7 @@
         <defi-deposit
             :token="params.token"
             :token-symbol="params.tokenSymbol || query.tokenSymbol"
+            :token-address="params.tokenAddress || query.tokenAddress"
             deposit
             lock-unlock-mode
             on-submit-route="defi-lock-confirmation"

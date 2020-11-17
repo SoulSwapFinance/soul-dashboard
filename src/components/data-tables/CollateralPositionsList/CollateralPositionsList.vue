@@ -40,11 +40,11 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
                             Lock
                         </router-link>
                         ,
-                        <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                        <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
                             Unlock
                         </router-link>
                         <template v-if="item.symbol === 'WFTM'">
@@ -54,11 +54,11 @@
                     </div>
                 </div>
                 <template v-else>
-                    <router-link :to="{ name: 'defi-lock', params: { tokenSymbol: item.symbol } }">
+                    <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
                         Lock
                     </router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-unlock', params: { tokenSymbol: item.symbol } }">
+                    <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
                         Unlock
                     </router-link>
                     <template v-if="item.symbol === 'WFTM'">

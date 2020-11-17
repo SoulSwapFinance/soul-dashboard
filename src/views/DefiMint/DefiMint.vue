@@ -12,6 +12,7 @@
         <defi-borrow
             :token="params.token"
             :token-symbol="params.tokenSymbol || query.tokenSymbol"
+            :token-address="params.tokenAddress || query.tokenAddress"
             borrow
             mint-repay-mode
             on-submit-route="defi-mint-confirmation"
