@@ -67,10 +67,15 @@
                                 <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                             </template>
                         </template>
-                        <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
-                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                        <template v-if="item.canMint">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                                Mint
+                            </router-link>
+                            <template v-if="item._debt > 0">
+                                ,
+                                <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                    Repay
+                                </router-link>
                             </template>
                         </template>
                     </div>
@@ -91,11 +96,15 @@
                             <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                         </template>
                     </template>
-                    <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
+                    <template v-if="item.canMint">
+                        <router-link :to="{ name: 'defi-mint', params: { tokenSymbol: item.symbol } }">
+                            Mint
+                        </router-link>
+                        <template v-if="item._debt > 0">
                             <br />
-                            <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <router-link :to="{ name: 'defi-repay', params: { tokenSymbol: item.symbol } }">
+                                Repay
+                            </router-link>
                         </template>
                     </template>
                 </template>
@@ -256,7 +265,20 @@ export default {
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
-            this.items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            let tokens = _value.filter(
+                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
+            );
+
+            tokens.forEach((_item) => {
+                const collateral = this.getCollateral(_item);
+                const debt = this.getDebt(_item);
+
+                // store collateral and debt for later use
+                _item._collateral = collateral;
+                _item._debt = debt;
+            });
+
+            this.items = tokens;
 
             this.$emit('records-count', this.items.length);
         },

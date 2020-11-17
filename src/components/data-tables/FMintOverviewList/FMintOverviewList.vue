@@ -6,6 +6,7 @@
             :action-on-row="actionOnRow"
             :loading="loading"
             :force-loading="true"
+            :no-f-l-padding="noFLPadding"
             first-m-v-column-width="6"
             f-card-off
             class="f-data-table-body-bg-color"
@@ -151,7 +152,7 @@
                             </template>
                         </template>
                         <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
+                            <template v-if="usedInFMint(item)">
                                 <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/mint` }">
                                     Mint
                                 </router-link>
@@ -206,12 +207,22 @@
                         </template>
                     </template>
                     <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/mint` }">
+                        <template v-if="usedInFMint(item)">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/mint`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
                                 Mint
                             </router-link>
                             <br />
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/repay` }">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/repay`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
                                 Repay
                             </router-link>
                         </template>
@@ -277,6 +288,11 @@ export default {
         },
         /** If `true`, row will become clickable. */
         actionOnRow: {
+            type: Boolean,
+            default: false,
+        },
+        /** No left padding on the first column and right padding on the last column. */
+        noFLPadding: {
             type: Boolean,
             default: false,
         },
@@ -375,7 +391,9 @@ export default {
             ]);
 
             const fMintAccount = result[0];
-            const tokens = result[1].filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            const tokens = result[1].filter(
+                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
+            );
 
             this.wftmToken = tokens.find((_item) => _item.symbol === 'WFTM');
 
@@ -383,16 +401,20 @@ export default {
                 const collateral = this.getCollateral(_item, fMintAccount);
                 const debt = this.getDebt(_item, fMintAccount);
 
-                _item.accountName = _account.name;
-                _item.accountAddress = _account.address;
-                _item.cratio = this.collateralRatio(fMintAccount);
+                if ((collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM' && _item.symbol !== 'SFTM') {
+                    _item.accountName = _account.name;
+                    _item.accountAddress = _account.address;
+                    _item.cratio = this.collateralRatio(fMintAccount);
 
-                // store collateral and debt for later use
-                _item._collateral = collateral;
-                _item._debt = debt;
-                _item._fMintAccount = fMintAccount;
+                    // store collateral and debt for later use
+                    _item._collateral = collateral;
+                    _item._debt = debt;
+                    _item._fMintAccount = fMintAccount;
 
-                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM' && _item.symbol !== 'SFTM';
+                    return true;
+                }
+
+                return false;
             });
 
             await this.setRewards(fMintAccount, items);
@@ -489,7 +511,7 @@ export default {
          * @return {boolean}
          */
         usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+            return _token.symbol === 'WFTM' || _token.canMint;
         },
 
         /**

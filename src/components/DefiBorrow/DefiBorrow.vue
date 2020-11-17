@@ -44,6 +44,7 @@
                     </div>
                 </div>
 
+                <!--
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
                         <h3 class="label">Total Deposit</h3>
@@ -52,6 +53,7 @@
                         </div>
                     </div>
                 </template>
+-->
             </div>
             <div class="defi-price-input-col align-center">
                 <div class="defi-price-input">
@@ -76,7 +78,8 @@
                         :value="inputValue"
                         :min="minDebt"
                         :max="maxDebt"
-                        type="number"
+                        type="text"
+                        inputmode="decimal"
                         step="any"
                         class="text-input no-style"
                         @change="onInput"
@@ -144,12 +147,14 @@
                     <div class="value">2.38%</div>
                 </div>
 -->
+                <!--
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
                     <div class="value">
                         <f-token-value :token="fusdToken" :value="collateralInFUSD" />
                     </div>
                 </div>
+-->
                 <div v-if="smallView" class="df-data-item smaller">
                     <ratio-info :display-circle="false" :content-loaded="!!tokenPrice" :value="collateralRatio" />
                 </div>
@@ -601,7 +606,7 @@ export default {
 
         onDefiTokenPicked(_token) {
             this.dToken = _token;
-            console.log('picked token', _token);
+            this.currDebt = '0';
         },
 
         onMinBtnClick() {

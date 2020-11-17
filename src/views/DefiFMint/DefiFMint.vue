@@ -2,7 +2,7 @@
     <div class="view-defi-fmint">
         <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fMint</h1>
 
-        <h2 class="perex">Manage your collateral and minted fUSD</h2>
+        <h2 class="perex">Manage your collateral and minted synths</h2>
 
         <div class="grid">
             <div>
@@ -40,13 +40,13 @@
                 </ratio-info>
             </div>
             <div class="align-right">
-                <h2>fUSD</h2>
+                <h2>Synths</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Minted fUSD</h3>
+                    <h3 class="label">Minted</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
@@ -147,6 +147,48 @@
             -->
         </div>
 
+        <f-tabs>
+            <template #fmint-overview>
+                fMint Overview
+                <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
+            </template>
+            <template #collateral-positions>
+                Collateral Positions
+                <span class="f-records-count">({{ collateralPositionsRecordsCount }})</span>
+            </template>
+            <template #synths-positions>
+                Synths Positions
+                <span class="f-records-count">({{ synthsPositionsRecordsCount }})</span>
+            </template>
+
+            <f-tab title-slot="fmint-overview">
+                <f-mint-overview-list
+                    :tokens="tokens"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onFMintOverviewRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="collateral-positions">
+                <collateral-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onCollateralPositionsRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="synths-positions">
+                <synths-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onSynthsPositionsRecordsCount"
+                />
+            </f-tab>
+        </f-tabs>
+
         <!--
         <defi-menu v-else>
             <li class="col-4">
@@ -198,12 +240,29 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
+import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
+import FTabs from '@/components/core/FTabs/FTabs.vue';
+import FTab from '@/components/core/FTabs/FTab.vue';
+import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
+import SynthsPositionsList from '@/components/data-tables/SynthsPositionsList/SynthsPositionsList.vue';
 import appConfig from '../../../app.config.js';
 
 export default {
     name: 'DefiFMint',
 
-    components: { CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
+    components: {
+        SynthsPositionsList,
+        CollateralPositionsList,
+        FTab,
+        FTabs,
+        FMintOverviewList,
+        CRatioInfo,
+        RatioInfo,
+        FPlaceholder,
+        FTokenValue,
+        FBackButton,
+        FMessage,
+    },
 
     mixins: [eventBusMixin],
 
@@ -225,6 +284,11 @@ export default {
             fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
+            /** @type {DefiToken[]} */
+            mintableTokens: [],
+            fMintOverviewRecordsCount: 0,
+            collateralPositionsRecordsCount: 0,
+            synthsPositionsRecordsCount: 0,
             id: getUniqueId(),
         };
     },
@@ -238,10 +302,9 @@ export default {
         },
 
         debtFUSD() {
-            /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
-
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
+            return this.mintableTokens.reduce((_prev, _token) => {
+                return _prev + this.$defi.convertTokenValue(this.getDebt(_token), _token, this.fusdToken);
+            }, 0);
         },
 
         collateral() {
@@ -388,20 +451,45 @@ export default {
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
             this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
 
             if (!appConfig.disableSFTM) {
                 this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
             }
 
-            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
+
+            this.mintableTokens = this.tokens.filter($defi.canTokenBeMinted);
 
             this.rewards = await $defi.fetchFMintAccountRewards(address);
         },
 
+        /**
+         * @param {DefiToken} _token
+         * @return {number}
+         */
+        getDebt(_token) {
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
         onAccountPicked() {
             this.init();
+        },
+
+        onFMintOverviewRecordsCount(_count) {
+            this.fMintOverviewRecordsCount = _count;
+        },
+
+        onCollateralPositionsRecordsCount(_count) {
+            this.collateralPositionsRecordsCount = _count;
+        },
+
+        onSynthsPositionsRecordsCount(_count) {
+            this.synthsPositionsRecordsCount = _count;
         },
     },
 };
