@@ -377,7 +377,7 @@ export default {
 
             // if (params.fromToken && params.toToken) {
             if (params.fromToken) {
-                this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
+                this.fromToken = this.tokens.find((_item) => _item.address === params.fromToken.address);
                 // this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
             } else if (this.tokens.length >= 2) {
                 this.fromToken = this.tokens[0];
