@@ -85,6 +85,7 @@ import { numberSort, stringSort } from '@/utils/array-sorting.js';
 import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowTokenWindow/DepositOrBorrowTokenWindow.vue';
 import { formatNumberByLocale } from '@/filters.js';
 import { mapGetters } from 'vuex';
+import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'CollateralPositionsList',
@@ -261,7 +262,7 @@ export default {
          * @return {boolean}
          */
         usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM'; // || _token.symbol === 'SFTM';
+            return _token.symbol === 'WFTM' || (_token.symbol === 'SFTM' && !appConfig.disableSFTM);
         },
     },
 };

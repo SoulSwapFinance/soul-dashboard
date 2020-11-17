@@ -123,8 +123,6 @@ export default {
             defi: this.$defi,
             /** Token used in <deposit-or-borrow-token-window> */
             dbToken: {},
-            /** @type {DefiToken} */
-            wftmToken: {},
             columns: [
                 {
                     name: 'asset',
@@ -176,8 +174,6 @@ export default {
          */
         async tokens(_value) {
             let tokens = _value.filter((_item) => _item.isActive && _item.canMint && _item.symbol !== 'FTM');
-
-            this.wftmToken = _value.find((_item) => _item.symbol === 'WFTM');
 
             const items = tokens.filter((_item) => {
                 const debt = this.getDebt(_item);

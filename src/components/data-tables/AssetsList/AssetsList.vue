@@ -142,6 +142,7 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
+import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'AssetsList',
@@ -265,9 +266,13 @@ export default {
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
-            let tokens = _value.filter(
-                (_item) => _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM'
-            );
+            let tokens = _value.filter((_item) => {
+                if (_item.symbol === 'SFTM' && appConfig.disableSFTM) {
+                    return false;
+                }
+
+                return _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM';
+            });
 
             tokens.forEach((_item) => {
                 const collateral = this.getCollateral(_item);
@@ -312,7 +317,7 @@ export default {
          * @return {boolean}
          */
         usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM' || _token.symbol === 'FUSD';
+            return this.usedAsCollateral(_token) || _token.symbol === 'FUSD';
         },
 
         /**
@@ -320,7 +325,7 @@ export default {
          * @return {boolean}
          */
         usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
+            return _token.symbol === 'WFTM' || (_token.symbol === 'SFTM' && !appConfig.disableSFTM);
         },
     },
 };
