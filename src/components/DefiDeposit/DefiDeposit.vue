@@ -101,7 +101,7 @@
 
                     <div class="token-label">
                         <f-select-button
-                            v-if="!singleToken"
+                            v-if="!singleToken && !disableSFTM"
                             collapsed
                             aria-label="pick a token"
                             @click.native="onTokenSelectorClick"
@@ -224,6 +224,7 @@ import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'DefiDeposit',
@@ -301,6 +302,7 @@ export default {
             depositOrWithdraw: this.deposit || this.withdraw,
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             label: 'tmp',
+            disableSFTM: appConfig.disableSFTM,
             id: getUniqueId(),
         };
     },
@@ -551,7 +553,11 @@ export default {
                 this.tokens = this.tokens.filter($defi.canTokenBeDeposited);
 
                 if (this.lockUnlockMode) {
-                    this.tokens = this.tokens.filter((_token) => _token.symbol !== 'FUSD');
+                    if (this.disableSFTM) {
+                        this.tokens = this.tokens.filter((_token) => _token.symbol === 'WFTM');
+                    } else {
+                        this.tokens = this.tokens.filter((_token) => _token.symbol !== 'FUSD');
+                    }
                 }
             }
 

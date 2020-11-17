@@ -345,6 +345,7 @@ export default {
                 return false;
             } else {
                 return (
+                    !appConfig.disableSFTM &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
@@ -369,6 +370,7 @@ export default {
 
         canMintSFTM() {
             return (
+                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -380,6 +382,7 @@ export default {
 
         canRepaySFTM() {
             return (
+                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -391,6 +394,7 @@ export default {
 
         showRepaySFTMMessage() {
             return (
+                !appConfig.disableSFTM &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
                 this._delegation &&

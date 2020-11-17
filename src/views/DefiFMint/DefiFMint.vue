@@ -10,14 +10,17 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">
                         <router-link :to="{ name: 'defi-ftrade' }"> Available {{ wftmTokenSymbol }} </router-link>
-                        + {{ sftmTokenSymbol }}
+                        <template v-if="sftmToken.address">+ {{ sftmTokenSymbol }}</template>
                     </h3>
                     <div class="value">
                         <f-token-value :token="wftmToken" :value="availableWFTM + availableSFTM" no-currency />
                     </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked {{ wftmTokenSymbol }} + {{ sftmTokenSymbol }}</h3>
+                    <h3 class="label">
+                        Locked {{ wftmTokenSymbol }}
+                        <template v-if="sftmToken.address"> + {{ sftmTokenSymbol }}</template>
+                    </h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="collateral" no-currency /></div>
                 </div>
                 <div class="df-data-item smaller">
@@ -195,6 +198,7 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'DefiFMint',
@@ -385,7 +389,11 @@ export default {
             this.fMintAccount = result[0];
             this.tokens = result[1];
             this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
-            this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
+
+            if (!appConfig.disableSFTM) {
+                this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
+            }
+
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
 
