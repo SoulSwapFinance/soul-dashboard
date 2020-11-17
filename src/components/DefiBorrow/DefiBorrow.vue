@@ -412,12 +412,9 @@ export default {
         },
 
         fSliderMax() {
-            return this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
-            /*
-            return this.repay && this.availableBalance > 0
-                ? Math.min(this.maxDebt, this.availableBalance)
-                : this.maxDebt;
-            */
+            const maxValue = this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
+
+            return isNaN(maxValue) || maxValue < 0 ? 0 : maxValue;
         },
 
         inputValue() {
@@ -514,7 +511,7 @@ export default {
             const tokens = result[1];
 
             this.fMintAccount = result[0];
-            this.wftmToken = tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.wftmToken = tokens.find((_item) => _item.symbol === 'WFTM');
             this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {

@@ -2,19 +2,16 @@
     <div class="view-defi-unlock">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Unlock wFTM
+            Unlock Collateral
         </h1>
 
-        <h2 class="perex">
-            Unlock wFTM after you repaid fUSD.
-        </h2>
+        <h2 class="perex">Unlock collateral after you repaid minted synths.</h2>
 
         <defi-deposit
             :token="params.token"
+            :token-symbol="params.tokenSymbol || query.tokenSymbol"
             withdraw
             lock-unlock-mode
-            single-token
-            token-symbol="WFTM"
             on-submit-route="defi-unlock-confirmation"
         />
     </div>
@@ -38,6 +35,14 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        query() {
+            const { $route } = this;
+            return $route && $route.query ? $route.query : {};
         },
 
         backButtonRoute() {

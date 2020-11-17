@@ -8,6 +8,7 @@
  * @property {string} fMintRewardDistribution Address of the DeFi fMint reward distribution contract.
  * @property {string} uniswapCoreFactory Address of the Uniswap Core Factory contract.
  * @property {string} uniswapRouter Address of the Uniswap Router contract.
+ * @property {string} StakeTokenizerContract Address of the Stake Tokenizer contract.
  * @property {number} decimals Decimals represents the decimals / digits correction applied to the fees and ratios.
  */
 

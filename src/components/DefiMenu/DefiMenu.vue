@@ -71,12 +71,14 @@
 </template>
 
 <script>
+import appConfig from '../../../app.config.js';
+
 export default {
     name: 'DefiMenu',
 
     computed: {
         fLendDisabled() {
-            return this.$defi && this.$defi.tmpWFTM;
+            return this.$defi && appConfig.disableFLend;
         },
     },
 };

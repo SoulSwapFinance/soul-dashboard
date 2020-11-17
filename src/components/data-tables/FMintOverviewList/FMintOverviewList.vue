@@ -123,15 +123,27 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <template v-if="item._collateral > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
-                                <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/lock` }">
-                                    Lock
-                                </router-link>
+                        <template v-if="usedAsCollateral(item)">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/lock`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
+                                Lock
+                            </router-link>
+                            <template v-if="item._collateral > 0">
                                 ,
-                                <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/unlock` }">
+                                <router-link
+                                    :to="{
+                                        path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
+                                        query: { tokenSymbol: item.symbol },
+                                    }"
+                                >
                                     Unlock
                                 </router-link>
+                            </template>
+                            <template v-if="item.symbol === 'WFTM'">
                                 ,
                                 <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fswap` }">
                                     Swap
@@ -166,15 +178,27 @@
                     </div>
                 </div>
                 <template v-else>
-                    <template v-if="item._collateral > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/lock` }">
-                                Lock
-                            </router-link>
+                    <template v-if="usedAsCollateral(item)">
+                        <router-link
+                            :to="{
+                                path: `/defi/${item._fMintAccount.address}/fmint/lock`,
+                                query: { tokenSymbol: item.symbol },
+                            }"
+                        >
+                            Lock
+                        </router-link>
+                        <template v-if="item._collateral > 0">
                             <br />
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fmint/unlock` }">
+                            <router-link
+                                :to="{
+                                    path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
+                                    query: { tokenSymbol: item.symbol },
+                                }"
+                            >
                                 Unlock
                             </router-link>
+                        </template>
+                        <template v-if="item.symbol === 'WFTM'">
                             <br />
                             <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fswap` }">
                                 Swap
@@ -368,7 +392,7 @@ export default {
                 _item._debt = debt;
                 _item._fMintAccount = fMintAccount;
 
-                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM';
+                return (collateral !== 0 || debt !== 0) && _item.symbol !== 'WFTM' && _item.symbol !== 'SFTM';
             });
 
             await this.setRewards(fMintAccount, items);
@@ -466,6 +490,14 @@ export default {
          */
         usedInFMint(_token) {
             return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {boolean}
+         */
+        usedAsCollateral(_token) {
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
 
         /**
