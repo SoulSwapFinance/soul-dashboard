@@ -129,9 +129,9 @@
                     </template>
                 </div>
                 <div class="col align-right align-center-md">
-                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
+                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint Synths</router-link>
                     <br />
-                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
+                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay Synths</router-link>
                 </div>
             </div>
             <!--
