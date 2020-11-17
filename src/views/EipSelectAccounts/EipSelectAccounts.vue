@@ -28,6 +28,7 @@
 </template>
 
 <script>
+/* global chrome */
 import { mapGetters } from 'vuex';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton';
 import FForm from '@/components/core/FForm/FForm';
@@ -45,6 +46,22 @@ export default {
         site: function () {
             return this.$route.params.site;
         },
+    },
+
+    created() {
+        if (this.$route.params.site === 'popup') {
+            chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+                if (tabs[0] && tabs[0].url) {
+                    let origin = new URL(tabs[0].url).origin;
+                    let hasAccounts = this.accounts.find((account) => account.sites.includes(origin));
+                    if (hasAccounts) {
+                        this.$router.push({ name: 'eip-select-accounts', params: { site: origin } });
+                        return;
+                    }
+                }
+                this.$router.push({ path: '/' });
+            });
+        }
     },
 
     methods: {
@@ -65,6 +82,11 @@ export default {
                     let sites = account.sites.filter((value) => value !== site);
                     this.$store.commit(SET_ACCOUNT, { ...account, sites, index });
                 }
+            });
+            chrome.runtime.sendMessage({
+                method: 'wallet_requestAccounts_done',
+                origin: site,
+                accounts: selectedAccounts,
             });
             window.close();
         },

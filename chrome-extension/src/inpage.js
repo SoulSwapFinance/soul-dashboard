@@ -6,7 +6,6 @@
 class FantomEventEmitter {
 
     events = {};
-    messageCallbacks = {};
 
     emit (type) {
         var listeners, args = [].slice.call(arguments, 1);
@@ -112,6 +111,8 @@ class FantomInpageProvider extends FantomEventEmitter {
     _messageCounter = Math.floor(Math.random() * 4294967295);
     _isConnected = false;
     chainId = undefined;
+    debug = false;
+    messageCallbacks = {};
 
     constructor () {
         super();
@@ -240,6 +241,7 @@ class FantomInpageProvider extends FantomEventEmitter {
     _sendToContentScript(payload, callback = null) {
         let id = this._getMessageId();
         if (callback) this.messageCallbacks[id] = callback;
+        if (this.debug) console.log('FantomPwaWallet request', id, payload);
         window.postMessage({
             target: 'FantomPWAwalletBackground',
             data: payload,
@@ -256,10 +258,18 @@ class FantomInpageProvider extends FantomEventEmitter {
         if (!msg.data) return
         let data = msg.data;
 
+        if (this.debug) console.log('FantomPwaWallet response', msg.msgId, data);
+
         if (msg.msgId && typeof this.messageCallbacks[msg.msgId] !== 'undefined') {
             let callback = this.messageCallbacks[msg.msgId];
             delete this.messageCallbacks[msg.msgId];
-            callback(null, data); // (error, result)
+            if (data.error) {
+                console.log('FantomPwaWallet RPC error', data);
+                callback(data.error, null); // (error, result)
+            } else {
+                callback(null, data); // (error, result)
+            }
+            if (this.debug) console.log('FantomPwaWallet response callback called', msg.msgId, data);
         }
 
         if (data.method === 'wallet_accountsChanged') {
@@ -285,6 +295,7 @@ class FantomInpageProvider extends FantomEventEmitter {
      * internally initiated request.
      */
     _handleAccountsChanged (accounts, isEthAccounts = false, isInternal = false) {
+        if (this.debug) console.log('FantomPwaWallet accountsChanged', accounts);
         this.emit('accountsChanged', accounts)
     }
 }
@@ -295,4 +306,4 @@ window.addEventListener("message", function (event) {
     window.ethereum._receiveFromContentScript(event);
 });
 window.dispatchEvent(new Event('ethereum#initialized'));
-console.log("inpage ethereum/fantom object initialized");
+console.log("Fantom-PWA-Wallet initialized");
