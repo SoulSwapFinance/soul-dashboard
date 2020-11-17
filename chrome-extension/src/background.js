@@ -45,7 +45,6 @@ const proxiedMethods = [
 
 const requiresLatestMethods = [ // requires block number as 2th param
     'eth_call',
-    'eth_estimateGas',
     'eth_getBalance',
     'eth_getTransactionCount',
     'eth_getCode',
@@ -71,18 +70,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         );
         delete sendTransactionRequests[request.stid];
     }
+    else if (request.method === 'wallet_requestAccounts_done' && sender.origin === window.origin) { // from EipSelectAccounts
+        console.log('wallet_requestAccounts_done', request);
+        handleAccountsChanged(request.origin, request.accounts);
+    }
 
     // implementation of Ethereum RPC API: https://eth.wiki/json-rpc/API#json-rpc-methods
     // and EIP-1102: Opt-in account exposure: https://eips.ethereum.org/EIPS/eip-1102
 
     else if (request.method === 'eth_accounts' || request.method === 'eth_requestAccounts') { // list of addresses owned by client
         console.log(request.method, request);
-        getOriginAccounts(sender.origin, (accounts, haveAccounts) => {
+        getAccounts(sender.origin, (accounts, haveAccounts) => {
             if (accounts.length === 0 || request.method === 'eth_requestAccounts') {
                 if (haveAccounts) { // select accounts from already opened accounts
-                    popupManager.showOrUpdatePopup('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
+                    popupManager.goto('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
                 } else { // need to add new account
-                    popupManager.showOrUpdatePopup('app/index.html');
+                    popupManager.goto('app/index.html');
                 }
 
                 if (!accountsChangedCallbacks[sender.origin]) accountsChangedCallbacks[sender.origin] = [];
@@ -102,7 +105,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     else if (request.method === 'eth_sendTransaction') {
         console.log('eth_sendTransaction', request);
-        getOriginAccounts(sender.origin, (accounts) => {
+        getAccounts(sender.origin, (accounts) => {
             let from = request.params[0].from.toLowerCase();
             if (accounts.filter((account) => account.address.toLowerCase() === from).length === 0) {
                 sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
@@ -113,7 +116,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
             let stid = ++sendTransactionRequestCounter;
             sendTransactionRequests[stid] = { request, sendResponse };
-            popupManager.showOrUpdatePopup('app/index.html#/eip-send-transaction/' + stid);
+            popupManager.goto('app/index.html#/eip-send-transaction/' + stid);
 
         });
         return true;
@@ -148,22 +151,27 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     let change = changes[STORAGE_KEY];
     console.log('state changed', change);
 
+    forEachTab(function(tab, origin) {
+        let oldAccounts = getAccountsFromState(origin, change.oldValue).map((account) => account.address);
+        let newAccounts = getAccountsFromState(origin, change.newValue).map((account) => account.address);
+
+        if (!arrayEquals(oldAccounts, newAccounts)) {
+            console.log('wallet_accountsChanged', origin, change);
+            chrome.tabs.sendMessage(tab.id, { method: 'wallet_accountsChanged', result: newAccounts });
+            handleAccountsChanged(origin, newAccounts);
+        }
+    });
+});
+
+function forEachTab(callback) {
     chrome.tabs.query({}, function(tabs) {
         tabs.forEach(function(tab) {
             if (!tab.url) return;
             let origin = (new URL(tab.url)).origin;
-
-            let oldAccounts = getOriginAccountsFromState(origin, change.oldValue).map((account) => account.address);
-            let newAccounts = getOriginAccountsFromState(origin, change.newValue).map((account) => account.address);
-
-            if (!arrayEquals(oldAccounts, newAccounts)) {
-                console.log('wallet_accountsChanged', origin, change);
-                chrome.tabs.sendMessage(tab.id, { method: 'wallet_accountsChanged', result: newAccounts });
-                handleAccountsChanged(origin, newAccounts);
-            }
+            callback(tab, origin);
         });
     });
-});
+}
 
 function handleAccountsChanged(origin, accountIds) {
     if (accountsChangedCallbacks[origin]) {
@@ -172,13 +180,13 @@ function handleAccountsChanged(origin, accountIds) {
     }
 }
 
-function getOriginAccounts(origin, callback) {
+function getAccounts(origin, callback) {
     getState((state) => {
-        callback(getOriginAccountsFromState(origin, state), state.accounts && state.accounts.length > 0);
+        callback(getAccountsFromState(origin, state), state.accounts && state.accounts.length > 0);
     });
 }
 
-function getOriginAccountsFromState(origin, state) {
+function getAccountsFromState(origin, state) {
     if (state && state.accounts) {
         return state.accounts.filter((account) => account.sites && account.sites.includes(origin));
     } else {
