@@ -1,6 +1,6 @@
 import './defi.types.js';
 import gql from 'graphql-tag';
-import { isObjectEmpty, lowercaseFirstChar } from '../../utils';
+import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
 
@@ -115,7 +115,9 @@ export class DeFi {
         const tokenPrice = this.getTokenPrice(_token);
         let decimals = 0;
 
-        if (tokenPrice < 0.5) {
+        if (tokenPrice === 0) {
+            decimals = 6;
+        } else if (tokenPrice < 0.5) {
             decimals = 1;
         } else if (tokenPrice < 100) {
             decimals = 2;
@@ -777,7 +779,7 @@ export class DeFi {
     }
 
     /**
-     * @param {string} _ownerAddress
+     * @param {string} [_ownerAddress]
      * @param {string|array} [_symbol]
      * @return {Promise<DefiToken[]>}
      */
@@ -834,6 +836,50 @@ export class DeFi {
             }
         } else {
             tokens = erc20TokenList;
+        }
+
+        return tokens;
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @return {Promise<DefiToken[]>}
+     */
+    async fetchERC20TokensAvailableBalances(_ownerAddress) {
+        const query = {
+            query: gql`
+                query ERC20TokenList($owner: Address!) {
+                    erc20TokenList {
+                        address
+                        balanceOf(owner: $owner)
+                    }
+                }
+            `,
+            variables: {
+                owner: _ownerAddress,
+            },
+        };
+        const data = await fFetch.fetchGQLQuery(query, 'erc20TokenList');
+
+        return data.data.erc20TokenList || [];
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @param {ERC20Token[]} _tokens
+     */
+    async getERC20TokensWithAvailableBalances(_ownerAddress, _tokens) {
+        const tokenBalances = await this.fetchERC20TokensAvailableBalances(_ownerAddress);
+        const tokens = cloneObject(_tokens);
+
+        if (tokenBalances) {
+            tokenBalances.forEach((_token) => {
+                const token = tokens.find((_t) => _t.address === _token.address);
+
+                if (token) {
+                    token.balanceOf = _token.balanceOf;
+                }
+            });
         }
 
         return tokens;
