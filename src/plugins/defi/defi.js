@@ -781,7 +781,7 @@ export class DeFi {
     /**
      * @param {string} [_ownerAddress]
      * @param {string|array} [_symbol]
-     * @return {Promise<DefiToken[]>}
+     * @return {Promise<ERC20Token[]>}
      */
     async fetchERC20Tokens(_ownerAddress, _symbol) {
         const query = {
@@ -822,7 +822,7 @@ export class DeFi {
         if (filterTokens.length > 0) {
             erc20TokenList = erc20TokenList.filter(this.filterTokensBySymbol);
         }
-        console.log('erc20', erc20TokenList);
+        // console.log('erc20', erc20TokenList);
 
         let tokens = [];
 
@@ -843,7 +843,7 @@ export class DeFi {
 
     /**
      * @param {string} _ownerAddress
-     * @return {Promise<DefiToken[]>}
+     * @return {Promise<ERC20Token[]>}
      */
     async fetchERC20TokensAvailableBalances(_ownerAddress) {
         const query = {
@@ -862,6 +862,28 @@ export class DeFi {
         const data = await fFetch.fetchGQLQuery(query, 'erc20TokenList');
 
         return data.data.erc20TokenList || [];
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @param {string} _tokenAddress
+     * @return {Promise<Number>}
+     */
+    async fetchERC20TokenAvailableBalance(_ownerAddress, _tokenAddress) {
+        const query = {
+            query: gql`
+                query ERC20TokenList($owner: Address!, $token: Address!) {
+                    ercTokenBalance(owner: $owner, token: $token)
+                }
+            `,
+            variables: {
+                owner: _ownerAddress,
+                token: _tokenAddress,
+            },
+        };
+        const data = await fFetch.fetchGQLQuery(query, 'ercTokenBalance');
+
+        return data.data.ercTokenBalance || 0;
     }
 
     /**

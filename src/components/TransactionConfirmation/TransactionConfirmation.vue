@@ -29,7 +29,11 @@
                             class="f-row-label"
                             style="display: inline-block;"
                         >
-                            ( <template v-if="sendToAddressBalance"> {{ sendToAddressBalance }} FTM </template>
+                            (
+                            <template v-if="token.address">
+                                <f-token-value :value="sendToAddressBalance" :token="token" />
+                            </template>
+                            <template v-else-if="sendToAddressBalance"> {{ sendToAddressBalance }} FTM </template>
                             <template v-if="sendToAccountName">, {{ sendToAccountName }} </template> )
                         </span>
                     </div>
@@ -40,7 +44,10 @@
                     <div class="col break-word">
                         {{ currentAccount.address }}
                         <span class="f-row-label" style="display: inline-block;">
-                            ( {{ toFTM(currentAccount.balance) }} FTM
+                            <template v-if="token.address">
+                                ( <f-token-value :value="maxRemainingErc20TokenBalance" :token="token" />
+                            </template>
+                            <template v-else> ( {{ toFTM(currentAccount.balance) }} FTM </template>
                             <template v-if="currentAccount.name">, {{ currentAccount.name }}</template> )
                         </span>
                     </div>
@@ -119,9 +126,10 @@ import { formatNumberByLocale } from '../../filters.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
-    components: { TxConfirmation },
+    components: { FTokenValue, TxConfirmation },
 
     props: {
         // transaction data from SendTransactionForm
@@ -167,7 +175,7 @@ export default {
         maxRemainingErc20TokenBalance() {
             const { token } = this;
 
-            return this.$defi.fromTokenValue(token.availableBalance, token) || 0;
+            return this.$defi.fromTokenValue(token.balanceOf || token.availableBalance, token) || 0;
         },
 
         sendToAccountName() {
@@ -183,7 +191,13 @@ export default {
             let balance = 0;
             let data;
 
-            if (sendDirection === 'OperaToOpera') {
+            if (this.token.address) {
+                data = await this.$defi.fetchERC20TokenAvailableBalance(this.sendToAddress, this.token.address);
+
+                if (data) {
+                    balance = this.$defi.fromTokenValue(data, this.token);
+                }
+            } else if (sendDirection === 'OperaToOpera') {
                 data = await this.$fWallet.getBalance(this.txData.opera_address);
                 balance = this.toFTM(data.balance);
             } else if (sendDirection === 'OperaToBinance') {
@@ -270,7 +284,7 @@ export default {
                         token.address,
                         fWallet.toChecksumAddress(dTxData.opera_address),
                         parseFloat(dTxData.amount) === this.maxRemainingErc20TokenBalance
-                            ? token.availableBalance
+                            ? token.balanceOf || token.availableBalance
                             : Web3.utils.toHex(Web3.utils.toWei(dTxData.amount))
                     ),
                     this.currentAccount.address,
