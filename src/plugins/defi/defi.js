@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
+import appConfig from '../../../app.config.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -658,38 +659,36 @@ export class DeFi {
      */
     async fetchSettings() {
         const data = await this.apolloClient.query({
-            query: gql`
-                query DefiSettings {
-                    defiConfiguration {
-                        mintFee4
-                        rewardCollateralRatio4
-                        minCollateralRatio4
-                        uniswapCoreFactory
-                        uniswapRouter
-                        fMintContract
-                        fMintRewardDistribution
-                        decimals
-                        StakeTokenizerContract
-                    }
-                }
-            `,
-            /*
-            query: gql`
-                query DefiSettings {
-                    defiConfiguration {
-                        mintFee4
-                        rewardCollateralRatio4
-                        minCollateralRatio4
-                        uniswapCoreFactory
-                        uniswapRouter
-                        fMintContract
-                        fMintRewardDistribution
-                        decimals
-                        StakeTokenizerContract
-                    }
-                }
-            `,
-*/
+            query: !appConfig.disableSFTM
+                ? gql`
+                      query DefiSettings {
+                          defiConfiguration {
+                              mintFee4
+                              rewardCollateralRatio4
+                              minCollateralRatio4
+                              uniswapCoreFactory
+                              uniswapRouter
+                              fMintContract
+                              fMintRewardDistribution
+                              decimals
+                              StakeTokenizerContract
+                          }
+                      }
+                  `
+                : gql`
+                      query DefiSettings {
+                          defiConfiguration {
+                              mintFee4
+                              rewardCollateralRatio4
+                              minCollateralRatio4
+                              uniswapCoreFactory
+                              uniswapRouter
+                              fMintContract
+                              fMintRewardDistribution
+                              decimals
+                          }
+                      }
+                  `,
             fetchPolicy: 'network-only',
         });
 
