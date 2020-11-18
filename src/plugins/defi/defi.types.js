@@ -57,3 +57,15 @@
  * @property {boolean} canPushNewRewards Indicates if new rewards are unlocked inside the reward distribution and can be pushed into the system to distribute them among eligible accounts.
  * @property {boolean} canReceiveRewards informs if the fMint account collateral to debt is high enough to receive earned rewards.
  */
+
+/**
+ * ERC20 token object.
+ * @typedef {Object} ERC20Token
+ * @property {string} address Address of the token is used as the token's unique identifier.
+ * @property {string} name Name of the token.
+ * @property {string} symbol Symbol used as an abbreviation for the token.
+ * @property {number} decimals Decimals is the number of decimals the token supports.
+ * @property {number} totalSupply Represents total amount of tokens across all accounts
+ * @property {string} balanceOf Represents the total available balance of the token on the account regardless of the DeFi usage of the token.
+ * @property {string} allowance Amount of ERC20 tokens unlocked by the owner / token holder to be accessible for DeFi operations
+ */
