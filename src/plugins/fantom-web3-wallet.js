@@ -335,7 +335,7 @@ export class FantomWeb3Wallet {
             'account.delegations'
         );
 
-        return data.data.account;
+        return data.data ? data.data.account : {};
     }
 
     /**

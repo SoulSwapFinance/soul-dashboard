@@ -72,6 +72,8 @@ export class FFetch {
                 if (item.edges) {
                     edges = edges.concat(item.edges);
                 }
+            } else {
+                pageInfo = null;
             }
         }
 
