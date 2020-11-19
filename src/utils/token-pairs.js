@@ -48,14 +48,16 @@ export class TokenPairs {
     /**
      * @param {array} _pairs
      * @param {ERC20Token[]} _tokens
-     * @return {*}
+     * @return {object}
      */
     static getPairByTokens(_pairs, _tokens) {
-        return _pairs.find((_pair) => {
-            const { tokens } = _pair;
+        return (
+            _pairs.find((_pair) => {
+                const { tokens } = _pair;
 
-            return TokenPairs.findToken(tokens, _tokens[0]) && TokenPairs.findToken(tokens, _tokens[1]);
-        });
+                return TokenPairs.findToken(tokens, _tokens[0]) && TokenPairs.findToken(tokens, _tokens[1]);
+            }) || {}
+        );
     }
 
     /**
@@ -151,5 +153,14 @@ export class TokenPairs {
      */
     static findToken(_array, _token) {
         return _array.find((_item) => _item.address === _token.address);
+    }
+
+    /**
+     * @param {array} _array
+     * @param {string} _tokenSymbol
+     * @return {ERC20Token}
+     */
+    static findTokenBySymbol(_array, _tokenSymbol) {
+        return _array.find((_item) => _item.symbol === _tokenSymbol);
     }
 }
