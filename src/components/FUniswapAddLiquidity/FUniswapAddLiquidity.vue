@@ -303,6 +303,11 @@ export default {
                         this.setTokenPrices();
                     }
 
+                    // pair not exists
+                    if (!this.dPair.pairAddress) {
+                        this.toToken = {};
+                    }
+
                     defer(() => {
                         this.updateSubmitLabel();
                     });
