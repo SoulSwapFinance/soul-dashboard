@@ -96,14 +96,15 @@ export default {
 
     data() {
         return {
-            /** @type {DefiToken} */
+            /** @type {ERC20Token} */
             fromToken: {},
-            /** @type {DefiToken} */
+            /** @type {ERC20Token} */
             toToken: {},
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             dPair: {},
-            addDeciamals: 2,
+            pairs: [],
+            addDeciamals: 0,
             currLiquidity: '0',
             submitLabel: 'Remove',
         };
@@ -113,7 +114,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         /**
-         * @return {{fromToken: DefiToken, toToken: DefiToken}}
+         * @return {{fromToken: ERC20Token, toToken: ERC20Token}}
          */
         params() {
             const { $route } = this;
@@ -220,24 +221,19 @@ export default {
         async init() {
             const { $defi } = this;
             const address = this.currentAccount ? this.currentAccount.address : '';
-            const result = await Promise.all([$defi.fetchTokens(address), $defi.init()]);
+            const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
-            const tokens = result[0];
+            this.pairs = result[0];
 
-            if (!this.dPair.pairAddress) {
-                let uniswapPairs = await this.$defi.fetchUniswapPairs(address, this.dPair.pairAddress);
-
-                if (uniswapPairs && uniswapPairs.length > 0) {
-                    uniswapPairs = await this.$defi.fetchUniswapPairs(address, uniswapPairs[0].pairAddress);
-
-                    this.dPair = uniswapPairs[0];
-                }
+            if (!this.dPair.pairAddress && this.pairs.length > 0) {
+                const pair = await this.$defi.fetchUniswapPairs(address, this.pairs[0].pairAddress);
+                this.dPair = pair[0];
             }
 
             const uniswapTokens = this.dPair.tokens;
             if (uniswapTokens && uniswapTokens.length === 2) {
-                this.fromToken = tokens.find((_item) => _item.address === uniswapTokens[0].address);
-                this.toToken = tokens.find((_item) => _item.address === uniswapTokens[1].address);
+                this.fromToken = uniswapTokens[0];
+                this.toToken = uniswapTokens[1];
 
                 this.setTokenPrices();
             }
