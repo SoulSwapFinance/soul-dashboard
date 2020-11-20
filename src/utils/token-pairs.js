@@ -156,6 +156,15 @@ export class TokenPairs {
     }
 
     /**
+     * @param {object} _pair
+     * @param {ERC20Token} _token
+     * @return {ERC20Token|undefined}
+     */
+    static findPairToken(_pair, _token) {
+        return TokenPairs.findToken(_pair ? _pair.tokens : null, _token);
+    }
+
+    /**
      * @param {array} _array
      * @param {string} _tokenSymbol
      * @return {ERC20Token|undefined}

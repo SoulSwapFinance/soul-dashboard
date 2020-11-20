@@ -4,6 +4,7 @@ import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
 import appConfig from '../../../app.config.js';
+import { TokenPairs } from '@/utils/token-pairs.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -635,21 +636,12 @@ export class DeFi {
     }
 
     /**
-     * @param {string} _address
-     * @param {object} _pair
-     * @return {{}|null}
-     */
-    getPairTokenByAddress(_address, _pair) {
-        return _address && _pair && _pair.tokens ? _pair.tokens.find((_token) => _token.address === _address) : null;
-    }
-
-    /**
      * @param {object} _token
      * @param {object} _pair
      * @return {*|number}
      */
     totalTokenLiquidity(_token, _pair) {
-        const pairToken = this.getPairTokenByAddress(_token ? _token.address : '', _pair);
+        const pairToken = TokenPairs.findPairToken(_pair, _token);
 
         return pairToken ? parseInt(this.fromTokenValue(pairToken.balanceOf, _token)) : 0;
     }
