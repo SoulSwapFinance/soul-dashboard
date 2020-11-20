@@ -140,27 +140,27 @@ export class TokenPairs {
     /**
      * @param {array} _array
      * @param {ERC20Token} _token
-     * @return {number}
+     * @return {number|undefined}
      */
     static findTokenIndex(_array, _token) {
-        return _array.findIndex((_item) => _item.address === _token.address);
+        return _array ? _array.findIndex((_item) => _item.address === _token.address) : undefined;
     }
 
     /**
      * @param {array} _array
      * @param {ERC20Token} _token
-     * @return {ERC20Token}
+     * @return {ERC20Token|undefined}
      */
     static findToken(_array, _token) {
-        return _array.find((_item) => _item.address === _token.address);
+        return _array ? _array.find((_item) => _item.address === _token.address) : undefined;
     }
 
     /**
      * @param {array} _array
      * @param {string} _tokenSymbol
-     * @return {ERC20Token}
+     * @return {ERC20Token|undefined}
      */
     static findTokenBySymbol(_array, _tokenSymbol) {
-        return _array.find((_item) => _item.symbol === _tokenSymbol);
+        return _array ? _array.find((_item) => _item.symbol === _tokenSymbol) : undefined;
     }
 }

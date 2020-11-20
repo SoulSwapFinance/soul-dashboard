@@ -188,6 +188,14 @@ export default {
                 return;
             }
 
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
+            }
+
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
+            }
+
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
 
             if (!contractAddress) {
