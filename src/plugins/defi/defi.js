@@ -4,6 +4,7 @@ import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
 import appConfig from '../../../app.config.js';
+import { TokenPairs } from '@/utils/token-pairs.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -136,7 +137,7 @@ export class DeFi {
      * @return {number}
      */
     getTokenDecimals(_token) {
-        return this.tokenDecimals[_token.symbol] || 2;
+        return this.tokenDecimals[_token.symbol] || 6;
     }
 
     /**
@@ -370,7 +371,7 @@ export class DeFi {
         let value = 0;
 
         if (_value !== undefined && !isNaN(_value)) {
-            value = parseFloat(this.shiftDecPointLeft(_value, _isPrice ? _token.priceDecimals : _token.decimals));
+            value = parseFloat(this.shiftDecPointLeft(_value, _isPrice ? _token.priceDecimals : _token.decimals || 18));
         }
 
         return value;
@@ -635,21 +636,12 @@ export class DeFi {
     }
 
     /**
-     * @param {string} _address
-     * @param {object} _pair
-     * @return {{}|null}
-     */
-    getPairTokenByAddress(_address, _pair) {
-        return _address && _pair && _pair.tokens ? _pair.tokens.find((_token) => _token.address === _address) : null;
-    }
-
-    /**
      * @param {object} _token
      * @param {object} _pair
      * @return {*|number}
      */
     totalTokenLiquidity(_token, _pair) {
-        const pairToken = this.getPairTokenByAddress(_token ? _token.address : '', _pair);
+        const pairToken = TokenPairs.findPairToken(_pair, _token);
 
         return pairToken ? parseInt(this.fromTokenValue(pairToken.balanceOf, _token)) : 0;
     }
@@ -871,7 +863,7 @@ export class DeFi {
     async fetchERC20TokenAvailableBalance(_ownerAddress, _tokenAddress) {
         const query = {
             query: gql`
-                query ERC20TokenList($owner: Address!, $token: Address!) {
+                query ERCTokenBalance($owner: Address!, $token: Address!) {
                     ercTokenBalance(owner: $owner, token: $token)
                 }
             `,
@@ -1177,6 +1169,9 @@ export class DeFi {
         });
         const defiUniswapPairs = data.data.defiUniswapPairs || [];
 
+        // TMP
+        // await this.tmpSetTestPairs(defiUniswapPairs, _address);
+
         if (_filterPair.length > 0) {
             // find uniswap pair by given token addresses
             return defiUniswapPairs.find((_pair) => {
@@ -1190,6 +1185,34 @@ export class DeFi {
         }
 
         return defiUniswapPairs;
+    }
+
+    async tmpSetTestPairs(_pairs, _address) {
+        const tokens = await this.fetchERC20Tokens(_address);
+        const testPairs = [
+            ['FBNB', 'FETH'],
+            ['WFTM', 'FBNB'],
+        ];
+
+        testPairs.forEach((_pair, _idx) => {
+            const pair = {
+                pairAddress: `0x2ace15004a2351bcfffe76c5ae1b3e28c29b74f${_idx}`,
+                tokens: [
+                    { ...tokens.find((_token) => _token.symbol === _pair[0]), __typename: 'ERC20Token' },
+                    { ...tokens.find((_token) => _token.symbol === _pair[1]), __typename: 'ERC20Token' },
+                ],
+                reservesTimeStamp: '0x0',
+                reserves: ['0x0', '0x0'],
+                cumulativePrices: ['0x0', '0x0'],
+                totalSupply: '0x0',
+                __typename: 'UniswapPair',
+            };
+
+            if (!_pairs.find((_item) => _item.pairAddress === pair.pairAddress)) {
+                _pairs.push(pair);
+            }
+        });
+        // console.log(_pairs);
     }
 
     /**

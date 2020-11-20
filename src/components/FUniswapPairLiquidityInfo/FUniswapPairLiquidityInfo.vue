@@ -40,6 +40,7 @@
 <script>
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { formatNumberByLocale } from '@/filters.js';
+import { TokenPairs } from '@/utils/token-pairs.js';
 
 export default {
     name: 'FUniswapPairLiquidityInfo',
@@ -80,7 +81,7 @@ export default {
             const { share } = this;
 
             if (share > 0 && pair.pairAddress) {
-                const pairToken = this.$defi.getPairTokenByAddress(this.fromToken.address, pair);
+                const pairToken = TokenPairs.findPairToken(pair, this.fromToken);
 
                 return pairToken ? this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken) * share : 0;
             }
@@ -106,7 +107,7 @@ export default {
             const { share } = this;
 
             if (share > 0 && pair.pairAddress) {
-                const pairToken = this.$defi.getPairTokenByAddress(this.toToken.address, pair);
+                const pairToken = TokenPairs.findPairToken(pair, this.toToken);
 
                 return pairToken ? this.$defi.fromTokenValue(pairToken.balanceOf, this.toToken) * share : 0;
             }
@@ -154,15 +155,6 @@ export default {
     },
 
     methods: {
-        /**
-         * @param {string} _address
-         * @param {object} [_pair]
-         * @return {{}|null}
-         */
-        getPairTokenByAddress(_address, _pair = this.pair) {
-            return _pair.tokens ? _pair.tokens.find((_token) => _token.address === _address) : null;
-        },
-
         formatNumberByLocale,
     },
 };
