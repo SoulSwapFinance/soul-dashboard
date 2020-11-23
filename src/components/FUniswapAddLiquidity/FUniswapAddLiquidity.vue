@@ -10,7 +10,7 @@
                             :token="fromToken"
                             :value="fromTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -54,7 +54,7 @@
                             :token="toToken"
                             :value="toTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -196,7 +196,7 @@ export default {
             /** @type {UniswapPair[]} */
             pairs: [],
             tokenPickerTokens: [],
-            addDeciamals: 0,
+            addDecimals: 0,
         };
     },
 
@@ -491,7 +491,7 @@ export default {
         formatToInputValue(_value) {
             const value = parseFloat(_value);
 
-            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals) : '';
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDecimals) : '';
         },
 
         /**
@@ -500,7 +500,7 @@ export default {
         formatFromInputValue(_value) {
             const value = parseFloat(_value);
 
-            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals) : '';
+            return value !== 0 ? value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDecimals) : '';
         },
 
         /**

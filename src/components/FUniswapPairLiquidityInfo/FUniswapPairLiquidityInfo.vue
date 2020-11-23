@@ -71,7 +71,7 @@ export default {
 
     data() {
         return {
-            addDeciamals: 2,
+            addDecimals: 2,
         };
     },
 
@@ -95,7 +95,7 @@ export default {
             if (fromTokenLiquidity > 0) {
                 return this.formatNumberByLocale(
                     fromTokenLiquidity,
-                    this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals
+                    this.$defi.getTokenDecimals(this.fromToken) + this.addDecimals
                 );
             }
 
@@ -121,9 +121,9 @@ export default {
             if (toTokenLiquidity > 0) {
                 return this.formatNumberByLocale(
                     toTokenLiquidity,
-                    this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals
+                    this.$defi.getTokenDecimals(this.toToken) + this.addDecimals
                 );
-                // return toTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals);
+                // return toTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDecimals);
             }
 
             return '-';
