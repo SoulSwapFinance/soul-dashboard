@@ -1100,7 +1100,7 @@ export class DeFi {
      * @param {string} _address
      * @param {string} _pairAddress
      * @param {[string, string]} [_filterPair] Array of token addresses.
-     * @return {Promise<[]|undefined>}
+     * @return {Promise<UniswapPair[]|undefined>}
      */
     async fetchUniswapPairs(_address, _pairAddress = '', _filterPair = []) {
         let query = gql`

@@ -102,7 +102,9 @@ export default {
             toToken: {},
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
+            /** @type {UniswapPair} */
             dPair: {},
+            /** @type {UniswapPair[]} */
             pairs: [],
             addDeciamals: 0,
             currLiquidity: '0',
