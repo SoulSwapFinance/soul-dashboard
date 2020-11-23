@@ -53,6 +53,14 @@
                             </f-placeholder>
                         </div>
                     </div>
+                    <div v-if="!disableSFTM" class="row no-collapse">
+                        <div class="col f-row-label">Minted sFTM</div>
+                        <div class="col">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
+                                <template v-if="accountInfo">{{ outstandingSFTM.toFixed(2) }} sFTM</template>
+                            </f-placeholder>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col">
@@ -270,6 +278,7 @@ export default {
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
             /** @type {DefiToken} */
             sftmToken: {},
+            disableSFTM: appConfig.disableSFTM,
         };
     },
 
