@@ -378,6 +378,13 @@ export default {
         },
 
         canMintSFTM() {
+            const { delegation } = this.accountInfo;
+            let delegationOk = true;
+
+            if (delegation) {
+                delegationOk = this.accountInfo.delegated !== delegation.amountInWithdraw;
+            }
+
             return (
                 !appConfig.disableSFTM &&
                 // this.canUndelegate &&
@@ -385,7 +392,8 @@ export default {
                 this.lockedUntil !== '0x0' &&
                 prepareTimestamp(this.lockedUntil) > this.now() &&
                 this._delegation &&
-                this._delegation.tokenizerAllowedToWithdraw
+                this._delegation.tokenizerAllowedToWithdraw &&
+                delegationOk
             );
         },
 
