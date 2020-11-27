@@ -7,11 +7,6 @@
                         <img src="fantom-logo.svg" alt="" class="not-fluid" />
                     </router-link>
                 </div>
-                <div class="open-tab">
-                    <a :aria-label="$t('view_home.back_to_home')" @click="openTab">
-                        Open in tab
-                    </a>
-                </div>
             </div>
         </div>
     </header>
@@ -21,18 +16,8 @@
 /**
  * Renderes header and takes care of navigation.
  */
-/* global chrome */
 export default {
     components: {},
-
-    methods: {
-        openTab: function () {
-            chrome.tabs.create({
-                url: window.location.href,
-                active: true,
-            });
-        },
-    },
 };
 </script>
 

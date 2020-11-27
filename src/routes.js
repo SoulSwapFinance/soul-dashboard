@@ -51,6 +51,8 @@ import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapS
 import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
 import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
 import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
+import Eip from '@/views/Eip/Eip';
+import EipWelcome from '@/views/EipWelcome/EipWelcome';
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import EipSelectAccounts from '@/views/EipSelectAccounts/EipSelectAccounts';
 
@@ -79,6 +81,18 @@ export const routes = [
                 name: 'ledger-accounts',
                 path: '/ledger-accounts',
                 component: LedgerAccounts,
+            },
+        ],
+    },
+    {
+        name: 'eip',
+        path: '/',
+        component: Eip,
+        children: [
+            {
+                name: 'eip-welcome',
+                path: '/eip-welcome',
+                component: EipWelcome,
             },
             {
                 name: 'eip-select-accounts',
