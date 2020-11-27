@@ -190,8 +190,7 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
-            submitLabel: 'Enter an amount',
-            /** @type {UniswapPair} */
+            submitLabel: 'Select a token',
             dPair: {},
             /** @type {UniswapPair[]} */
             pairs: [],
@@ -253,10 +252,16 @@ export default {
                     share += this.fromValue_ / this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken);
                 }
 
-                return `${(share * 100).toFixed(3)}%`;
+                return !isNaN(share) ? `${(share * 100).toFixed(3)}%` : '-';
             }
 
             return '-';
+        },
+
+        sufficientPairLiquidity() {
+            const { dPair } = this;
+
+            return dPair && dPair.pairAddress && dPair.totalSupply !== '0x0';
         },
     },
 
@@ -465,8 +470,23 @@ export default {
         },
 
         resetInputValues() {
+            const { $refs } = this;
+
+            this.fromValue_ = 0;
+            this.fromValue = '';
+            if ($refs.fromInput) {
+                $refs.fromInput.value = '';
+            }
+
+            this.toValue_ = 0;
+            this.toValue = '';
+            if ($refs.toInput) {
+                $refs.toInput.value = '';
+            }
+            /*
             this.fromValue = '';
             this.toValue = '';
+            */
         },
 
         swapTokens() {
@@ -537,15 +557,21 @@ export default {
             const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, pair);
 
             if (fromToken.address) {
-                price = toTokenTotal / fromTokenTotal;
-                if (price && price !== fromToken._perPrice) {
+                if (fromTokenTotal > 0) {
+                    price = toTokenTotal / fromTokenTotal;
+                }
+
+                if (price !== fromToken._perPrice) {
                     this.fromToken = { ...fromToken, _perPrice: price };
                 }
             }
 
             if (toToken.address) {
-                price = fromTokenTotal / toTokenTotal;
-                if (price && price !== toToken._perPrice) {
+                if (toTokenTotal > 0) {
+                    price = fromTokenTotal / toTokenTotal;
+                }
+
+                if (price !== toToken._perPrice) {
                     this.toToken = { ...toToken, _perPrice: price };
                 }
             }
@@ -613,17 +639,26 @@ export default {
 
             if (!this.currentAccount) {
                 this.submitLabel = 'Connect Wallet';
-            } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
-                if (parseFloat(fromInputValue) > this.maxFromInputValue) {
+                // } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
+            } else if (!this.toToken.address) {
+                this.submitLabel = 'Select a token';
+            } else if (this.fromTokenBalance === 0 && this.toTokenBalance === 0) {
+                this.submitLabel = 'Insufficient  Balance';
+            } else if (this.fromTokenBalance === 0) {
+                this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
+            } else if (this.toTokenBalance === 0) {
+                this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
+            } else if (fromInputValue || toInputValue) {
+                if (fromInputValue > this.maxFromInputValue || (fromInputValue === 0 && this.maxFromInputValue === 0)) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.fromToken)} balance`;
-                } else if (parseFloat(toInputValue) > this.maxToInputValue) {
+                } else if (toInputValue > this.maxToInputValue || (toInputValue === 0 && this.maxToInputValue === 0)) {
                     this.submitLabel = `Insufficient ${this.$defi.getTokenSymbol(this.toToken)} balance`;
                 } else {
                     this.submitLabel = 'Supply';
                     this.submitBtnDisabled = false;
                 }
-            } else if (fromInputValue && fromInputValue !== '0') {
-                this.submitLabel = 'Select a token';
+            } else if (this.sufficientPairLiquidity === false) {
+                this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
                 this.submitLabel = 'Enter an amount';
             }
@@ -686,6 +721,7 @@ export default {
             } else {
                 this.fromToken = _token;
                 this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
@@ -697,8 +733,8 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
-
-                // this.resetInputValues();
+                this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 

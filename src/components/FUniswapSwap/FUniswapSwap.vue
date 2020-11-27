@@ -251,8 +251,7 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
-            submitLabel: 'Enter an amount',
-            /** @type {UniswapPair} */
+            submitLabel: 'Select a token',
             dPair: {},
             /** @type {UniswapPair[]} */
             pairs: [],
@@ -339,6 +338,12 @@ export default {
             const { $defi } = this;
 
             return `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
+        },
+
+        sufficientPairLiquidity() {
+            const { dPair } = this;
+
+            return dPair && dPair.pairAddress && dPair.totalSupply !== '0x0';
         },
     },
 
@@ -490,11 +495,7 @@ export default {
         async init() {
             const { $defi } = this;
             const { params } = this;
-            const result = await Promise.all([
-                $defi.fetchUniswapPairs(),
-                // $defi.fetchTokens(this.currentAccount ? this.currentAccount.address : ''),
-                $defi.init(),
-            ]);
+            const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
             this.pairs = result[0];
 
@@ -563,7 +564,7 @@ export default {
             const { toToken } = this;
             const value = parseFloat(_value);
 
-            if (toToken.address && value > 0) {
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
                 let amounts = await this.$defi.fetchUniswapAmountsOut(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), fromToken.decimals || 18)),
                     [fromToken.address, toToken.address]
@@ -583,7 +584,7 @@ export default {
             const { toToken } = this;
             const value = parseFloat(_value);
 
-            if (toToken.address && value > 0) {
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
                 const amounts = await this.$defi.fetchUniswapAmountsIn(
                     Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), toToken.decimals || 18)),
                     [fromToken.address, toToken.address]
@@ -648,8 +649,19 @@ export default {
         },
 
         resetInputValues() {
+            const { $refs } = this;
+
+            this.fromValue_ = 0;
             this.fromValue = '';
+            if ($refs.fromInput) {
+                $refs.fromInput.value = '';
+            }
+
+            this.toValue_ = 0;
             this.toValue = '';
+            if ($refs.toInput) {
+                $refs.toInput.value = '';
+            }
         },
 
         setFromInputValue(_value) {
@@ -743,8 +755,10 @@ export default {
                     this.submitLabel = 'Swap';
                     this.submitBtnDisabled = false;
                 }
-            } else if (fromValue && fromValue !== '0') {
+            } else if (!this.toToken.address) {
                 this.submitLabel = 'Select a token';
+            } else if (this.sufficientPairLiquidity === false) {
+                this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
                 this.submitLabel = 'Enter an amount';
             }
@@ -786,6 +800,7 @@ export default {
             } else {
                 this.fromToken = _token;
                 this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
@@ -797,7 +812,9 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
-                this.fromValueChanged();
+                // this.fromValueChanged();
+                this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
