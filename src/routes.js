@@ -48,11 +48,13 @@ import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfir
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
 import FUniswap from '@/views/FUniswap/FUniswap.vue';
 import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
-import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
-import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
-import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
+// import FUniswapHome from '@/views/FUniswapHome/FUniswapHome.vue';
+// import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
+// import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import EipSelectAccounts from '@/views/EipSelectAccounts/EipSelectAccounts';
+import Swap from '@/views/Swap/Swap.vue';
+import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
 
 export const routes = [
     {
@@ -589,9 +591,52 @@ export const routes = [
             },
             {
                 name: 'funiswap',
-                path: '/funiswap/:address',
+                path: '/funi/:address',
                 component: FUniswap,
                 children: [
+                    {
+                        name: 'swap',
+                        path: 'swap/:tokena?/:tokenb?',
+                        component: Swap,
+                        children: [
+                            {
+                                name: 'funiswap-swap',
+                                path: '',
+                                component: FUniswapSwap,
+                            },
+                            {
+                                name: 'funiswap-swap-confirmation',
+                                path: 'confirmation',
+                                component: FUniswapSwapConfirmation,
+                            },
+                            {
+                                name: 'funiswap-swap-confirmation2',
+                                path: 'confirmation2',
+                                component: FUniswapSwapConfirmation,
+                            },
+                            {
+                                name: 'funiswap-swap-transaction-success-message',
+                                path: 'confirmation/success',
+                                component: TransactionSuccessMessageView,
+                            },
+                            {
+                                name: 'funiswap-swap-transaction-success-message2',
+                                path: 'confirmation2/success2',
+                                component: TransactionSuccessMessageView,
+                            },
+                            {
+                                name: 'funiswap-swap-transaction-reject-message',
+                                path: 'confirmation/reject',
+                                component: TransactionRejectMessageView,
+                            },
+                            {
+                                name: 'funiswap-swap-transaction-reject-message2',
+                                path: 'confirmation2/reject2',
+                                component: TransactionRejectMessageView,
+                            },
+                        ],
+                    },
+                    /*
                     {
                         name: 'funiswap-home',
                         path: '',
@@ -705,6 +750,7 @@ export const routes = [
                         path: 'remove-liquidity/confirmation2/reject2',
                         component: TransactionRejectMessageView,
                     },
+*/
                 ],
             },
             {

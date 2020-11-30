@@ -7,6 +7,8 @@
             <address-info-box />
 
             <main class="main">
+                <f-uniswap-menu />
+
                 <f-view-transition watch-route :views-structure="viewsStructure">
                     <router-view></router-view>
                 </f-view-transition>
@@ -27,11 +29,12 @@ import {
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
 import { appStructureTree } from '@/app-structure.js';
+import FUniswapMenu from '@/components/FUniswapMenu/FUniswapMenu.vue';
 
 export default {
     name: 'FUniswap',
 
-    components: { FViewTransition, AddressInfoBox, FMessage },
+    components: { FUniswapMenu, FViewTransition, AddressInfoBox, FMessage },
 
     mixins: [eventBusMixin],
 
@@ -39,9 +42,9 @@ export default {
         ...mapGetters(['currentAccount']),
 
         viewsStructure() {
-            const defiHomeNode = appStructureTree.serialize(appStructureTree.get('funiswap-home'));
+            const node = appStructureTree.serialize(appStructureTree.get('funiswap'));
 
-            return defiHomeNode ? [JSON.parse(defiHomeNode)] : [];
+            return node ? [JSON.parse(node)] : [];
         },
     },
 

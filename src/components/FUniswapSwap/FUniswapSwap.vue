@@ -120,7 +120,7 @@
                     </div>
                     <div class="funiswap-swap__exchange-price__row">
                         <div class="defi-label">Slippage Tolerance</div>
-                        <div class="value">{{ slippageTolerance * 100 }}%</div>
+                        <div class="value">{{ fUniswapSlippageTolerance * 100 }}%</div>
                     </div>
                 </div>
             </template>
@@ -194,11 +194,11 @@
 import { mapGetters } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
+import { cloneObject, debounce, defer, getUniqueId } from '../../utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import Web3 from 'web3';
-import { cloneObject, debounce, defer, getUniqueId } from '../../utils';
 import { pollingMixin } from '@/mixins/polling.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import { TokenPairs } from '@/utils/token-pairs.js';
@@ -219,13 +219,6 @@ export default {
     },
 
     mixins: [pollingMixin],
-
-    props: {
-        slippageTolerance: {
-            type: Number,
-            default: 0.005,
-        },
-    },
 
     data() {
         return {
@@ -252,6 +245,7 @@ export default {
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
             submitLabel: 'Select a token',
+            /** @type {UniswapPair} */
             dPair: {},
             /** @type {UniswapPair[]} */
             pairs: [],
@@ -261,7 +255,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'fUniswapSlippageTolerance']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -381,6 +375,8 @@ export default {
                     defer(() => {
                         this.updateSubmitLabel();
                     });
+
+                    this.setRouteParams();
                 }
 
                 if (!_value._loadingBalance) {
@@ -397,6 +393,8 @@ export default {
                     if (dPair.pairAddress !== this.dPair.pairAddress) {
                         this.dPair = dPair;
                     }
+
+                    this.setRouteParams();
                 }
 
                 if (!_value._loadingBalance) {
@@ -409,6 +407,10 @@ export default {
             if (_value !== _oldValue) {
                 this.onAccountPicked();
             }
+        },
+
+        $route() {
+            this.setTokensByRouteParams();
         },
     },
 
@@ -499,15 +501,33 @@ export default {
 
             this.pairs = result[0];
 
-            if (this.pairs.length > 0) {
-                const pairs = params.fromToken ? TokenPairs.getTokenPairs(this.pairs, params.fromToken) : this.pairs;
+            if (params.tokena && params.tokenb) {
+                this.setTokensByRouteParams();
+            } else {
+                this.fromToken = this.getInitialToken();
+            }
+        },
 
-                if (params.fromToken) {
-                    this.fromToken = TokenPairs.findToken(pairs[0].tokens, params.fromToken);
-                } else {
-                    this.fromToken = TokenPairs.findTokenBySymbol(pairs[0].tokens, 'WFTM') || pairs[0].tokens[0];
+        /**
+         * @return {ERC20Token|{}}
+         */
+        getInitialToken() {
+            const { params } = this;
+            let fromToken = {};
+
+            if (this.pairs.length > 0) {
+                const pairs = params.tokena ? TokenPairs.getTokenPairs(this.pairs, params.tokena) : this.pairs;
+
+                if (pairs.length > 0) {
+                    if (params.tokena) {
+                        fromToken = TokenPairs.findToken(pairs[0].tokens, params.tokena);
+                    } else {
+                        fromToken = TokenPairs.findTokenBySymbol(pairs[0].tokens, 'WFTM') || pairs[0].tokens[0];
+                    }
                 }
             }
+
+            return fromToken;
         },
 
         getUniswapPair() {
@@ -648,6 +668,53 @@ export default {
             return tokens;
         },
 
+        setRouteParams() {
+            const { fromToken } = this;
+            const { toToken } = this;
+            const { $route } = this;
+
+            if (
+                fromToken.address &&
+                toToken.address &&
+                ($route.params.tokena !== fromToken.address || $route.params.tokenb !== toToken.address)
+            ) {
+                this.$router.push({
+                    name: $route.name,
+                    params: {
+                        tokena: fromToken.address,
+                        tokenb: toToken.address,
+                    },
+                });
+            }
+        },
+
+        setTokensByRouteParams() {
+            const { params } = this.$route;
+
+            if (params.tokena && params.tokenb) {
+                if (params.tokena !== this.fromToken.address || params.tokenb !== this.toToken.address) {
+                    const pair = TokenPairs.getPairByTokens(this.pairs, [
+                        { address: params.tokena },
+                        { address: params.tokenb },
+                    ]);
+
+                    if (pair.pairAddress) {
+                        this.fromToken = TokenPairs.findPairToken(pair, { address: params.tokena });
+                        this.toToken = TokenPairs.findPairToken(pair, { address: params.tokenb });
+                    } else {
+                        this.toToken = {};
+                        this.fromToken = this.getInitialToken();
+                    }
+
+                    this.setTPrices();
+                    this.resetInputValues();
+                }
+            } else {
+                this.fromToken = this.getInitialToken();
+                this.toToken = {};
+            }
+        },
+
         resetInputValues() {
             const { $refs } = this;
 
@@ -678,10 +745,10 @@ export default {
 
         setMinMaxReceived(_fromValueChanged) {
             if (_fromValueChanged) {
-                this.minimumReceived = this.toValue_ * (1 - this.slippageTolerance);
+                this.minimumReceived = this.toValue_ * (1 - this.fUniswapSlippageTolerance);
                 this.maximumSold = 0;
             } else {
-                this.maximumSold = this.fromValue_ * (1 + this.slippageTolerance);
+                this.maximumSold = this.fromValue_ * (1 + this.fUniswapSlippageTolerance);
                 this.minimumReceived = 0;
             }
         },
@@ -851,7 +918,7 @@ export default {
                 toValue: this.toValue_,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
-                slippageTolerance: this.slippageTolerance,
+                slippageTolerance: this.fUniswapSlippageTolerance,
                 steps: 2,
                 step: 1,
                 minimumReceived: this.minimumReceived,

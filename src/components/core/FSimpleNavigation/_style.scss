@@ -56,10 +56,7 @@
     .f-simple-navigation {
         ul {
             li {
-                display: block;
-                a {
-                    font-size: 1.5em;
-                }
+                --f-simple-navigation-link-padding: 16px 20px;
             }
         }
     }

@@ -22,12 +22,14 @@ export default {
                     },
                     title: 'Swap',
                 },
+                /*
                 {
                     url: {
                         name: 'funiswap-pools',
                     },
                     title: 'Pools',
                 },
+*/
             ],
         };
     },
