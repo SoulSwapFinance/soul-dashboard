@@ -78,6 +78,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Highlight route by application structure. */
+        highlightRouteByAppStructure: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -121,6 +126,10 @@ export default {
          * @param {object} _route
          */
         processRoute(_route) {
+            if (!this.highlightRouteByAppStructure) {
+                return;
+            }
+
             const { routeNames } = this;
             const appNode = getAppNodeParents(_route.name).find((_item) => routeNames.includes(_item.route));
 
