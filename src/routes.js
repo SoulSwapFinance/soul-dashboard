@@ -55,6 +55,8 @@ import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import EipSelectAccounts from '@/views/EipSelectAccounts/EipSelectAccounts';
 import Swap from '@/views/Swap/Swap.vue';
 import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
+import Pools from '@/views/Pools/Pools.vue';
+import FUniswapPools from '@/components/FUniswapPools/FUniswapPools.vue';
 
 export const routes = [
     {
@@ -633,6 +635,18 @@ export const routes = [
                                 name: 'funiswap-swap-transaction-reject-message2',
                                 path: 'confirmation2/reject2',
                                 component: TransactionRejectMessageView,
+                            },
+                        ],
+                    },
+                    {
+                        name: 'pools',
+                        path: 'pools',
+                        component: Pools,
+                        children: [
+                            {
+                                name: 'funiswap-pools',
+                                path: '',
+                                component: FUniswapPools,
                             },
                         ],
                     },

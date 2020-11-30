@@ -485,7 +485,16 @@ const appStructure = [
                             },
                         ],
                     },
-
+                    {
+                        id: 'pools',
+                        route: 'pools',
+                        _c: [
+                            {
+                                id: 'funiswap-pools',
+                                route: 'funiswap-pools',
+                            },
+                        ],
+                    },
                     /*
                     {
                         id: 'funiswap-home',
