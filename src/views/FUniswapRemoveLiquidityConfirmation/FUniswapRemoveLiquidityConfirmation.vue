@@ -86,7 +86,7 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-pools',
             confirmationCompName: 'funiswap-remove-liquidity',
             priceDecimals: 6,
             tx: {},
