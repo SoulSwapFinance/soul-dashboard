@@ -1,6 +1,7 @@
 <template>
     <div class="view-funiswap-home">
-        <h1>fUNI</h1>
+        <f-uniswap-menu />
+
         <f-uniswap-home-tabs :active-tab="activeTab" @tab-selected="onTabSelected" />
         <component
             :is="currentComponent"
@@ -18,13 +19,14 @@ import { mapGetters } from 'vuex';
 import FUniswapHomeTabs from '@/components/FUniswapHomeTabs/FUniswapHomeTabs.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { defer } from '@/utils';
+import FUniswapMenu from '@/components/FUniswapMenu/FUniswapMenu.vue';
 
 const DEFAULT_COMPONENT = 'f-uniswap-swap';
 
 export default {
     name: 'FUniswapHome',
 
-    components: { FUniswapHomeTabs, FUniswapSwap, FUniswapAddLiquidity, FUniswapRemoveLiquidity },
+    components: { FUniswapMenu, FUniswapHomeTabs, FUniswapSwap, FUniswapAddLiquidity, FUniswapRemoveLiquidity },
 
     mixins: [eventBusMixin],
 

@@ -1,0 +1,12 @@
+.funiswap-menu {
+    //--f-simple-navigation-link-color: var(--f-secondary-color-lighter);
+    --f-simple-navigation-link-color: #565a69;
+    --f-simple-navigation-link-hover-color: #000;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #000;
+
+    a, a:visited {
+        --f-link-color: #000;
+    }
+}
