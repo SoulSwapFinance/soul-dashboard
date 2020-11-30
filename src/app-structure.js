@@ -573,3 +573,7 @@ export function getAppParentNode(_id) {
 
     return node ? node._p : null;
 }
+
+export function getAppNodeParents(_id) {
+    return appStructureTree.getParents(_id);
+}
