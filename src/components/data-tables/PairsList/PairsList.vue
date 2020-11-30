@@ -43,7 +43,11 @@
                         <router-link
                             :to="{
                                 name: 'funiswap-add-liquidity',
-                                params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                                params: {
+                                    tokena: item.tokens[0].address,
+                                    tokenb: item.tokens[1].address,
+                                    address: currAccountAddress,
+                                },
                             }"
                         >
                             Add Liquidity
@@ -52,7 +56,11 @@
                         <router-link
                             :to="{
                                 name: 'funiswap-swap',
-                                params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                                params: {
+                                    tokena: item.tokens[0].address,
+                                    tokenb: item.tokens[1].address,
+                                    address: currAccountAddress,
+                                },
                             }"
                         >
                             Swap
@@ -62,7 +70,11 @@
                             <router-link
                                 :to="{
                                     name: 'funiswap-remove-liquidity',
-                                    params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                                    params: {
+                                        tokena: item.tokens[0].address,
+                                        tokenb: item.tokens[1].address,
+                                        address: currAccountAddress,
+                                    },
                                 }"
                             >
                                 Remove Liquidity
@@ -74,7 +86,11 @@
                     <router-link
                         :to="{
                             name: 'funiswap-add-liquidity',
-                            params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                            params: {
+                                tokena: item.tokens[0].address,
+                                tokenb: item.tokens[1].address,
+                                address: currAccountAddress,
+                            },
                         }"
                     >
                         Add Liquidity
@@ -83,7 +99,11 @@
                     <router-link
                         :to="{
                             name: 'funiswap-swap',
-                            params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                            params: {
+                                tokena: item.tokens[0].address,
+                                tokenb: item.tokens[1].address,
+                                address: currAccountAddress,
+                            },
                         }"
                     >
                         Swap
@@ -93,7 +113,11 @@
                         <router-link
                             :to="{
                                 name: 'funiswap-remove-liquidity',
-                                params: { tokena: item.tokens[0].address, tokenb: item.tokens[1].address },
+                                params: {
+                                    tokena: item.tokens[0].address,
+                                    tokenb: item.tokens[1].address,
+                                    address: currAccountAddress,
+                                },
                             }"
                         >
                             Remove Liquidity
@@ -157,6 +181,10 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        currAccountAddress() {
+            return this.currentAccount ? this.currentAccount.address : '';
+        },
     },
 
     created() {
@@ -171,9 +199,10 @@ export default {
             this.items = result[0];
 
             setTimeout(async () => {
-                const address = this.currentAccount ? this.currentAccount.address : '';
-                if (address) {
-                    this.items = await $defi.getUniswapPairsWithShare(address, this.items);
+                const { currAccountAddress } = this;
+
+                if (currAccountAddress) {
+                    this.items = await $defi.getUniswapPairsWithShare(currAccountAddress, this.items);
                 }
             }, 30);
         },
