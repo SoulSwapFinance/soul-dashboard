@@ -1,5 +1,5 @@
 <template>
-    <div class="view-settings">
+    <div>
         <h1>Select accounts to use</h1>
         <p>For: {{ site }}</p>
         <div class="settings-form">
@@ -53,13 +53,13 @@ export default {
             chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
                 if (tabs[0] && tabs[0].url) {
                     let origin = new URL(tabs[0].url).origin;
-                    let hasAccounts = this.accounts.find((account) => account.sites.includes(origin));
+                    let hasAccounts = this.accounts.find((account) => account.sites && account.sites.includes(origin));
                     if (hasAccounts) {
                         this.$router.push({ name: 'eip-select-accounts', params: { site: origin } });
                         return;
                     }
                 }
-                this.$router.push({ path: '/' });
+                this.$router.push({ name: 'eip-welcome' });
             });
         }
     },
