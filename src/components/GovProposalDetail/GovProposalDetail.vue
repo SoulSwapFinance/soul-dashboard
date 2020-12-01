@@ -13,7 +13,7 @@
                 <pulse-loader color="#1969ff"></pulse-loader>
             </div>
             <template v-else>
-                <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-600">
+                <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-650">
                     <h3 class="gov-proposal-detail__sub-title">Winner</h3>
                     <b>{{ winner }}</b>
                 </f-card>
@@ -23,7 +23,7 @@
                         <fieldset>
                             <legend class="h2 perex not-visible">{{ d_proposal.description }}</legend>
 
-                            <div class="form-body">
+                            <div class="form-body cont-650">
                                 <div v-if="item.validator" class="gov-proposal-detail__validator-info">
                                     <h3>
                                         Validator: {{ item.validator.stakerInfo.name }} ({{
@@ -73,12 +73,12 @@
                             <input type="hidden" name="formIndex" :value="index" />
                         </fieldset>
                     </f-form>
-                    <div v-else class="cont-600">
+                    <div v-else class="cont-650">
                         <div v-if="item.validator" class="gov-proposal-detail__validator-info">
                             <h3>
-                                Validator: {{ item.validator.stakerInfo.name }}
+                                Validator: {{ item.validator.stakerInfo.name }} ({{ parseInt(item.validator.id, 16) }})
                                 <span v-if="item.validator.stakerInfo._unknown" class="perex">
-                                    ({{ item.validator.stakerAddress }})
+                                    {{ item.validator.stakerAddress }}
                                 </span>
                             </h3>
                         </div>
@@ -91,7 +91,7 @@
                                         v-for="(optionItem, optionIdx) in d_proposal.options"
                                         :key="`govprpsl${optionIdx}`"
                                     >
-                                        <div class="row align-items-center">
+                                        <div class="row align-items-center no-collapse">
                                             <div class="col col-8 gov-proposal-detail__option">{{ optionItem }}</div>
                                             <div class="col col-4 gov-proposal-detail__vote">
                                                 {{ formatVote(optionIdx, item.vote) }}
