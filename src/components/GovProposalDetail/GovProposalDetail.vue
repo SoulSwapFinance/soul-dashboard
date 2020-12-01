@@ -18,6 +18,8 @@
                     <b>{{ winner }}</b>
                 </f-card>
 
+                <gov-voting-info :governance="governance" :proposal-id="d_proposalId" :governance-id="d_governanceId" />
+
                 <div v-for="(item, index) in items" :key="item.id" class="gov-proposal-detail__item">
                     <f-form v-if="!votingResolved && !item.vote" center-form @f-form-submit="onFormSubmit">
                         <fieldset>
@@ -161,11 +163,12 @@ import { cloneObject, getUniqueId } from '@/utils';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import gql from 'graphql-tag';
 import FCard from '@/components/core/FCard/FCard.vue';
+import GovVotingInfo from '@/components/GovVotingInfo/GovVotingInfo.vue';
 
 export default {
     name: 'GovProposalDetail',
 
-    components: { FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
+    components: { GovVotingInfo, FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
     mixins: [viewHelpersMixin, eventBusMixin],
 

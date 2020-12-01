@@ -154,6 +154,7 @@ export class Governance {
                         name
                         address
                         totalProposals
+                        totalVotingPower
                         canVote(from: $from)
                         delegationsBy(from: $from)
                         proposal(id: $id) {
@@ -169,6 +170,8 @@ export class Governance {
                             }
                             minVotes
                             minAgreement
+                            totalWeight
+                            votedWeightRatio
                             votingStarts
                             votingMayEnd
                             votingMustEnd
@@ -222,6 +225,38 @@ export class Governance {
         return govContract.proposal && govContract.proposal.vote
             ? { vote: govContract.proposal.vote, delegatedTo: _delegatedTo }
             : {};
+    }
+
+    /**
+     * @param {string} _govAddress
+     * @param {string} _proposalId
+     * @return {Promise<Object>}
+     */
+    async fetchProposalOptionStates(_govAddress, _proposalId) {
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GovernanceContract($address: Address!, $id: BigInt!) {
+                    govContract(address: $address) {
+                        proposal(id: $id) {
+                            optionStates {
+                                optionId
+                                votes
+                                agreement
+                                agreementRatio
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _govAddress,
+                id: _proposalId,
+            },
+            fetchPolicy: 'network-only',
+        });
+        const govContract = data.data.govContract || {};
+
+        return govContract.proposal && govContract.proposal.optionStates ? govContract.proposal.optionStates : [];
     }
 
     /**
