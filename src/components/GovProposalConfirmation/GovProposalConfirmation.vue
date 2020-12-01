@@ -18,9 +18,9 @@
             <div class="confirmation-info__">
                 <div v-if="d_validator.stakerAddress" class="gov-proposal-detail__validator-info align-center">
                     <h3>
-                        Validator: {{ d_validator.stakerInfo.name }}
+                        Validator: {{ d_validator.stakerInfo.name }} ({{ parseInt(d_validator.id, 16) }})
                         <span v-if="d_validator.stakerInfo._unknown" class="perex">
-                            ({{ d_validator.stakerAddress }})
+                            {{ d_validator.stakerAddress }}
                         </span>
                     </h3>
                 </div>
