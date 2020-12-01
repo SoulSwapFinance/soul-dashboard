@@ -1,7 +1,7 @@
 .gov-proposal-detail {
     &__options {
         margin-top: 40px;
-        //margin-bottom: 32px;
+        margin-bottom: 40px;
 
         li {
             margin-bottom: 24px;
@@ -27,7 +27,7 @@
 
         .gov-proposal-detail__options {
             max-width: 400px;
-            margin: 0 auto;
+            margin: 0 auto 32px auto;
         }
     }
 

@@ -56,6 +56,7 @@ import Gov from '@/views/Gov/Gov.vue';
 import GovHome from '@/views/GovHome/GovHome.vue';
 import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
+import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
 
 export const routes = [
     {
@@ -732,6 +733,21 @@ export const routes = [
                     },
                     {
                         name: 'gov-proposal-transaction-reject-message',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation/reject',
+                        component: TransactionRejectMessageView,
+                    },
+                    {
+                        name: 'gov-cancel-vote-confirmation',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation',
+                        component: GovCancelVoteConfirmation,
+                    },
+                    {
+                        name: 'gov-cancel-vote-transaction-success-message',
+                        path: 'proposal-detail/:proposalId?/:governanceId?/confirmation/success',
+                        component: TransactionSuccessMessageView,
+                    },
+                    {
+                        name: 'gov-cancel-vote-transaction-reject-message',
                         path: 'proposal-detail/:proposalId?/:governanceId?/confirmation/reject',
                         component: TransactionRejectMessageView,
                     },

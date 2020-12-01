@@ -99,6 +99,18 @@
                                         </div>
                                     </li>
                                 </ul>
+
+                                <div v-if="!votingDisabled" class="align-center form-buttons">
+                                    <button
+                                        type="button"
+                                        class="btn large"
+                                        :disabled="votingDisabled"
+                                        :data-form-index="index"
+                                        @click="onCancelVoteClick"
+                                    >
+                                        Cancel Vote
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -499,6 +511,27 @@ export default {
                             // votes: optionIdxs.map((_idx) => opinionScales[_idx]),
                             // votes: optionIdxs.map((_idx) => $fWallet.toWei(_idx)),
                             votes: optionIdxs.map((_idx) => `0x${_idx.toString(16)}`),
+                        },
+                    });
+                }
+            }
+        },
+
+        onCancelVoteClick(_event) {
+            const formIndex = parseInt(_event.target.getAttribute('data-form-index'), 10);
+            let validator;
+
+            if (!this.votingDisabled && !isNaN(formIndex)) {
+                validator = this.items[formIndex];
+
+                if (validator && validator.validator) {
+                    this.$router.push({
+                        name: 'gov-cancel-vote-confirmation',
+                        params: {
+                            proposalId: this.d_proposalId,
+                            governanceId: this.d_governanceId,
+                            validator: cloneObject(validator.validator),
+                            proposal: cloneObject(this.d_proposal),
                         },
                     });
                 }

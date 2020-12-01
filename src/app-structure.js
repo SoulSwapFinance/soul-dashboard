@@ -587,6 +587,20 @@ const appStructure = [
                                             },
                                         ],
                                     },
+                                    {
+                                        id: 'gov-cancel-vote-confirmation',
+                                        route: 'gov-cancel-vote-confirmation',
+                                        _c: [
+                                            {
+                                                id: 'gov-cancel-vote-transaction-success-message',
+                                                route: 'gov-cancel-vote-transaction-success-message',
+                                            },
+                                            {
+                                                id: 'gov-cancel-vote-transaction-reject-message',
+                                                route: 'gov-cancel-vote-transaction-reject-message',
+                                            },
+                                        ],
+                                    },
                                 ],
                             },
                         ],
