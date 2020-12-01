@@ -341,20 +341,6 @@ input.no-style {
     }
 }
 
-@if $IS_CHROME_EXTENSION == true {
-    body {
-        //width: 360px;
-    }
-    .open-tab {
-        text-align: right;
-    }
-} @else {
-    .open-tab {
-        display: none;
-    }
-}
-
-
 @include media-max($bp-small) {
     .narrow-container {
         padding-top: 8px;
