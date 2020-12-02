@@ -33,6 +33,28 @@
                         </template>
                     </template>
 
+                    <template v-slot:column-votes="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-5 f-row-label">{{ column.label }}</div>
+                            <div class="col break-word">
+                                <f-colored-number-range
+                                    v-if="value"
+                                    :value="value.votes"
+                                    :colors="overallVotesColors(value.minVotes)"
+                                    show-percentage
+                                />
+                            </div>
+                        </div>
+                        <template v-else>
+                            <f-colored-number-range
+                                v-if="value"
+                                :value="value.votes"
+                                :colors="overallVotesColors(value.minVotes)"
+                                show-percentage
+                            />
+                        </template>
+                    </template>
+
                     <template v-slot:column-detail="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-5 f-row-label">{{ column.label }}</div>
@@ -59,12 +81,15 @@ import FCard from '../../core/FCard/FCard.vue';
 import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
 import { mapGetters } from 'vuex';
-import { cloneObject } from '@/utils';
+import { cloneObject, defer } from '@/utils';
+import gql from 'graphql-tag';
+import Vue from 'vue';
+import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
 
 export default {
     name: 'GovProposalList',
 
-    components: { FDataTable, FCard },
+    components: { FColoredNumberRange, FDataTable, FCard },
 
     props: {
         /** Number of items per page. */
@@ -122,6 +147,21 @@ export default {
                     },
                 },
                 {
+                    name: 'votes',
+                    label: 'Votes',
+                    itemProp: 'proposal',
+                    formatter: (_value) => {
+                        if (_value._votes) {
+                            return {
+                                votes: _value._votes,
+                                minVotes: this.toPercentage(_value.minVotes),
+                            };
+                        }
+
+                        return '';
+                    },
+                },
+                {
                     name: 'detail',
                     width: '130px',
                     css: { textAlign: 'right' },
@@ -151,6 +191,35 @@ export default {
 
     methods: {
         /**
+         * @param {string} _bn
+         */
+        toPercentage(_bn) {
+            return parseInt(this.toFloat(_bn) * 100, 10);
+        },
+
+        /**
+         * @param {string} _bn
+         */
+        toFloat(_bn) {
+            return parseFloat(this.$defi.shiftDecPointLeft(_bn, 18));
+        },
+
+        /**
+         * @param {string} _votes
+         * @param {string} _totalWeight
+         */
+        overallVotes(_votes, _totalWeight) {
+            return parseInt(_totalWeight, 16) !== 0 ? (this.toFloat(_votes) / this.toFloat(_totalWeight)) * 100 : 0;
+        },
+
+        /**
+         * @param {number} _minVotes
+         */
+        overallVotesColors(_minVotes) {
+            return this.$governance.getOverallVotesColors(_minVotes);
+        },
+
+        /**
          * Fetch and process proposals.
          *
          * @param {string} [_cursor]
@@ -162,8 +231,9 @@ export default {
             try {
                 const data = cloneObject(await this.$governance.fetchProposals(_cursor, _count));
                 const edges = data.edges;
+                const dItemsLen = this.dItems.length;
 
-                if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
+                if (edges && edges.length > 0 && edges[0].id && dItemsLen > 0) {
                     this.loading = false;
                     return;
                 }
@@ -172,9 +242,7 @@ export default {
 
                 this.loading = false;
 
-                // console.log(edges);
-
-                if (this.dItems.length === 0) {
+                if (dItemsLen === 0) {
                     this.dItems = edges;
                 } else {
                     for (let i = 0, len1 = edges.length; i < len1; i++) {
@@ -184,10 +252,75 @@ export default {
 
                 this.totalCount = formatHexToInt(data.totalCount);
                 this.$emit('records-count', this.totalCount);
+
+                const edgesLen = edges.length;
+
+                defer(() => {
+                    this.updateTable(dItemsLen, dItemsLen + edgesLen);
+                });
             } catch (_error) {
                 this.loading = false;
                 this.proposalsError = _error;
             }
+        },
+
+        /**
+         * @param {number} _startIdx
+         * @param {number} _endIdx
+         */
+        async updateTable(_startIdx, _endIdx) {
+            const { dItems } = this;
+            let item;
+            let data;
+
+            if (_startIdx >= _endIdx) {
+                return;
+            }
+
+            for (let i = _startIdx; i < _endIdx; i++) {
+                item = dItems[i];
+                data = await this.fetchProposalDelegationsAndOptionState(item.proposal.governanceId, item.proposal.id);
+
+                Vue.set(item, 'proposal', {
+                    ...item.proposal,
+                    _votes: this.overallVotes(data.proposal.optionState.votes, data.proposal.totalWeight),
+                });
+            }
+        },
+
+        /**
+         * @param {string} _govAddress
+         * @param {string} _proposalId
+         * @return {Promise<Object>}
+         */
+        async fetchProposalDelegationsAndOptionState(_govAddress, _proposalId) {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query GovernanceContract($address: Address!, $from: Address!, $id: BigInt!, $optionId: BigInt!) {
+                        govContract(address: $address) {
+                            delegationsBy(from: $from)
+                            proposal(id: $id) {
+                                totalWeight
+                                optionState(optionId: $optionId) {
+                                    optionId
+                                    votes
+                                    agreement
+                                    agreementRatio
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    address: _govAddress,
+                    from: this.currentAccount.address,
+                    id: _proposalId,
+                    optionId: '0x0',
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.govContract || {};
         },
 
         fetchMore() {
