@@ -71,8 +71,6 @@ export default {
                 {
                     name: 'name',
                     label: 'Option',
-                    // itemProp: 'transaction.status',
-                    // formatter: (_value) => formatHexToInt(_value),
                     width: '55%',
                 },
                 {
@@ -82,7 +80,6 @@ export default {
                     css: {
                         textAlign: 'right',
                     },
-                    // formatter: (_value) => `${(this.toFloat(_value) * 100).toFixed(1)}%`,
                 },
             ],
         };
@@ -96,12 +93,7 @@ export default {
         },
 
         overallVotesColors() {
-            return [
-                {
-                    value: this.minVotes,
-                    color: '#15cd72',
-                },
-            ];
+            return this.$governance.getOverallVotesColors(this.minVotes);
         },
 
         minVotes() {

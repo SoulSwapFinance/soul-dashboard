@@ -29,6 +29,19 @@ export class Governance {
     }
 
     /**
+     * @param {number} _minVotes
+     * @return {{color: string, value: number}[]}
+     */
+    getOverallVotesColors(_minVotes = 0) {
+        return [
+            {
+                value: _minVotes,
+                color: '#15cd72',
+            },
+        ];
+    }
+
+    /**
      * @return {Promise<[GovernanceContract]|[]>}
      */
     async fetchContracts() {
