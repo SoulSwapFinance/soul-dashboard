@@ -2,7 +2,7 @@
     <div class="gov-voting-info">
         <f-card class="cont-650">
             <h3 class="gov-voting-info__title">
-                Votes:
+                Total Votes <br />
                 <f-colored-number-range :value="overallVotes" :colors="overallVotesColors" show-percentage />
                 <span class="perex">(min. {{ minVotes }}%)</span>
             </h3>
@@ -58,6 +58,12 @@ export default {
             type: String,
             default: '',
         },
+        optionStates: {
+            type: Array,
+            default() {
+                return null;
+            },
+        },
     },
 
     data() {
@@ -105,6 +111,12 @@ export default {
         },
     },
 
+    watch: {
+        optionStates() {
+            this.init();
+        },
+    },
+
     created() {
         this.proposal = this.governance.proposal;
 
@@ -116,9 +128,11 @@ export default {
     methods: {
         async init() {
             const { proposal } = this;
-            const optionStates = await this.$governance.fetchProposalOptionStates(this.governanceId, this.proposalId);
+            const { optionStates } = this;
+            const _optionStates =
+                optionStates || (await this.$governance.fetchProposalOptionStates(this.governanceId, this.proposalId));
 
-            optionStates.forEach((_option) => {
+            _optionStates.forEach((_option) => {
                 _option.name = proposal.options[parseInt(_option.optionId, 16)] || '';
 
                 if (this.votes === 0) {
@@ -130,7 +144,7 @@ export default {
             const col = this.columns[1];
             Vue.set(col, 'label', `${col.label} (min. ${this.minAgreement}%)`);
 
-            this.options = optionStates;
+            this.options = _optionStates;
         },
 
         toFloat(_bn) {

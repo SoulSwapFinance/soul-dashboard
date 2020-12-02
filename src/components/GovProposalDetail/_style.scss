@@ -10,7 +10,22 @@
 
     &__sub-title {
         text-align: center;
-        margin-top: 40px;
+        margin-top: 32px;
+    }
+
+    &__item {
+        .f-card {
+            margin-top: 24px;
+        }
+
+        .gov-proposal-detail__sub-title {
+            font-weight: normal;
+            font-size: 21px !important;
+        }
+    }
+
+    &__green {
+        color: #15cd72;
     }
 
     &__validator-info {
@@ -19,6 +34,11 @@
         h3 > span {
             font-size: 16px;
         }
+    }
+
+    &__winnigs {
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     &__cont-resolved {

@@ -13,111 +13,152 @@
                 <pulse-loader color="#1969ff"></pulse-loader>
             </div>
             <template v-else>
-                <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-650">
-                    <h3 class="gov-proposal-detail__sub-title">Winner</h3>
-                    <b>{{ winner }}</b>
+                <f-card class="gov-proposal-detail__winner cont-650">
+                    <template v-if="votingResolved">
+                        <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                        <b class="gov-proposal-detail__green">
+                            {{ winner }} <template v-if="winnerVotes">({{ winnerVotes }}%)</template>
+                        </b>
+                    </template>
+                    <template v-else>
+                        <h3 class="gov-proposal-detail__sub-title">Winning</h3>
+                        <ul class="no-markers gov-proposal-detail__winnigs">
+                            <li v-for="winning in winnings" :key="`wk_${winning.id}`">
+                                <div class="row align-items-center no-collapse">
+                                    <div class="col col-8 gov-proposal-detail__option align-left">
+                                        {{ winning.name }}
+                                    </div>
+                                    <div class="col col-4 gov-proposal-detail__vote">{{ winning.votes }}%</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </template>
                 </f-card>
 
-                <gov-voting-info :governance="governance" :proposal-id="d_proposalId" :governance-id="d_governanceId" />
+                <gov-voting-info
+                    :governance="governance"
+                    :proposal-id="d_proposalId"
+                    :governance-id="d_governanceId"
+                    :option-states="optionStates"
+                />
+
+                <h3 class="cont-650 align-center">
+                    Express Your Level of Agreement
+                    <f-info window-closeable window-class="light" window-style="max-width: 500px;">
+                        Please express your level of agreement with each option. <br />
+                        (1) means no agreement and each level up means higher level of agreement
+                    </f-info>
+                </h3>
+
+                <div v-if="!canVote" class="align-center">
+                    <f-message type="warning" with-icon>
+                        You can't vote, you have no delegations.
+                    </f-message>
+                    <br />
+                </div>
 
                 <div v-for="(item, index) in items" :key="item.id" class="gov-proposal-detail__item">
-                    <f-form v-if="!votingResolved && !item.vote" center-form @f-form-submit="onFormSubmit">
-                        <fieldset>
-                            <legend class="h2 perex not-visible">{{ d_proposal.description }}</legend>
+                    <f-card class="cont-650">
+                        <f-form v-if="!votingResolved && !item.vote" center-form @f-form-submit="onFormSubmit">
+                            <fieldset>
+                                <legend class="h2 perex not-visible">{{ d_proposal.description }}</legend>
 
-                            <div class="form-body cont-650">
-                                <div v-if="item.validator" class="gov-proposal-detail__validator-info">
-                                    <h3>
-                                        Validator: {{ item.validator.stakerInfo.name }} ({{
-                                            parseInt(item.validator.id, 16)
-                                        }})
-                                        <span v-if="item.validator.stakerInfo._unknown" class="perex">
-                                            {{ item.validator.stakerAddress }}
-                                        </span>
-                                    </h3>
+                                <div class="form-body cont-650">
+                                    <div v-if="item.validator" class="gov-proposal-detail__validator-info">
+                                        <h4 class="gov-proposal-detail__sub-title">
+                                            Validator: {{ item.validator.stakerInfo.name }} ({{
+                                                parseInt(item.validator.id, 16)
+                                            }})
+                                            <span v-if="item.validator.stakerInfo._unknown" class="perex">
+                                                {{ item.validator.stakerAddress }}
+                                            </span>
+                                        </h4>
+                                    </div>
+
+                                    <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                        <li
+                                            v-for="(optionItem, optionIdx) in d_proposal.options"
+                                            :key="`govprpsl${optionIdx}`"
+                                        >
+                                            <f-slider
+                                                :label="optionItem"
+                                                :name="`option_${optionIdx}_${index}`"
+                                                :max="sliderMax"
+                                                :value="sliderInitialValue"
+                                                :labels="sliderLabels"
+                                                clickable-labels
+                                                use-lower-fill-bar
+                                            />
+                                        </li>
+                                    </ul>
+
+                                    <div v-if="!canVote" class="align-center">
+                                        <f-message type="warning" with-icon>
+                                            You can't vote, you have no delegations.
+                                        </f-message>
+                                        <br />
+                                    </div>
+                                    <div v-if="!votingStarts">
+                                        <f-message type="warning" with-icon>
+                                            You can't vote, voting doesn't start yet.
+                                        </f-message>
+                                        <br />
+                                    </div>
+
+                                    <div class="align-center form-buttons">
+                                        <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                                    </div>
                                 </div>
 
-                                <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                                    <li
-                                        v-for="(optionItem, optionIdx) in d_proposal.options"
-                                        :key="`govprpsl${optionIdx}`"
-                                    >
-                                        <f-slider
-                                            :label="optionItem"
-                                            :name="`option_${optionIdx}_${index}`"
-                                            :max="sliderMax"
-                                            :value="sliderInitialValue"
-                                            :labels="sliderLabels"
-                                            clickable-labels
-                                            use-lower-fill-bar
-                                        />
-                                    </li>
-                                </ul>
-
-                                <div v-if="!canVote" class="align-center">
-                                    <f-message type="warning" with-icon>
-                                        You can't vote, you have no delegations.
-                                    </f-message>
-                                    <br />
-                                </div>
-                                <div v-else-if="!votingStarts">
-                                    <f-message type="warning" with-icon>
-                                        You can't vote, voting doesn't start yet.
-                                    </f-message>
-                                    <br />
-                                </div>
-
-                                <div class="align-center form-buttons">
-                                    <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
-                                </div>
+                                <input type="hidden" name="formIndex" :value="index" />
+                            </fieldset>
+                        </f-form>
+                        <div v-else class="cont-650">
+                            <div v-if="item.validator" class="gov-proposal-detail__validator-info">
+                                <h4 class="gov-proposal-detail__sub-title">
+                                    Validator: {{ item.validator.stakerInfo.name }} ({{
+                                        parseInt(item.validator.id, 16)
+                                    }})
+                                    <span v-if="item.validator.stakerInfo._unknown" class="perex">
+                                        {{ item.validator.stakerAddress }}
+                                    </span>
+                                </h4>
                             </div>
 
-                            <input type="hidden" name="formIndex" :value="index" />
-                        </fieldset>
-                    </f-form>
-                    <div v-else class="cont-650">
-                        <div v-if="item.validator" class="gov-proposal-detail__validator-info">
-                            <h3>
-                                Validator: {{ item.validator.stakerInfo.name }} ({{ parseInt(item.validator.id, 16) }})
-                                <span v-if="item.validator.stakerInfo._unknown" class="perex">
-                                    {{ item.validator.stakerAddress }}
-                                </span>
-                            </h3>
-                        </div>
-
-                        <div class="gov-proposal-detail__voter-votes">
-                            <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
-                            <div class="gov-proposal-detail__cont-resolved">
-                                <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
-                                    <li
-                                        v-for="(optionItem, optionIdx) in d_proposal.options"
-                                        :key="`govprpsl${optionIdx}`"
-                                    >
-                                        <div class="row align-items-center no-collapse">
-                                            <div class="col col-8 gov-proposal-detail__option">{{ optionItem }}</div>
-                                            <div class="col col-4 gov-proposal-detail__vote">
-                                                {{ formatVote(optionIdx, item.vote) }}
+                            <div class="gov-proposal-detail__voter-votes">
+                                <h4 class="gov-proposal-detail__sub-title">Your votes</h4>
+                                <div class="gov-proposal-detail__cont-resolved">
+                                    <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
+                                        <li
+                                            v-for="(optionItem, optionIdx) in d_proposal.options"
+                                            :key="`govprpsl${optionIdx}`"
+                                        >
+                                            <div class="row align-items-center no-collapse">
+                                                <div class="col col-8 gov-proposal-detail__option">
+                                                    {{ optionItem }}
+                                                </div>
+                                                <div class="col col-4 gov-proposal-detail__vote">
+                                                    {{ formatVote(optionIdx, item.vote) }}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        </li>
+                                    </ul>
 
-                                <div v-if="!votingDisabled" class="align-center form-buttons">
-                                    <button
-                                        type="button"
-                                        class="btn large"
-                                        :disabled="votingDisabled"
-                                        :data-form-index="index"
-                                        @click="onCancelVoteClick"
-                                    >
-                                        Cancel Vote
-                                    </button>
+                                    <div v-if="!votingDisabled" class="align-center form-buttons">
+                                        <button
+                                            type="button"
+                                            class="btn large"
+                                            :disabled="votingDisabled"
+                                            :data-form-index="index"
+                                            @click="onCancelVoteClick"
+                                        >
+                                            Cancel Vote
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <hr />
+                    </f-card>
                 </div>
 
                 <div class="row gov-proposal-detail__dates">
@@ -164,11 +205,13 @@ import { eventBusMixin } from '@/mixins/event-bus.js';
 import gql from 'graphql-tag';
 import FCard from '@/components/core/FCard/FCard.vue';
 import GovVotingInfo from '@/components/GovVotingInfo/GovVotingInfo.vue';
+import FInfo from '@/components/core/FInfo/FInfo.vue';
+import { sortByHex } from '@/utils/array-sorting.js';
 
 export default {
     name: 'GovProposalDetail',
 
-    components: { GovVotingInfo, FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
+    components: { FInfo, GovVotingInfo, FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
     mixins: [viewHelpersMixin, eventBusMixin],
 
@@ -210,6 +253,7 @@ export default {
             items: [],
             loading: false,
             proposalError: '',
+            optionStates: [],
         };
     },
 
@@ -273,6 +317,52 @@ export default {
             return '-';
         },
 
+        winnerVotes() {
+            const { d_proposal } = this;
+            const { optionStates } = this;
+            let option;
+
+            if (
+                optionStates.length > 0 &&
+                d_proposal.state &&
+                d_proposal.state.isResolved &&
+                d_proposal.state.winnerId &&
+                d_proposal.options
+            ) {
+                option = optionStates.find((_option) => _option.optionId === d_proposal.state.winnerId);
+                if (option) {
+                    return this.toPercentage(option.agreementRatio);
+                }
+            }
+
+            return 0;
+        },
+
+        winnings() {
+            const winnings = [];
+            const { d_proposal } = this;
+            const optionStates = cloneObject(this.optionStates);
+            let agreementRatio = '';
+
+            if (optionStates.length > 0) {
+                optionStates.sort(sortByHex('agreementRatio', 'desc'));
+
+                agreementRatio = optionStates[0].agreementRatio;
+
+                for (let i = 0, len1 = optionStates.length; i < len1; i++) {
+                    if (optionStates[i].agreementRatio === agreementRatio) {
+                        winnings.push({
+                            id: optionStates[i].optionId,
+                            name: d_proposal.options[parseInt(optionStates[i].optionId, 10)],
+                            votes: this.toPercentage(optionStates[i].agreementRatio),
+                        });
+                    }
+                }
+            }
+
+            return winnings;
+        },
+
         hasCorrectParams() {
             return !!this.d_proposalId && !!this.d_governanceId;
         },
@@ -329,9 +419,7 @@ export default {
             this.items = items;
 
             this.setVotes();
-
-            // console.log('items', items);
-            // console.log('proposal', this.d_proposal);
+            this.setOptionStates();
         },
 
         async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
@@ -348,7 +436,6 @@ export default {
                     _proposalId
                 );
 
-                // console.log(data);
                 this.governance = data;
                 this.d_proposal = data.proposal;
 
@@ -411,6 +498,13 @@ export default {
             }
         },
 
+        async setOptionStates() {
+            this.optionStates = await this.$governance.fetchProposalOptionStates(
+                this.d_governanceId,
+                this.d_proposalId
+            );
+        },
+
         /**
          * @return {Promise<Array>}
          */
@@ -470,6 +564,20 @@ export default {
 
         now() {
             return new Date().getTime();
+        },
+
+        /**
+         * @param {string} _bn
+         */
+        toPercentage(_bn) {
+            return parseInt(this.toFloat(_bn) * 100, 10);
+        },
+
+        /**
+         * @param {string} _bn
+         */
+        toFloat(_bn) {
+            return parseFloat(this.$defi.shiftDecPointLeft(_bn, 18));
         },
 
         onFormSubmit(_event) {
