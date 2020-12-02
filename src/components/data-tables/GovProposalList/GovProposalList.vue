@@ -12,7 +12,7 @@
                     :mobile-view="cMobileView"
                     :loading="loading"
                     infinite-scroll
-                    fixed-header
+                    fixed-header__
                     action-on-row
                     f-card-off
                     class="f-data-table-body-bg-color"
@@ -35,7 +35,7 @@
 
                     <template v-slot:column-votes="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
-                            <div class="col-5 f-row-label">{{ column.label }}</div>
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">
                                 <f-colored-number-range
                                     v-if="value"
@@ -55,9 +55,21 @@
                         </template>
                     </template>
 
+                    <template v-slot:column-voted="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
+                            <div class="col break-word">
+                                <template v-if="value">{{ value.voted }}/{{ value.total }}</template>
+                            </div>
+                        </div>
+                        <template v-else>
+                            <template v-if="value">{{ value.voted }}/{{ value.total }}</template>
+                        </template>
+                    </template>
+
                     <template v-slot:column-detail="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
-                            <div class="col-5 f-row-label">{{ column.label }}</div>
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">
                                 <button class="btn">Detail</button>
                             </div>
@@ -159,6 +171,14 @@ export default {
                         }
 
                         return '';
+                    },
+                },
+                {
+                    name: 'voted',
+                    label: 'Voted',
+                    itemProp: 'proposal',
+                    formatter: (_value) => {
+                        return _value._voted !== undefined ? _value._voted : '';
                     },
                 },
                 {
@@ -272,20 +292,55 @@ export default {
             const { dItems } = this;
             let item;
             let data;
+            let delegationsAndOptionState;
+            let delegators = [];
+            let voted = 0;
 
             if (_startIdx >= _endIdx) {
                 return;
             }
 
             for (let i = _startIdx; i < _endIdx; i++) {
+                voted = 0;
                 item = dItems[i];
-                data = await this.fetchProposalDelegationsAndOptionState(item.proposal.governanceId, item.proposal.id);
+                delegationsAndOptionState = await this.fetchProposalDelegationsAndOptionState(
+                    item.proposal.governanceId,
+                    item.proposal.id
+                );
+
+                if (delegators.length === 0) {
+                    delegators = delegationsAndOptionState.delegationsBy;
+                }
+
+                if (delegators.length > 0) {
+                    data = await Promise.all(this.getVotesPromises(delegators, item.proposal));
+                    data.forEach((_item) => {
+                        if (_item.vote.choices && _item.vote.choices.length > 0) {
+                            voted++;
+                        }
+                    });
+                }
 
                 Vue.set(item, 'proposal', {
                     ...item.proposal,
-                    _votes: this.overallVotes(data.proposal.optionState.votes, data.proposal.totalWeight),
+                    _votes: this.overallVotes(
+                        delegationsAndOptionState.proposal.optionState.votes,
+                        delegationsAndOptionState.proposal.totalWeight
+                    ),
+                    _voted: {
+                        voted,
+                        total: delegators.length,
+                    },
                 });
             }
+        },
+
+        getVotesPromises(_delegators, _proposal) {
+            const address = this.currentAccount ? this.currentAccount.address : '';
+
+            return _delegators.map((_delegator) =>
+                this.$governance.fetchProposalVote(_proposal.governanceId, address, _delegator, _proposal.id)
+            );
         },
 
         /**
