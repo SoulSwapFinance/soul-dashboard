@@ -22,7 +22,7 @@
                     </template>
                     <template v-else>
                         <h3 class="gov-proposal-detail__sub-title">Winning</h3>
-                        <ul class="no-markers gov-proposal-detail__winnigs">
+                        <ul v-if="winnings.length > 0" class="no-markers gov-proposal-detail__winnigs">
                             <li v-for="winning in winnings" :key="`wk_${winning.id}`">
                                 <div class="row align-items-center no-collapse">
                                     <div class="col col-8 gov-proposal-detail__option align-left">
@@ -32,6 +32,7 @@
                                 </div>
                             </li>
                         </ul>
+                        <div v-else>-</div>
                     </template>
                 </f-card>
 
@@ -43,14 +44,14 @@
                 />
 
                 <h3 class="cont-650 align-center">
-                    Express Your Level of Agreement
+                    Your Votes
                     <f-info window-closeable window-class="light" window-style="max-width: 500px;">
                         Please express your level of agreement with each option. <br />
                         (1) means no agreement and each level up means higher level of agreement
                     </f-info>
                 </h3>
 
-                <div v-if="!canVote" class="align-center">
+                <div v-if="!canVote && votingResolved" class="align-center">
                     <f-message type="warning" with-icon>
                         You can't vote, you have no delegations.
                     </f-message>
@@ -360,7 +361,7 @@ export default {
                 }
             }
 
-            return winnings;
+            return winnings.length < optionStates.length ? winnings : [];
         },
 
         hasCorrectParams() {

@@ -142,7 +142,7 @@ export default {
 
             // update second column's label
             const col = this.columns[1];
-            Vue.set(col, 'label', `${col.label} (min. ${this.minAgreement}%)`);
+            Vue.set(col, 'label', `Agreement (min. ${this.minAgreement}%)`);
 
             this.options = _optionStates;
         },
