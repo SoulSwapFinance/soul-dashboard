@@ -10,9 +10,12 @@
                 :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
+                :cancel-button-label="cancelButtonLabel"
+                :show-cancel-button="showCancelButton"
                 :waiting="waiting"
                 :tmp-pwd-code="tmpPwdCode"
                 @f-form-submit="onFFormSubmit"
+                @cancel-button-click="$emit('cancel-button-click', $event)"
             />
         </f-card>
 
@@ -96,6 +99,15 @@ export default {
         sendButtonLabel: {
             type: String,
             default: '',
+        },
+        /** Label for button in TransactionConfirmationForm component */
+        cancelButtonLabel: {
+            type: String,
+            default: 'Cancel',
+        },
+        showCancelButton: {
+            type: Boolean,
+            default: false,
         },
         /** Label for password field in TransactionConfirmationForm component */
         passwordLabel: {

@@ -18,6 +18,7 @@
                 :is="currentComponent"
                 v-bind="currentComponentProperties"
                 @change-component="onChangeComponent"
+                @cancel-button-click="onCancelButtonClick"
             ></component>
         </f-window>
     </div>
@@ -73,6 +74,10 @@ export default {
             this.$nextTick(() => {
                 this._data_ = null;
             });
+        },
+
+        onCancelButtonClick() {
+            this.$refs.win.hide();
         },
     },
 };
