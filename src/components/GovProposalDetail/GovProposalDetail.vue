@@ -197,7 +197,7 @@ import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import FForm from '@/components/core/FForm/FForm.vue';
-import { formatDate, prepareTimestamp, timestampToDate } from '@/filters.js';
+import { formatDate, formatNumberByLocale, prepareTimestamp, timestampToDate } from '@/filters.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
@@ -208,6 +208,7 @@ import FCard from '@/components/core/FCard/FCard.vue';
 import GovVotingInfo from '@/components/GovVotingInfo/GovVotingInfo.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import { sortByHex } from '@/utils/array-sorting.js';
+import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
 
 export default {
     name: 'GovProposalDetail',
@@ -571,7 +572,7 @@ export default {
          * @param {string} _bn
          */
         toPercentage(_bn) {
-            return parseInt(this.toFloat(_bn) * 100, 10);
+            return formatNumberByLocale(this.toFloat(_bn) * 100, GOV_PERCENTAGE_FRAC_DIGITS, '', true);
         },
 
         /**

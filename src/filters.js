@@ -108,11 +108,17 @@ export function formatDuration(_value) {
  * @param {number} _number
  * @param {number} [_fractionDigits]
  * @param {string} [_currency]
+ * @param {boolean} [_variableFDigits]
  * @return {*}
  */
-export function formatNumberByLocale(_number, _fractionDigits = filtersOptions.fractionDigits, _currency) {
+export function formatNumberByLocale(
+    _number,
+    _fractionDigits = filtersOptions.fractionDigits,
+    _currency,
+    _variableFDigits
+) {
     let options = {
-        minimumFractionDigits: _fractionDigits,
+        minimumFractionDigits: _variableFDigits ? 0 : _fractionDigits,
         maximumFractionDigits: _fractionDigits,
     };
 

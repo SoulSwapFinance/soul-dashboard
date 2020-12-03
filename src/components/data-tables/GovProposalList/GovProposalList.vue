@@ -42,6 +42,7 @@
                                     :value="value.votes"
                                     :colors="overallVotesColors(value.minVotes)"
                                     show-percentage
+                                    :percentage-frac-digits="fracDigits"
                                 />
                             </div>
                         </div>
@@ -51,6 +52,7 @@
                                 :value="value.votes"
                                 :colors="overallVotesColors(value.minVotes)"
                                 show-percentage
+                                :percentage-frac-digits="fracDigits"
                             />
                         </template>
                     </template>
@@ -90,7 +92,7 @@
 
 <script>
 import FCard from '../../core/FCard/FCard.vue';
-import { formatDate, formatHexToInt, timestampToDate } from '../../../filters.js';
+import { formatDate, formatHexToInt, formatNumberByLocale, timestampToDate } from '../../../filters.js';
 import FDataTable from '../../core/FDataTable/FDataTable.vue';
 import { mapGetters } from 'vuex';
 import { cloneObject, defer } from '@/utils';
@@ -98,6 +100,7 @@ import gql from 'graphql-tag';
 import Vue from 'vue';
 import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
+import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
 
 export default {
     name: 'GovProposalList',
@@ -160,6 +163,7 @@ export default {
 
                         return '-';
                     },
+                    width: '180px',
                 },
                 {
                     name: 'votes',
@@ -175,6 +179,7 @@ export default {
 
                         return '';
                     },
+                    width: '80px',
                 },
                 {
                     name: 'voted',
@@ -183,6 +188,7 @@ export default {
                     formatter: (_value) => {
                         return _value._voted !== undefined ? _value._voted : '';
                     },
+                    width: '80px',
                 },
                 {
                     name: 'detail',
@@ -190,6 +196,7 @@ export default {
                     css: { textAlign: 'right' },
                 },
             ],
+            fracDigits: GOV_PERCENTAGE_FRAC_DIGITS,
         };
     },
 
@@ -224,7 +231,8 @@ export default {
          * @param {string} _bn
          */
         toPercentage(_bn) {
-            return parseInt(this.toFloat(_bn) * 100, 10);
+            // return parseInt(this.toFloat(_bn) * 100, 10);
+            return formatNumberByLocale(this.toFloat(_bn) * 100, GOV_PERCENTAGE_FRAC_DIGITS, '', true);
         },
 
         /**

@@ -3,7 +3,12 @@
         <f-card class="cont-650">
             <h3 class="gov-voting-info__title">
                 Total Votes <br />
-                <f-colored-number-range :value="overallVotes" :colors="overallVotesColors" show-percentage />
+                <f-colored-number-range
+                    :value="overallVotes"
+                    :colors="overallVotesColors"
+                    show-percentage
+                    :percentage-frac-digits="fracDigits"
+                />
                 <span class="perex">(min. {{ minVotes }}%)</span>
             </h3>
 
@@ -17,11 +22,21 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-4 f-row-label">{{ column.label }}</div>
                         <div class="col">
-                            <f-colored-number-range :value="value" :colors="overallVotesColors" show-percentage />
+                            <f-colored-number-range
+                                :value="value"
+                                :colors="overallVotesColors"
+                                show-percentage
+                                :percentage-frac-digits="fracDigits"
+                            />
                         </div>
                     </div>
                     <template v-else>
-                        <f-colored-number-range :value="value" :colors="overallVotesColors" show-percentage />
+                        <f-colored-number-range
+                            :value="value"
+                            :colors="overallVotesColors"
+                            show-percentage
+                            :percentage-frac-digits="fracDigits"
+                        />
                     </template>
                 </template>
             </f-data-table>
@@ -34,6 +49,7 @@ import FCard from '@/components/core/FCard/FCard.vue';
 import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import Vue from 'vue';
+import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
 
 export default {
     name: 'GovVotingInfo',
@@ -88,6 +104,7 @@ export default {
                     },
                 },
             ],
+            fracDigits: GOV_PERCENTAGE_FRAC_DIGITS,
         };
     },
 

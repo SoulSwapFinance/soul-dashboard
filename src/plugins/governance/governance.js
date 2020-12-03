@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 
 /** @type {Governance} */
 export let governance = null;
+export const GOV_PERCENTAGE_FRAC_DIGITS = 2;
 
 /**
  * Plugin for various Governance requests and calculations.
