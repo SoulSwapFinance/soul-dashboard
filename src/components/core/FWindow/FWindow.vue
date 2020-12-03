@@ -21,7 +21,7 @@
                             <h2>{{ title }}</h2>
                         </slot>
                     </div>
-                    <div class="controls" @click="onControlsClick">
+                    <div v-if="!noControls" class="controls" @click="onControlsClick">
                         <!-- @slot Default to `close-btn` button -->
                         <slot name="controls">
                             <button class="btn close-btn same-size round light" title="Close window">
@@ -216,6 +216,11 @@ export default {
         hideOnEscapeKey: {
             type: Boolean,
             default: true,
+        },
+        /** Hide controls in the header. */
+        noControls: {
+            type: Boolean,
+            default: false,
         },
     },
 
