@@ -145,7 +145,7 @@ export default {
         },
 
         downloadKeystoreFile() {
-            return !this.currentAccount.isLedgerAccount && !clientInfo.mobile;
+            return !this.currentAccount.isLedgerAccount && !this.currentAccount.isMetamaskAccount && !clientInfo.mobile;
         },
     },
 
