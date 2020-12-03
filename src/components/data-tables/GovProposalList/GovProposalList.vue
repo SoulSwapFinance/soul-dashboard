@@ -97,11 +97,14 @@ import { cloneObject, defer } from '@/utils';
 import gql from 'graphql-tag';
 import Vue from 'vue';
 import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     name: 'GovProposalList',
 
     components: { FColoredNumberRange, FDataTable, FCard },
+
+    mixins: [eventBusMixin],
 
     props: {
         /** Number of items per page. */
@@ -207,9 +210,16 @@ export default {
 
     created() {
         this.fetchProposals();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
+        onAccountPicked() {
+            this.dItems = [];
+            this.fetchProposals();
+        },
+
         /**
          * @param {string} _bn
          */
