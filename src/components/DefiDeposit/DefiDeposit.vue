@@ -209,6 +209,14 @@
         </div>
 
         <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
+        <tx-confirmation-window ref="confirmationWindow">
+            <component
+                :is="currentComponent"
+                v-bind="currentComponentProperties"
+                @change-component="onChangeComponent"
+                @cancel-button-click="onCancelButtonClick"
+            ></component>
+        </tx-confirmation-window>
     </div>
 </template>
 
@@ -225,11 +233,16 @@ import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPic
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import appConfig from '../../../app.config.js';
+import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
+import DefiDepositConfirmation from '@/components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
+import { componentViewMixin } from '@/mixins/component-view.js';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        DefiDepositConfirmation,
+        TxConfirmationWindow,
         RatioInfo,
         FTokenValue,
         DefiTokenPickerWindow,
@@ -239,7 +252,7 @@ export default {
         FMessage,
     },
 
-    mixins: [eventBusMixin],
+    mixins: [eventBusMixin, componentViewMixin],
 
     props: {
         /** @type {DefiToken} */
@@ -651,10 +664,19 @@ export default {
             }
 
             if (!this.submitDisabled) {
+                this.changeComponent('defi-deposit-confirmation', {
+                    params,
+                    compName: 'defi-lock-unlock',
+                    token: params.token,
+                });
+                this.$refs.confirmationWindow.show();
+
+                /*
                 this.$router.push({
                     name: this.onSubmitRoute,
                     params,
                 });
+                */
             }
         },
 
@@ -686,6 +708,10 @@ export default {
 
         onAccountPicked() {
             this.init();
+        },
+
+        onCancelButtonClick() {
+            this.$refs.confirmationWindow.hide();
         },
 
         formatNumberByLocale,

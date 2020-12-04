@@ -10,7 +10,9 @@
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
             :tmp-pwd-code="tmpPwdCode"
+            :show-cancel-button="true"
             @change-component="onChangeComponent"
+            @cancel-button-click="$emit('cancel-button-click', $event)"
         >
             <h1 class="with-back-btn">
                 <f-back-button
