@@ -406,7 +406,7 @@ export default {
         },
 
         currentAccount(_value, _oldValue) {
-            if (_value !== _oldValue) {
+            if (!_oldValue || _value.address !== _oldValue.address) {
                 this.onAccountPicked();
             }
         },
