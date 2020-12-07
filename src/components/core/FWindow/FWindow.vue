@@ -32,7 +32,9 @@
                 </header>
 
                 <div :id="_ids.body" class="body">
-                    <slot></slot>
+                    <div :style="{ minHeight: bodyMinHeight }">
+                        <slot></slot>
+                    </div>
                 </div>
 
                 <footer v-if="withFooter">
@@ -186,6 +188,11 @@ export default {
         hideAfter: {
             type: Number,
             default: 0,
+        },
+        /** Minimal height of window's body. */
+        bodyMinHeight: {
+            type: String,
+            default: 'auto',
         },
         /** Center window horizontally. */
         centerHorizontally: {

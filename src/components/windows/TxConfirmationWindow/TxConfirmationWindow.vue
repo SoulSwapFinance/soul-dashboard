@@ -8,6 +8,7 @@
             animation-out="scale-center-leave-active"
             no-controls
             :hide-on-escape-key="false"
+            :body-min-height="bodyMinHeight"
             @window-hide="$emit('window-hide', $event)"
         >
             <template #title>
@@ -26,6 +27,14 @@ export default {
     name: 'TxConfirmationWindow',
 
     components: { FWindow },
+
+    props: {
+        /** Minimal height of window's body. */
+        bodyMinHeight: {
+            type: String,
+            default: 'auto',
+        },
+    },
 
     data() {
         return {
