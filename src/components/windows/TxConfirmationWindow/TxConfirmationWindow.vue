@@ -13,7 +13,7 @@
         >
             <template #title>
                 <h2>Confirmation</h2>
-                <div>steps</div>
+                <!--                <div>steps</div>-->
             </template>
             <slot></slot>
         </f-window>

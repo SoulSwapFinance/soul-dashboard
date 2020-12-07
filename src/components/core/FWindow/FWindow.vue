@@ -32,7 +32,7 @@
                 </header>
 
                 <div :id="_ids.body" class="body">
-                    <div :style="{ minHeight: bodyMinHeight }">
+                    <div :class="{ 'min-h-100': bodyMinHeight !== 'auto' }" :style="{ minHeight: bodyMinHeight }">
                         <slot></slot>
                     </div>
                 </div>
