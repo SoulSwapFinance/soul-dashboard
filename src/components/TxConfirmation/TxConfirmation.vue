@@ -1,22 +1,30 @@
 <template>
     <div class="tx-confirmation">
-        <f-card class="f-card-double-padding f-data-layout" :off="cardOff">
-            <slot></slot>
+        <f-card
+            class="f-card-double-padding f-data-layout"
+            :class="[windowMode ? 'column-layout column-layout--body-footer' : '']"
+            :off="cardOff"
+        >
+            <div :class="{ 'center-v': windowMode }">
+                <slot></slot>
+            </div>
 
-            <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
+            <div>
+                <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
 
-            <transaction-confirmation-form
-                :error-message="errorMsg"
-                :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
-                :password-label="passwordLabel"
-                :send-button-label="sendButtonLabel"
-                :cancel-button-label="cancelButtonLabel"
-                :show-cancel-button="showCancelButton"
-                :waiting="waiting"
-                :tmp-pwd-code="tmpPwdCode"
-                @f-form-submit="onFFormSubmit"
-                @cancel-button-click="$emit('cancel-button-click', $event)"
-            />
+                <transaction-confirmation-form
+                    :error-message="errorMsg"
+                    :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
+                    :password-label="passwordLabel"
+                    :send-button-label="sendButtonLabel"
+                    :cancel-button-label="cancelButtonLabel"
+                    :show-cancel-button="showCancelButton"
+                    :waiting="waiting"
+                    :tmp-pwd-code="tmpPwdCode"
+                    @f-form-submit="onFFormSubmit"
+                    @cancel-button-click="$emit('cancel-button-click', $event)"
+                />
+            </div>
         </f-card>
 
         <f-window
@@ -134,6 +142,11 @@ export default {
         },
         /** Set temporary password */
         setTmpPwd: {
+            type: Boolean,
+            default: false,
+        },
+        /** Component is placed in FWindow */
+        windowMode: {
             type: Boolean,
             default: false,
         },
