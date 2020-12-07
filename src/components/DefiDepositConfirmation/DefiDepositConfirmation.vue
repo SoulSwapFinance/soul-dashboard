@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-deposit-confirmation">
+    <div class="defi-deposit-confirmation min-h-100">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -11,10 +11,12 @@
             :set-tmp-pwd="params.step === 1"
             :tmp-pwd-code="tmpPwdCode"
             :show-cancel-button="true"
+            :window-mode="!isView"
+            class="min-h-100"
             @change-component="onChangeComponent"
             @cancel-button-click="$emit('cancel-button-click', $event)"
         >
-            <h1 class="with-back-btn">
+            <h1 v-if="isView" class="with-back-btn">
                 <f-back-button
                     v-if="!params.steps || params.step === 1"
                     :route-name="backButtonRoute"
@@ -113,6 +115,11 @@ export default {
                 return {};
             },
             required: true,
+        },
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: false,
         },
     },
 
@@ -282,7 +289,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
+                params.continueToParams = { ...this.params, isView: this.isView, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -291,10 +298,29 @@ export default {
                 params.continueToParams = { token: { ...this.token } };
             }
 
-            this.$router.replace({
-                name: transactionSuccessComp,
-                params,
-            });
+            if (this.isView) {
+                this.$router.replace({
+                    name: transactionSuccessComp,
+                    params,
+                });
+            } else {
+                if (this.params.step === 1) {
+                    params.continueTo = 'defi-deposit-confirmation';
+                    params.continueToParams = {
+                        params: { ...params.continueToParams },
+                        token: { ...this.token },
+                        compName: this.compName,
+                    };
+                } else if (this.params.step === 2) {
+                    params.continueTo = 'hide-window';
+                }
+
+                this.$emit('change-component', {
+                    to: 'transaction-success-message',
+                    from: 'defi-deposit-confirmation',
+                    data: { ...params, cardOff: true, windowMode: true },
+                });
+            }
         },
 
         /**

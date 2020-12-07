@@ -209,7 +209,7 @@
         </div>
 
         <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
-        <tx-confirmation-window ref="confirmationWindow">
+        <tx-confirmation-window ref="confirmationWindow" body-min-height="350px">
             <component
                 :is="currentComponent"
                 v-bind="currentComponentProperties"
@@ -233,14 +233,16 @@ import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPic
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import appConfig from '../../../app.config.js';
+import { componentViewMixin } from '@/mixins/component-view.js';
 import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
 import DefiDepositConfirmation from '@/components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
-import { componentViewMixin } from '@/mixins/component-view.js';
+import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        TransactionSuccessMessage,
         DefiDepositConfirmation,
         TxConfirmationWindow,
         RatioInfo,
@@ -711,6 +713,8 @@ export default {
         },
 
         onCancelButtonClick() {
+            this.currCollateral = '0';
+            this.init();
             this.$refs.confirmationWindow.hide();
         },
 
