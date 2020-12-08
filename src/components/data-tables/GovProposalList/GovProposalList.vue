@@ -19,6 +19,32 @@
                     @fetch-more="fetchMore"
                     @row-action="onRowAction"
                 >
+                    <template v-slot:column-name="{ value, item, column }">
+                        <div v-if="column" class="row no-collapse no-vert-col-padding">
+                            <div class="col-4 f-row-label">{{ column.label }}</div>
+                            <div class="col-8">
+                                {{ value }} <br />
+                                <a
+                                    :href="`${explorerUrl}address/${item.proposal.contract}`"
+                                    target="_blank"
+                                    class="break-word"
+                                >
+                                    {{ item.proposal.contract | formatHash }}
+                                </a>
+                            </div>
+                        </div>
+                        <template v-else>
+                            {{ value }} <br />
+                            <a
+                                :href="`${explorerUrl}address/${item.proposal.contract}`"
+                                target="_blank"
+                                class="break-word"
+                            >
+                                {{ item.proposal.contract | formatHash }}
+                            </a>
+                        </template>
+                    </template>
+
                     <template v-slot:column-startend="{ value, item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
@@ -101,6 +127,7 @@ import Vue from 'vue';
 import FColoredNumberRange from '@/components/core/FColoredNumberRange/FColoredNumberRange.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
+import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'GovProposalList',
@@ -197,6 +224,9 @@ export default {
                 },
             ],
             fracDigits: GOV_PERCENTAGE_FRAC_DIGITS,
+            explorerUrl: appConfig.explorerUrl,
+            /** Stop loading data */
+            stopLoading: false,
         };
     },
 
@@ -219,6 +249,10 @@ export default {
         this.fetchProposals();
 
         this._eventBus.on('account-picked', this.onAccountPicked);
+    },
+
+    beforeDestroy() {
+        this.stopLoading = true;
     },
 
     methods: {
@@ -264,6 +298,10 @@ export default {
          * @param {number} [_count]
          */
         async fetchProposals(_cursor = '', _count = this.itemsPerPage) {
+            if (this.stopLoading) {
+                return;
+            }
+
             this.loading = true;
 
             try {
@@ -319,6 +357,10 @@ export default {
             }
 
             for (let i = _startIdx; i < _endIdx; i++) {
+                if (this.stopLoading) {
+                    break;
+                }
+
                 voted = 0;
                 item = dItems[i];
                 delegationsAndOptionState = await this.fetchProposalDelegationsAndOptionState(

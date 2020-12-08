@@ -6,6 +6,12 @@
                 {{ d_proposal.name }}
             </h1>
 
+            <div class="gov-proposal-detail__contract perex">
+                <a :href="`${explorerUrl}address/${d_proposal.contract}`" target="_blank" class="break-word">
+                    {{ d_proposal.contract | formatHash }}
+                </a>
+            </div>
+
             <h2 class="perex">{{ d_proposal.description }}</h2>
             <!--<h2 v-if="loading || votingResolved" class="perex">{{ d_proposal.description }}</h2>-->
 
@@ -191,8 +197,8 @@ import gql from 'graphql-tag';
 import FCard from '@/components/core/FCard/FCard.vue';
 import GovVotingInfo from '@/components/GovVotingInfo/GovVotingInfo.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
-import { sortByHex } from '@/utils/array-sorting.js';
 import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'GovProposalDetail',
@@ -240,6 +246,7 @@ export default {
             loading: false,
             proposalError: '',
             optionStates: [],
+            explorerUrl: appConfig.explorerUrl,
         };
     },
 
