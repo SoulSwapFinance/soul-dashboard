@@ -173,6 +173,33 @@ export default {
                     width: '260px',
                 },
                 {
+                    name: 'voted',
+                    label: 'You Voted',
+                    itemProp: 'proposal',
+                    formatter: (_value) => {
+                        return _value._voted !== undefined ? _value._voted : '';
+                    },
+                    width: '110px',
+                    css: { textAlign: 'center' },
+                },
+                {
+                    name: 'votes',
+                    label: 'Votes',
+                    itemProp: 'proposal',
+                    formatter: (_value) => {
+                        if (_value._votes) {
+                            return {
+                                votes: _value._votes,
+                                minVotes: this.toPercentage(_value.minVotes),
+                            };
+                        }
+
+                        return '';
+                    },
+                    width: '80px',
+                    css: { textAlign: 'center' },
+                },
+                {
                     name: 'winner',
                     label: 'Winner',
                     formatter: (_value, _item) => {
@@ -191,31 +218,7 @@ export default {
                         return '-';
                     },
                     width: '180px',
-                },
-                {
-                    name: 'votes',
-                    label: 'Votes',
-                    itemProp: 'proposal',
-                    formatter: (_value) => {
-                        if (_value._votes) {
-                            return {
-                                votes: _value._votes,
-                                minVotes: this.toPercentage(_value.minVotes),
-                            };
-                        }
-
-                        return '';
-                    },
-                    width: '80px',
-                },
-                {
-                    name: 'voted',
-                    label: 'Voted',
-                    itemProp: 'proposal',
-                    formatter: (_value) => {
-                        return _value._voted !== undefined ? _value._voted : '';
-                    },
-                    width: '80px',
+                    css: { textAlign: 'center' },
                 },
                 {
                     name: 'detail',
