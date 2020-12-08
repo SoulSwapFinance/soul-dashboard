@@ -149,11 +149,7 @@ export default {
         sendButtonLabel() {
             let label = '';
 
-            if (this.params.step === 1) {
-                label = 'Continue to the next step';
-            } else {
-                label = 'Submit';
-            }
+            label = 'Submit';
             /*
             else if (this.params.collateral > 0) {
                 label = 'Rebalance now';
@@ -311,8 +307,10 @@ export default {
                         token: { ...this.token },
                         compName: this.compName,
                     };
+                    params.title = `Success`;
                 } else if (this.params.step === 2) {
                     params.continueTo = 'hide-window';
+                    params.continueButtonLabel = 'Finish';
                 }
 
                 this.$emit('change-component', {

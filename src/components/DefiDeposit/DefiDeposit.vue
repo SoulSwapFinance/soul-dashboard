@@ -716,6 +716,7 @@ export default {
             this.currCollateral = '0';
             this.init();
             this.$refs.confirmationWindow.hide();
+            this.currentComponent = '';
         },
 
         formatNumberByLocale,
