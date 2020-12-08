@@ -1,0 +1,55 @@
+@import "custom-properties";
+
+.f-steps {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--f-steps-padding);
+    /*background: linear-gradient(#eee, #eee) no-repeat center/100% 1px;*/
+
+    &__cont {
+        display: flex;
+        padding: var(--f-steps-cont-padding);
+        background: var(--f-steps-cont-background);
+    }
+
+    &__step {
+        position: relative;
+        padding: var(--f-steps-step-padding);
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &::before {
+            width: var(--f-steps-step-dot-width);
+            height: var(--f-steps-step-dot-height);
+            background: var(--f-steps-step-dot-background);
+            border: var(--f-steps-step-dot-border);
+            border-radius: var(--f-steps-step-dot-border-radius);
+            content: var(--f-steps-step-dot-content);
+            display: block;
+        }
+
+        &--active {
+            &::before {
+                position: relative;
+                background: var(--f-steps-step-dot-active-background);
+                border: var(--f-steps-step-dot-active-border);
+                z-index: 1;
+            }
+
+            &::after {
+                position: absolute;
+                top: 50%;
+                right: 0;
+                width: 100%;
+                height: var(--f-steps-hor-line-height);
+                background: var(--f-steps-active-hor-line-background);
+                content: '';
+                z-index: 0;
+            }
+        }
+    }
+}
