@@ -13,7 +13,7 @@
         >
             <template #title>
                 <h2>Confirmation</h2>
-                <!--                <div>steps</div>-->
+                <f-steps v-if="stepsCount > 0" :count="stepsCount" :active="activeStep" />
             </template>
             <slot></slot>
         </f-window>
@@ -22,17 +22,28 @@
 
 <script>
 import FWindow from '@/components/core/FWindow/FWindow.vue';
+import FSteps from '@/components/core/FSteps/FSteps.vue';
 
 export default {
     name: 'TxConfirmationWindow',
 
-    components: { FWindow },
+    components: { FSteps, FWindow },
 
     props: {
         /** Minimal height of window's body. */
         bodyMinHeight: {
             type: String,
             default: 'auto',
+        },
+        /** Count of steps */
+        stepsCount: {
+            type: Number,
+            default: 0,
+        },
+        /** Active step (`<1, stepsCount>`) */
+        activeStep: {
+            type: Number,
+            default: 1,
         },
     },
 

@@ -209,7 +209,12 @@
         </div>
 
         <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
-        <tx-confirmation-window ref="confirmationWindow" body-min-height="350px">
+        <tx-confirmation-window
+            ref="confirmationWindow"
+            body-min-height="350px"
+            :steps-count="stepsCount"
+            :active-step="activeStep"
+        >
             <component
                 :is="currentComponent"
                 v-bind="currentComponentProperties"
@@ -324,6 +329,9 @@ export default {
             label: 'tmp',
             disableSFTM: appConfig.disableSFTM,
             id: getUniqueId(),
+            stepsCount: 2,
+            /** Active step (`<1, stepsCount>`) */
+            activeStep: 1,
         };
     },
 
@@ -655,8 +663,8 @@ export default {
                 collateral: this.collateral,
                 collateralHex: tokenBalance.balance,
                 token: { ...this.dToken },
-                steps: 2,
-                step: 1,
+                steps: this.stepsCount,
+                step: this.activeStep,
             };
 
             if (this.deposit) {
@@ -714,9 +722,25 @@ export default {
 
         onCancelButtonClick() {
             this.currCollateral = '0';
+            this.activeStep = 1;
+
             this.init();
+
             this.$refs.confirmationWindow.hide();
             this.currentComponent = '';
+        },
+
+        /**
+         * @param {Object} _data
+         */
+        onChangeComponent(_data) {
+            const { data } = _data;
+
+            if (data && data.params && data.params.step) {
+                this.activeStep = data.params.step;
+            }
+
+            componentViewMixin.methods.onChangeComponent.call(this, _data);
         },
 
         formatNumberByLocale,
