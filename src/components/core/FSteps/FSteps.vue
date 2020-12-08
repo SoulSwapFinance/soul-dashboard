@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { getUniqueId } from '../../utils';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FSteps',

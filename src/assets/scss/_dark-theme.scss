@@ -83,6 +83,11 @@
     }
     */
 
+    .f-steps {
+        --f-steps-secondary-color: var(--f-darker-color-3);
+        --f-steps-step-dot-background: var(--f-steps-secondary-color);
+    }
+
     .f-slider {
         --f-slider-thumb-background-color: var(--f-primary-color);
         --f-slider-thumb-hover-background-color: var(--f-primary-color);

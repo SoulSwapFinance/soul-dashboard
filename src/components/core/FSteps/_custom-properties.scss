@@ -3,7 +3,8 @@
 
     /* main colors */
     --f-steps-primary-color: var(--f-primary-color, #666);
-    --f-steps-secondary-color: #aaa;
+    --f-steps-secondary-color: #e6e6e6;
+    //--f-steps-secondary-color: #d7dce1;
 
     /* horizontal line */
     --f-steps-hor-line-height: 1px;
@@ -17,7 +18,7 @@
         center/100% var(--f-steps-hor-line-height); /* horizontal line */
 
     /* step */
-    --f-steps-step-padding: 0 0 0 40px;
+    --f-steps-step-padding: 0 0 0 32px;
 
     /* step dot */
     --f-steps-step-dot-width: 16px;
@@ -25,7 +26,7 @@
     --f-steps-step-dot-border: var(--f-steps-hor-line-height) solid var(--f-steps-hor-line-color);
     --f-steps-step-dot-border-radius: 50%;
     --f-steps-step-dot-content: '';
-    --f-steps-step-dot-background: #fff;
+    --f-steps-step-dot-background: var(--f-steps-secondary-color);
     /* active step dot */
     --f-steps-step-dot-active-background: var(--f-steps-primary-color);
     --f-steps-step-dot-active-border: var(--f-steps-hor-line-height) solid var(--f-steps-step-dot-active-background);
