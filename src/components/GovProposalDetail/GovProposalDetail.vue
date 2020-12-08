@@ -57,7 +57,7 @@
                                 <div class="form-body cont-650">
                                     <div v-if="item.validator" class="gov-proposal-detail__validator-info">
                                         <h4 class="gov-proposal-detail__sub-title">
-                                            Validator: {{ item.validator.stakerInfo.name }} ({{
+                                            Delegated to: {{ item.validator.stakerInfo.name }} ({{
                                                 parseInt(item.validator.id, 16)
                                             }})
                                             <span v-if="item.validator.stakerInfo._unknown" class="perex">
@@ -107,7 +107,7 @@
                         <div v-else class="cont-650">
                             <div v-if="item.validator" class="gov-proposal-detail__validator-info">
                                 <h4 class="gov-proposal-detail__sub-title">
-                                    Validator: {{ item.validator.stakerInfo.name }} ({{
+                                    Delegated to: {{ item.validator.stakerInfo.name }} ({{
                                         parseInt(item.validator.id, 16)
                                     }})
                                     <span v-if="item.validator.stakerInfo._unknown" class="perex">

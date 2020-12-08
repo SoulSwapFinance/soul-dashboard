@@ -29,7 +29,6 @@
 
         .gov-proposal-detail__sub-title {
             font-weight: normal;
-            font-size: 21px !important;
         }
     }
 
@@ -65,6 +64,10 @@
 
         li {
             margin-bottom: -4px;
+        }
+
+        .gov-proposal-detail__sub-title {
+            font-size: 21px !important;
         }
     }
 
