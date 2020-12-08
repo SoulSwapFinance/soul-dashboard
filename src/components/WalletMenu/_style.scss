@@ -105,24 +105,22 @@
 
         .f-simple-navigation {
             //width: 100%;
-
             --f-simple-navigation-link-padding: 10px 22px;
 
-            nav {
-                ul {
-                    display: flex;
-                    //justify-content: center;
-                    justify-content: space-evenly;
-                    align-items: center;
+            ul {
+                //width: 100%;
+                display: flex;
+                //justify-content: center;
+                justify-content: space-evenly;
+                align-items: center;
 
-                    .title {
-                        display: none;
-                    }
+                .title {
+                    display: none;
+                }
 
-                    svg {
-                        position: relative;
-                        top: -2px;
-                    }
+                svg {
+                    position: relative;
+                    top: -2px;
                 }
             }
         }
@@ -136,24 +134,22 @@
 
             --f-simple-navigation-link-padding: 0;
 
-            nav {
-                ul {
-                    li {
+            ul {
+                li {
+                    display: block;
+                    padding: 0;
+                    margin: 0;
+                    min-height: 120px;
+                    text-align: center;
+
+                    @include links() {
                         display: block;
-                        padding: 0;
-                        margin: 0;
-                        min-height: 120px;
+                        font-size: 14px;
                         text-align: center;
 
-                        @include links() {
+                        .title {
                             display: block;
-                            font-size: 14px;
-                            text-align: center;
-
-                            .title {
-                                display: block;
-                                padding-top: 8px;
-                            }
+                            padding-top: 8px;
                         }
                     }
                 }

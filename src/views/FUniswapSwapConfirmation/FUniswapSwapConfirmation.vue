@@ -94,7 +94,7 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-swap',
             confirmationCompName: 'funiswap-swap',
             priceDecimals: 6,
             tx: {},
