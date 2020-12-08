@@ -13,27 +13,11 @@
                 <pulse-loader color="#1969ff"></pulse-loader>
             </div>
             <template v-else>
-                <f-card class="gov-proposal-detail__winner cont-650">
-                    <template v-if="votingResolved">
-                        <h3 class="gov-proposal-detail__sub-title">Winner</h3>
-                        <b class="gov-proposal-detail__green">
-                            {{ winner }} <template v-if="winnerVotes">({{ winnerVotes }}%)</template>
-                        </b>
-                    </template>
-                    <template v-else>
-                        <h3 class="gov-proposal-detail__sub-title">Winning</h3>
-                        <ul v-if="winnings.length > 0" class="no-markers gov-proposal-detail__winnigs">
-                            <li v-for="winning in winnings" :key="`wk_${winning.id}`">
-                                <div class="row align-items-center no-collapse">
-                                    <div class="col col-8 gov-proposal-detail__option align-left">
-                                        {{ winning.name }}
-                                    </div>
-                                    <div class="col col-4 gov-proposal-detail__vote">{{ winning.votes }}%</div>
-                                </div>
-                            </li>
-                        </ul>
-                        <div v-else>-</div>
-                    </template>
+                <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-650">
+                    <h3 class="gov-proposal-detail__sub-title">Winner</h3>
+                    <b class="gov-proposal-detail__green">
+                        {{ winner }} <template v-if="winnerVotes">({{ winnerVotes }}%)</template>
+                    </b>
                 </f-card>
 
                 <gov-voting-info
@@ -338,31 +322,6 @@ export default {
             }
 
             return 0;
-        },
-
-        winnings() {
-            const winnings = [];
-            const { d_proposal } = this;
-            const optionStates = cloneObject(this.optionStates);
-            let agreementRatio = '';
-
-            if (optionStates.length > 0) {
-                optionStates.sort(sortByHex('agreementRatio', 'desc'));
-
-                agreementRatio = optionStates[0].agreementRatio;
-
-                for (let i = 0, len1 = optionStates.length; i < len1; i++) {
-                    if (optionStates[i].agreementRatio === agreementRatio) {
-                        winnings.push({
-                            id: optionStates[i].optionId,
-                            name: d_proposal.options[parseInt(optionStates[i].optionId, 10)],
-                            votes: this.toPercentage(optionStates[i].agreementRatio),
-                        });
-                    }
-                }
-            }
-
-            return winnings.length < optionStates.length ? winnings : [];
         },
 
         hasCorrectParams() {
