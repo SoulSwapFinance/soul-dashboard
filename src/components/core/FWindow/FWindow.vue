@@ -254,6 +254,7 @@ export default {
                 'with-header': this.withHeader,
                 'with-footer': this.withFooter,
                 'no-title': this.noTitle,
+                'no-controls': this.noControls,
                 modal: this.modal,
                 popover: this.popover,
             };
