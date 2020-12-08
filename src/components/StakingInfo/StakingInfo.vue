@@ -53,7 +53,7 @@
                             </f-placeholder>
                         </div>
                     </div>
-                    <div v-if="!disableSFTM" class="row no-collapse">
+                    <div class="row no-collapse">
                         <div class="col f-row-label">Minted sFTM</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
@@ -278,7 +278,6 @@ export default {
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
             /** @type {DefiToken} */
             sftmToken: {},
-            disableSFTM: appConfig.disableSFTM,
         };
     },
 
@@ -354,7 +353,6 @@ export default {
                 return false;
             } else {
                 return (
-                    !appConfig.disableSFTM &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
@@ -386,7 +384,6 @@ export default {
             }
 
             return (
-                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -399,7 +396,6 @@ export default {
 
         canRepaySFTM() {
             return (
-                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -411,7 +407,6 @@ export default {
 
         showRepaySFTMMessage() {
             return (
-                !appConfig.disableSFTM &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
                 this._delegation &&
@@ -782,120 +777,63 @@ export default {
          */
         async fetchDelegation(_stakerId) {
             const data = await this.$apollo.query({
-                query: !this.disableSFTM
-                    ? gql`
-                          query Delegation($address: Address!, $staker: Long!) {
-                              delegation(address: $address, staker: $staker) {
-                                  toStakerId
-                                  createdEpoch
-                                  createdTime
-                                  deactivatedEpoch
-                                  deactivatedTime
-                                  amount
-                                  amountDelegated
-                                  amountInWithdraw
-                                  claimedReward
-                                  outstandingSFTM
-                                  tokenizerAllowedToWithdraw
-                                  paidUntilEpoch
-                                  isFluidStakingActive
-                                  isDelegationLocked
-                                  lockedUntil
-                                  pendingRewards {
-                                      amount
-                                      fromEpoch
-                                      toEpoch
-                                  }
-                                  withdrawRequests {
-                                      address
-                                      receiver
-                                      account {
-                                          address
-                                      }
-                                      stakerID
-                                      withdrawRequestID
-                                      isDelegation
-                                      amount
-                                      withdrawPenalty
-                                      requestBlock {
-                                          number
-                                          timestamp
-                                      }
-                                      withdrawBlock {
-                                          number
-                                          timestamp
-                                      }
-                                  }
-                                  deactivation {
-                                      address
-                                      requestBlock {
-                                          number
-                                          timestamp
-                                      }
-                                      withdrawBlock {
-                                          number
-                                          timestamp
-                                      }
-                                  }
-                              }
-                          }
-                      `
-                    : gql`
-                          query Delegation($address: Address!, $staker: Long!) {
-                              delegation(address: $address, staker: $staker) {
-                                  toStakerId
-                                  createdEpoch
-                                  createdTime
-                                  deactivatedEpoch
-                                  deactivatedTime
-                                  amount
-                                  amountDelegated
-                                  amountInWithdraw
-                                  claimedReward
-                                  tokenizerAllowedToWithdraw
-                                  paidUntilEpoch
-                                  isFluidStakingActive
-                                  isDelegationLocked
-                                  lockedUntil
-                                  pendingRewards {
-                                      amount
-                                      fromEpoch
-                                      toEpoch
-                                  }
-                                  withdrawRequests {
-                                      address
-                                      receiver
-                                      account {
-                                          address
-                                      }
-                                      stakerID
-                                      withdrawRequestID
-                                      isDelegation
-                                      amount
-                                      withdrawPenalty
-                                      requestBlock {
-                                          number
-                                          timestamp
-                                      }
-                                      withdrawBlock {
-                                          number
-                                          timestamp
-                                      }
-                                  }
-                                  deactivation {
-                                      address
-                                      requestBlock {
-                                          number
-                                          timestamp
-                                      }
-                                      withdrawBlock {
-                                          number
-                                          timestamp
-                                      }
-                                  }
-                              }
-                          }
-                      `,
+                query: gql`
+                    query Delegation($address: Address!, $staker: Long!) {
+                        delegation(address: $address, staker: $staker) {
+                            toStakerId
+                            createdEpoch
+                            createdTime
+                            deactivatedEpoch
+                            deactivatedTime
+                            amount
+                            amountDelegated
+                            amountInWithdraw
+                            claimedReward
+                            outstandingSFTM
+                            tokenizerAllowedToWithdraw
+                            paidUntilEpoch
+                            isFluidStakingActive
+                            isDelegationLocked
+                            lockedUntil
+                            pendingRewards {
+                                amount
+                                fromEpoch
+                                toEpoch
+                            }
+                            withdrawRequests {
+                                address
+                                receiver
+                                account {
+                                    address
+                                }
+                                stakerID
+                                withdrawRequestID
+                                isDelegation
+                                amount
+                                withdrawPenalty
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                            deactivation {
+                                address
+                                requestBlock {
+                                    number
+                                    timestamp
+                                }
+                                withdrawBlock {
+                                    number
+                                    timestamp
+                                }
+                            }
+                        }
+                    }
+                `,
                 variables: {
                     address: this.currentAccount.address,
                     staker: _stakerId,

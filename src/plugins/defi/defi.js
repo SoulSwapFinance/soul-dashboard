@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
-import appConfig from '../../../app.config.js';
 import { TokenPairs } from '@/utils/token-pairs.js';
 
 /** @type {BNBridgeExchange} */
@@ -651,36 +650,21 @@ export class DeFi {
      */
     async fetchSettings() {
         const data = await this.apolloClient.query({
-            query: !appConfig.disableSFTM
-                ? gql`
-                      query DefiSettings {
-                          defiConfiguration {
-                              mintFee4
-                              rewardCollateralRatio4
-                              minCollateralRatio4
-                              uniswapCoreFactory
-                              uniswapRouter
-                              fMintContract
-                              fMintRewardDistribution
-                              decimals
-                              StakeTokenizerContract
-                          }
-                      }
-                  `
-                : gql`
-                      query DefiSettings {
-                          defiConfiguration {
-                              mintFee4
-                              rewardCollateralRatio4
-                              minCollateralRatio4
-                              uniswapCoreFactory
-                              uniswapRouter
-                              fMintContract
-                              fMintRewardDistribution
-                              decimals
-                          }
-                      }
-                  `,
+            query: gql`
+                query DefiSettings {
+                    defiConfiguration {
+                        mintFee4
+                        rewardCollateralRatio4
+                        minCollateralRatio4
+                        uniswapCoreFactory
+                        uniswapRouter
+                        fMintContract
+                        fMintRewardDistribution
+                        decimals
+                        StakeTokenizerContract
+                    }
+                }
+            `,
             fetchPolicy: 'network-only',
         });
 

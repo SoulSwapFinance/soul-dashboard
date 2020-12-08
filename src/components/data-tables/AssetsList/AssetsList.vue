@@ -142,7 +142,6 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
-import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'AssetsList',
@@ -267,10 +266,6 @@ export default {
          */
         tokens(_value) {
             let tokens = _value.filter((_item) => {
-                if (_item.symbol === 'SFTM' && appConfig.disableSFTM) {
-                    return false;
-                }
-
                 return _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM';
             });
 
@@ -325,7 +320,7 @@ export default {
          * @return {boolean}
          */
         usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM' || (_token.symbol === 'SFTM' && !appConfig.disableSFTM);
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
     },
 };

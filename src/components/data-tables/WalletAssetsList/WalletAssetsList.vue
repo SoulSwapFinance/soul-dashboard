@@ -80,7 +80,6 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
 import { cloneObject } from '@/utils';
-import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'WalletAssetsList',
@@ -184,10 +183,6 @@ export default {
             this.prepareTokens(value);
 
             this.items = value.filter((_token) => {
-                if (_token.symbol === 'SFTM' && appConfig.disableSFTM) {
-                    return false;
-                }
-
                 return _token._availableBalance > 0 || _token._deposited > 0 || _token._debt > 0;
             });
 

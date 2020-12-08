@@ -55,8 +55,6 @@ const appConfig = {
         useBNB: true,
     },
     disableFLend: true,
-    // tmp
-    disableSFTM: true,
     //
     useTestnet: false,
     // testnet config

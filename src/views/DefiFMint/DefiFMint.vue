@@ -245,7 +245,6 @@ import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
 import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
 import SynthsPositionsList from '@/components/data-tables/SynthsPositionsList/SynthsPositionsList.vue';
-import appConfig from '../../../app.config.js';
 
 export default {
     name: 'DefiFMint',
@@ -453,10 +452,7 @@ export default {
             this.tokens = result[1];
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
             this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
-
-            if (!appConfig.disableSFTM) {
-                this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
-            }
+            this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
 
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
 

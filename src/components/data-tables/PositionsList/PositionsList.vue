@@ -195,7 +195,6 @@ import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowToke
 import { formatNumberByLocale } from '@/filters.js';
 import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
-import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'PositionsList',
@@ -332,10 +331,6 @@ export default {
          */
         async tokens(_value) {
             let tokens = _value.filter((_item) => {
-                if (_item.symbol === 'SFTM' && appConfig.disableSFTM) {
-                    return false;
-                }
-
                 return _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM';
             });
 
@@ -459,7 +454,7 @@ export default {
          * @return {boolean}
          */
         usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM' || (_token.symbol === 'SFTM' && !appConfig.disableSFTM);
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
 
         /**
