@@ -258,7 +258,7 @@ export default {
 
                         return formatNumberByLocale(
                             this.$defi.fromTokenValue(_value, token),
-                            this.defi.getTokenDecimals(token)
+                            this.defi.getTokenDecimals(token, MAX_TOKEN_DECIMALS_IN_TABLES)
                         );
                     },
                     css: { textAlign: 'center' },

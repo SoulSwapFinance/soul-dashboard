@@ -273,6 +273,7 @@ import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'FMintOverviewList',
@@ -474,7 +475,9 @@ export default {
         formatDebt(_token, _account) {
             const debt = '_debt' in _token ? _token._debt : this.getDebt(_token, _account);
 
-            return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_token)) : 0;
+            return debt > 0
+                ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_token, MAX_TOKEN_DECIMALS_IN_TABLES))
+                : 0;
         },
 
         /**
@@ -488,7 +491,7 @@ export default {
             return debt > 0
                 ? formatNumberByLocale(
                       debt * this.defi.getTokenPrice(_token),
-                      this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                      this.defi.getTokenDecimals({ symbol: 'FUSD' }, MAX_TOKEN_DECIMALS_IN_TABLES)
                   )
                 : 0;
         },
@@ -513,7 +516,9 @@ export default {
         formatCollateral(_token, _account) {
             const collateral = '_collateral' in _token ? _token._collateral : this.getCollateral(_token, _account);
 
-            return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_token)) : 0;
+            return collateral > 0
+                ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_token, MAX_TOKEN_DECIMALS_IN_TABLES))
+                : 0;
         },
 
         /**

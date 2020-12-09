@@ -32,6 +32,9 @@ export const GAS_LIMITS = {
 // available for withdraw per single request.
 export const SFC_CLAIM_MAX_EPOCHS = 100;
 
+/** Maximum number of token decimal places to be displayed in tables. */
+export const MAX_TOKEN_DECIMALS_IN_TABLES = 2;
+
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
 

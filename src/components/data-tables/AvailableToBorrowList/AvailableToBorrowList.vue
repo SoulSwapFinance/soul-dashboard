@@ -43,6 +43,7 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'AvailableToBorrowList',
@@ -103,7 +104,12 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
-                        return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_item)) : 0;
+                        return debt > 0
+                            ? formatNumberByLocale(
+                                  debt,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                 },
@@ -116,7 +122,7 @@ export default {
                         return debt > 0
                             ? formatNumberByLocale(
                                   debt * this.defi.getTokenPrice(_item),
-                                  this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                                  this.defi.getTokenDecimals({ symbol: 'FUSD' }, MAX_TOKEN_DECIMALS_IN_TABLES)
                               )
                             : 0;
                     },
