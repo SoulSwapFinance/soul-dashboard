@@ -7,8 +7,8 @@
                     <div class="value">
                         <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="availableBalance" />
                         <template v-else>
-                            <div v-for="token in tokens" :key="`l1_${token.symbol}`">
-                                <f-token-value :token="token" :value="getAvailableBalance(token)" />
+                            <div v-for="token1 in tokens" :key="`l1_${token1.symbol}`">
+                                <f-token-value :token="token1" :value="getAvailableBalance(token1)" />
                             </div>
                         </template>
                     </div>
@@ -21,8 +21,8 @@
                     <div class="value">
                         <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="collateral" />
                         <template v-else>
-                            <div v-for="token in tokens" :key="`l2_${token.symbol}`">
-                                <f-token-value :token="token" :value="getCollateral(token)" />
+                            <div v-for="token2 in tokens" :key="`l2_${token2.symbol}`">
+                                <f-token-value :token="token2" :value="getCollateral(token2)" />
                             </div>
                         </template>
                     </div>
