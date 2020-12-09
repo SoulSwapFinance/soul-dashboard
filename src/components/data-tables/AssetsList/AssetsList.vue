@@ -115,6 +115,7 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <router-link
+                            v-if="item.symbol !== 'SFTM'"
                             :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                             class="action"
                             title="Send"
@@ -125,6 +126,7 @@
                 </div>
                 <template v-else>
                     <router-link
+                        v-if="item.symbol !== 'SFTM'"
                         :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                         class="action"
                         title="Send"
