@@ -196,7 +196,7 @@ export default {
                         };
                     },
                     sortDir: 'desc',
-                    width: '140px',
+                    width: '180px',
                 },
                 {
                     name: 'available',
