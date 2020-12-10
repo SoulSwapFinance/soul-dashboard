@@ -24,7 +24,7 @@ export const GAS_LIMITS = {
     withdraw: '0x44AA20',
     delegate: '0x30D40',
     ballot: '0x3D0900',
-    defi: '0xF4240', // 1 000 000
+    defi: '0x1E8480', // 2 000 000
     uniswap: '0xF4240', // 1 000 000
 };
 
