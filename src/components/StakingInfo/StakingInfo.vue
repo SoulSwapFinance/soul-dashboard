@@ -53,6 +53,14 @@
                             </f-placeholder>
                         </div>
                     </div>
+                    <div class="row no-collapse">
+                        <div class="col f-row-label">Minted sFTM</div>
+                        <div class="col">
+                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
+                                <template v-if="accountInfo">{{ outstandingSFTM.toFixed(2) }} sFTM</template>
+                            </f-placeholder>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col">
@@ -175,6 +183,22 @@
                                 >
                                     Lock Delegation
                                 </button>
+                                <button
+                                    v-show="canMintSFTM"
+                                    class="btn large"
+                                    :disabled="!canMintSFTM"
+                                    @click="mintSFTM()"
+                                >
+                                    Mint sFTM
+                                </button>
+                                <button
+                                    v-show="canRepaySFTM"
+                                    class="btn large"
+                                    :disabled="!canRepaySFTM"
+                                    @click="repaySFTM()"
+                                >
+                                    Repay sFTM
+                                </button>
 
                                 <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
                                     You need to claim all pending rewards before
@@ -183,6 +207,12 @@
                                     <br />
                                     You can claim rewards for a maximum of {{ claimMaxEpochs }} epochs at once (use
                                     repeatedly if needed).
+                                </f-message>
+                                <f-message v-if="showRepaySFTMMessage" type="info" with-icon class="align-left">
+                                    Can't repay sFTM, not enough unlocked sFTM
+                                </f-message>
+                                <f-message v-if="showUndelegateMessage" type="info" with-icon class="align-left">
+                                    Can't undelegate, repay sFTM first please
                                 </f-message>
                             </template>
                         </template>
@@ -246,6 +276,8 @@ export default {
             lockedUntil: '',
             explorerUrl: appConfig.explorerUrl,
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
+            /** @type {DefiToken} */
+            sftmToken: {},
         };
     },
 
@@ -296,11 +328,13 @@ export default {
             const { accountInfo } = this;
 
             if (!this.isFluidStakingActive) {
-                return accountInfo.delegation
+                return accountInfo && accountInfo.delegation
                     ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                     : false;
             } else {
                 return (
+                    this._delegation &&
+                    this._delegation.tokenizerAllowedToWithdraw &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
@@ -312,12 +346,83 @@ export default {
             }
         },
 
+        showUndelegateMessage() {
+            const { accountInfo } = this;
+
+            if (!this.isFluidStakingActive) {
+                return false;
+            } else {
+                return (
+                    accountInfo &&
+                    accountInfo.pendingRewards &&
+                    accountInfo.pendingRewards === '0x0' &&
+                    accountInfo.stashed === '0x0' &&
+                    (accountInfo.delegation
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        : true) &&
+                    this._delegation &&
+                    !this._delegation.tokenizerAllowedToWithdraw
+                );
+                // return !this.canUndelegate;
+            }
+        },
+
         canLockDelegation() {
             return (
                 this.canUndelegate &&
                 this.lockedUntil &&
                 (this.lockedUntil === '0x0' || prepareTimestamp(this.lockedUntil) < this.now())
             );
+        },
+
+        canMintSFTM() {
+            const { delegation } = this.accountInfo;
+            let delegationOk = true;
+
+            if (delegation) {
+                delegationOk = this.accountInfo.delegated !== delegation.amountInWithdraw;
+            }
+
+            return (
+                // this.canUndelegate &&
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                prepareTimestamp(this.lockedUntil) > this.now() &&
+                this._delegation &&
+                this._delegation.tokenizerAllowedToWithdraw &&
+                delegationOk
+            );
+        },
+
+        canRepaySFTM() {
+            return (
+                // this.canUndelegate &&
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                this._delegation &&
+                this._delegation.outstandingSFTM !== '0x0' &&
+                this.outstandingSFTM <= this.availableSFTM
+            );
+        },
+
+        showRepaySFTMMessage() {
+            return (
+                this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&
+                this._delegation &&
+                this._delegation.outstandingSFTM !== '0x0' &&
+                this.outstandingSFTM > this.availableSFTM
+            );
+        },
+
+        availableSFTM() {
+            return this.sftmToken ? this.$defi.fromTokenValue(this.sftmToken.availableBalance, this.sftmToken) || 0 : 0;
+        },
+
+        outstandingSFTM() {
+            return this.sftmToken && this._delegation
+                ? this.$defi.fromTokenValue(this._delegation.outstandingSFTM, this.sftmToken) || 0
+                : 0;
         },
 
         /**
@@ -473,9 +578,19 @@ export default {
 
     mounted() {
         this.$refs.doc.focus();
+
+        this.init();
     },
 
     methods: {
+        async init() {
+            const { $defi } = this;
+            const { address } = this.currentAccount;
+            const result = await Promise.all([$defi.fetchTokens(address), $defi.init()]);
+
+            this.sftmToken = result[0].find((_item) => _item.symbol === 'SFTM') || {};
+        },
+
         /**
          * @param {boolean} [_increaseDelegation]
          */
@@ -525,6 +640,40 @@ export default {
                 from: 'staking-info',
                 data: {
                     stakerId: this.stakerId,
+                },
+            });
+        },
+
+        mintSFTM() {
+            if (!this.canMintSFTM) {
+                return;
+            }
+
+            // const stakerInfo = await this.stakerInfo;
+
+            this.$emit('change-component', {
+                to: 'defi-mint-s-f-t-m-confirmation',
+                from: 'staking-info',
+                data: {
+                    stakerId: this.stakerId,
+                    amountDelegated: this._delegation.amountDelegated,
+                    // stakerAddress: stakerInfo ? stakerInfo.stakerAddress : '',
+                },
+            });
+        },
+
+        repaySFTM() {
+            if (!this.canRepaySFTM) {
+                return;
+            }
+
+            this.$emit('change-component', {
+                to: 'defi-repay-s-f-t-m-confirmation',
+                from: 'staking-info',
+                data: {
+                    stakerId: this.stakerId,
+                    outstandingSFTM: this._delegation.outstandingSFTM,
+                    // stakerAddress: stakerInfo ? stakerInfo.stakerAddress : '',
                 },
             });
         },
@@ -640,6 +789,8 @@ export default {
                             amountDelegated
                             amountInWithdraw
                             claimedReward
+                            outstandingSFTM
+                            tokenizerAllowedToWithdraw
                             paidUntilEpoch
                             isFluidStakingActive
                             isDelegationLocked

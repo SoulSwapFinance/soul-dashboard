@@ -113,5 +113,3 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         data: request,
     }, location.origin);
 });
-
-console.log("Fantom-PWA-Wallet contentscript OK");

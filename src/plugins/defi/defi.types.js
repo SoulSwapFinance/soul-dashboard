@@ -8,6 +8,7 @@
  * @property {string} fMintRewardDistribution Address of the DeFi fMint reward distribution contract.
  * @property {string} uniswapCoreFactory Address of the Uniswap Core Factory contract.
  * @property {string} uniswapRouter Address of the Uniswap Router contract.
+ * @property {string} StakeTokenizerContract Address of the Stake Tokenizer contract.
  * @property {number} decimals Decimals represents the decimals / digits correction applied to the fees and ratios.
  */
 
@@ -55,4 +56,28 @@
  * @property {boolean} canClaimRewards Informs if the fMint account collateral to debt is high enough to allow earned rewards claiming.
  * @property {boolean} canPushNewRewards Indicates if new rewards are unlocked inside the reward distribution and can be pushed into the system to distribute them among eligible accounts.
  * @property {boolean} canReceiveRewards informs if the fMint account collateral to debt is high enough to receive earned rewards.
+ */
+
+/**
+ * ERC20 token object.
+ * @typedef {Object} ERC20Token
+ * @property {string} address Address of the token is used as the token's unique identifier.
+ * @property {string} name Name of the token.
+ * @property {string} symbol Symbol used as an abbreviation for the token.
+ * @property {number} decimals Decimals is the number of decimals the token supports.
+ * @property {number} totalSupply Represents total amount of tokens across all accounts
+ * @property {string} balanceOf Represents the total available balance of the token on the account regardless of the DeFi usage of the token.
+ * @property {string} allowance Amount of ERC20 tokens unlocked by the owner / token holder to be accessible for DeFi operations
+ */
+
+/**
+ * UniswapPair represents the information about single Uniswap pair managed by the Uniswap Core.
+ * @typedef {Object} UniswapPair
+ * @property {string} pairAddress Address of the Pair and also the address of the ERC20 token managing the share of each liquidity participant.
+ * @property {ERC20Token[]} tokens List of tokens in the pair.
+ * @property {string[]} reserves Reserves of the tokens of the pair.
+ * @property {string} reservesTimeStamp The timestamp of the block in which this reserves state was reached.
+ * @property {string[]} cumulativePrices Cumulative prices of the tokens of the pair.
+ * @property {string} totalSupply Total amount of the pair tokens in circulation and represents the total share pool of all the participants.
+ * @property {string} shareOf Share of the given user/participant on the pair.
  */

@@ -4,14 +4,28 @@
             <div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Available Balance</h3>
-                    <div class="value"><f-token-value :token="dToken" :value="availableBalance" /></div>
+                    <div class="value">
+                        <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="availableBalance" />
+                        <template v-else>
+                            <div v-for="token1 in tokens" :key="`l1_${token1.symbol}`">
+                                <f-token-value :token="token1" :value="getAvailableBalance(token1)" />
+                            </div>
+                        </template>
+                    </div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">
                         <template v-if="lockUnlockMode">Locked Balance</template>
                         <template v-else>Deposit Balance</template>
                     </h3>
-                    <div class="value"><f-token-value :token="dToken" :value="collateral" /></div>
+                    <div class="value">
+                        <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="collateral" />
+                        <template v-else>
+                            <div v-for="token2 in tokens" :key="`l2_${token2.symbol}`">
+                                <f-token-value :token="token2" :value="getCollateral(token2)" />
+                            </div>
+                        </template>
+                    </div>
                 </div>
                 <div v-if="!largeView" class="df-data-item smaller">
                     <h3 class="label">
@@ -239,6 +253,11 @@ export default {
             type: String,
             default: '',
         },
+        /** */
+        tokenAddress: {
+            type: String,
+            default: '',
+        },
         /** Follow this route on submit. */
         onSubmitRoute: {
             type: String,
@@ -295,7 +314,7 @@ export default {
         ...mapGetters(['currentAccount', 'defiSlippageReserve']),
 
         availableBalance() {
-            return this.$defi.fromTokenValue(this.dToken.availableBalance, this.dToken) || 0;
+            return this.getAvailableBalance(this.dToken);
         },
 
         cTokenSymbol() {
@@ -303,10 +322,7 @@ export default {
         },
 
         collateral() {
-            /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.dToken);
-
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.dToken) || 0;
+            return this.getCollateral(this.dToken);
         },
 
         overallCollateral() {
@@ -438,9 +454,12 @@ export default {
         },
 
         submitDisabled() {
+            return !parseFloat(this.currCollateral);
+            /*
             return !this.singleToken
                 ? parseFloat(this.currCollateral) === parseFloat(this.collateral)
                 : !parseFloat(this.currCollateral);
+            */
         },
 
         /**
@@ -525,7 +544,6 @@ export default {
                 $defi.fetchTokens(this.currentAccount.address),
                 $defi.init(),
             ]);
-            const tokens = result[1];
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
@@ -534,23 +552,40 @@ export default {
 
             if (!this.singleToken) {
                 // get tokens that are possible to deposit
-                this.tokens = tokens.filter($defi.canTokenBeDeposited);
+                this.tokens = this.tokens.filter($defi.canTokenBeDeposited);
+
+                if (this.lockUnlockMode) {
+                    this.tokens = this.tokens.filter((_token) => _token.symbol !== 'FUSD');
+                }
             }
 
             if (this.token === null) {
-                if (this.tokenSymbol) {
+                if (this.tokenAddress) {
+                    this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
+                } else if (this.tokenSymbol) {
                     this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
                 } else {
                     // get first token that can be deposited
                     this.dToken = this.tokens[0];
                 }
             } else {
-                this.dToken = tokens.find((_item) => _item.symbol === this.token.symbol);
+                this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 
         formatInputValue(_value) {
             return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.dToken));
+        },
+
+        getAvailableBalance(_token) {
+            return this.$defi.fromTokenValue(_token.availableBalance, _token) || 0;
+        },
+
+        getCollateral(_token) {
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
         },
 
         updateMessage() {
@@ -628,6 +663,7 @@ export default {
 
         onDefiTokenPicked(_token) {
             this.dToken = _token;
+            this.currCollateral = '0';
         },
 
         onMinBtnClick() {

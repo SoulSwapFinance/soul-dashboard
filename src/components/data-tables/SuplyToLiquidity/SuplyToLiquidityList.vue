@@ -43,6 +43,7 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { numberSort, stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'SuplyToLiquidityList',
@@ -96,7 +97,12 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const balance = this.$defi.fromTokenValue(_availableBalance, _item);
 
-                        return balance > 0 ? formatNumberByLocale(balance, this.defi.getTokenDecimals(_item)) : 0;
+                        return balance > 0
+                            ? formatNumberByLocale(
+                                  balance,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
@@ -108,7 +114,12 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
-                        return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_item)) : 0;
+                        return collateral > 0
+                            ? formatNumberByLocale(
+                                  collateral,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
@@ -123,7 +134,7 @@ export default {
                         return collateral > 0
                             ? formatNumberByLocale(
                                   collateral * this.defi.getTokenPrice(_item),
-                                  this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                                  this.defi.getTokenDecimals({ symbol: 'FUSD' }, MAX_TOKEN_DECIMALS_IN_TABLES)
                               )
                             : 0;
                     },

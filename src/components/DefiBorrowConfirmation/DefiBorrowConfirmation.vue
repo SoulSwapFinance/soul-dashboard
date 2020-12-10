@@ -30,8 +30,8 @@
                     </span>
                 </div>
                 <div v-else-if="decreasedDebt > 0">
-                    <template v-if="params.step === 1">You’re allowing</template>
-                    <template v-else>You’re removing</template>
+                    <template v-if="params.step === 1">You’re allowing </template>
+                    <template v-else>You’re removing </template>
                     <span class="inc-desc-collateral">
                         <f-token-value :token="token" :value="decreasedDebt" no-currency /> {{ cTokenSymbol }}
                     </span>

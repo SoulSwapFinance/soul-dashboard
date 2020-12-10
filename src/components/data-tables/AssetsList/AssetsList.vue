@@ -52,36 +52,59 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <template v-if="item._collateral > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
-                                <router-link :to="{ name: 'defi-lock' }">Lock</router-link>,
-                                <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>,
+                        <template v-if="usedAsCollateral(item)">
+                            <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
+                                Lock
+                            </router-link>
+                            <template v-if="item._collateral > 0">
+                                ,
+                                <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
+                                    Unlock
+                                </router-link>
+                            </template>
+                            <template v-if="item.symbol === 'WFTM'">
+                                ,
                                 <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                             </template>
                         </template>
-                        <template v-if="item._debt > 0">
-                            <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                                <router-link :to="{ name: 'defi-mint' }">Mint</router-link>,
-                                <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                        <template v-if="item.canMint">
+                            <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
+                                Mint
+                            </router-link>
+                            <template v-if="item._debt > 0">
+                                ,
+                                <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
+                                    Repay
+                                </router-link>
                             </template>
                         </template>
                     </div>
                 </div>
                 <template v-else>
-                    <template v-if="item._collateral > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'WFTM'">
-                            <router-link :to="{ name: 'defi-lock' }">Lock</router-link>
+                    <template v-if="usedAsCollateral(item)">
+                        <router-link :to="{ name: 'defi-lock', params: { tokenAddress: item.address } }">
+                            Lock
+                        </router-link>
+                        <template v-if="item._collateral > 0">
                             <br />
-                            <router-link :to="{ name: 'defi-unlock' }">Unlock</router-link>
+                            <router-link :to="{ name: 'defi-unlock', params: { tokenAddress: item.address } }">
+                                Unlock
+                            </router-link>
+                        </template>
+                        <template v-if="item.symbol === 'WFTM'">
                             <br />
                             <router-link :to="{ name: 'defi-ftrade' }">Swap</router-link>
                         </template>
                     </template>
-                    <template v-if="item._debt > 0">
-                        <template v-if="usedInFMint(item) && item.symbol === 'FUSD'">
-                            <router-link :to="{ name: 'defi-mint' }">Mint</router-link>
+                    <template v-if="item.canMint">
+                        <router-link :to="{ name: 'defi-mint', params: { tokenAddress: item.address } }">
+                            Mint
+                        </router-link>
+                        <template v-if="item._debt > 0">
                             <br />
-                            <router-link :to="{ name: 'defi-repay' }">Repay</router-link>
+                            <router-link :to="{ name: 'defi-repay', params: { tokenAddress: item.address } }">
+                                Repay
+                            </router-link>
                         </template>
                     </template>
                 </template>
@@ -92,6 +115,7 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <router-link
+                            v-if="item.symbol !== 'SFTM'"
                             :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                             class="action"
                             title="Send"
@@ -102,6 +126,7 @@
                 </div>
                 <template v-else>
                     <router-link
+                        v-if="item.symbol !== 'SFTM'"
                         :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                         class="action"
                         title="Send"
@@ -119,6 +144,7 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'AssetsList',
@@ -170,7 +196,7 @@ export default {
                         };
                     },
                     sortDir: 'desc',
-                    width: '140px',
+                    width: '180px',
                 },
                 {
                     name: 'available',
@@ -179,7 +205,12 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const balance = this.$defi.fromTokenValue(_availableBalance, _item);
 
-                        return balance > 0 ? formatNumberByLocale(balance, this.defi.getTokenDecimals(_item)) : 0;
+                        return balance > 0
+                            ? formatNumberByLocale(
+                                  balance,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'center' },
                     // width: '100px',
@@ -191,7 +222,12 @@ export default {
                     formatter: (_availableBalance, _item) => {
                         const collateral = this.getCollateral(_item);
 
-                        return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_item)) : 0;
+                        return collateral > 0
+                            ? formatNumberByLocale(
+                                  collateral,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'center' },
                     // width: '100px',
@@ -203,7 +239,12 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = this.getDebt(_item);
 
-                        return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_item)) : 0;
+                        return debt > 0
+                            ? formatNumberByLocale(
+                                  debt,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'center' },
                 },
@@ -214,7 +255,7 @@ export default {
                     formatter: (_value, _item) => {
                         return formatNumberByLocale(
                             this.$defi.fromTokenValue(_value, _item),
-                            this.defi.getTokenDecimals(_item)
+                            this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
                         );
                     },
                     css: { textAlign: 'center' },
@@ -242,7 +283,20 @@ export default {
          * @param {DefiToken[]} _value
          */
         tokens(_value) {
-            this.items = _value.filter((_item) => _item.isActive && _item.canDeposit && _item.symbol !== 'FTM');
+            let tokens = _value.filter((_item) => {
+                return _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM';
+            });
+
+            tokens.forEach((_item) => {
+                const collateral = this.getCollateral(_item);
+                const debt = this.getDebt(_item);
+
+                // store collateral and debt for later use
+                _item._collateral = collateral;
+                _item._debt = debt;
+            });
+
+            this.items = tokens;
 
             this.$emit('records-count', this.items.length);
         },
@@ -276,7 +330,15 @@ export default {
          * @return {boolean}
          */
         usedInFMint(_token) {
-            return _token.symbol === 'WFTM' || _token.symbol === 'FUSD';
+            return this.usedAsCollateral(_token) || _token.symbol === 'FUSD';
+        },
+
+        /**
+         * @param {DefiToken} _token
+         * @return {boolean}
+         */
+        usedAsCollateral(_token) {
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
     },
 };

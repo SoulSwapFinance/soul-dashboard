@@ -86,7 +86,7 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-pools',
             confirmationCompName: 'funiswap-remove-liquidity',
             priceDecimals: 6,
             tx: {},
@@ -186,6 +186,14 @@ export default {
 
             if (!fromToken || !toToken) {
                 return;
+            }
+
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
+            }
+
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
             }
 
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();

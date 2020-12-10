@@ -2,7 +2,7 @@
     <div class="view-defi-fmint">
         <h1 class="with-back-btn"><f-back-button :route-name="backButtonRoute" /> fMint</h1>
 
-        <h2 class="perex">Manage your collateral and minted fUSD</h2>
+        <h2 class="perex">Manage your collateral and minted synths</h2>
 
         <div class="grid">
             <div>
@@ -10,12 +10,18 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">
                         <router-link :to="{ name: 'defi-ftrade' }"> Available {{ wftmTokenSymbol }} </router-link>
+                        <template v-if="sftmToken.address">+ {{ sftmTokenSymbol }}</template>
                     </h3>
-                    <div class="value"><f-token-value :token="wftmToken" :value="availableFTM" /></div>
+                    <div class="value">
+                        <f-token-value :token="wftmToken" :value="availableWFTM + availableSFTM" no-currency />
+                    </div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked {{ wftmTokenSymbol }}</h3>
-                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
+                    <h3 class="label">
+                        Locked {{ wftmTokenSymbol }}
+                        <template v-if="sftmToken.address"> + {{ sftmTokenSymbol }}</template>
+                    </h3>
+                    <div class="value"><f-token-value :token="wftmToken" :value="collateral" no-currency /></div>
                 </div>
                 <div class="df-data-item smaller">
                     <h3 class="label">Current {{ wftmTokenSymbol }} price</h3>
@@ -34,13 +40,13 @@
                 </ratio-info>
             </div>
             <div class="align-right">
-                <h2>fUSD</h2>
+                <h2>Synths</h2>
                 <div class="df-data-item smaller">
                     <h3 class="label">Max mintable</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Minted fUSD</h3>
+                    <h3 class="label">Minted</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
@@ -81,60 +87,53 @@
         </div>
 
         <div class="form-buttons">
-            <template v-if="$defi.tmpWFTM">
-                <div class="row">
-                    <div class="col align-left align-center-md">
-                        <router-link :to="{ name: 'defi-lock' }" class="btn large">
-                            Lock {{ wftmTokenSymbol }}
-                        </router-link>
-                        <br />
-                        <router-link :to="{ name: 'defi-unlock' }" class="btn large secondary">
-                            Unlock {{ wftmTokenSymbol }}
-                        </router-link>
-                    </div>
-                    <div class="col">
-                        <router-link
-                            v-if="canClaimRewards"
-                            :to="{
-                                name: 'defi-fmint-claim-rewards-confirmation',
-                                params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
-                            }"
-                            class="btn large"
-                        >
-                            Claim Rewards
-                        </router-link>
-                        <template v-else>
-                            <button type="button" class="btn large" disabled>Claim Rewards</button>
-                        </template>
-                        <router-link
-                            v-if="canPushRewards"
-                            :to="{
-                                name: 'defi-fmint-push-rewards-confirmation',
-                                params: { token: { ...wftmToken } },
-                            }"
-                            class="btn large secondary"
-                        >
-                            Push Rewards
-                        </router-link>
-                        <template v-else>
-                            <button type="button" class="btn large secondary" disabled>Push Rewards</button>
-                        </template>
-                    </div>
-                    <div class="col align-right align-center-md">
-                        <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint fUSD</router-link>
-                        <br />
-                        <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay fUSD</router-link>
-                    </div>
+            <div class="row">
+                <div class="col align-left align-center-md">
+                    <router-link :to="{ name: 'defi-lock', params: { token: { ...wftmToken } } }" class="btn large">
+                        Lock Collateral
+                    </router-link>
+                    <br />
+                    <router-link
+                        :to="{ name: 'defi-unlock', params: { token: { ...wftmToken } } }"
+                        class="btn large secondary"
+                    >
+                        Unlock Collateral
+                    </router-link>
                 </div>
-            </template>
-            <template v-else>
-                <router-link :to="{ name: 'defi-manage-collateral' }" class="btn large">
-                    Lock/Unlock {{ wftmTokenSymbol }}
-                </router-link>
-                <router-link :to="{ name: 'defi-borrow-fusd' }" class="btn large">
-                    Mint/Repay fUSD
-                </router-link>
-            </template>
+                <div class="col">
+                    <router-link
+                        v-if="canClaimRewards"
+                        :to="{
+                            name: 'defi-fmint-claim-rewards-confirmation',
+                            params: { pendingRewards: pendingRewardsWFTM, token: { ...wftmToken } },
+                        }"
+                        class="btn large"
+                    >
+                        Claim Rewards
+                    </router-link>
+                    <template v-else>
+                        <button type="button" class="btn large" disabled>Claim Rewards</button>
+                    </template>
+                    <router-link
+                        v-if="canPushRewards"
+                        :to="{
+                            name: 'defi-fmint-push-rewards-confirmation',
+                            params: { token: { ...wftmToken } },
+                        }"
+                        class="btn large secondary"
+                    >
+                        Push Rewards
+                    </router-link>
+                    <template v-else>
+                        <button type="button" class="btn large secondary" disabled>Push Rewards</button>
+                    </template>
+                </div>
+                <div class="col align-right align-center-md">
+                    <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint Synths</router-link>
+                    <br />
+                    <router-link :to="{ name: 'defi-repay' }" class="btn large secondary">Repay Synths</router-link>
+                </div>
+            </div>
             <!--
             <router-link
                 :to="{ name: $defi.tmpWFTM ? 'defi-lock-unlock' : 'defi-manage-collateral' }"
@@ -147,6 +146,60 @@
             </router-link>
             -->
         </div>
+
+        <f-tabs>
+            <template #fmint-overview>
+                fMint Overview
+                <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
+            </template>
+            <template #collateral-positions>
+                Collateral Positions
+                <span class="f-records-count">({{ collateralPositionsRecordsCount }})</span>
+            </template>
+            <template #synths-positions>
+                Synths Positions
+                <span class="f-records-count">({{ synthsPositionsRecordsCount }})</span>
+            </template>
+            <template #assets>
+                Assets
+                <span class="f-records-count">({{ assetsRecordsCount }})</span>
+            </template>
+
+            <f-tab title-slot="fmint-overview">
+                <f-mint-overview-list
+                    :tokens="tokens"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onFMintOverviewRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="collateral-positions">
+                <collateral-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onCollateralPositionsRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="synths-positions">
+                <synths-positions-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    deposit-route-name="defi-lock-unlock"
+                    borrow-route-name="defi-mint-repay"
+                    @records-count="onSynthsPositionsRecordsCount"
+                />
+            </f-tab>
+            <f-tab title-slot="assets">
+                <assets-list
+                    defi-assets-list
+                    :tokens="tokens"
+                    :f-mint-account="fMintAccount"
+                    @records-count="onAssetsRecordsCount"
+                />
+            </f-tab>
+        </f-tabs>
 
         <!--
         <defi-menu v-else>
@@ -199,11 +252,30 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import CRatioInfo from '@/components/CRatioInfo/CRatioInfo.vue';
+import FMintOverviewList from '@/components/data-tables/FMintOverviewList/FMintOverviewList.vue';
+import FTabs from '@/components/core/FTabs/FTabs.vue';
+import FTab from '@/components/core/FTabs/FTab.vue';
+import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
+import SynthsPositionsList from '@/components/data-tables/SynthsPositionsList/SynthsPositionsList.vue';
+import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
 
 export default {
     name: 'DefiFMint',
 
-    components: { CRatioInfo, RatioInfo, FPlaceholder, FTokenValue, FBackButton, FMessage },
+    components: {
+        AssetsList,
+        SynthsPositionsList,
+        CollateralPositionsList,
+        FTab,
+        FTabs,
+        FMintOverviewList,
+        CRatioInfo,
+        RatioInfo,
+        FPlaceholder,
+        FTokenValue,
+        FBackButton,
+        FMessage,
+    },
 
     mixins: [eventBusMixin],
 
@@ -220,9 +292,17 @@ export default {
             /** @type {DefiToken} */
             wftmToken: {},
             /** @type {DefiToken} */
+            sftmToken: {},
+            /** @type {DefiToken} */
             fusdToken: {},
             /** @type {DefiToken[]} */
             tokens: [],
+            /** @type {DefiToken[]} */
+            mintableTokens: [],
+            fMintOverviewRecordsCount: 0,
+            collateralPositionsRecordsCount: 0,
+            synthsPositionsRecordsCount: 0,
+            assetsRecordsCount: 0,
             id: getUniqueId(),
         };
     },
@@ -236,21 +316,28 @@ export default {
         },
 
         debtFUSD() {
-            /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, this.fusdToken);
-
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.fusdToken) || 0;
+            return this.mintableTokens.reduce((_prev, _token) => {
+                return _prev + this.$defi.convertTokenValue(this.getDebt(_token), _token, this.fusdToken);
+            }, 0);
         },
 
         collateral() {
             /** @type {FMintTokenBalance} */
-            const tokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
+            const wFTMtokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.wftmToken);
+            /** @type {FMintTokenBalance} */
+            const sFTMtokenBalance = this.$defi.getFMintAccountCollateral(this.fMintAccount, this.sftmToken);
+            const wFTMtokenBalanceValue = this.$defi.fromTokenValue(wFTMtokenBalance.balance, this.wftmToken) || 0;
+            const sFTMtokenBalanceValue = this.$defi.fromTokenValue(sFTMtokenBalance.balance, this.sftmToken) || 0;
 
-            return this.$defi.fromTokenValue(tokenBalance.balance, this.wftmToken) || 0;
+            return wFTMtokenBalanceValue + sFTMtokenBalanceValue;
         },
 
-        availableFTM() {
+        availableWFTM() {
             return this.wftmToken ? this.$defi.fromTokenValue(this.wftmToken.availableBalance, this.wftmToken) || 0 : 0;
+        },
+
+        availableSFTM() {
+            return this.sftmToken ? this.$defi.fromTokenValue(this.sftmToken.availableBalance, this.sftmToken) || 0 : 0;
         },
 
         currentPrice() {
@@ -336,6 +423,10 @@ export default {
             return this.$defi.getTokenSymbol(this.wftmToken);
         },
 
+        sftmTokenSymbol() {
+            return this.$defi.getTokenSymbol(this.sftmToken);
+        },
+
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-fmint');
 
@@ -374,15 +465,46 @@ export default {
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
-            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
-            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
+            this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD') || {};
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
+            this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
+
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
+
+            this.mintableTokens = this.tokens.filter($defi.canTokenBeMinted);
 
             this.rewards = await $defi.fetchFMintAccountRewards(address);
         },
 
+        /**
+         * @param {DefiToken} _token
+         * @return {number}
+         */
+        getDebt(_token) {
+            /** @type {FMintTokenBalance} */
+            const tokenBalance = this.$defi.getFMintAccountDebt(this.fMintAccount, _token);
+
+            return this.$defi.fromTokenValue(tokenBalance.balance, _token) || 0;
+        },
+
         onAccountPicked() {
             this.init();
+        },
+
+        onFMintOverviewRecordsCount(_count) {
+            this.fMintOverviewRecordsCount = _count;
+        },
+
+        onCollateralPositionsRecordsCount(_count) {
+            this.collateralPositionsRecordsCount = _count;
+        },
+
+        onSynthsPositionsRecordsCount(_count) {
+            this.synthsPositionsRecordsCount = _count;
+        },
+
+        onAssetsRecordsCount(_count) {
+            this.assetsRecordsCount = _count;
         },
     },
 };

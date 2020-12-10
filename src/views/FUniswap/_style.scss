@@ -2,7 +2,7 @@
 
 .view-funiswap {
     .main {
-        padding-top: 32px;
+        //padding-top: 32px;
     }
 
     .address-info-box {
@@ -15,6 +15,11 @@
         text-align: center;
         margin-top: 0;
         margin-bottom: 8px;
+    }
+
+    h1.with-back-btn {
+        font-size: 28px;
+        margin-bottom: 0;
     }
 
     h2, .h2 {

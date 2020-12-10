@@ -94,7 +94,7 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-swap',
             confirmationCompName: 'funiswap-swap',
             priceDecimals: 6,
             tx: {},
@@ -196,6 +196,14 @@ export default {
                 return;
             }
 
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
+            }
+
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
+            }
+
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
 
             if (params.step === 1) {
@@ -207,7 +215,7 @@ export default {
                     fromToken.address,
                     $defi.contracts.uniswapRouter,
                     params.max && !params.maximumSold
-                        ? fromToken.availableBalance
+                        ? fromToken.balanceOf || fromToken.availableBalance
                         : Web3.utils.toHex($defi.shiftDecPointRight(this.allowValue.toString(), fromToken.decimals))
                     // Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
@@ -216,7 +224,7 @@ export default {
                 if (params.minimumReceived > 0) {
                     amounts = await $defi.fetchUniswapAmountsOut(
                         params.max
-                            ? fromToken.availableBalance
+                            ? fromToken.balanceOf || fromToken.availableBalance
                             : Web3.utils.toHex(
                                   this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)
                               ),

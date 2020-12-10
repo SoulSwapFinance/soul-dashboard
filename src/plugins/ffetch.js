@@ -67,14 +67,20 @@ export class FFetch {
                 item = data.data[_queryName];
             }
 
-            pageInfo = item.pageInfo;
-            if (item.edges) {
-                edges = edges.concat(item.edges);
+            if (item) {
+                pageInfo = item.pageInfo;
+                if (item.edges) {
+                    edges = edges.concat(item.edges);
+                }
+            } else {
+                pageInfo = null;
             }
         }
 
         if (nested) {
-            item.edges = edges;
+            if (item) {
+                item.edges = edges;
+            }
             return data;
         } else {
             return edges;

@@ -13,7 +13,7 @@
                             :token="fromToken"
                             :value="fromTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -63,7 +63,7 @@
                             :token="toToken"
                             :value="toTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -120,7 +120,7 @@
                     </div>
                     <div class="funiswap-swap__exchange-price__row">
                         <div class="defi-label">Slippage Tolerance</div>
-                        <div class="value">{{ slippageTolerance * 100 }}%</div>
+                        <div class="value">{{ fUniswapSlippageTolerance * 100 }}%</div>
                     </div>
                 </div>
             </template>
@@ -170,19 +170,23 @@
                         <f-token-value
                             :value="fromValue_ * liquidityProviderFee"
                             :token="fromToken"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                         />
                     </div>
                 </div>
             </div>
         </transition>
 
-        <defi-token-picker-window
+        <erc20-token-picker-window
             ref="pickFromTokenWindow"
-            :tokens="fromTokens"
-            @defi-token-picked="onFromTokenPicked"
+            :tokens="tokenPickerTokens"
+            @erc20-token-picked="onFromTokenPicked"
         />
-        <defi-token-picker-window ref="pickToTokenWindow" :tokens="toTokens" @defi-token-picked="onToTokenPicked" />
+        <erc20-token-picker-window
+            ref="pickToTokenWindow"
+            :tokens="tokenPickerTokens"
+            @erc20-token-picked="onToTokenPicked"
+        />
     </div>
 </template>
 
@@ -190,37 +194,31 @@
 import { mapGetters } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
-import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
+import { cloneObject, debounce, defer, getUniqueId } from '../../utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
-// import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import Web3 from 'web3';
-import { debounce, defer, getUniqueId } from '../../utils';
 import { pollingMixin } from '@/mixins/polling.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { TokenPairs } from '@/utils/token-pairs.js';
+import Erc20TokenPickerWindow from '@/components/windows/Erc20TokenPickerWindow/Erc20TokenPickerWindow.vue';
+// import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 export default {
     name: 'FUniswapSwap',
 
     components: {
+        Erc20TokenPickerWindow,
         FPlaceholder,
         FInfo,
         FCard,
         FTokenValue,
-        DefiTokenPickerWindow,
         FSelectButton,
         FCryptoSymbol,
     },
 
     mixins: [pollingMixin],
-
-    props: {
-        slippageTolerance: {
-            type: Number,
-            default: 0.005,
-        },
-    },
 
     data() {
         return {
@@ -239,23 +237,25 @@ export default {
             fromValueLoading: false,
             toValueLoading: false,
             priceImpact: '0%',
-            /** @type {DefiToken} */
+            /** @type {ERC20Token} */
             fromToken: {},
-            /** @type {DefiToken} */
+            /** @type {ERC20Token} */
             toToken: {},
-            /** @type {DefiToken[]} */
-            tokens: [],
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
-            submitLabel: 'Enter an amount',
+            submitLabel: 'Select a token',
+            /** @type {UniswapPair} */
             dPair: {},
-            addDeciamals: 2,
+            /** @type {UniswapPair[]} */
+            pairs: [],
+            tokenPickerTokens: [],
+            addDecimals: 0,
         };
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'fUniswapSlippageTolerance']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -270,18 +270,10 @@ export default {
             return this.formatFromInputValue(this.fromValue);
         },
 
-        fromTokens() {
-            return this.getPickerTokens('from');
-        },
-
-        toTokens() {
-            return this.getPickerTokens('to');
-        },
-
         fromTokenBalance() {
             const { fromToken } = this;
-            let balance =
-                this.$defi.fromTokenValue(fromToken.availableBalance, fromToken) - (fromToken.symbol === 'FTM' ? 2 : 0);
+
+            let balance = this.$defi.fromTokenValue(fromToken.balanceOf, fromToken);
 
             if (balance < 0) {
                 balance = 0;
@@ -291,7 +283,9 @@ export default {
         },
 
         toTokenBalance() {
-            return this.$defi.fromTokenValue(this.toToken.availableBalance, this.toToken);
+            const { toToken } = this;
+
+            return this.$defi.fromTokenValue(toToken.balanceOf, toToken);
         },
 
         showFromEstimated() {
@@ -339,6 +333,12 @@ export default {
 
             return `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
         },
+
+        sufficientPairLiquidity() {
+            const { dPair } = this;
+
+            return dPair && dPair.pairAddress && dPair.totalSupply !== '0x0';
+        },
     },
 
     watch: {
@@ -361,15 +361,26 @@ export default {
         async fromToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.toToken.address) {
-                    const dPair = await this.getUniswapPair();
+                    const dPair = this.getUniswapPair();
 
                     if (dPair.pairAddress !== this.dPair.pairAddress) {
                         this.dPair = dPair;
                     }
 
+                    // pair not exists
+                    if (!this.dPair.pairAddress) {
+                        this.toToken = {};
+                    }
+
                     defer(() => {
                         this.updateSubmitLabel();
                     });
+
+                    this.setRouteParams();
+                }
+
+                if (!_value._loadingBalance) {
+                    this.setTokenBalance(_value, 'from');
                 }
             }
         },
@@ -377,19 +388,29 @@ export default {
         async toToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.fromToken.address) {
-                    const dPair = await this.getUniswapPair();
+                    const dPair = this.getUniswapPair();
 
                     if (dPair.pairAddress !== this.dPair.pairAddress) {
                         this.dPair = dPair;
                     }
+
+                    this.setRouteParams();
+                }
+
+                if (!_value._loadingBalance) {
+                    this.setTokenBalance(_value, 'to');
                 }
             }
         },
 
         currentAccount(_value, _oldValue) {
-            if (_value !== _oldValue) {
+            if (!_oldValue || !_value || _value.address !== _oldValue.address) {
                 this.onAccountPicked();
             }
+        },
+
+        $route() {
+            this.setTokensByRouteParams();
         },
     },
 
@@ -476,35 +497,41 @@ export default {
         async init() {
             const { $defi } = this;
             const { params } = this;
-            const result = await Promise.all([
-                $defi.fetchTokens(this.currentAccount ? this.currentAccount.address : ''),
-                $defi.init(),
-            ]);
+            const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
-            this.tokens = result[0];
+            this.pairs = result[0];
 
-            // if (params.fromToken && params.toToken) {
-            if (params.fromToken) {
-                this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
-                // this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
-            } else if (this.tokens.length >= 2) {
-                this.fromToken = this.tokens[0];
-                // this.toToken = this.tokens[1];
+            if (params.tokena && params.tokenb) {
+                this.setTokensByRouteParams();
+            } else {
+                this.fromToken = this.getInitialToken();
             }
         },
 
-        async getUniswapPair() {
-            const addressA = this.fromToken.address;
-            const addressB = this.toToken.address;
+        /**
+         * @return {ERC20Token|{}}
+         */
+        getInitialToken() {
+            const { params } = this;
+            let fromToken = {};
 
-            if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount ? this.currentAccount.address : '', '', [
-                    addressA,
-                    addressB,
-                ]);
+            if (this.pairs.length > 0) {
+                const pairs = params.tokena ? TokenPairs.getTokenPairs(this.pairs, params.tokena) : this.pairs;
+
+                if (pairs.length > 0) {
+                    if (params.tokena) {
+                        fromToken = TokenPairs.findToken(pairs[0].tokens, params.tokena);
+                    } else {
+                        fromToken = TokenPairs.findTokenBySymbol(pairs[0].tokens, 'WFTM') || pairs[0].tokens[0];
+                    }
+                }
             }
 
-            return {};
+            return fromToken;
+        },
+
+        getUniswapPair() {
+            return TokenPairs.getPairByTokens(this.pairs, [this.fromToken, this.toToken]) || {};
         },
 
         swapTokens() {
@@ -525,14 +552,14 @@ export default {
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDecimals) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDecimals) : '';
         },
 
         /**
@@ -557,9 +584,9 @@ export default {
             const { toToken } = this;
             const value = parseFloat(_value);
 
-            if (toToken.address && value > 0) {
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
                 let amounts = await this.$defi.fetchUniswapAmountsOut(
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), fromToken.decimals)),
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), fromToken.decimals || 18)),
                     [fromToken.address, toToken.address]
                 );
 
@@ -577,9 +604,9 @@ export default {
             const { toToken } = this;
             const value = parseFloat(_value);
 
-            if (toToken.address && value > 0) {
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
                 const amounts = await this.$defi.fetchUniswapAmountsIn(
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), toToken.decimals)),
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), toToken.decimals || 18)),
                     [fromToken.address, toToken.address]
                 );
 
@@ -590,29 +617,118 @@ export default {
         },
 
         /**
-         * Get token list for `defi-token-picker-window`.
-         *
-         * @type {('from'|'to')} [_type]
-         * @return {DefiToken[]}
+         * @param {ERC20Token} _token
+         * @param {('from'|'to')} [_tokenType]
          */
-        getPickerTokens(_type = 'from') {
-            // const fromTokenAddress = this.fromToken.address;
-            let token = _type === 'from' ? this.fromToken : this.toToken;
-            let fromTokenAddress = token.address;
+        async setTokenBalance(_token, _tokenType = 'from') {
+            const address = this.currentAccount ? this.currentAccount.address : '';
 
-            // if no 'to' token is selected
-            if (_type === 'to' && !this.toToken.address) {
-                fromTokenAddress = this.fromToken.address;
+            _token._loadingBalance = true;
+
+            if (address && _token.address) {
+                _token.balanceOf = await this.$defi.fetchERC20TokenAvailableBalance(address, _token.address);
             }
 
-            return this.tokens.map((_item) => {
-                return { ..._item, _disabled: _item.address === fromTokenAddress };
-            });
+            if (_tokenType === 'from') {
+                this.fromToken = cloneObject(_token);
+            } else {
+                this.toToken = cloneObject(_token);
+            }
+
+            _token._loadingBalance = false;
+        },
+
+        /**
+         * Get token list for `erc20-token-picker-window`.
+         *
+         * @param {('from'|'to')} [_tokenType]
+         * @return {ERC20Token[]}
+         */
+        getTokenPickerTokens(_tokenType = 'from') {
+            let tokens = [];
+            let token = _tokenType === 'from' ? this.fromToken : this.toToken;
+            let currToken = null;
+            const bothPicked = !!this.fromToken.address && !!this.toToken.address;
+
+            if (token.address && !(bothPicked && token !== this.fromToken)) {
+                tokens = cloneObject(TokenPairs.getTokensFromPairs(TokenPairs.getTokenPairs(this.pairs, token)));
+
+                currToken = TokenPairs.findToken(tokens, token);
+            } else {
+                tokens = cloneObject(TokenPairs.getTokensFromPairs(this.pairs));
+
+                currToken = TokenPairs.findToken(tokens, _tokenType === 'from' ? this.toToken : this.fromToken);
+            }
+
+            // disable current token in list
+            if (currToken) {
+                currToken._disabled = true;
+            }
+
+            return tokens;
+        },
+
+        setRouteParams() {
+            const { fromToken } = this;
+            const { toToken } = this;
+            const { $route } = this;
+
+            if (
+                fromToken.address &&
+                toToken.address &&
+                ($route.params.tokena !== fromToken.address || $route.params.tokenb !== toToken.address)
+            ) {
+                this.$router.push({
+                    name: $route.name,
+                    params: {
+                        tokena: fromToken.address,
+                        tokenb: toToken.address,
+                    },
+                });
+            }
+        },
+
+        setTokensByRouteParams() {
+            const { params } = this.$route;
+
+            if (params.tokena && params.tokenb) {
+                if (params.tokena !== this.fromToken.address || params.tokenb !== this.toToken.address) {
+                    const pair = TokenPairs.getPairByTokens(this.pairs, [
+                        { address: params.tokena },
+                        { address: params.tokenb },
+                    ]);
+
+                    if (pair.pairAddress) {
+                        this.fromToken = TokenPairs.findPairToken(pair, { address: params.tokena });
+                        this.toToken = TokenPairs.findPairToken(pair, { address: params.tokenb });
+                    } else {
+                        this.toToken = {};
+                        this.fromToken = this.getInitialToken();
+                    }
+
+                    this.setTPrices();
+                    this.resetInputValues();
+                }
+            } else {
+                this.fromToken = this.getInitialToken();
+                this.toToken = {};
+            }
         },
 
         resetInputValues() {
+            const { $refs } = this;
+
+            this.fromValue_ = 0;
             this.fromValue = '';
+            if ($refs.fromInput) {
+                $refs.fromInput.value = '';
+            }
+
+            this.toValue_ = 0;
             this.toValue = '';
+            if ($refs.toInput) {
+                $refs.toInput.value = '';
+            }
         },
 
         setFromInputValue(_value) {
@@ -629,10 +745,10 @@ export default {
 
         setMinMaxReceived(_fromValueChanged) {
             if (_fromValueChanged) {
-                this.minimumReceived = this.toValue_ * (1 - this.slippageTolerance);
+                this.minimumReceived = this.toValue_ * (1 - this.fUniswapSlippageTolerance);
                 this.maximumSold = 0;
             } else {
-                this.maximumSold = this.fromValue_ * (1 + this.slippageTolerance);
+                this.maximumSold = this.fromValue_ * (1 + this.fUniswapSlippageTolerance);
                 this.minimumReceived = 0;
             }
         },
@@ -706,8 +822,10 @@ export default {
                     this.submitLabel = 'Swap';
                     this.submitBtnDisabled = false;
                 }
-            } else if (fromValue && fromValue !== '0') {
+            } else if (!this.toToken.address) {
                 this.submitLabel = 'Select a token';
+            } else if (this.sufficientPairLiquidity === false) {
+                this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
                 this.submitLabel = 'Enter an amount';
             }
@@ -731,10 +849,12 @@ export default {
         },
 
         onFromTokenSelectorClick() {
+            this.tokenPickerTokens = this.getTokenPickerTokens('to');
             this.$refs.pickFromTokenWindow.show();
         },
 
         onToTokenSelectorClick() {
+            this.tokenPickerTokens = this.getTokenPickerTokens('from');
             this.$refs.pickToTokenWindow.show();
         },
 
@@ -747,6 +867,7 @@ export default {
             } else {
                 this.fromToken = _token;
                 this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
@@ -758,7 +879,9 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
-                this.fromValueChanged();
+                // this.fromValueChanged();
+                this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
@@ -795,7 +918,7 @@ export default {
                 toValue: this.toValue_,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
-                slippageTolerance: this.slippageTolerance,
+                slippageTolerance: this.fUniswapSlippageTolerance,
                 steps: 2,
                 step: 1,
                 minimumReceived: this.minimumReceived,

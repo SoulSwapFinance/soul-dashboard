@@ -2,19 +2,19 @@
     <div class="view-defi-lock">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Lock wFTM
+            Lock Collateral
         </h1>
 
         <h2 class="perex">
-            Lock wFTM to increase the collateral ratio and mint fUSD.
+            Lock collateral to increase the collateral ratio and mint synths.
         </h2>
 
         <defi-deposit
             :token="params.token"
+            :token-symbol="params.tokenSymbol || query.tokenSymbol"
+            :token-address="params.tokenAddress || query.tokenAddress"
             deposit
             lock-unlock-mode
-            single-token
-            token-symbol="WFTM"
             on-submit-route="defi-lock-confirmation"
         />
     </div>
@@ -38,6 +38,14 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        query() {
+            const { $route } = this;
+            return $route && $route.query ? $route.query : {};
         },
 
         backButtonRoute() {
