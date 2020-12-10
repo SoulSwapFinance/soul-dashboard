@@ -18,8 +18,9 @@
             </div>
             <div class="body">
                 <div class="logo">
-                    <router-link to="/">
+                    <router-link to="/" class="logo-link">
                         <icon data="@/assets/svg/fantom.svg" width="40" height="50" />
+                        <span class="wallet-label">fWallet</span>
                     </router-link>
                 </div>
                 <f-simple-navigation :items="navigation" />
