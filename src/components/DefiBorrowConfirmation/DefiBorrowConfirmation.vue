@@ -24,10 +24,7 @@
 
             <div class="confirmation-info">
                 <div v-if="increasedDebt > 0">
-                    You’re adding
-                    <span class="inc-desc-collateral">
-                        <f-token-value :token="token" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
-                    </span>
+                    <defi-minting-message :token="token" :value="increasedDebt" />
                 </div>
                 <div v-else-if="decreasedDebt > 0">
                     <template v-if="params.step === 1">You’re allowing </template>
@@ -62,6 +59,7 @@ import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
 import { getUniqueId } from '@/utils';
+import DefiMintingMessage from '@/components/DefiMintingMessage/DefiMintingMessage.vue';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -69,7 +67,7 @@ import { getUniqueId } from '@/utils';
 export default {
     name: 'DefiBorrowConfirmation',
 
-    components: { FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
+    components: { DefiMintingMessage, FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Address of smart contract. */
