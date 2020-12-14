@@ -341,6 +341,34 @@ export class FantomWeb3Wallet {
         return data.data ? data.data.account : {};
     }
 
+    async getEstimateGas(_from = '', _data = null, _to = '', _value = 0) {
+        const data = await fFetch.fetchGQLQuery(
+            {
+                query: gql`
+                    query EstimateGas($from: Address, $data: String) {
+                        estimateGas(from: $from, data: $data)
+                    }
+                `,
+                /*
+                query: gql`
+                    query EstimateGas($from: Address, $to: Address, $value: BigInt, $data: String) {
+                        estimateGas(from: $from, to: $to, value: $value, data: $data)
+                    }
+                `,
+                */
+                variables: {
+                    from: _from || undefined,
+                    to: _to || undefined,
+                    value: _value || undefined,
+                    data: _data || undefined,
+                },
+            },
+            'estimateGas'
+        );
+
+        return data.data ? data.data.estimateGas : '';
+    }
+
     /**
      * @param {Boolean} [_inHexFormat]
      * @return {Promise<*>}

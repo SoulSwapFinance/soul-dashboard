@@ -172,11 +172,24 @@ export default {
         },
     },
 
+    created() {
+        this.init();
+    },
+
     mounted() {
         console.log('gasLimit', this.gasLimit);
     },
 
     methods: {
+        async init() {
+            const address = this.currentAccount ? this.currentAccount.address : '';
+
+            if (address) {
+                console.log('init', JSON.stringify(this.tx));
+                console.log(await this.$fWallet.getEstimateGas(address, this.tx.data));
+            }
+        },
+
         sendTransaction(_rawTransaction) {
             this.$apollo
                 .mutate({
@@ -216,6 +229,7 @@ export default {
                 this.tx.nonce = `0x${this.tx.nonce.toString(16)}`;
                 this.tx.chainId = appConfig.chainId;
 
+                console.log('tady', this.tx);
                 // console.log('tx', this.tx);
                 // console.log(currentAccount);
 
