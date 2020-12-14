@@ -38,7 +38,7 @@
                             type="submit"
                             class="btn large break-word"
                             style="max-width: 100%;"
-                            :disabled="notEnoughFTM"
+                            :disabled="notEnoughFTM || disabledSubmit"
                         >
                             {{ sendButtonLabel }}
                         </button>
@@ -87,6 +87,11 @@ export default {
         },
         /** */
         waiting: {
+            type: Boolean,
+            default: false,
+        },
+        /** */
+        disabledSubmit: {
             type: Boolean,
             default: false,
         },
