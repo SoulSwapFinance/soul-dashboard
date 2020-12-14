@@ -28,3 +28,13 @@
         flex: 1;
     }
 }
+
+.view-transition-on {
+    .view-transition.min-h-100 {
+        flex-direction: row;
+
+        > * {
+            height: 100%;
+        }
+    }
+}

@@ -32,6 +32,10 @@ export default {
             type: String,
             default: 'slide-right',
         },
+        appNodeId: {
+            type: String,
+            default: '',
+        },
         /** Watch for router changes. */
         watchRoute: {
             type: Boolean,
@@ -47,22 +51,13 @@ export default {
 
     watch: {
         $route(_to, _from) {
-            const { _viewsStructure } = this;
-
-            // Choose transition (forward or backward) according to position of route nodes in views structure.
-            if (this.watchRoute && _viewsStructure) {
-                const nodeTo = _viewsStructure.getBy(_to.name, 'route');
-                const nodeFrom = _viewsStructure.getBy(_from.name, 'route');
-
-                if (nodeTo && nodeFrom) {
-                    // if nodeFrom is parent of nodeTo
-                    if (_viewsStructure.getParentsBy(nodeFrom.id, 'id', nodeTo).length > 0) {
-                        this.transitionName = this.forwardTransition;
-                    } else {
-                        this.transitionName = this.backwardTransition;
-                    }
-                }
+            if (this.watchRoute) {
+                this.runTransition(_from.name, _to.name);
             }
+        },
+
+        appNodeId(_value, _oldValue) {
+            this.runTransition(_oldValue, _value);
         },
     },
 
@@ -76,6 +71,29 @@ export default {
     },
 
     methods: {
+        runTransition(_nodeFromName, _nodeToName) {
+            const { _viewsStructure } = this;
+
+            // Choose transition (forward or backward) according to position of route nodes in views structure.
+            if (_viewsStructure) {
+                console.log('Jo??', _nodeFromName, _nodeToName);
+
+                const nodeFrom = _viewsStructure.getBy(_nodeFromName, 'id');
+                const nodeTo = _viewsStructure.getBy(_nodeToName, 'id');
+
+                if (nodeTo && nodeFrom) {
+                    // if nodeFrom is parent of nodeTo
+                    if (_viewsStructure.getParentsBy(nodeFrom.id, 'id', nodeTo).length > 0) {
+                        this.transitionName = this.forwardTransition;
+                    } else {
+                        this.transitionName = this.backwardTransition;
+                    }
+                } else {
+                    this.transitionName = '';
+                }
+            }
+        },
+
         onBeforeEnter() {
             document.body.classList.add('view-transition-on');
         },

@@ -25,22 +25,27 @@ const appStructure = [
                                     {
                                         id: 'defi-lock-confirmation',
                                         route: 'defi-lock-confirmation',
+                                        component: 'defi-lock-confirmation',
                                         _c: [
                                             {
                                                 id: 'defi-lock-transaction-success-message',
                                                 route: 'defi-lock-transaction-success-message',
+                                                component: 'transaction-success-message',
                                                 _c: [
                                                     {
                                                         id: 'defi-lock-confirmation2',
                                                         route: 'defi-lock-confirmation2',
+                                                        component: 'defi-lock-confirmation',
                                                         _c: [
                                                             {
                                                                 id: 'defi-lock-transaction-success-message2',
                                                                 route: 'defi-lock-transaction-success-message2',
+                                                                component: 'transaction-success-message',
                                                             },
                                                             {
                                                                 id: 'defi-lock-transaction-reject-message2',
                                                                 route: 'defi-lock-transaction-reject-message2',
+                                                                component: 'transaction-reject-message',
                                                             },
                                                         ],
                                                     },
@@ -49,6 +54,7 @@ const appStructure = [
                                             {
                                                 id: 'defi-lock-transaction-reject-message',
                                                 route: 'defi-lock-transaction-reject-message',
+                                                component: 'transaction-reject-message',
                                             },
                                         ],
                                     },
@@ -97,22 +103,27 @@ const appStructure = [
                                     {
                                         id: 'defi-lock-unlock-confirmation',
                                         route: 'defi-lock-unlock-confirmation',
+                                        component: 'defi-deposit-confirmation',
                                         _c: [
                                             {
                                                 id: 'defi-lock-unlock-transaction-success-message',
                                                 route: 'defi-lock-unlock-transaction-success-message',
+                                                component: 'transaction-success-message',
                                                 _c: [
                                                     {
                                                         id: 'defi-lock-unlock-confirmation2',
                                                         route: 'defi-lock-unlock-confirmation2',
+                                                        component: 'defi-deposit-confirmation',
                                                         _c: [
                                                             {
                                                                 id: 'defi-lock-unlock-transaction-success-message2',
                                                                 route: 'defi-lock-unlock-transaction-success-message2',
+                                                                component: 'transaction-success-message',
                                                             },
                                                             {
                                                                 id: 'defi-lock-unlock-transaction-reject-message2',
                                                                 route: 'defi-lock-unlock-transaction-reject-message2',
+                                                                component: 'transaction-reject-message',
                                                             },
                                                         ],
                                                     },
@@ -121,6 +132,7 @@ const appStructure = [
                                             {
                                                 id: 'defi-lock-unlock-transaction-reject-message',
                                                 route: 'defi-lock-unlock-transaction-reject-message',
+                                                component: 'transaction-reject-message',
                                             },
                                         ],
                                     },

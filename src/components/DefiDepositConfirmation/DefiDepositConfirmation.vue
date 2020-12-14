@@ -301,7 +301,7 @@ export default {
                 });
             } else {
                 if (this.params.step === 1) {
-                    params.continueTo = 'defi-deposit-confirmation';
+                    // params.continueTo = 'defi-deposit-confirmation';
                     params.continueToParams = {
                         params: { ...params.continueToParams },
                         token: { ...this.token },
@@ -314,8 +314,8 @@ export default {
                 }
 
                 this.$emit('change-component', {
-                    to: 'transaction-success-message',
-                    from: 'defi-deposit-confirmation',
+                    to: transactionSuccessComp,
+                    // from: 'defi-deposit-confirmation',
                     data: { ...params, cardOff: true, windowMode: true },
                 });
             }

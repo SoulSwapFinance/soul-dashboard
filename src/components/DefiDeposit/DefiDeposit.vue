@@ -7,8 +7,8 @@
                     <div class="value">
                         <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="availableBalance" />
                         <template v-else>
-                            <div v-for="token in tokens" :key="`l1_${token.symbol}`">
-                                <f-token-value :token="token" :value="getAvailableBalance(token)" />
+                            <div v-for="token1 in tokens" :key="`l1_${token1.symbol}`">
+                                <f-token-value :token="token1" :value="getAvailableBalance(token1)" />
                             </div>
                         </template>
                     </div>
@@ -21,8 +21,8 @@
                     <div class="value">
                         <f-token-value v-if="!lockUnlockMode" :token="dToken" :value="collateral" />
                         <template v-else>
-                            <div v-for="token in tokens" :key="`l2_${token.symbol}`">
-                                <f-token-value :token="token" :value="getCollateral(token)" />
+                            <div v-for="token2 in tokens" :key="`l2_${token2.symbol}`">
+                                <f-token-value :token="token2" :value="getCollateral(token2)" />
                             </div>
                         </template>
                     </div>
@@ -215,12 +215,14 @@
             :steps-count="stepsCount"
             :active-step="activeStep"
         >
-            <component
-                :is="currentComponent"
-                v-bind="currentComponentProperties"
-                @change-component="onChangeComponent"
-                @cancel-button-click="onCancelButtonClick"
-            ></component>
+            <f-view-transition :views-structure="viewsStructure" :app-node-id="currentAppNodeId" class="min-h-100">
+                <component
+                    :is="currentComponent"
+                    v-bind="currentComponentProperties"
+                    @change-component="onChangeComponent"
+                    @cancel-button-click="onCancelButtonClick"
+                ></component>
+            </f-view-transition>
         </tx-confirmation-window>
     </div>
 </template>
@@ -242,11 +244,14 @@ import { componentViewMixin } from '@/mixins/component-view.js';
 import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
 import DefiDepositConfirmation from '@/components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
 import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
+import { appStructureTree } from '@/app-structure.js';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        FViewTransition,
         TransactionSuccessMessage,
         DefiDepositConfirmation,
         TxConfirmationWindow,
@@ -519,6 +524,19 @@ export default {
 
             return breakpoint && breakpoint.matches;
         },
+
+        // dat do component-view.js nekam
+        viewsStructure() {
+            const node = 'defi-home';
+            const appNode = appStructureTree.serialize(appStructureTree.get(node));
+
+            if (!this.currentAppNodeId) {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.currentAppNodeId = node;
+            }
+
+            return appNode ? [JSON.parse(appNode)] : [];
+        },
     },
 
     watch: {
@@ -723,6 +741,9 @@ export default {
         onCancelButtonClick() {
             this.currCollateral = '0';
             this.activeStep = 1;
+            // toto by melo byt onwindowclose
+            this.currentComponent = '';
+            this.currentAppNodeId = '';
 
             this.init();
 

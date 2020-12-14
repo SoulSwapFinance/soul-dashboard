@@ -1,3 +1,5 @@
+import { Tree } from '@/utils/tree.js';
+
 /**
  * Helper methods and properties for handling component changes via `<component>`.
  */
@@ -5,6 +7,8 @@ export const componentViewMixin = {
     data() {
         return {
             currentComponent: '',
+            currentAppNodeId: '',
+            _viewsStructure: null,
         };
     },
 
@@ -25,8 +29,22 @@ export const componentViewMixin = {
 
     methods: {
         changeComponent(_compName, _data = null) {
+            let compName = _compName;
+
+            if (this.viewsStructure) {
+                if (!this._viewsStructure) {
+                    this._viewsStructure = new Tree(this.viewsStructure);
+                }
+
+                const appNode = this._viewsStructure.getBy(compName, 'id');
+                if (appNode && appNode.component) {
+                    compName = appNode.component;
+                    this.currentAppNodeId = appNode.id;
+                }
+            }
+
             this._cwmData = _data;
-            this.currentComponent = _compName;
+            this.currentComponent = compName;
 
             this.$nextTick(() => {
                 this._cwmData = null;
