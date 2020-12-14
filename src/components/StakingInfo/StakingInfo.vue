@@ -227,6 +227,15 @@
                             Even if your pending rewards balance shows 0, go ahead and claim anyway and you’ll receive
                             the correct amount.
                         </f-message>
+
+                        <details>
+                            <summary>Advanced Functions</summary>
+                            <p>
+                                <button class="btn large secondary" @click="claimRewards()">
+                                    Claim Rewards (Unconditioned)
+                                </button>
+                            </p>
+                        </details>
                     </div>
                 </div>
             </div>
