@@ -640,9 +640,10 @@ export class FantomWeb3Wallet {
         return { privateKey, mnemonic, keystore };
     }
 
-    async getTransactionToSign({ from, to, value, memo = '', gasLimit = GAS_LIMITS.default }) {
+    async getTransactionToSign({ from, to, value, memo = '' }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
+        const gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
 
         return {
             value: value,
@@ -660,18 +661,18 @@ export class FantomWeb3Wallet {
     /**
      * @param {Object} _tx SFC transaction object.
      * @param {String} _from Address.
-     * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getSFCTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
+    async getSFCTransactionToSign(_tx, _from) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
+        const gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data) : '';
 
         return {
             ..._tx,
             gasPrice,
-            gas: _gasLimit,
-            gasLimit: _gasLimit,
+            gas: gasLimit,
+            gasLimit: gasLimit,
             nonce,
         };
     }
@@ -679,18 +680,18 @@ export class FantomWeb3Wallet {
     /**
      * @param {Object} _tx Defi transaction object.
      * @param {String} _from Address.
-     * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getDefiTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
+    async getDefiTransactionToSign(_tx, _from) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
+        const gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data) : '';
 
         return {
             ..._tx,
             gasPrice,
-            gas: _gasLimit,
-            gasLimit: _gasLimit,
+            gas: gasLimit,
+            gasLimit: gasLimit,
             nonce,
         };
     }

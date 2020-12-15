@@ -182,18 +182,8 @@ export default {
 
     methods: {
         async init() {
-            const address = this.currentAccount ? this.currentAccount.address : '';
-
-            if (address && this.tx.to) {
-                this.dGasLimit = await this.$fWallet.getEstimateGas(address, this.tx.to, this.tx.data);
-
-                if (this.dGasLimit) {
-                    this.tx.gas = this.dGasLimit;
-                    this.tx.gasLimit = this.dGasLimit;
-                    // console.log('init', JSON.stringify(this.tx));
-                    this.disabledSubmit = false;
-                }
-            }
+            this.dGasLimit = this.tx.gasLimit;
+            this.disabledSubmit = false;
         },
 
         sendTransaction(_rawTransaction) {
