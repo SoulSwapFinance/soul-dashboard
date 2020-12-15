@@ -5,7 +5,6 @@
             confirmation-comp-name="withdraw-ftm-confirmation"
             send-button-label="Vote"
             password-label="Please enter your wallet password to vote"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -46,7 +45,6 @@
 
 <script>
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import { toFTM } from '../../utils/transactions.js';
@@ -76,7 +74,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.ballot,
         };
     },
 
@@ -93,8 +90,7 @@ export default {
             if (this.proposal > -1) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
                     sfcUtils.ballotVote(this.ballot.address, this.proposal),
-                    this.currentAccount.address,
-                    this.gasLimit
+                    this.currentAccount.address
                 );
             }
         },

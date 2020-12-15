@@ -160,7 +160,7 @@ export default {
             let price = 0;
 
             if (this.gasPrice && currentAccount) {
-                price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, GAS_LIMITS.delegate);
+                price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, GAS_LIMITS.max);
             }
 
             return price;
@@ -292,11 +292,7 @@ export default {
                 delegationTx = sfcUtils.createDelegationTx(amount, validatorId);
             }
 
-            const tx = await this.$fWallet.getSFCTransactionToSign(
-                delegationTx,
-                this.currentAccount.address,
-                GAS_LIMITS.delegate
-            );
+            const tx = await this.$fWallet.getSFCTransactionToSign(delegationTx, this.currentAccount.address);
 
             this.$emit('change-component', {
                 to: 'stake-confirmation',

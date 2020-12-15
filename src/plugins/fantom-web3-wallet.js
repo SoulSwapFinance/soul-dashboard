@@ -17,15 +17,7 @@ export const FANTOM_CHAIN_ID = 0xfa;
 
 export const GAS_LIMITS = {
     default: '0xabe0',
-    claimRewards: '0x44AA20',
-    pushRewards: '0x3D0900',
-    undelegate: '0x44AA20',
-    lockDelegation: '0x30D40',
-    withdraw: '0x44AA20',
-    delegate: '0x30D40',
-    ballot: '0x3D0900',
-    defi: '0x3D0900', // 4 000 000
-    uniswap: '0xF4240', // 1 000 000
+    max: '0x44AA20', // 4500000
 };
 
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
@@ -643,7 +635,11 @@ export class FantomWeb3Wallet {
     async getTransactionToSign({ from, to, value, memo = '' }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
-        const gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
+        let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             value: value,
@@ -661,12 +657,18 @@ export class FantomWeb3Wallet {
     /**
      * @param {Object} _tx SFC transaction object.
      * @param {String} _from Address.
+     * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getSFCTransactionToSign(_tx, _from) {
+    async getSFCTransactionToSign(_tx, _from, _gasLimit = '') {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
-        const gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data) : '';
+        let gasLimit =
+            _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             ..._tx,
@@ -680,12 +682,18 @@ export class FantomWeb3Wallet {
     /**
      * @param {Object} _tx Defi transaction object.
      * @param {String} _from Address.
+     * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getDefiTransactionToSign(_tx, _from) {
+    async getDefiTransactionToSign(_tx, _from, _gasLimit) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
-        const gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data) : '';
+        let gasLimit =
+            _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             ..._tx,
@@ -807,11 +815,11 @@ export class FantomWeb3Wallet {
      *
      * @param {*} _balance
      * @param {*} _gasPrice
-     * @param {string} _gasLimit
+     * @param {string} [_gasLimit]
      * @return {number}
      */
     getRemainingBalance(_balance, _gasPrice, _gasLimit) {
-        const fee = this.getTransactionFee(_gasPrice, _gasLimit);
+        const fee = this.getTransactionFee(_gasPrice, _gasLimit || '');
         const balance = this.toBN(_balance);
 
         return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(2)))));
@@ -825,7 +833,7 @@ export class FantomWeb3Wallet {
      * @return {number}
      */
     getMaxRemainingBalance(_balance, _gasPrice) {
-        const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.claimRewards);
+        const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.max);
         const balance = this.toBN(_balance);
 
         return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(1)))));

@@ -43,7 +43,7 @@
                                 {{ sendButtonLabel }}
                             </button>
                             <div class="gas-info">
-                                Gas:
+                                Estimated Gas:
                                 <f-placeholder :content-loaded="!!gasLimit" :replacement-num-chars="4">
                                     {{ formatNumberByLocale(parseInt(gasLimit, 16), 0) }}
                                 </f-placeholder>
@@ -62,7 +62,6 @@ import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-// import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import { formatNumberByLocale } from '@/filters.js';
@@ -132,7 +131,7 @@ export default {
                 price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, this.gasLimit);
             }
 
-            console.log('price', price);
+            // console.log('price', price);
 
             return price <= 0;
         },

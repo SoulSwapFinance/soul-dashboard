@@ -5,7 +5,6 @@
             confirmation-comp-name="claim-rewards-confirmation"
             send-button-label="Claim Rewards"
             password-label="Please enter your wallet password to claim rewards"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -41,7 +40,7 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS, SFC_CLAIM_MAX_EPOCHS } from '../../plugins/fantom-web3-wallet.js';
+import { SFC_CLAIM_MAX_EPOCHS } from '../../plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
@@ -72,7 +71,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.claimRewards,
         };
     },
 
@@ -92,8 +90,7 @@ export default {
                 this.reStake
                     ? sfcUtils.claimDelegationRewardsCompoundTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16))
                     : sfcUtils.claimDelegationRewardsTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16)),
-                this.currentAccount.address,
-                this.gasLimit
+                this.currentAccount.address
             );
         },
 

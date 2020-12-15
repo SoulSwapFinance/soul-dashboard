@@ -5,7 +5,6 @@
             confirmation-comp-name="unstake-confirmation"
             send-button-label="Undelegate"
             password-label="Please enter your wallet password to undelegate your FTM"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -51,7 +50,6 @@ import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { getRandomInt } from '../../utils';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
@@ -87,7 +85,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.undelegate,
         };
     },
 
@@ -109,8 +106,7 @@ export default {
                 this.undelegateMax
                     ? sfcUtils.prepareToWithdrawDelegationTx(stakerId)
                     : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
-                this.currentAccount.address,
-                GAS_LIMITS.undelegate
+                this.currentAccount.address
             );
         },
 

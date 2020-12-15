@@ -6,7 +6,6 @@
             card-off
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
             :tmp-pwd-code="tmpPwdCode"
@@ -63,7 +62,7 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
+import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
@@ -117,7 +116,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.default,
             tmpPwdCode: '',
         };
     },
@@ -247,11 +245,7 @@ export default {
                 );
             }
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(
-                txToSign,
-                this.currentAccount.address,
-                GAS_LIMITS.defi
-            );
+            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
         },
 
         correctAmount(_amount, _withdrawDeposit) {

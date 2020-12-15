@@ -8,7 +8,6 @@
             set-tmp-pwd
             :tmp-pwd-code="d_tmpPwdCode"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -51,7 +50,6 @@
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 // import { viewHelpersMixin } from '@/mixins/view-helpers.js';
@@ -98,7 +96,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
             dOutstandingSFTM: 0,
             d_stakerId: this.stakerId,
@@ -181,7 +178,7 @@ export default {
                 );
             }
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, address, GAS_LIMITS.defi);
+            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, address);
         },
 
         onSendTransactionSuccess(_data) {

@@ -5,7 +5,6 @@
             confirmation-comp-name="claim-rewards-confirmation"
             send-button-label="Confirm"
             password-label="Please enter your wallet password to confirm"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
         >
             <h2>EIP Send Transaction</h2>
@@ -42,7 +41,6 @@
 <script>
 /* global chrome */
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet';
 import { mapGetters } from 'vuex';
 import { SET_ACTIVE_ACCOUNT_BY_ADDRESS } from '@/store/mutations.type';
 import { Web3 } from '@/plugins/fantom-web3-wallet';
@@ -55,7 +53,7 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.defi,
+            gasLimit: '',
         };
     },
 

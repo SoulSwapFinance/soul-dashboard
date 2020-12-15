@@ -5,7 +5,6 @@
             confirmation-comp-name="transaction-confirmation"
             send-button-label="Send"
             password-label="Please enter your wallet password to send the transaction"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -124,7 +123,6 @@ import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { toFTM } from '../../utils/transactions.js';
 import { formatNumberByLocale } from '../../filters.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
@@ -153,7 +151,6 @@ export default {
             sendToAddress: '',
             dTxData: this.txData,
             tx: {},
-            gasLimit: GAS_LIMITS.default,
         };
     },
 
@@ -287,8 +284,7 @@ export default {
                             ? token.balanceOf || token.availableBalance
                             : Web3.utils.toHex(Web3.utils.toWei(dTxData.amount))
                     ),
-                    this.currentAccount.address,
-                    GAS_LIMITS.defi
+                    this.currentAccount.address
                 );
             } else {
                 this.tx = await fWallet.getTransactionToSign({

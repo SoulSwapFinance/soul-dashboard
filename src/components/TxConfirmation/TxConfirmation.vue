@@ -69,7 +69,6 @@ import { mapGetters, mapState } from 'vuex';
 import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
-// import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import appConfig from '../../../app.config.js';
 
 /**
@@ -101,11 +100,6 @@ export default {
         },
         /** Label for password field in TransactionConfirmationForm component */
         passwordLabel: {
-            type: String,
-            default: '',
-        },
-        /** Transaction's gas limit */
-        gasLimit: {
             type: String,
             default: '',
         },
