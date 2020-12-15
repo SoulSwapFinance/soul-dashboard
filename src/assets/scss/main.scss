@@ -245,12 +245,12 @@ legend.h2 {
     padding-top: 24px;
     padding-bottom: 8px;
 
-    .btn {
-        margin-right: 16px;
+    > .btn {
+        margin-left: 16px;
         margin-bottom: 16px;
 
-        &:last-child {
-            margin-right: 0;
+        &:first-child {
+            margin-left: 0;
         }
     }
 }

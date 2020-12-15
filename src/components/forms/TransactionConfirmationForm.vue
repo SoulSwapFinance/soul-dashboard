@@ -33,15 +33,22 @@
                             <br />
                         </div>
 
-                        <button
-                            v-if="!waiting"
-                            type="submit"
-                            class="btn large break-word"
-                            style="max-width: 100%;"
-                            :disabled="notEnoughFTM || disabledSubmit"
-                        >
-                            {{ sendButtonLabel }}
-                        </button>
+                        <template v-if="!waiting">
+                            <button
+                                type="submit"
+                                class="btn large break-word"
+                                style="max-width: 100%;"
+                                :disabled="notEnoughFTM || disabledSubmit"
+                            >
+                                {{ sendButtonLabel }}
+                            </button>
+                            <div class="gas-info">
+                                Gas:
+                                <f-placeholder :content-loaded="!!gasLimit" :replacement-num-chars="4">
+                                    {{ formatNumberByLocale(parseInt(gasLimit, 16), 0) }}
+                                </f-placeholder>
+                            </div>
+                        </template>
                         <pulse-loader v-else color="#1969ff"></pulse-loader>
                     </div>
                 </div>
@@ -55,13 +62,15 @@ import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
+// import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'TransactionConfirmationForm',
 
-    components: { FMessage, FPasswordField, FForm, PulseLoader },
+    components: { FPlaceholder, FMessage, FPasswordField, FForm, PulseLoader },
 
     props: {
         showPasswordField: {
@@ -83,7 +92,7 @@ export default {
         /** Transaction's gas limit */
         gasLimit: {
             type: String,
-            default: GAS_LIMITS.default,
+            default: '',
         },
         /** */
         waiting: {
@@ -157,6 +166,14 @@ export default {
         checkPassword(_value) {
             return _value && _value.length > 0;
         },
+
+        formatNumberByLocale,
     },
 };
 </script>
+<style lang="scss">
+@import '../../assets/scss/vars';
+.gas-info {
+    color: $light-gray-color;
+}
+</style>
