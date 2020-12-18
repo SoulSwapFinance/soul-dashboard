@@ -76,8 +76,6 @@ export default {
 
             // Choose transition (forward or backward) according to position of route nodes in views structure.
             if (_viewsStructure) {
-                console.log('Jo??', _nodeFromName, _nodeToName);
-
                 const nodeFrom = _viewsStructure.getBy(_nodeFromName, 'id');
                 const nodeTo = _viewsStructure.getBy(_nodeToName, 'id');
 

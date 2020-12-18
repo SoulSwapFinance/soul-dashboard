@@ -310,7 +310,7 @@ export default {
                     params.title = `Success`;
                 } else if (this.params.step === 2) {
                     params.continueTo = 'hide-window';
-                    params.continueButtonLabel = 'Finish';
+                    params.continueButtonLabel = 'Close';
                 }
 
                 this.$emit('change-component', {
