@@ -161,7 +161,7 @@ export default {
                     name: 'name',
                     label: 'Name',
                     itemProp: 'proposal.name',
-                    // width: '320px',
+                    width: '220px',
                 },
                 {
                     name: 'startend',
@@ -170,7 +170,7 @@ export default {
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), true, true);
                     },
-                    width: '260px',
+                    width: '160px',
                 },
                 {
                     name: 'voted',
@@ -179,7 +179,7 @@ export default {
                     formatter: (_value) => {
                         return _value._voted !== undefined ? _value._voted : '';
                     },
-                    width: '110px',
+                    width: '80px',
                     css: { textAlign: 'center' },
                 },
                 {
@@ -219,6 +219,21 @@ export default {
                     },
                     width: '180px',
                     css: { textAlign: 'center' },
+                },
+                {
+                    name: 'state',
+                    label: 'State',
+                    formatter: (_value, _item) => {
+                        const { proposal } = _item;
+
+                        if (proposal && proposal.state) {
+                            return this.$governance.getProposalStatus(proposal.state.status);
+                        }
+
+                        return '-';
+                    },
+                    css: { textAlign: 'center' },
+                    width: '110px',
                 },
                 {
                     name: 'detail',

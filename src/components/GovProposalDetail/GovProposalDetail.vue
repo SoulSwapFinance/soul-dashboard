@@ -171,6 +171,12 @@
                             {{ formatDate(timestampToDate(d_proposal.votingMustEnd), true, true) }}
                         </div>
                     </div>
+                    <div v-if="d_proposal.state" class="col df-data-item">
+                        <div class="label">State</div>
+                        <div class="date">
+                            {{ $governance.getProposalStatus(d_proposal.state.status) }}
+                        </div>
+                    </div>
                 </div>
             </template>
 

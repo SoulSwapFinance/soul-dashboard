@@ -43,6 +43,26 @@ export class Governance {
     }
 
     /**
+     * @param {string} _status Hex number.
+     * @return {string}
+     */
+    getProposalStatus(_status) {
+        switch (parseInt(_status, 16)) {
+            case 0:
+                return 'In progress';
+            case 1:
+                return 'Resolved';
+            case 2:
+                return 'Failed';
+            case 4:
+                return 'Canceled';
+            case 8:
+                return 'Execution Expired';
+        }
+
+        return '-';
+    }
+    /**
      * @return {Promise<[GovernanceContract]|[]>}
      */
     async fetchContracts() {
