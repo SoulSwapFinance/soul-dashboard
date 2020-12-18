@@ -13,7 +13,7 @@
         >
             <template #title>
                 <h2>Confirmation</h2>
-                <f-steps v-if="stepsCount > 0" :count="stepsCount" :active="activeStep" />
+                <f-steps v-if="stepsCount > 0" :labels="stepLabels" :active="activeStep" />
             </template>
             <slot></slot>
         </f-window>
@@ -51,6 +51,23 @@ export default {
         return {
             currentComponent: '',
         };
+    },
+
+    computed: {
+        stepLabels() {
+            const labels = [];
+            const { stepsCount } = this;
+
+            if (stepsCount > 0) {
+                for (let i = 0; i < stepsCount; i++) {
+                    labels.push(`Step ${i + 1}`);
+                }
+            }
+
+            labels.push('Finished');
+
+            return labels;
+        },
     },
 
     methods: {

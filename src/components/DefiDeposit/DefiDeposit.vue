@@ -759,6 +759,9 @@ export default {
 
             if (data && data.params && data.params.step) {
                 this.activeStep = data.params.step;
+            } else if (data && data.continueTo === 'hide-window') {
+                // last transaction success/reject message
+                this.activeStep = 1000;
             }
 
             componentViewMixin.methods.onChangeComponent.call(this, _data);
