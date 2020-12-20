@@ -32,6 +32,7 @@ module.exports = {
         assetsVersion: '4',
         manifestOptions: {
             background_color: '#1969ff',
+            categories: appConfig.pwa.categories,
         },
         workboxOptions: {
             skipWaiting: true,
