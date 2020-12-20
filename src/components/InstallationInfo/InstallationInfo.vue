@@ -1,8 +1,7 @@
 <template>
     <div class="installation-info">
         <p class="align-center">
-            The Fantom PWA Wallet has been created as a Progressive Web App (PWA) which is easy to launch on all
-            platforms:
+            The Fantom fWallet has been created as a Progressive Web App (PWA) which is easy to launch on all platforms:
         </p>
 
         <div class="inst-buttons">

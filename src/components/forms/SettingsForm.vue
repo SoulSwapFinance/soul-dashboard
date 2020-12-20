@@ -76,7 +76,7 @@
 
                         <p style="padding: 24px 0 32px 0;">
                             <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
-                                How to use Fantom PWA wallet
+                                How to use Fantom fWallet
                             </a>
                         </p>
 
