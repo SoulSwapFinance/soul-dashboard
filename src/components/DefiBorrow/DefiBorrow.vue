@@ -431,7 +431,9 @@ export default {
         },
 
         submitDisabled() {
-            return !this.singleToken ? parseFloat(this.currDebt) === parseFloat(this.debt) : !parseFloat(this.currDebt);
+            return !this.singleToken
+                ? parseFloat(this.currDebt) === parseFloat(this.debt) && this.debt === 0
+                : !parseFloat(this.currDebt);
         },
 
         cTokenSymbol() {

@@ -203,6 +203,8 @@ export default {
                 return;
             }
 
+            const withdrawMax = this.params.collateral - this.decreasedCollateral < 0.000001;
+
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
 
             if (!contractAddress) {
@@ -238,12 +240,14 @@ export default {
                 txToSign = fMintUtils.fMintWithdrawTokenTx(
                     contractAddress,
                     token.address,
-                    this.correctAmount(
-                        Web3.utils.toHex(
-                            this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals)
-                        ),
-                        true
-                    )
+                    withdrawMax
+                        ? params.collateralHex
+                        : this.correctAmount(
+                              Web3.utils.toHex(
+                                  this.$defi.shiftDecPointRight(this.decreasedCollateral.toString(), token.decimals)
+                              ),
+                              true
+                          )
                 );
             }
 
