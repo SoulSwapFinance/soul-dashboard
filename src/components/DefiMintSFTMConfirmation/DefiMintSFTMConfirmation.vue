@@ -6,7 +6,6 @@
             :card-off="isView"
             send-button-label="Submit"
             password-label="Please enter your wallet password to mint sFTM"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -37,7 +36,6 @@
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 // import { viewHelpersMixin } from '@/mixins/view-helpers.js';
@@ -73,7 +71,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
             dAmountDelegated: 0,
             d_stakerId: this.stakerId,
@@ -123,8 +120,7 @@ export default {
                     this.$defi.contracts.StakeTokenizerContract,
                     parseInt(this.d_stakerId, 16)
                 ),
-                this.currentAccount.address,
-                GAS_LIMITS.defi
+                this.currentAccount.address
             );
         },
 

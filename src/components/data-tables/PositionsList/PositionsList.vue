@@ -195,7 +195,7 @@ import DepositOrBorrowTokenWindow from '@/components/windows/DepositOrBorrowToke
 import { formatNumberByLocale } from '@/filters.js';
 import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
-import appConfig from '../../../../app.config.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'PositionsList',
@@ -332,10 +332,6 @@ export default {
          */
         async tokens(_value) {
             let tokens = _value.filter((_item) => {
-                if (_item.symbol === 'SFTM' && appConfig.disableSFTM) {
-                    return false;
-                }
-
                 return _item.isActive && (_item.canDeposit || _item.canMint) && _item.symbol !== 'FTM';
             });
 
@@ -392,7 +388,9 @@ export default {
         formatDebt(_token) {
             const debt = '_debt' in _token ? _token._debt : this.getDebt(_token);
 
-            return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_token)) : 0;
+            return debt > 0
+                ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_token, MAX_TOKEN_DECIMALS_IN_TABLES))
+                : 0;
         },
 
         /**
@@ -405,7 +403,7 @@ export default {
             return debt > 0
                 ? formatNumberByLocale(
                       debt * this.defi.getTokenPrice(_token),
-                      this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                      this.defi.getTokenDecimals({ symbol: 'FUSD' }, MAX_TOKEN_DECIMALS_IN_TABLES)
                   )
                 : 0;
         },
@@ -428,7 +426,9 @@ export default {
         formatCollateral(_token) {
             const collateral = '_collateral' in _token ? _token._collateral : this.getCollateral(_token);
 
-            return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_token)) : 0;
+            return collateral > 0
+                ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_token, MAX_TOKEN_DECIMALS_IN_TABLES))
+                : 0;
         },
 
         /**
@@ -441,7 +441,7 @@ export default {
             return collateral > 0
                 ? formatNumberByLocale(
                       collateral * this.defi.getTokenPrice(_token),
-                      this.defi.getTokenDecimals({ symbol: 'FUSD' })
+                      this.defi.getTokenDecimals({ symbol: 'FUSD' }, MAX_TOKEN_DECIMALS_IN_TABLES)
                   )
                 : 0;
         },
@@ -459,7 +459,7 @@ export default {
          * @return {boolean}
          */
         usedAsCollateral(_token) {
-            return _token.symbol === 'WFTM' || (_token.symbol === 'SFTM' && !appConfig.disableSFTM);
+            return _token.symbol === 'WFTM' || _token.symbol === 'SFTM';
         },
 
         /**

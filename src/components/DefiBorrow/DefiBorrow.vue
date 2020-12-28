@@ -170,10 +170,7 @@
             </div>
 
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
-                You're adding
-                <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
-                </span>
+                <defi-minting-message :token="dToken" :value="increasedDebt" />
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
                 You're removing
@@ -215,6 +212,7 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import DefiMintingMessage from '@/components/DefiMintingMessage/DefiMintingMessage.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -223,6 +221,7 @@ export default {
     name: 'DefiBorrow',
 
     components: {
+        DefiMintingMessage,
         RatioInfo,
         FPlaceholder,
         FTokenValue,
@@ -432,7 +431,9 @@ export default {
         },
 
         submitDisabled() {
-            return !this.singleToken ? parseFloat(this.currDebt) === parseFloat(this.debt) : !parseFloat(this.currDebt);
+            return !this.singleToken
+                ? parseFloat(this.currDebt) === parseFloat(this.debt) && this.debt === 0
+                : !parseFloat(this.currDebt);
         },
 
         cTokenSymbol() {

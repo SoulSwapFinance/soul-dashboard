@@ -52,6 +52,7 @@
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
                         <router-link
+                            v-if="item.symbol !== 'SFTM'"
                             :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                             class="action"
                             title="Send"
@@ -62,6 +63,7 @@
                 </div>
                 <template v-else>
                     <router-link
+                        v-if="item.symbol !== 'SFTM'"
                         :to="{ name: 'account-send-erc20', params: { token: { ...item } } }"
                         class="action"
                         title="Send"
@@ -80,7 +82,7 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
 import { cloneObject } from '@/utils';
-import appConfig from '../../../../app.config.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 
 export default {
     name: 'WalletAssetsList',
@@ -136,7 +138,12 @@ export default {
                     formatter: (_value, _item) => {
                         const balance = _item._availableBalance;
 
-                        return balance > 0 ? formatNumberByLocale(balance, this.defi.getTokenDecimals(_item)) : 0;
+                        return balance > 0
+                            ? formatNumberByLocale(
+                                  balance,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
@@ -148,7 +155,12 @@ export default {
                     formatter: (_value, _item) => {
                         const collateral = _item._deposited;
 
-                        return collateral > 0 ? formatNumberByLocale(collateral, this.defi.getTokenDecimals(_item)) : 0;
+                        return collateral > 0
+                            ? formatNumberByLocale(
+                                  collateral,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                     // width: '100px',
@@ -160,7 +172,12 @@ export default {
                     formatter: (_value, _item) => {
                         const debt = _item._debt;
 
-                        return debt > 0 ? formatNumberByLocale(debt, this.defi.getTokenDecimals(_item)) : 0;
+                        return debt > 0
+                            ? formatNumberByLocale(
+                                  debt,
+                                  this.defi.getTokenDecimals(_item, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                     css: { textAlign: 'right' },
                 },
@@ -184,10 +201,6 @@ export default {
             this.prepareTokens(value);
 
             this.items = value.filter((_token) => {
-                if (_token.symbol === 'SFTM' && appConfig.disableSFTM) {
-                    return false;
-                }
-
                 return _token._availableBalance > 0 || _token._deposited > 0 || _token._debt > 0;
             });
 

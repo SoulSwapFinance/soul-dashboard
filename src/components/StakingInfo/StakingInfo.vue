@@ -53,7 +53,7 @@
                             </f-placeholder>
                         </div>
                     </div>
-                    <div v-if="!disableSFTM" class="row no-collapse">
+                    <div class="row no-collapse">
                         <div class="col f-row-label">Minted sFTM</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
@@ -227,6 +227,15 @@
                             Even if your pending rewards balance shows 0, go ahead and claim anyway and you’ll receive
                             the correct amount.
                         </f-message>
+
+                        <details>
+                            <summary>Advanced Functions</summary>
+                            <p>
+                                <button class="btn large secondary" @click="claimRewards()">
+                                    Claim Rewards (Unconditioned)
+                                </button>
+                            </p>
+                        </details>
                     </div>
                 </div>
             </div>
@@ -278,7 +287,6 @@ export default {
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
             /** @type {DefiToken} */
             sftmToken: {},
-            disableSFTM: appConfig.disableSFTM,
         };
     },
 
@@ -354,7 +362,6 @@ export default {
                 return false;
             } else {
                 return (
-                    !appConfig.disableSFTM &&
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
@@ -386,7 +393,6 @@ export default {
             }
 
             return (
-                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -399,7 +405,6 @@ export default {
 
         canRepaySFTM() {
             return (
-                !appConfig.disableSFTM &&
                 // this.canUndelegate &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
@@ -411,7 +416,6 @@ export default {
 
         showRepaySFTMMessage() {
             return (
-                !appConfig.disableSFTM &&
                 this.lockedUntil &&
                 this.lockedUntil !== '0x0' &&
                 this._delegation &&

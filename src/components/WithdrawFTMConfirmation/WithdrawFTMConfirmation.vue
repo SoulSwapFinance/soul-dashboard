@@ -5,7 +5,6 @@
             confirmation-comp-name="withdraw-ftm-confirmation"
             send-button-label="Withdraw"
             password-label="Please enter your wallet password to withdraw your FTM"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -48,7 +47,6 @@ import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 
 export default {
@@ -85,7 +83,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.withdraw,
         };
     },
 
@@ -106,8 +103,7 @@ export default {
                 withdrawRequest.withdrawRequestID
                     ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
                     : sfcUtils.withdrawDelegationTx(parseInt(this.stakerId, 16)),
-                this.currentAccount.address,
-                GAS_LIMITS.withdraw
+                this.currentAccount.address
             );
         },
 

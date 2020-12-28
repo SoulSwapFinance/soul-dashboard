@@ -1,5 +1,11 @@
 <template>
     <div class="funiswap-remove-liquidity funiswap">
+        <h1 class="with-back-btn">
+            <f-back-button :route-name="backButtonRoute" />
+            Remove Liquidity
+        </h1>
+        <br />
+
         <f-card>
             <div class="funiswap__box">
                 Amount
@@ -73,19 +79,18 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FUniswapPairLiquidityInfo from '@/components/FUniswapPairLiquidityInfo/FUniswapPairLiquidityInfo.vue';
 import { formatNumberByLocale } from '@/filters.js';
 import { pollingMixin } from '@/mixins/polling.js';
+import { TokenPairs } from '@/utils/token-pairs.js';
+import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
+import { getAppParentNode } from '@/app-structure.js';
 
 export default {
     name: 'FUniswapRemoveLiquidity',
 
-    components: { FUniswapPairLiquidityInfo, FCryptoSymbol, FSlider, FTokenValue, FCard },
+    components: { FBackButton, FUniswapPairLiquidityInfo, FCryptoSymbol, FSlider, FTokenValue, FCard },
 
     mixins: [pollingMixin],
 
     props: {
-        slippageTolerance: {
-            type: Number,
-            default: 0.005,
-        },
         pair: {
             type: Object,
             default() {
@@ -113,7 +118,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'fUniswapSlippageTolerance']),
 
         /**
          * @return {{fromToken: ERC20Token, toToken: ERC20Token}}
@@ -191,13 +196,23 @@ export default {
 
             return dPair.pairAddress ? parseInt(dPair.shareOf, 16) / parseInt(dPair.totalSupply, 16) : 0;
         },
+
+        backButtonRoute() {
+            const parentNode = getAppParentNode('funiswap-add-liquidity');
+
+            return parentNode ? parentNode.route : '';
+        },
     },
 
     watch: {
         currentAccount(_value, _oldValue) {
-            if (_value !== _oldValue) {
+            if (!_oldValue || !_value || _value.address !== _oldValue.address) {
                 this.onAccountPicked();
             }
+        },
+
+        $route() {
+            this.setPairAndTokensByRouteParams();
         },
     },
 
@@ -222,23 +237,11 @@ export default {
     methods: {
         async init() {
             const { $defi } = this;
-            const address = this.currentAccount ? this.currentAccount.address : '';
             const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
             this.pairs = result[0];
 
-            if (!this.dPair.pairAddress && this.pairs.length > 0) {
-                const pair = await this.$defi.fetchUniswapPairs(address, this.pairs[0].pairAddress);
-                this.dPair = pair[0];
-            }
-
-            const uniswapTokens = this.dPair.tokens;
-            if (uniswapTokens && uniswapTokens.length === 2) {
-                this.fromToken = uniswapTokens[0];
-                this.toToken = uniswapTokens[1];
-
-                this.setTokenPrices();
-            }
+            this.setPairAndTokensByRouteParams();
         },
 
         async setTokenPrices() {
@@ -275,6 +278,76 @@ export default {
             }
         },
 
+        setTokensByRouteParams__() {
+            const { params } = this.$route;
+
+            if (params.tokena && params.tokenb) {
+                if (params.tokena !== this.fromToken.address || params.tokenb !== this.toToken.address) {
+                    const pair = TokenPairs.getPairByTokens(this.pairs, [
+                        { address: params.tokena },
+                        { address: params.tokenb },
+                    ]);
+
+                    if (pair.pairAddress) {
+                        this.fromToken = TokenPairs.findPairToken(pair, { address: params.tokena });
+                        this.toToken = TokenPairs.findPairToken(pair, { address: params.tokenb });
+                    } else {
+                        this.toToken = {};
+                        this.fromToken = this.getInitialToken();
+                    }
+
+                    this.setTPrices();
+                    this.resetInputValues();
+                }
+            } else {
+                this.fromToken = this.getInitialToken();
+                this.toToken = {};
+            }
+        },
+
+        async setPairAndTokensByRouteParams() {
+            const { params } = this.$route;
+            const { pairs } = this;
+            const address = this.currentAccount ? this.currentAccount.address : '';
+            let pair = null;
+
+            if (pairs.length === 0) {
+                return;
+            }
+
+            if (params.tokena && params.tokenb) {
+                // pair = await this.$defi.fetchUniswapPairs(address, '', [params.tokena, params.tokenb]);
+                pair = TokenPairs.getPairByTokens(pairs, [{ address: params.tokena }, { address: params.tokena }]);
+            } else {
+                pair = pairs[0];
+            }
+
+            if (pair) {
+                pair = await this.$defi.fetchUniswapPairs(address, pair.pairAddress, [
+                    pair.tokens[0].address,
+                    pair.tokens[1].address,
+                ]);
+
+                if (pair) {
+                    this.dPair = pair;
+
+                    if (pair.tokens) {
+                        if (params.tokena && params.tokenb) {
+                            this.fromToken = TokenPairs.findPairToken(pair, { address: params.tokena });
+                            this.toToken = TokenPairs.findPairToken(pair, { address: params.tokenb });
+                        } else {
+                            this.fromToken = pair.tokens[0];
+                            this.toToken = pair.tokens[1];
+                        }
+
+                        console.log(this.fromToken, this.toToken);
+
+                        this.setTokenPrices();
+                    }
+                }
+            }
+        },
+
         convertFrom2To(_value) {
             const { fromToken } = this;
 
@@ -300,7 +373,7 @@ export default {
             const params = {
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
-                slippageTolerance: this.slippageTolerance,
+                slippageTolerance: this.fUniswapSlippageTolerance,
                 fromTokenLiquidity: this.fromTokenLiquidity,
                 toTokenLiquidity: this.toTokenLiquidity,
                 pair: { ...this.dPair },

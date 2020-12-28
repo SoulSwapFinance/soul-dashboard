@@ -6,11 +6,81 @@
             </div>
 
             <div class="row">
+                <div class="col">
+                    <h2>Metamask</h2>
+                    <div>
+                        <!--                        <button class="btn" @click="getAccounts">Get accounts</button>-->
+                        <h3>Accounts:</h3>
+                        <div>{{ metAccounts }}</div>
+                        <button class="btn" @click="requestAccounts">Request accounts</button>
+                        <button class="btn" @click="metamaskTest">Test</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Add tmp account</h2>
+                    <div>
+                        <input v-model="tmpAccount" type="text" class="inp" style="width: 440px;" />
+                        <button class="btn" @click="addTmpAccount">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Transaction success message - success</h2>
+                    <div>
+                        <transaction-success-message
+                            tx="0x8c77b13239ccabcdaf05cadf36b698273523947eab583d7df424744ff2632392"
+                            continue-to="blabla"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Transaction success message - error</h2>
+                    <div>
+                        <transaction-success-message
+                            tx="0xfe2c9b9c10287872137c8172a1948819dcc45da815184484138c2915bf4bae8b"
+                            continue-to="blabla"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Address picker</h2>
+                    <div>
+                        <button class="btn" @click="pickAddress">Pick address</button>
+                        <br />
+                        Picked address: {{ pickedAddress }}
+                    </div>
+
+                    <address-picker-window ref="pickAddressWindow" @address-picked="pickedAddress = $event" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h2>Address field</h2>
+                    <div>
+                        <address-field label="Send To" field-size="large" name="secondaryPwd" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col"><h2>Web3</h2></div>
             </div>
             <div class="row">
                 <div class="col">
                     <button @click="onTest">Test</button>
+                    <button @click="prevody">Prevody</button>
                     <button @click="onVuexPersist">Vuex persist</button>
                     token price {{ $store.state.tokenPrice }}
                 </div>
@@ -106,18 +176,145 @@
 <script>
 import FCard from '../components/core/FCard/FCard.vue';
 import { SET_TOKEN_PRICE } from '../store/mutations.type.js';
+import AddressPickerWindow from '../components/windows/AddressPickerWindow/AddressPickerWindow.vue';
+import AddressField from '../components/AddressField/AddressField.vue';
+import TransactionSuccessMessage from '../components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import { Web3 } from '@/plugins/fantom-web3-wallet.js';
+import { ADD_ACCOUNT } from '@/store/actions.type.js';
+// import { TokenPairs } from '@/utils/token-pairs.js';
+
 export default {
     components: {
+        TransactionSuccessMessage,
+        AddressField,
+        AddressPickerWindow,
         FCard,
     },
 
+    data() {
+        return {
+            pickedAddress: '',
+            tmpAccount: '',
+            metAccounts: [],
+        };
+    },
+
+    mounted() {
+        // this.initMetamask();
+        // this.testGetPairTokens();
+    },
+
     methods: {
+        /*
+        testGetPairTokens() {
+            const pairs = [
+                { pairAddress: 'P1', tokens: [{ address: 'A' }, { address: 'B' }] },
+                { pairAddress: 'P2', tokens: [{ address: 'A' }, { address: 'C' }] },
+                { pairAddress: 'P3', tokens: [{ address: 'B' }, { address: 'D' }] },
+                { pairAddress: 'P4', tokens: [{ address: 'B' }, { address: 'E' }] },
+                { pairAddress: 'P5', tokens: [{ address: 'C' }, { address: 'F' }] },
+            ];
+            const token = { address: 'B' };
+            /!*
+            console.log(
+                TokenPairs.getAddresses(TokenPairs.getTokensFromPairs(TokenPairs.getTokenPairs(pairs, token), token))
+            );
+            console.log('--- getPairByTokens() ---');
+            console.log(TokenPairs.getPairByTokens(pairs, [{ address: 'D' }, { address: 'B' }]));
+            console.log(TokenPairs.getPairByTokens(pairs, [{ address: 'B' }, { address: 'D' }]));
+            *!/
+            console.log('--- paths ---');
+            console.log(TokenPairs.getDirectPaths(pairs, token));
+            console.log(TokenPairs.getPaths(pairs, token));
+        },
+*/
+
+        async getAccounts() {
+            this.metAccounts = await this.$metamask.getAccounts();
+            setTimeout(() => {
+                console.log('!!!', this.$metamask._web3.eth.accounts[0], this.$metamask._web3.eth.accounts.wallet);
+            }, 2000);
+        },
+
+        async requestAccounts() {
+            this.metAccounts = await this.$metamask.requestAccounts();
+        },
+
+        metamaskTest() {
+            this.$metamask.tmpTest();
+        },
+
+        async initMetamask() {
+            await this.$metamask.init();
+
+            console.log('az ted');
+            this.getAccounts();
+        },
+
+        addTmpAccount() {
+            this.$store.dispatch(ADD_ACCOUNT, { address: this.tmpAccount });
+        },
+
+        pickAddress() {
+            this.$refs.pickAddressWindow.show();
+        },
+
         clickMe: function () {
             alert('jo');
         },
 
         onVuexPersist() {
             this.$store.commit(SET_TOKEN_PRICE, 0);
+        },
+
+        prevody() {
+            // TMP
+            /*
+            const bla = '28102295766007700440022';
+            console.log(
+                this.token,
+                parseInt(this.token.price, 16),
+                bla,
+                this.tokenPrice,
+                this.collateral,
+                (this.tokenPrice * this.collateral) / 3
+            );
+*/
+            const debt = this.$fWallet.toBN('0x54b40b1f852bd977480'); // 18
+            const minColl = this.$fWallet.toBN('0x7530'); // 4
+            const price = this.$fWallet.toBN('0x19cd78'); // 8
+            console.log(debt.toString(), minColl.toString(), price.toString());
+            console.log(
+                debt.mul(price).div(minColl).toString(),
+                this.$defi.shiftDecPointLeft(debt.mul(price).div(minColl), 18 + 8 - 4),
+                parseFloat(this.$defi.shiftDecPointLeft(debt.mul(price).div(minColl), 18 + 8 - 4))
+            );
+            console.log(this.tokens);
+
+            const tmp = '100.041218521513198896';
+            console.log('tmp', tmp);
+            console.log(this.$defi.shiftDecPointRight(tmp, 18));
+            console.log(this.$defi.shiftDecPointRight('123', 2));
+            console.log(this.$defi.shiftDecPointRight('123.456', 2));
+            console.log(this.$defi.shiftDecPointRight('123.456', 3));
+            console.log(this.$defi.shiftDecPointRight('123.456', 5));
+            console.log(this.$defi.shiftDecPointRight('0.0005', 5));
+            console.log(this.$defi.shiftDecPointRight(8.965e-15, 18));
+
+            /*
+            console.log(
+                df,
+                df.toString(16),
+                this.$defi.shiftDecPointLeft(
+                    Web3.utils.hexToNumberString('0x' + this.$defi.shiftDecPointRight(df.toString(16), 18)),
+                    18
+                )
+            );
+*/
+            console.log(Web3.utils.hexToNumber('0x0'));
+
+            // prepocet:
+            // chci napr. A (e12) x Price (e5) a vysledek je v e7, tak pak e12 + e5 - e7 = e10
         },
 
         onTest() {

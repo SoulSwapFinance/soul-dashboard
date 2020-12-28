@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
-import appConfig from '../../../app.config.js';
 import { TokenPairs } from '@/utils/token-pairs.js';
 
 /** @type {BNBridgeExchange} */
@@ -102,11 +101,13 @@ export class DeFi {
         this.fusdToken = _tokens.find((_item) => _item.symbol === 'FUSD');
         this.ftmToken = _tokens.find((_item) => _item.symbol === 'FTM');
 
+        /*
         if (isObjectEmpty(this.tokenDecimals)) {
             this.tokens.forEach((_token) => {
                 this._setTokenDecimals(_token);
             });
         }
+        */
     }
 
     /**
@@ -134,10 +135,23 @@ export class DeFi {
 
     /**
      * @param {DefiToken} _token
+     * @param {number} _default
      * @return {number}
      */
-    getTokenDecimals(_token) {
-        return this.tokenDecimals[_token.symbol] || 6;
+    getTokenDecimals(_token, _default = 6) {
+        const tokenPrice = this.getTokenPrice(_token);
+        let decimals = _default;
+
+        if (tokenPrice < 0.5 && tokenPrice > 0) {
+            decimals = 1;
+        } else if (tokenPrice < 100) {
+            decimals = 2;
+        } else if (tokenPrice < 1000) {
+            decimals = 5;
+        }
+
+        return decimals;
+        // return this.tokenDecimals[_token.symbol] || _default;
     }
 
     /**
@@ -651,36 +665,21 @@ export class DeFi {
      */
     async fetchSettings() {
         const data = await this.apolloClient.query({
-            query: !appConfig.disableSFTM
-                ? gql`
-                      query DefiSettings {
-                          defiConfiguration {
-                              mintFee4
-                              rewardCollateralRatio4
-                              minCollateralRatio4
-                              uniswapCoreFactory
-                              uniswapRouter
-                              fMintContract
-                              fMintRewardDistribution
-                              decimals
-                              StakeTokenizerContract
-                          }
-                      }
-                  `
-                : gql`
-                      query DefiSettings {
-                          defiConfiguration {
-                              mintFee4
-                              rewardCollateralRatio4
-                              minCollateralRatio4
-                              uniswapCoreFactory
-                              uniswapRouter
-                              fMintContract
-                              fMintRewardDistribution
-                              decimals
-                          }
-                      }
-                  `,
+            query: gql`
+                query DefiSettings {
+                    defiConfiguration {
+                        mintFee4
+                        rewardCollateralRatio4
+                        minCollateralRatio4
+                        uniswapCoreFactory
+                        uniswapRouter
+                        fMintContract
+                        fMintRewardDistribution
+                        decimals
+                        StakeTokenizerContract
+                    }
+                }
+            `,
             fetchPolicy: 'network-only',
         });
 
@@ -1190,6 +1189,50 @@ export class DeFi {
         }
 
         return defiUniswapPairs;
+    }
+
+    /**
+     * @param {string} _userAddress
+     * @return {Promise<UniswapPair[]>}
+     */
+    async fetchUniswapPairsWithShare(_userAddress) {
+        const query = {
+            query: gql`
+                query GetUniswapPairs($user: Address!) {
+                    defiUniswapPairs {
+                        pairAddress
+                        shareOf(user: $user)
+                    }
+                }
+            `,
+            variables: {
+                user: _userAddress,
+            },
+        };
+        const data = await fFetch.fetchGQLQuery(query, 'defiUniswapPairs');
+
+        return data.data.defiUniswapPairs || [];
+    }
+
+    /**
+     * @param {string} _userAddress
+     * @param {UniswapPair[]} _pairs
+     */
+    async getUniswapPairsWithShare(_userAddress, _pairs) {
+        const shares = await this.fetchUniswapPairsWithShare(_userAddress);
+        const pairs = cloneObject(_pairs);
+
+        if (shares) {
+            shares.forEach((_pair) => {
+                const pair = pairs.find((_p) => _p.pairAddress === _pair.pairAddress);
+
+                if (pair) {
+                    pair.shareOf = _pair.shareOf;
+                }
+            });
+        }
+
+        return pairs;
     }
 
     async tmpSetTestPairs(_pairs, _address) {

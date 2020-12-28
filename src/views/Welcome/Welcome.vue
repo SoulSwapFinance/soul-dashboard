@@ -1,7 +1,7 @@
 <template>
     <div class="welcome-view">
         <div class="intro">
-            <h1>Welcome to Fantom PWA Wallet</h1>
+            <h1>Welcome to Fantom fWallet</h1>
             <h2>Send, receive and stake your Opera FTM</h2>
         </div>
 
