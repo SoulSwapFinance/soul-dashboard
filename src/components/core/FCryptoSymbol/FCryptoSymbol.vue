@@ -2,9 +2,14 @@
     <div class="f-crypto-symbol">
         <span class="img" :style="{ width: imgWidth, height: imgHeight }">
             <icon v-if="svgIcon" :data="svgIcon" original />
-            <img v-else-if="token.logoUrl" :src="token.logoUrl" class="not-fluid" :alt="$defi.getTokenSymbol(token)" />
+            <img
+                v-else-if="token.logoUrl || token.logoURL"
+                :src="token.logoUrl || token.logoURL"
+                class="not-fluid"
+                :alt="$defi.getTokenSymbol(token)"
+            />
         </span>
-        <span>{{ $defi.getTokenSymbol(token) }}</span>
+        <span v-if="!noSymbol">{{ $defi.getTokenSymbol(token) }}</span>
     </div>
 </template>
 
@@ -29,6 +34,11 @@ export default {
             },
             required: true,
         },
+        /** Hide symbol (text). */
+        noSymbol: {
+            type: Boolean,
+            default: false,
+        },
         imgWidth: {
             type: String,
             default: '40px',
@@ -41,7 +51,7 @@ export default {
 
     data() {
         return {
-            logoUrl: this.token ? this.token.logoUrl : '',
+            logoUrl: this.token ? this.token.logoUrl || this.token.logoURL : '',
         };
     },
 

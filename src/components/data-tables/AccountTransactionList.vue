@@ -61,13 +61,13 @@
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col-7">
                             <a :href="`${explorerUrl}address/${value}`" target="_blank">
-                                <f-ellipsis :text="value" overflow="middle" />
+                                <f-ellipsis :text="value || ''" overflow="middle" />
                             </a>
                         </div>
                     </div>
                     <template v-else>
                         <a :href="`${explorerUrl}address/${value}`" target="_blank">
-                            <f-ellipsis :text="value" overflow="middle" />
+                            <f-ellipsis :text="value || ''" overflow="middle" />
                         </a>
                     </template>
                 </template>

@@ -5,9 +5,9 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -25,11 +25,11 @@
                 <template v-if="params.step === 1">
                     You’re allowing
                     <span class="price">
-                        {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                        {{ allowValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
                     </span>
                 </template>
                 <template v-else>
-                    You're trading
+                    You're trading expected
                     <span class="price">
                         {{ params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
                     </span>
@@ -38,10 +38,18 @@
                         {{ params.toValue.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
                     </span>
                     <br /><br />
-                    Minimum received
-                    <span class="price">
-                        {{ minimumReceived.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
-                    </span>
+                    <template v-if="minimumReceived > 0">
+                        Minimum Received
+                        <span class="price">
+                            {{ minimumReceived.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
+                        </span>
+                    </template>
+                    <template v-else>
+                        Maximum Spent
+                        <span class="price">
+                            {{ maximumSold.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
+                        </span>
+                    </template>
                 </template>
             </div>
 
@@ -58,7 +66,6 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -68,6 +75,7 @@ import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import Web3 from 'web3';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapSwapConfirmation',
@@ -84,12 +92,14 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-swap',
             confirmationCompName: 'funiswap-swap',
             priceDecimals: 6,
             tx: {},
-            gasLimit: GAS_LIMITS.default,
             minimumReceived: 0,
+            maximumSold: 0,
+            allowValue: 0,
+            tmpPwdCode: '',
         };
     },
 
@@ -170,8 +180,6 @@ export default {
 
     methods: {
         async setTx() {
-            let { contractAddress } = this;
-
             const { params } = this;
             const { $defi } = this;
             const { fromToken } = params;
@@ -179,67 +187,92 @@ export default {
             let txToSign;
             const web3 = new Web3();
             const { slippageTolerance } = params;
+            let amounts;
 
             if (!fromToken || !toToken) {
                 return;
             }
 
-            if (!contractAddress) {
-                contractAddress = this.$defi.contracts.fMint;
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
             }
 
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
+            }
+
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (params.step === 1) {
+                this.allowValue =
+                    params.maximumSold > 0 ? params.fromValue * (1 + slippageTolerance) : params.fromValue;
+                console.log(params.fromValue, this.allowValue);
+
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
                     fromToken.address,
-                    this.$defi.contracts.uniswapRouter,
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals))
+                    $defi.contracts.uniswapRouter,
+                    params.max && !params.maximumSold
+                        ? fromToken.balanceOf || fromToken.availableBalance
+                        : Web3.utils.toHex($defi.shiftDecPointRight(this.allowValue.toString(), fromToken.decimals))
                     // Web3.utils.toHex(this.$defi.shiftDecPointRight((fromValue * 1.05).toString(), fromToken.decimals))
                 );
             } else {
                 // console.log(fromToken, toToken, params.toValue);
-                let amounts = await this.$defi.fetchUniswapAmountsOut(
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
-                    [fromToken.address, toToken.address]
-                );
+                if (params.minimumReceived > 0) {
+                    amounts = await $defi.fetchUniswapAmountsOut(
+                        params.max
+                            ? fromToken.balanceOf || fromToken.availableBalance
+                            : Web3.utils.toHex(
+                                  this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)
+                              ),
+                        [fromToken.address, toToken.address]
+                    );
 
-                // apply slippage tolerance
-                amounts = [$defi.fromTokenValue(amounts[0], fromToken), $defi.fromTokenValue(amounts[1], toToken)];
-                amounts = amounts.map((_item) => _item * (1 - slippageTolerance));
+                    // apply slippage tolerance
+                    amounts[1] = $defi.fromTokenValue(amounts[1], toToken);
+                    amounts[1] *= 1 - slippageTolerance;
 
-                this.minimumReceived = amounts[1];
+                    this.minimumReceived = amounts[1];
 
-                amounts = [
-                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals)),
-                    Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals)),
-                ];
+                    amounts[1] = Web3.utils.toHex($defi.shiftDecPointRight(amounts[1].toString(), toToken.decimals));
 
-                txToSign = uniswapUtils.uniswapExactTokensForTokens(
-                    web3,
-                    this.$defi.contracts.uniswapRouter,
-                    amounts[0],
-                    amounts[1],
-                    /*
-                    Web3.utils.toHex(this.$defi.shiftDecPointRight(params.fromValue.toString(), fromToken.decimals)),
-                    // slippage 0.5%
-                    Web3.utils.toHex(
-                        this.$defi.shiftDecPointRight(
-                            (params.toValue * (1 - slippageTolerance)).toString(),
-                            toToken.decimals
-                        )
-                    ),
-                    */
-                    [fromToken.address, toToken.address],
-                    this.currentAccount.address,
-                    (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
-                );
+                    txToSign = uniswapUtils.uniswapExactTokensForTokens(
+                        web3,
+                        $defi.contracts.uniswapRouter,
+                        amounts[0],
+                        amounts[1],
+                        [fromToken.address, toToken.address],
+                        this.currentAccount.address,
+                        (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
+                    );
+                } else {
+                    amounts = await $defi.fetchUniswapAmountsIn(
+                        Web3.utils.toHex($defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals)),
+                        [fromToken.address, toToken.address]
+                    );
+
+                    // apply slippage tolerance
+                    amounts[0] = [$defi.fromTokenValue(amounts[0], fromToken)];
+                    amounts[0] *= 1 + slippageTolerance;
+
+                    this.maximumSold = amounts[0];
+
+                    amounts[0] = Web3.utils.toHex($defi.shiftDecPointRight(amounts[0].toString(), fromToken.decimals));
+
+                    txToSign = uniswapUtils.uniswapTokensForExactTokens(
+                        web3,
+                        $defi.contracts.uniswapRouter,
+                        amounts[1],
+                        amounts[0],
+                        [fromToken.address, toToken.address],
+                        this.currentAccount.address,
+                        (Math.floor(new Date().getTime() / 1000) + 20 * 60).toString()
+                    );
+                }
             }
 
             if (txToSign) {
-                this.tx = await this.$fWallet.getDefiTransactionToSign(
-                    txToSign,
-                    this.currentAccount.address,
-                    GAS_LIMITS.uniswap
-                );
+                this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
             }
         },
 
@@ -253,7 +286,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -291,6 +324,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });

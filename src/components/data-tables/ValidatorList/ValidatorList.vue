@@ -71,7 +71,7 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col break-word align-center select-validator-mv">
                             <button
-                                :disabled="item.isOffline || item.isCheater"
+                                :disabled="item.isOffline || item.isCheater || item.alreadyDelegated"
                                 class="btn select-btn"
                                 :data-validator-id="value"
                             >

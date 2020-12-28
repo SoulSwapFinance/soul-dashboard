@@ -151,6 +151,18 @@
         }
     }
 
+    .funiswap-menu {
+        --f-simple-navigation-link-color: #fff;
+        --f-simple-navigation-link-hover-color: #fff;
+
+        color: #fff;
+        border-bottom-color: var(--f-darker-color-2);
+
+        a, a:visited {
+            --f-link-color: #fff;
+        }
+    }
+
     .view-defi-ftrade {
         --f-view-defi-ftrade-swap-btn-border-color: var(--f-darker-color-3);
     }
@@ -162,10 +174,6 @@
 
     .view-not-found {
         --view-not-found-background-color: var(--f-darker-color-2);
-    }
-
-    .funiswap-home-tabs {
-        --f-funiswap-home-tabs-focus-background-color: var(--f-darker-color-3);
     }
 
     .blockchain-picker {

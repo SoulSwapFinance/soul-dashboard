@@ -27,7 +27,8 @@
                             :id="`text-input-${id}`"
                             ref="fromInput"
                             :value="fromInputValue === 0 ? '' : fromInputValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
                             placeholder="0"
                             step="any"
                             min="0"
@@ -66,10 +67,11 @@
                     <div ref="toSign" class="sign">+</div>
                     <f-auto-resize-input ref="toARInput" min-width="48px">
                         <input
-                            :id="`text-input-${id}`"
+                            :id="`text-input-${id}-2`"
                             ref="toInput"
                             :value="toInputValue === 0 ? '' : toInputValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
                             placeholder="0"
                             step="any"
                             min="0"
@@ -251,8 +253,7 @@ export default {
 
         fromTokenBalance() {
             const { fromToken } = this;
-            let balance =
-                this.$defi.fromTokenValue(fromToken.availableBalance, fromToken) - (fromToken.symbol === 'FTM' ? 2 : 0);
+            let balance = this.$defi.fromTokenValue(fromToken.availableBalance, fromToken);
 
             if (balance < 0) {
                 balance = 0;
@@ -270,16 +271,27 @@ export default {
         },
 
         maxFromInputValue() {
+            const fromTokenSymbol = this.fromToken.symbol;
             let max = 0;
 
-            if (this.fromToken.symbol === 'FUSD') {
+            if (fromTokenSymbol === 'FUSD') {
                 // subtract 0.5% fee
                 max = this.fromTokenBalance - this.fromTokenBalance * 0.005;
             } else {
                 max = this.fromTokenBalance;
             }
 
-            return max - max * this.defiSlippageReserve;
+            if (fromTokenSymbol === 'FTM') {
+                max -= 2;
+            }
+
+            max -= max * this.defiSlippageReserve;
+
+            if (max < 0) {
+                max = 0;
+            }
+
+            return max;
         },
 
         maxToInputValue() {
@@ -339,31 +351,29 @@ export default {
 
             this.fMintAccount = result[0];
 
-            if ($defi.tmpWFTM) {
-                const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
+            const wFTM = result[1].filter((_token) => _token && _token.canWrapFTM);
 
-                const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
-                const ftmToken = {
-                    address: '0xfc00face00000000000000000000000000000000',
-                    symbol: 'FTM',
-                    name: 'Fantom',
-                    isActive: true,
-                    decimals: 18,
-                    price: wFTM[0].price,
-                    priceDecimals: wFTM[0].priceDecimals,
-                    availableBalance: account.balance,
-                    allowance: '0x0',
-                    logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
-                };
-                this.$defi._setTokenDecimals(ftmToken);
+            const account = await this.$fWallet.getBalance(this.currentAccount.address, false, true);
+            const ftmToken = {
+                address: '0xfc00face00000000000000000000000000000000',
+                symbol: 'FTM',
+                name: 'Fantom',
+                isActive: true,
+                decimals: 18,
+                price: wFTM[0].price,
+                priceDecimals: wFTM[0].priceDecimals,
+                availableBalance: account.balance,
+                allowance: '0x0',
+                logoUrl: 'https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=003',
+            };
+            this.$defi._setTokenDecimals(ftmToken);
 
-                // add FTM
-                result[1].unshift(ftmToken);
+            // add FTM
+            result[1].unshift(ftmToken);
 
-                this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
-            } else {
-                this.tokens = result[1].filter($defi.canTokenBeTraded);
-            }
+            this.tokens = result[1].filter((_token) => _token && (_token.symbol === 'FTM' || _token.canWrapFTM));
+
+            // this.tokens = result[1].filter($defi.canTokenBeTraded);
 
             if (params.fromToken && params.toToken) {
                 this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);

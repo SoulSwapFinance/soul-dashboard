@@ -3,14 +3,17 @@
         <f-card>
             <div class="funiswap__box">
                 <div class="funiswap__token__balance">
-                    <span>From</span>
+                    <span>
+                        From <template v-if="showFromEstimated">(estimated)</template>
+                        <!--<pulse-loader color="#1969ff" size="10px" :loading="fromValueLoading"></pulse-loader>-->
+                    </span>
                     <span class="balance">
                         Balance:
                         <f-token-value
                             :token="fromToken"
                             :value="fromTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -21,14 +24,12 @@
                         <input
                             :id="`text-input-${id}`"
                             ref="fromInput"
-                            v-model="fromValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
                             placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxFromInputValue"
                             class="text-input no-style"
-                            @change="onFromInputChange"
+                            @input="onFromInput"
                             @keydown="onInputKeydown"
                         />
                     </span>
@@ -52,14 +53,17 @@
 
             <div class="funiswap__box">
                 <div class="funiswap__token__balance">
-                    <span>To</span>
+                    <span>
+                        To <template v-if="showToEstimated">(estimated)</template>
+                        <!--<pulse-loader color="#1969ff" size="10px" :loading="toValueLoading"></pulse-loader>-->
+                    </span>
                     <span class="balance">
                         Balance:
                         <f-token-value
                             :token="toToken"
                             :value="toTokenBalance"
                             :use-placeholder="false"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                             no-currency
                         />
                     </span>
@@ -68,16 +72,14 @@
                     <div class="funiswap__token__sign">+</div>
                     <span>
                         <input
-                            :id="`text-input-${id}`"
+                            :id="`text-input-${id}-2`"
                             ref="toInput"
-                            v-model="toValue"
-                            type="number"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
                             placeholder="0"
-                            step="any"
-                            min="0"
-                            :max="maxFromInputValue"
                             class="text-input no-style"
-                            @change="onToInputChange"
+                            @input="onToInput"
                             @keydown="onInputKeydown"
                         />
                     </span>
@@ -101,18 +103,27 @@
                 </div>
             </div>
 
-            <div v-show="toToken.address" class="funiswap-swap__exchange-price">
-                <div class="defi-label">Price</div>
-                <div class="value">
-                    <f-token-value :value="1" :token="fromToken" :decimals="0" />
-                    =
-                    <f-token-value :value="convertFrom2To(1)" :token="toToken" :add-decimals="addDeciamals" />
-                    <br />
-                    <f-token-value :value="1" :token="toToken" :decimals="0" />
-                    =
-                    <f-token-value :value="convertTo2From(1)" :token="fromToken" :add-decimals="addDeciamals" />
+            <template v-if="showPriceInfo">
+                <div class="funiswap-swap__exchange-price">
+                    <div class="funiswap-swap__exchange-price__row">
+                        <div class="defi-label">Price</div>
+                        <div class="value">
+                            <f-placeholder :content-loaded="!!perPrice" replacement-text="000.0000 fUSD per fETH">
+                                {{ perPrice }}
+                            </f-placeholder>
+                        </div>
+                        <div class="swap-price">
+                            <button class="btn light same-size round" @click="swapPerPrice">
+                                <icon data="@/assets/svg/exchange-alt.svg" />
+                            </button>
+                        </div>
+                    </div>
+                    <div class="funiswap-swap__exchange-price__row">
+                        <div class="defi-label">Slippage Tolerance</div>
+                        <div class="value">{{ fUniswapSlippageTolerance * 100 }}%</div>
+                    </div>
                 </div>
-            </div>
+            </template>
 
             <div class="funiswap__submit-cont">
                 <button ref="submitBut" class="btn large" :disabled="submitBtnDisabled" @click="onSubmit">
@@ -125,15 +136,27 @@
             <div v-if="showPriceInfo" class="funiswap__bottom-box">
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
-                        Minimum Received
+                        <template v-if="minimumReceived > 0">Minimum Received</template>
+                        <template v-else>Maximum Sold</template>
                         <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
                             Your transaction will revert if there is a large, unfavorable price movement before it is
                             confirmed.
                         </f-info>
                     </div>
                     <div class="col align-right">
-                        <f-token-value ref="minimumReceived" :value="0" :token="toToken" />
+                        <!--<f-token-value ref="minimumReceived" :value="0" :token="toToken" />-->
+                        <f-token-value v-if="minimumReceived > 0" :value="minimumReceived" :token="toToken" />
+                        <f-token-value v-else :value="maximumSold" :token="fromToken" />
                     </div>
+                </div>
+                <div class="row no-vert-col-padding no-collapse">
+                    <div class="col defi-label">
+                        Price Impact
+                        <f-info window-closeable window-class="light" icon-size="16" class="uniswap-f-info">
+                            The difference between the market price and estimated price due to trade size.
+                        </f-info>
+                    </div>
+                    <div class="col align-right">{{ priceImpact }}</div>
                 </div>
                 <div class="row no-vert-col-padding no-collapse">
                     <div class="col defi-label">
@@ -145,21 +168,25 @@
                     </div>
                     <div class="col align-right">
                         <f-token-value
-                            :value="fromValue * liquidityProviderFee"
+                            :value="fromValue_ * liquidityProviderFee"
                             :token="fromToken"
-                            :add-decimals="addDeciamals"
+                            :add-decimals="addDecimals"
                         />
                     </div>
                 </div>
             </div>
         </transition>
 
-        <defi-token-picker-window
+        <erc20-token-picker-window
             ref="pickFromTokenWindow"
-            :tokens="fromTokens"
-            @defi-token-picked="onFromTokenPicked"
+            :tokens="tokenPickerTokens"
+            @erc20-token-picked="onFromTokenPicked"
         />
-        <defi-token-picker-window ref="pickToTokenWindow" :tokens="toTokens" @defi-token-picked="onToTokenPicked" />
+        <erc20-token-picker-window
+            ref="pickToTokenWindow"
+            :tokens="tokenPickerTokens"
+            @erc20-token-picked="onToTokenPicked"
+        />
     </div>
 </template>
 
@@ -167,34 +194,31 @@
 import { mapGetters } from 'vuex';
 import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
-import DefiTokenPickerWindow from '../../components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
-import { debounce, defer, getUniqueId } from '../../utils';
+import { cloneObject, debounce, defer, getUniqueId } from '../../utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import Web3 from 'web3';
 import { pollingMixin } from '@/mixins/polling.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { TokenPairs } from '@/utils/token-pairs.js';
+import Erc20TokenPickerWindow from '@/components/windows/Erc20TokenPickerWindow/Erc20TokenPickerWindow.vue';
+// import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 export default {
     name: 'FUniswapSwap',
 
     components: {
+        Erc20TokenPickerWindow,
+        FPlaceholder,
         FInfo,
         FCard,
         FTokenValue,
-        DefiTokenPickerWindow,
         FSelectButton,
         FCryptoSymbol,
     },
 
     mixins: [pollingMixin],
-
-    props: {
-        slippageTolerance: {
-            type: Number,
-            default: 0.005,
-        },
-    },
 
     data() {
         return {
@@ -202,25 +226,36 @@ export default {
             toValue: '',
             fromValue_: 0,
             toValue_: 0,
+            toTokenPrice: 0,
+            fromTokenPrice: 0,
+            minimumReceived: 0,
+            maximumSold: 0,
+            // perPrice: 0,
+            /** Per price direction. true - from -> to, false - to -> from */
+            perPriceDirF2T: true,
             submitBtnDisabled: true,
-            showPriceInfo: false,
-            /** @type {DefiToken} */
+            fromValueLoading: false,
+            toValueLoading: false,
+            priceImpact: '0%',
+            /** @type {ERC20Token} */
             fromToken: {},
-            /** @type {DefiToken} */
+            /** @type {ERC20Token} */
             toToken: {},
-            /** @type {DefiToken[]} */
-            tokens: [],
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: 0.003,
-            submitLabel: 'Enter an amount',
+            submitLabel: 'Select a token',
+            /** @type {UniswapPair} */
             dPair: {},
-            addDeciamals: 2,
+            /** @type {UniswapPair[]} */
+            pairs: [],
+            tokenPickerTokens: [],
+            addDecimals: 0,
         };
     },
 
     computed: {
-        ...mapGetters(['currentAccount']),
+        ...mapGetters(['currentAccount', 'fUniswapSlippageTolerance']),
 
         /**
          * @return {{fromToken: DefiToken, toToken: DefiToken}}
@@ -235,18 +270,10 @@ export default {
             return this.formatFromInputValue(this.fromValue);
         },
 
-        fromTokens() {
-            return this.getPickerTokens('from');
-        },
-
-        toTokens() {
-            return this.getPickerTokens('to');
-        },
-
         fromTokenBalance() {
             const { fromToken } = this;
-            let balance =
-                this.$defi.fromTokenValue(fromToken.availableBalance, fromToken) - (fromToken.symbol === 'FTM' ? 2 : 0);
+
+            let balance = this.$defi.fromTokenValue(fromToken.balanceOf, fromToken);
 
             if (balance < 0) {
                 balance = 0;
@@ -256,7 +283,17 @@ export default {
         },
 
         toTokenBalance() {
-            return this.$defi.fromTokenValue(this.toToken.availableBalance, this.toToken);
+            const { toToken } = this;
+
+            return this.$defi.fromTokenValue(toToken.balanceOf, toToken);
+        },
+
+        showFromEstimated() {
+            return this.toToken.address && this.toValue_ > 0 && this.maximumSold > 0;
+        },
+
+        showToEstimated() {
+            return this.toToken.address && this.toValue_ > 0 && this.minimumReceived > 0;
         },
 
         maxFromInputValue() {
@@ -272,12 +309,35 @@ export default {
         },
 
         maxToInputValue() {
-            return this.convertFrom2To(this.maxFromInputValue);
-            // return this.$defi.convertTokenValue(this.maxFromInputValue, this.fromToken, this.toToken);
+            return Number.MAX_SAFE_INTEGER;
         },
 
         submitDisabled() {
             return !this.currentAccount || this.correctFromInputValue(this.fromValue_) === 0;
+        },
+
+        showPriceInfo() {
+            return this.toToken.address && this.toValue_ > 0;
+        },
+
+        perPrice() {
+            const fromToken = this.perPriceDirF2T ? this.fromToken : this.toToken;
+            const toToken = this.perPriceDirF2T ? this.toToken : this.fromToken;
+
+            if (!fromToken.address || !toToken.address) {
+                return '';
+            }
+
+            const perPrice = this.perPriceDirF2T ? this.fromTokenPrice : this.toTokenPrice;
+            const { $defi } = this;
+
+            return `${perPrice.toFixed(4)} ${$defi.getTokenSymbol(fromToken)} per ${$defi.getTokenSymbol(toToken)}`;
+        },
+
+        sufficientPairLiquidity() {
+            const { dPair } = this;
+
+            return dPair && dPair.pairAddress && dPair.totalSupply !== '0x0';
         },
     },
 
@@ -286,13 +346,7 @@ export default {
             if (_value !== _oldValue) {
                 this.fromValue_ = !_value ? 0 : parseFloat(_value);
 
-                this.toValue_ = this.convertFrom2To(this.fromValue_);
-
-                this.updateInputColor(this.fromValue_);
-                this.updateInputColor(this.toValue_, true);
-                this.updateSubmitLabel();
-
-                this.setToInputValue(this.correctToInputValue(this.toValue_));
+                this._fromValueChanged();
             }
         },
 
@@ -300,35 +354,33 @@ export default {
             if (_value !== _oldValue) {
                 this.toValue_ = !_value ? 0 : parseFloat(_value);
 
-                this.fromValue_ = this.convertTo2From(this.toValue_);
-
-                this.updateInputColor(this.toValue_, true);
-                this.updateInputColor(this.fromValue_);
-                this.updateSubmitLabel();
-
-                this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
-            }
-        },
-
-        toValue_(_value, _oldValue) {
-            if (_value !== _oldValue) {
-                this._setMinimumReceived();
+                this._toValueChanged();
             }
         },
 
         async fromToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.toToken.address) {
-                    const dPair = await this.getUniswapPair();
+                    const dPair = this.getUniswapPair();
 
                     if (dPair.pairAddress !== this.dPair.pairAddress) {
                         this.dPair = dPair;
-                        this.setTokenPrices();
+                    }
+
+                    // pair not exists
+                    if (!this.dPair.pairAddress) {
+                        this.toToken = {};
                     }
 
                     defer(() => {
                         this.updateSubmitLabel();
                     });
+
+                    this.setRouteParams();
+                }
+
+                if (!_value._loadingBalance) {
+                    this.setTokenBalance(_value, 'from');
                 }
             }
         },
@@ -336,29 +388,29 @@ export default {
         async toToken(_value, _oldValue) {
             if (_value !== _oldValue) {
                 if (_value.address && this.fromToken.address) {
-                    const dPair = await this.getUniswapPair();
+                    const dPair = this.getUniswapPair();
 
                     if (dPair.pairAddress !== this.dPair.pairAddress) {
                         this.dPair = dPair;
-                        this.setTokenPrices();
                     }
 
-                    this.toValue_ = this.convertFrom2To(this.fromValue_);
+                    this.setRouteParams();
+                }
 
-                    this.updateInputColor(this.fromValue_);
-                    this.updateInputColor(this.toValue_, true);
-                    this.updateSubmitLabel();
-
-                    this.setToInputValue(this.correctToInputValue(this.toValue_));
-                    this.setFromInputValue(this.fromValue_);
+                if (!_value._loadingBalance) {
+                    this.setTokenBalance(_value, 'to');
                 }
             }
         },
 
         currentAccount(_value, _oldValue) {
-            if (_value !== _oldValue) {
+            if (!_oldValue || !_value || _value.address !== _oldValue.address) {
                 this.onAccountPicked();
             }
+        },
+
+        $route() {
+            this.setTokensByRouteParams();
         },
     },
 
@@ -369,8 +421,12 @@ export default {
             this.submitLabel = 'Connect Wallet';
         }
 
-        this._setMinimumReceivedDebounced = debounce(() => {
-            this.setMinimumReceived();
+        this._fromValueChangedDebounced = debounce(() => {
+            return this.fromValueChanged();
+        }, 250);
+
+        this._toValueChangedDebounced = debounce(() => {
+            return this.toValueChanged();
         }, 250);
     },
 
@@ -380,98 +436,130 @@ export default {
         this._polling.start(
             'update-funiswap-swap-prices',
             () => {
-                this.setTokenPrices();
+                if (this.showFromEstimated) {
+                    this.toValueChanged();
+                } else if (this.showToEstimated) {
+                    this.fromValueChanged();
+                }
             },
             4000
         );
     },
 
     methods: {
-        _setMinimumReceived() {
-            this._setMinimumReceivedDebounced();
+        _fromValueChanged(_value) {
+            return this._fromValueChangedDebounced(_value);
         },
 
-        async setMinimumReceived() {
-            const { fromToken } = this;
-            const { toToken } = this;
+        _toValueChanged() {
+            return this._toValueChangedDebounced();
+        },
 
-            if (!fromToken.address || !toToken.address || !this.fromValue_) {
-                return 0;
-            }
+        async fromValueChanged() {
+            this.toValueLoading = true;
 
-            let amounts = await this.$defi.fetchUniswapAmountsOut(
-                Web3.utils.toHex(this.$defi.shiftDecPointRight(this.fromValue_.toString(), fromToken.decimals)),
-                [fromToken.address, toToken.address]
-            );
+            this.toValue_ = await this.convertFrom2To(this.fromValue_);
 
-            const eValue = this.$refs.minimumReceived.$el.querySelector('.f-token-value__value');
-            if (eValue) {
-                eValue.textContent = this.$refs.minimumReceived.formatTokenValue(
-                    this.$defi.fromTokenValue(amounts[1], toToken) * (1 - this.slippageTolerance)
-                );
-            }
+            this.setTPrices();
+            this.setMinMaxReceived(true);
+
+            this.updateInputColor(this.fromValue_);
+            this.updateInputColor(this.toValue_, true);
+            this.updateSubmitLabel();
+
+            this.setToInputValue(this.toValue_);
+            // this.setToInputValue(this.correctToInputValue(this.toValue_));
+            this.toValueLoading = false;
+
+            this.setPriceImpact();
+        },
+
+        async toValueChanged() {
+            this.fromValueLoading = true;
+
+            this.fromValue_ = await this.convertTo2From(this.toValue_);
+
+            this.setTPrices();
+            this.setMinMaxReceived();
+
+            this.updateInputColor(this.toValue_, true);
+            this.updateInputColor(this.fromValue_);
+            this.updateSubmitLabel();
+
+            this.setFromInputValue(this.fromValue_);
+
+            this.fromValueLoading = false;
+            // this.setFromInputValue(this.correctFromInputValue(this.fromValue_));
+
+            this.setPriceImpact();
         },
 
         async init() {
             const { $defi } = this;
             const { params } = this;
-            const result = await Promise.all([
-                $defi.fetchTokens(this.currentAccount ? this.currentAccount.address : ''),
-                $defi.init(),
-            ]);
+            const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
-            this.tokens = result[0];
+            this.pairs = result[0];
 
-            // if (params.fromToken && params.toToken) {
-            if (params.fromToken) {
-                this.fromToken = this.tokens.find((_item) => _item.symbol === params.fromToken.symbol);
-                // this.toToken = this.tokens.find((_item) => _item.symbol === params.toToken.symbol);
-            } else if (this.tokens.length >= 2) {
-                this.fromToken = this.tokens[0];
-                // this.toToken = this.tokens[1];
+            if (params.tokena && params.tokenb) {
+                this.setTokensByRouteParams();
+            } else {
+                this.fromToken = this.getInitialToken();
             }
         },
 
-        async getUniswapPair() {
-            const addressA = this.fromToken.address;
-            const addressB = this.toToken.address;
+        /**
+         * @return {ERC20Token|{}}
+         */
+        getInitialToken() {
+            const { params } = this;
+            let fromToken = {};
 
-            if (addressA && addressB) {
-                return await this.$defi.fetchUniswapPairs(this.currentAccount ? this.currentAccount.address : '', '', [
-                    addressA,
-                    addressB,
-                ]);
+            if (this.pairs.length > 0) {
+                const pairs = params.tokena ? TokenPairs.getTokenPairs(this.pairs, params.tokena) : this.pairs;
+
+                if (pairs.length > 0) {
+                    if (params.tokena) {
+                        fromToken = TokenPairs.findToken(pairs[0].tokens, params.tokena);
+                    } else {
+                        fromToken = TokenPairs.findTokenBySymbol(pairs[0].tokens, 'WFTM') || pairs[0].tokens[0];
+                    }
+                }
             }
 
-            return {};
+            return fromToken;
+        },
+
+        getUniswapPair() {
+            return TokenPairs.getPairByTokens(this.pairs, [this.fromToken, this.toToken]) || {};
         },
 
         swapTokens() {
             const hToken = this.fromToken;
-            const hValue = this.fromValue_;
+            // const hValue = this.fromValue_;
 
             this.fromToken = this.toToken;
             this.toToken = hToken;
 
-            this.fromValue = this.correctFromInputValue(this.toValue_) || '';
-            this.toValue = this.correctToInputValue(hValue) || '';
+            this.fromValue = 0;
+            this.toValue = 0;
 
-            this.setFromInputValue(this.fromValue);
-            this.setToInputValue(this.toValue);
+            // this.setFromInputValue('');
+            // this.setToInputValue('');
         },
 
         /**
          * @param {number} _value
          */
         formatToInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDecimals) : '';
         },
 
         /**
          * @param {number} _value
          */
         formatFromInputValue(_value) {
-            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals) : '';
+            return _value !== 0 ? _value.toFixed(this.$defi.getTokenDecimals(this.fromToken) + this.addDecimals) : '';
         },
 
         /**
@@ -491,61 +579,156 @@ export default {
         /**
          * @param {number} _value
          */
-        convertFrom2To(_value) {
+        async convertFrom2To(_value) {
             const { fromToken } = this;
+            const { toToken } = this;
             const value = parseFloat(_value);
 
-            return fromToken && fromToken._perPrice && !isNaN(value)
-                ? value * this.$defi.fromTokenValue(fromToken._perPrice, fromToken)
-                : 0;
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
+                let amounts = await this.$defi.fetchUniswapAmountsOut(
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), fromToken.decimals || 18)),
+                    [fromToken.address, toToken.address]
+                );
+
+                return this.$defi.fromTokenValue(amounts[1], toToken);
+            }
+
+            return 0;
         },
 
         /**
          * @param {number} _value
          */
-        convertTo2From(_value) {
+        async convertTo2From(_value) {
+            const { fromToken } = this;
             const { toToken } = this;
             const value = parseFloat(_value);
 
-            return toToken && toToken._perPrice && !isNaN(value)
-                ? value * this.$defi.fromTokenValue(toToken._perPrice, toToken)
-                : 0;
-        },
+            if (toToken.address && value > 0 && this.sufficientPairLiquidity) {
+                const amounts = await this.$defi.fetchUniswapAmountsIn(
+                    Web3.utils.toHex(this.$defi.shiftDecPointRight(value.toString(), toToken.decimals || 18)),
+                    [fromToken.address, toToken.address]
+                );
 
-        /*
-        convertFrom2To(_value) {
-            return this.$defi.convertTokenValue(_value, this.fromToken, this.toToken);
-        },
-
-        convertTo2From(_value) {
-            return this.$defi.convertTokenValue(_value, this.toToken, this.fromToken);
-        },
-        */
-
-        /**
-         * Get token list for `defi-token-picker-window`.
-         *
-         * @type {('from'|'to')} [_type]
-         * @return {DefiToken[]}
-         */
-        getPickerTokens(_type = 'from') {
-            // const fromTokenAddress = this.fromToken.address;
-            let token = _type === 'from' ? this.fromToken : this.toToken;
-            let fromTokenAddress = token.address;
-
-            // if no 'to' token is selected
-            if (_type === 'to' && !this.toToken.address) {
-                fromTokenAddress = this.fromToken.address;
+                return this.$defi.fromTokenValue(amounts[0], fromToken);
             }
 
-            return this.tokens.map((_item) => {
-                return { ..._item, _disabled: _item.address === fromTokenAddress };
-            });
+            return 0;
+        },
+
+        /**
+         * @param {ERC20Token} _token
+         * @param {('from'|'to')} [_tokenType]
+         */
+        async setTokenBalance(_token, _tokenType = 'from') {
+            const address = this.currentAccount ? this.currentAccount.address : '';
+
+            _token._loadingBalance = true;
+
+            if (address && _token.address) {
+                _token.balanceOf = await this.$defi.fetchERC20TokenAvailableBalance(address, _token.address);
+            }
+
+            if (_tokenType === 'from') {
+                this.fromToken = cloneObject(_token);
+            } else {
+                this.toToken = cloneObject(_token);
+            }
+
+            _token._loadingBalance = false;
+        },
+
+        /**
+         * Get token list for `erc20-token-picker-window`.
+         *
+         * @param {('from'|'to')} [_tokenType]
+         * @return {ERC20Token[]}
+         */
+        getTokenPickerTokens(_tokenType = 'from') {
+            let tokens = [];
+            let token = _tokenType === 'from' ? this.fromToken : this.toToken;
+            let currToken = null;
+            const bothPicked = !!this.fromToken.address && !!this.toToken.address;
+
+            if (token.address && !(bothPicked && token !== this.fromToken)) {
+                tokens = cloneObject(TokenPairs.getTokensFromPairs(TokenPairs.getTokenPairs(this.pairs, token)));
+
+                currToken = TokenPairs.findToken(tokens, token);
+            } else {
+                tokens = cloneObject(TokenPairs.getTokensFromPairs(this.pairs));
+
+                currToken = TokenPairs.findToken(tokens, _tokenType === 'from' ? this.toToken : this.fromToken);
+            }
+
+            // disable current token in list
+            if (currToken) {
+                currToken._disabled = true;
+            }
+
+            return tokens;
+        },
+
+        setRouteParams() {
+            const { fromToken } = this;
+            const { toToken } = this;
+            const { $route } = this;
+
+            if (
+                fromToken.address &&
+                toToken.address &&
+                ($route.params.tokena !== fromToken.address || $route.params.tokenb !== toToken.address)
+            ) {
+                this.$router.push({
+                    name: $route.name,
+                    params: {
+                        tokena: fromToken.address,
+                        tokenb: toToken.address,
+                    },
+                });
+            }
+        },
+
+        setTokensByRouteParams() {
+            const { params } = this.$route;
+
+            if (params.tokena && params.tokenb) {
+                if (params.tokena !== this.fromToken.address || params.tokenb !== this.toToken.address) {
+                    const pair = TokenPairs.getPairByTokens(this.pairs, [
+                        { address: params.tokena },
+                        { address: params.tokenb },
+                    ]);
+
+                    if (pair.pairAddress) {
+                        this.fromToken = TokenPairs.findPairToken(pair, { address: params.tokena });
+                        this.toToken = TokenPairs.findPairToken(pair, { address: params.tokenb });
+                    } else {
+                        this.toToken = {};
+                        this.fromToken = this.getInitialToken();
+                    }
+
+                    this.setTPrices();
+                    this.resetInputValues();
+                }
+            } else {
+                this.fromToken = this.getInitialToken();
+                this.toToken = {};
+            }
         },
 
         resetInputValues() {
+            const { $refs } = this;
+
+            this.fromValue_ = 0;
             this.fromValue = '';
+            if ($refs.fromInput) {
+                $refs.fromInput.value = '';
+            }
+
+            this.toValue_ = 0;
             this.toValue = '';
+            if ($refs.toInput) {
+                $refs.toInput.value = '';
+            }
         },
 
         setFromInputValue(_value) {
@@ -560,36 +743,58 @@ export default {
             });
         },
 
-        async setTokenPrices() {
-            const { fromToken } = this;
-            const { toToken } = this;
+        setMinMaxReceived(_fromValueChanged) {
+            if (_fromValueChanged) {
+                this.minimumReceived = this.toValue_ * (1 - this.fUniswapSlippageTolerance);
+                this.maximumSold = 0;
+            } else {
+                this.maximumSold = this.fromValue_ * (1 + this.fUniswapSlippageTolerance);
+                this.minimumReceived = 0;
+            }
+        },
+
+        setTPrices() {
+            this.toTokenPrice = this.toValue_ / this.fromValue_;
+            this.fromTokenPrice = this.fromValue_ / this.toValue_;
+        },
+
+        async setPriceImpact() {
+            // const tokenPrices = await this.$defi.fetchTokenPrices([this.fromToken.symbol, this.toToken.symbol]);
             const { dPair } = this;
-            let price = '';
+            const address = this.currentAccount ? this.currentAccount.address : '';
 
             if (!dPair.pairAddress) {
                 return;
             }
 
-            if (fromToken.address) {
-                price = await this.$defi.getUniswapTokenPrice(fromToken.address, dPair);
-                if (price && price !== fromToken._perPrice) {
-                    this.fromToken = { ...fromToken, _perPrice: price };
-                }
+            const pair = await this.$defi.fetchUniswapPairs(address, dPair.pairAddress, [
+                this.fromToken.address,
+                this.toToken.address,
+            ]);
+
+            const fromTokenTotal = this.$defi.totalTokenLiquidity(this.fromToken, pair);
+            const toTokenTotal = this.$defi.totalTokenLiquidity(this.toToken, pair);
+            const tokenPrices = [fromTokenTotal / toTokenTotal, toTokenTotal / fromTokenTotal];
+            let p1 = 0;
+            let p2 = 0;
+            let priceImpact = 0;
+
+            if (this.showFromEstimated) {
+                p1 = tokenPrices[0] * this.toValue_;
+                p2 = this.fromTokenPrice * this.toValue_;
+                priceImpact = ((p2 - p1) / p2) * 100;
+            } else if (this.showToEstimated) {
+                p1 = tokenPrices[1] * this.fromValue_;
+                p2 = this.toTokenPrice * this.fromValue_;
+                priceImpact = ((p1 - p2) / p1) * 100;
             }
 
-            if (toToken.address) {
-                price = await this.$defi.getUniswapTokenPrice(toToken.address, dPair);
-                if (price && price !== toToken._perPrice) {
-                    this.toToken = { ...toToken, _perPrice: price };
-                }
-            }
+            this.priceImpact = `${priceImpact.toFixed(2)}%`;
         },
 
-        swapPrice() {
-            this.setFromInputValue(this.fromValue);
-            this.setToInputValue(this.toValue);
-        },
+        updateInputColor() {},
 
+        /*
         updateInputColor(_value, _toInput = false) {
             const cValue = _toInput ? this.correctToInputValue(_value) : this.correctFromInputValue(_value);
             const eInput = _toInput ? this.$refs.toInput : this.$refs.fromInput;
@@ -600,6 +805,7 @@ export default {
                 eInput.classList.remove('invalid');
             }
         },
+        */
 
         updateSubmitLabel() {
             const fromValue = this.fromValue_;
@@ -616,28 +822,39 @@ export default {
                     this.submitLabel = 'Swap';
                     this.submitBtnDisabled = false;
                 }
-            } else if (fromValue && fromValue !== '0') {
+            } else if (!this.toToken.address) {
                 this.submitLabel = 'Select a token';
+            } else if (this.sufficientPairLiquidity === false) {
+                this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
                 this.submitLabel = 'Enter an amount';
             }
 
             // this.$refs.submitBut.innerText = submitLabel;
             // this.$refs.submitBut.disabled = submitBtnDisabled;
+        },
 
-            this.showPriceInfo = !this.submitBtnDisabled;
+        swapPerPrice() {
+            this.perPriceDirF2T = !this.perPriceDirF2T;
         },
 
         onMaxAmountClick() {
-            this.fromValue = this.maxFromInputValue;
-            this.setFromInputValue(this.fromValue);
+            if (this.fromValue_ !== this.maxFromInputValue) {
+                this.fromValue = 0;
+                defer(() => {
+                    this.fromValue = this.maxFromInputValue;
+                    this.setFromInputValue(this.fromValue);
+                });
+            }
         },
 
         onFromTokenSelectorClick() {
+            this.tokenPickerTokens = this.getTokenPickerTokens('to');
             this.$refs.pickFromTokenWindow.show();
         },
 
         onToTokenSelectorClick() {
+            this.tokenPickerTokens = this.getTokenPickerTokens('from');
             this.$refs.pickToTokenWindow.show();
         },
 
@@ -650,6 +867,7 @@ export default {
             } else {
                 this.fromToken = _token;
                 this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
@@ -661,36 +879,24 @@ export default {
                 this.swapTokens();
             } else {
                 this.toToken = _token;
+                // this.fromValueChanged();
+                this.resetInputValues();
+                this.updateSubmitLabel();
             }
         },
 
         /**
          * @param {InputEvent} _event
          */
-        onFromInputChange(_event) {
-            this.fromValue = this.correctFromInputValue(_event.target.value);
-
-            defer(() => {
-                this.setFromInputValue(this.fromValue_);
-            });
+        onFromInput(_event) {
+            this.fromValue = _event.target.value;
         },
 
         /**
          * @param {InputEvent} _event
          */
-        onToInputChange(_event) {
-            const cValue = this.correctToInputValue(_event.target.value);
-            const fromValue = this.convertTo2From(cValue);
-
-            if (fromValue > this.fromTokenBalance) {
-                this.fromValue = this.fromTokenBalance;
-            } else {
-                this.toValue = cValue;
-
-                defer(() => {
-                    this.setToInputValue(this.toValue_);
-                });
-            }
+        onToInput(_event) {
+            this.toValue = _event.target.value;
         },
 
         /**
@@ -712,9 +918,11 @@ export default {
                 toValue: this.toValue_,
                 fromToken: { ...fromToken },
                 toToken: { ...toToken },
-                slippageTolerance: this.slippageTolerance,
+                slippageTolerance: this.fUniswapSlippageTolerance,
                 steps: 2,
                 step: 1,
+                minimumReceived: this.minimumReceived,
+                maximumSold: this.maximumSold,
                 max: this.maxFromInputValue === this.fromValue,
             };
 

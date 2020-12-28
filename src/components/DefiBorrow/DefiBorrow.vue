@@ -44,6 +44,7 @@
                     </div>
                 </div>
 
+                <!--
                 <template v-if="!largeView">
                     <div class="df-data-item smaller">
                         <h3 class="label">Total Deposit</h3>
@@ -52,6 +53,7 @@
                         </div>
                     </div>
                 </template>
+-->
             </div>
             <div class="defi-price-input-col align-center">
                 <div class="defi-price-input">
@@ -76,7 +78,8 @@
                         :value="inputValue"
                         :min="minDebt"
                         :max="maxDebt"
-                        type="number"
+                        type="text"
+                        inputmode="decimal"
                         step="any"
                         class="text-input no-style"
                         @change="onInput"
@@ -144,12 +147,14 @@
                     <div class="value">2.38%</div>
                 </div>
 -->
+                <!--
                 <div class="df-data-item smaller">
                     <h3 class="label">Total Deposit</h3>
                     <div class="value">
                         <f-token-value :token="fusdToken" :value="collateralInFUSD" />
                     </div>
                 </div>
+-->
                 <div v-if="smallView" class="df-data-item smaller">
                     <ratio-info :display-circle="false" :content-loaded="!!tokenPrice" :value="collateralRatio" />
                 </div>
@@ -165,10 +170,7 @@
             </div>
 
             <f-message v-if="increasedDebt > 0" type="info" role="alert" class="big">
-                You're adding
-                <span class="inc-desc-collateral">
-                    <f-token-value :token="dToken" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
-                </span>
+                <defi-minting-message :token="dToken" :value="increasedDebt" />
             </f-message>
             <f-message v-else-if="decreasedDebt > 0" type="info" role="alert" class="big">
                 You're removing
@@ -210,6 +212,7 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import DefiMintingMessage from '@/components/DefiMintingMessage/DefiMintingMessage.vue';
 
 /**
  * Common component for defi mint and repay.
@@ -218,6 +221,7 @@ export default {
     name: 'DefiBorrow',
 
     components: {
+        DefiMintingMessage,
         RatioInfo,
         FPlaceholder,
         FTokenValue,
@@ -240,6 +244,11 @@ export default {
         },
         /** */
         tokenSymbol: {
+            type: String,
+            default: '',
+        },
+        /** */
+        tokenAddress: {
             type: String,
             default: '',
         },
@@ -412,12 +421,9 @@ export default {
         },
 
         fSliderMax() {
-            return this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
-            /*
-            return this.repay && this.availableBalance > 0
-                ? Math.min(this.maxDebt, this.availableBalance)
-                : this.maxDebt;
-            */
+            const maxValue = this.repay ? Math.min(this.maxDebt, this.availableBalance) : this.maxDebt;
+
+            return isNaN(maxValue) || maxValue < 0 ? 0 : maxValue;
         },
 
         inputValue() {
@@ -425,7 +431,9 @@ export default {
         },
 
         submitDisabled() {
-            return !this.singleToken ? parseFloat(this.currDebt) === parseFloat(this.debt) : !parseFloat(this.currDebt);
+            return !this.singleToken
+                ? parseFloat(this.currDebt) === parseFloat(this.debt) && this.debt === 0
+                : !parseFloat(this.currDebt);
         },
 
         cTokenSymbol() {
@@ -514,7 +522,7 @@ export default {
             const tokens = result[1];
 
             this.fMintAccount = result[0];
-            this.wftmToken = tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.wftmToken = tokens.find((_item) => _item.symbol === 'WFTM');
             this.fusdToken = tokens.find((_item) => _item.symbol === 'FUSD');
 
             if (!this.singleToken) {
@@ -523,7 +531,9 @@ export default {
             }
 
             if (this.token === null) {
-                if (this.tokenSymbol) {
+                if (this.tokenAddress) {
+                    this.dToken = tokens.find((_token) => _token.address === this.tokenAddress);
+                } else if (this.tokenSymbol) {
                     this.dToken = tokens.find((_token) => _token.symbol === this.tokenSymbol);
                 } else {
                     // get first token that can be borrowed
@@ -554,6 +564,7 @@ export default {
                 } else if (debtDiff < 0) {
                     this.decreasedDebt = -debtDiff;
                 }
+                ``;
             }
         },
 
@@ -604,7 +615,7 @@ export default {
 
         onDefiTokenPicked(_token) {
             this.dToken = _token;
-            console.log('picked token', _token);
+            this.currDebt = '0';
         },
 
         onMinBtnClick() {

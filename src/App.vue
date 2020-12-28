@@ -19,13 +19,13 @@
             <f-breakpoint value="768px" code="menu-mobile"></f-breakpoint>
             <f-breakpoint value="769px" code="medium"></f-breakpoint>
             <f-breakpoint value="870px" code="account-transaction-list-dt-mobile-view"></f-breakpoint>
+            <f-breakpoint value="890px" code="pairs-list-mobile-view"></f-breakpoint>
             <f-breakpoint value="970px" code="ballot-list-dt-mobile-view"></f-breakpoint>
             <f-breakpoint value="992px" code="large"></f-breakpoint>
             <f-breakpoint value="1100px" code="validator-list-dt-mobile-view"></f-breakpoint>
         </f-breakpoints>
         <f-aria-alert />
         <f-network-status />
-        <temporary-message-window />
         <metamask-account-picker-window ref="metamaskAccountPickerWindow" :metamask-account="dMetamaskAccount" />
     </div>
 </template>
@@ -48,7 +48,6 @@ import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
 import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
-import TemporaryMessageWindow from '@/components/windows/TemporaryMessageWindow/TemporaryMessageWindow.vue';
 import MetamaskAccountPickerWindow from '@/components/windows/MetamaskAccountPickerWindow/MetamaskAccountPickerWindow.vue';
 import { mapGetters } from 'vuex';
 
@@ -57,7 +56,6 @@ export default {
 
     components: {
         MetamaskAccountPickerWindow,
-        TemporaryMessageWindow,
         FNetworkStatus,
         FAriaAlert,
         FBreakpoint,

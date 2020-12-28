@@ -78,6 +78,7 @@ export default {
          */
         leftChars() {
             const { cText } = this;
+            if (!cText) return null;
 
             if (this.fixedCharsPos === 'end') {
                 return cText.substring(0, cText.length - this.fixedCharsCount);
@@ -91,6 +92,7 @@ export default {
          */
         rightChars() {
             const { cText } = this;
+            if (!cText) return null;
 
             if (this.fixedCharsPos === 'end') {
                 return cText.substring(cText.length - this.fixedCharsCount);

@@ -367,7 +367,7 @@ export default {
 
             this.fMintAccount = result[0];
             this.tokens = result[1];
-            this.wftmToken = this.tokens.find((_item) => _item.symbol === ($defi.tmpWFTM ? 'WFTM' : 'FTM'));
+            this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM');
             this.fusdToken = this.tokens.find((_item) => _item.symbol === 'FUSD');
             this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
             this.currDebt = this.debt.toString();

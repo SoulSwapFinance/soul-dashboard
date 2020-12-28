@@ -5,9 +5,9 @@ const path = require('path');
 const appConfig = require('../../app.config.js');
 
 const chromeExtensionManifest = {
-    permissions: ['activeTab', 'declarativeContent', 'storage', 'https://*/'],
+    permissions: ['activeTab', 'tabs', 'declarativeContent', 'storage', 'https://*/'],
     background: {
-        scripts: [`${appConfig.chromeExtension.outputDirBackgroundJs}/background.umd.min.js`],
+        scripts: [`${appConfig.chromeExtension.outputDirBackgroundJs}/background.umd.js`],
         persistent: false,
     },
     content_scripts: [
@@ -31,7 +31,7 @@ const chromeExtensionManifest = {
         '48': 'app/favicon.png',
     },
     browser_action: {
-        default_popup: 'app/index.html',
+        default_popup: 'app/index.html#/eip-select-accounts/popup',
         default_icon: {
             '48': 'app/favicon.png',
         },

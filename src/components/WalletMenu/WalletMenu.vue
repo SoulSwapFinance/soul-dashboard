@@ -18,8 +18,9 @@
             </div>
             <div class="body">
                 <div class="logo">
-                    <router-link to="/">
+                    <router-link to="/" class="logo-link">
                         <icon data="@/assets/svg/fantom.svg" width="40" height="50" />
+                        <span class="wallet-label">fWallet</span>
                     </router-link>
                 </div>
                 <f-simple-navigation :items="navigation" />
@@ -233,7 +234,7 @@ export default {
             this.setMenuItemUrl('walletLink', _account);
             this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
-            this.setMenuItemUrl('fUniswapLink', _account, 'funiswap-home');
+            this.setMenuItemUrl('fUniswapLink', _account, 'funiswap-swap');
             this.setMenuItemUrl('govLink', _account, 'gov-home');
         },
 

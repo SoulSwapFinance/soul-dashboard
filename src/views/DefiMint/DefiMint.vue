@@ -2,20 +2,19 @@
     <div class="view-defi-mint">
         <h1 class="with-back-btn">
             <f-back-button :route-name="backButtonRoute" />
-            Mint fUSD
+            Mint Synths
         </h1>
 
         <h2 class="perex">
-            Mint fUSD with your locked wFTM. You can use fUSD to trade synths, lend it to the liquidity pool to earn
-            interest, and use it as a collateral to borrow synths.
+            Mint synths with your locked collateral.
         </h2>
 
         <defi-borrow
             :token="params.token"
+            :token-symbol="params.tokenSymbol || query.tokenSymbol"
+            :token-address="params.tokenAddress || query.tokenAddress"
             borrow
             mint-repay-mode
-            single-token
-            token-symbol="FUSD"
             on-submit-route="defi-mint-confirmation"
         />
     </div>
@@ -39,6 +38,15 @@ export default {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
+        },
+
+        /**
+         * @return {{token: DefiToken}|{}}
+         */
+        query() {
+            const { $route } = this;
+
+            return $route && $route.query ? $route.query : {};
         },
 
         backButtonRoute() {

@@ -53,6 +53,7 @@ import { WEIToFTM } from '../../utils/transactions.js';
 import FDataTable from '../core/FDataTable/FDataTable.vue';
 import dayjs from 'dayjs';
 import { sortByHex } from '../../utils/array-sorting.js';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'WithdrawRequestList',
@@ -146,8 +147,12 @@ export default {
          * @return {string}
          */
         canNotWithdraw(_timestamp) {
-            const end = dayjs(this.prepareTimestamp(_timestamp)).add(7, 'days');
+            let end = dayjs(this.prepareTimestamp(_timestamp)).add(7, 'days');
             const now = dayjs();
+
+            if (appConfig.useTestnet) {
+                end = dayjs(this.prepareTimestamp(_timestamp)).add(1, 'm');
+            }
 
             if (now.diff(end) < 0) {
                 return end.from(now);

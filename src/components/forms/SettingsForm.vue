@@ -72,11 +72,11 @@
                         </f-input>
 
                         <br />
-                        <f-toggle-button name="night_mode" label="Dark Mode" :checked="darkModeOn" />
+                        <f-dark-mode-switch />
 
                         <p style="padding: 24px 0 32px 0;">
                             <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
-                                How to use Fantom PWA wallet
+                                How to use Fantom fWallet
                             </a>
                         </p>
 
@@ -100,15 +100,15 @@ import FForm from '../core/FForm/FForm.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import appConfig from '../../../app.config.js';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
-import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
 import FInput from '@/components/core/FInput/FInput.vue';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
+import FDarkModeSwitch from '@/components/core/FDarkModeSwitch/FDarkModeSwitch.vue';
 
 export default {
     name: 'SettingsForm',
 
-    components: { FInfo, FMessage, FInput, FToggleButton, SocialMediaLinks, FSelect, FForm, FCard },
+    components: { FDarkModeSwitch, FInfo, FMessage, FInput, SocialMediaLinks, FSelect, FForm, FCard },
 
     data() {
         return {
@@ -221,8 +221,6 @@ export default {
                 */
             } else if (detail.eTarget.name === 'language') {
                 alert('not implemented yet');
-            } else if (detail.eTarget.name === 'night_mode') {
-                appNode.setDarkMode(detail.value === 'on');
             }
         },
 

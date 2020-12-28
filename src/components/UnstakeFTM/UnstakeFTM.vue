@@ -2,11 +2,13 @@
     <div class="unstake-ftm">
         <f-card class="f-card-double-padding f-data-layout">
             <f-form ref="form" center-form @f-form-submit="onFormSubmit">
-                <legend class="h2 align-left cont-with-back-btn">
-                    <span>
-                        Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
-                    </span>
-                    <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
+                <legend class="h2">
+                    <div class="cont-with-back-btn">
+                        <span>
+                            Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                        </span>
+                        <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
+                    </div>
                 </legend>
 
                 <div class="form-body">

@@ -3,6 +3,7 @@ import fileDownload from 'js-file-download';
 import gql from 'graphql-tag';
 import web3utils from 'web3-utils';
 import Accounts from 'web3-eth-accounts';
+import { fFetch } from '@/plugins/ffetch.js';
 import { isArray } from '@/utils';
 
 const bip39 = require('bip39');
@@ -17,21 +18,15 @@ export const FANTOM_CHAIN_ID = 0xfa;
 
 export const GAS_LIMITS = {
     default: '0xabe0',
-    claimRewards: '0x44AA20',
-    pushRewards: '0x30D40',
-    undelegate: '0x44AA20',
-    lockDelegation: '0x30D40',
-    withdraw: '0x44AA20',
-    delegate: '0x30D40',
-    ballot: '0x3D0900',
-    defi: '0xF4240', // 1 000 000
-    uniswap: '0xF4240', // 1 000 000
-    governance: '0xF4240', // 1 000 000
+    max: '0x44AA20', // 4500000
 };
 
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
 // available for withdraw per single request.
-export const SFC_CLAIM_MAX_EPOCHS = 50;
+export const SFC_CLAIM_MAX_EPOCHS = 100;
+
+/** Maximum number of token decimal places to be displayed in tables. */
+export const MAX_TOKEN_DECIMALS_IN_TABLES = 2;
 
 /** @type {FantomWeb3Wallet} */
 export let fWallet = null;
@@ -49,6 +44,7 @@ const pwdO = {
     pwd: '',
     timeout: 0,
     count: 0,
+    code: '',
 };
 
 /**
@@ -62,22 +58,30 @@ class PWDStorage {
     /**
      * @param {string} _pwd
      * @param {number} [_count] Count of usage of the password
+     * @param {string} [_code]
      */
-    set(_pwd = '', _count = 1) {
+    set(_pwd = '', _count = 1, _code = '') {
         pwdO.pwd = _pwd;
         pwdO.count = _count;
+        pwdO.code = _code;
     }
 
     /**
+     * @param {string} _code
      * @return {boolean}
      */
-    isSet() {
+    isSet(_code = '') {
+        if (pwdO.code && pwdO.code !== _code) {
+            this.clear();
+        }
+
         return !!pwdO.pwd;
     }
 
     clear() {
         pwdO.pwd = '';
         pwdO.count = 0;
+        pwdO.code = '';
     }
 
     /**
@@ -175,12 +179,18 @@ export class FantomWeb3Wallet {
      */
     async getBalance(_address, _withDelegations, _justBalance) {
         let query = gql`
-            query AccountByAddress($address: Address!) {
+            query AccountByAddress($address: Address!, $cursor: Cursor) {
                 account(address: $address) {
                     address
                     balance
                     totalValue
-                    delegations {
+                    delegations(cursor: $cursor) {
+                        pageInfo {
+                            first
+                            last
+                            hasNext
+                            hasPrevious
+                        }
                         totalCount
                         edges {
                             delegation {
@@ -197,11 +207,17 @@ export class FantomWeb3Wallet {
 
         if (_justBalance) {
             query = gql`
-                query AccountByAddress($address: Address!) {
+                query AccountByAddress($address: Address!, $cursor: Cursor) {
                     account(address: $address) {
                         address
                         balance
-                        delegations {
+                        delegations(cursor: $cursor) {
+                            pageInfo {
+                                first
+                                last
+                                hasNext
+                                hasPrevious
+                            }
                             totalCount
                             edges {
                                 delegation {
@@ -217,7 +233,7 @@ export class FantomWeb3Wallet {
             `;
         } else if (_withDelegations) {
             query = gql`
-                query AccountByAddress($address: Address!) {
+                query AccountByAddress($address: Address!, $cursor: Cursor) {
                     account(address: $address) {
                         address
                         balance
@@ -229,7 +245,13 @@ export class FantomWeb3Wallet {
                             createdTime
                             isActive
                         }
-                        delegations {
+                        delegations(cursor: $cursor) {
+                            pageInfo {
+                                first
+                                last
+                                hasNext
+                                hasPrevious
+                            }
                             totalCount
                             edges {
                                 delegation {
@@ -287,15 +309,58 @@ export class FantomWeb3Wallet {
             `;
         }
 
+        /*
         const data = await this.apolloClient.query({
             query,
             variables: {
                 address: _address,
+                cursor: null,
             },
             fetchPolicy: 'network-only',
         });
+        */
 
-        return data.data.account;
+        const data = await fFetch.fetchAllGQLQuery(
+            {
+                query,
+                variables: {
+                    address: _address,
+                    cursor: null,
+                },
+            },
+            'account.delegations'
+        );
+
+        return data.data ? data.data.account : {};
+    }
+
+    async getEstimateGas(_from = '', _to = '', _data = null, _value = 0) {
+        // console.log(_from, _to, _data);
+        const data = await fFetch.fetchGQLQuery(
+            {
+                /*
+                query: gql`
+                    query EstimateGas($from: Address, $to: Address, $data: String) {
+                        estimateGas(from: $from, to: $to, data: $data)
+                    }
+                `,
+                */
+                query: gql`
+                    query EstimateGas($from: Address, $to: Address, $value: BigInt, $data: String) {
+                        estimateGas(from: $from, to: $to, value: $value, data: $data)
+                    }
+                `,
+                variables: {
+                    from: _from || undefined,
+                    to: _to || undefined,
+                    value: _value || undefined,
+                    data: _data || undefined,
+                },
+            },
+            'estimateGas'
+        );
+
+        return data.data ? data.data.estimateGas : '';
     }
 
     /**
@@ -596,9 +661,14 @@ export class FantomWeb3Wallet {
         return { privateKey, mnemonic, keystore };
     }
 
-    async getTransactionToSign({ from, to, value, memo = '', gasLimit = GAS_LIMITS.default }) {
+    async getTransactionToSign({ from, to, value, memo = '' }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
+        let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             value: value,
@@ -619,15 +689,21 @@ export class FantomWeb3Wallet {
      * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getSFCTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
+    async getSFCTransactionToSign(_tx, _from, _gasLimit = '') {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
+        let gasLimit =
+            _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             ..._tx,
             gasPrice,
-            gas: _gasLimit,
-            gasLimit: _gasLimit,
+            gas: gasLimit,
+            gasLimit: gasLimit,
             nonce,
         };
     }
@@ -638,24 +714,30 @@ export class FantomWeb3Wallet {
      * @param {String} [_gasLimit] Hex.
      * @return {Promise<{nonce: string, gasPrice: *}>}
      */
-    async getDefiTransactionToSign(_tx, _from, _gasLimit = GAS_LIMITS.default) {
+    async getDefiTransactionToSign(_tx, _from, _gasLimit) {
         const nonce = await this.getTransactionCount(_from);
         const gasPrice = await this.getGasPrice(true);
+        let gasLimit =
+            _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
 
         return {
             ..._tx,
             gasPrice,
-            gas: _gasLimit,
-            gasLimit: _gasLimit,
+            gas: gasLimit,
+            gasLimit: gasLimit,
             nonce,
         };
     }
 
-    async signTransaction(_tx, _keystore, _password) {
+    async signTransaction(_tx, _keystore, _password, _tmpPwdCode) {
         const { pwdStorage } = this;
         let password = _password;
 
-        if (pwdStorage.isSet()) {
+        if (pwdStorage.isSet(_tmpPwdCode)) {
             if (!pwdStorage.isTimeoutSet()) {
                 if (pwdO.count-- > 0) {
                     password = pwdO.pwd;
@@ -669,7 +751,7 @@ export class FantomWeb3Wallet {
 
         password = '';
 
-        if (pwdStorage.isSet() && !pwdStorage.isTimeoutSet() && pwdO.count === 0) {
+        if (pwdStorage.isSet(_tmpPwdCode) && !pwdStorage.isTimeoutSet() && pwdO.count === 0) {
             pwdStorage.clear();
         }
 
@@ -762,11 +844,11 @@ export class FantomWeb3Wallet {
      *
      * @param {*} _balance
      * @param {*} _gasPrice
-     * @param {string} _gasLimit
+     * @param {string} [_gasLimit]
      * @return {number}
      */
     getRemainingBalance(_balance, _gasPrice, _gasLimit) {
-        const fee = this.getTransactionFee(_gasPrice, _gasLimit);
+        const fee = this.getTransactionFee(_gasPrice, _gasLimit || '');
         const balance = this.toBN(_balance);
 
         return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(2)))));
@@ -780,7 +862,7 @@ export class FantomWeb3Wallet {
      * @return {number}
      */
     getMaxRemainingBalance(_balance, _gasPrice) {
-        const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.claimRewards);
+        const fee = this.getTransactionFee(_gasPrice, GAS_LIMITS.max);
         const balance = this.toBN(_balance);
 
         return parseFloat(this.WEIToFTM(balance.sub(fee.mul(this.toBN(1)))));

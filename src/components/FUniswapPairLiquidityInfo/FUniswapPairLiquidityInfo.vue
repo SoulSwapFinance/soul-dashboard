@@ -40,6 +40,7 @@
 <script>
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { formatNumberByLocale } from '@/filters.js';
+import { TokenPairs } from '@/utils/token-pairs.js';
 
 export default {
     name: 'FUniswapPairLiquidityInfo',
@@ -70,7 +71,7 @@ export default {
 
     data() {
         return {
-            addDeciamals: 2,
+            addDecimals: 2,
         };
     },
 
@@ -80,7 +81,7 @@ export default {
             const { share } = this;
 
             if (share > 0 && pair.pairAddress) {
-                const pairToken = this.getPairTokenByAddress(this.fromToken.address);
+                const pairToken = TokenPairs.findPairToken(pair, this.fromToken);
 
                 return pairToken ? this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken) * share : 0;
             }
@@ -94,7 +95,7 @@ export default {
             if (fromTokenLiquidity > 0) {
                 return this.formatNumberByLocale(
                     fromTokenLiquidity,
-                    this.$defi.getTokenDecimals(this.fromToken) + this.addDeciamals
+                    this.$defi.getTokenDecimals(this.fromToken) + this.addDecimals
                 );
             }
 
@@ -106,7 +107,7 @@ export default {
             const { share } = this;
 
             if (share > 0 && pair.pairAddress) {
-                const pairToken = this.getPairTokenByAddress(this.toToken.address);
+                const pairToken = TokenPairs.findPairToken(pair, this.toToken);
 
                 return pairToken ? this.$defi.fromTokenValue(pairToken.balanceOf, this.toToken) * share : 0;
             }
@@ -120,28 +121,20 @@ export default {
             if (toTokenLiquidity > 0) {
                 return this.formatNumberByLocale(
                     toTokenLiquidity,
-                    this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals
+                    this.$defi.getTokenDecimals(this.toToken) + this.addDecimals
                 );
-                // return toTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDeciamals);
+                // return toTokenLiquidity.toFixed(this.$defi.getTokenDecimals(this.toToken) + this.addDecimals);
             }
 
             return '-';
         },
 
         totalFromTokenLiquidity() {
-            const pairToken = this.getPairTokenByAddress(this.fromToken.address);
-
-            return pairToken
-                ? this.formatNumberByLocale(parseInt(this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken)), 0)
-                : 0;
+            return this.formatNumberByLocale(this.$defi.totalTokenLiquidity(this.fromToken, this.pair), 0);
         },
 
         totalToTokenLiquidity() {
-            const pairToken = this.getPairTokenByAddress(this.toToken.address);
-
-            return pairToken
-                ? this.formatNumberByLocale(parseInt(this.$defi.fromTokenValue(pairToken.balanceOf, this.fromToken)), 0)
-                : 0;
+            return this.formatNumberByLocale(this.$defi.totalTokenLiquidity(this.toToken, this.pair), 0);
         },
 
         share() {
@@ -162,15 +155,6 @@ export default {
     },
 
     methods: {
-        /**
-         * @param {string} _address
-         * @param {object} [_pair]
-         * @return {{}|null}
-         */
-        getPairTokenByAddress(_address, _pair = this.pair) {
-            return _pair.tokens ? _pair.tokens.find((_token) => _token.address === _address) : null;
-        },
-
         formatNumberByLocale,
     },
 };

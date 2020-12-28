@@ -6,7 +6,7 @@
 
                 <div class="form-body">
                     <f-password-field
-                        v-if="showPasswordField && !$fWallet.pwdStorage.isSet()"
+                        v-if="showPasswordField && showPwdField"
                         :label="passwordLabel"
                         field-size="large"
                         autocomplete="off"
@@ -33,15 +33,22 @@
                             <br />
                         </div>
 
-                        <button
-                            v-if="!waiting"
-                            type="submit"
-                            class="btn large break-word"
-                            style="max-width: 100%;"
-                            :disabled="notEnoughFTM"
-                        >
-                            {{ sendButtonLabel }}
-                        </button>
+                        <template v-if="!waiting">
+                            <button
+                                type="submit"
+                                class="btn large break-word"
+                                style="max-width: 100%;"
+                                :disabled="notEnoughFTM || disabledSubmit"
+                            >
+                                {{ sendButtonLabel }}
+                            </button>
+                            <div class="gas-info">
+                                Estimated Gas:
+                                <f-placeholder :content-loaded="!!gasLimit" :replacement-num-chars="4">
+                                    {{ formatNumberByLocale(parseInt(gasLimit, 16), 0) }}
+                                </f-placeholder>
+                            </div>
+                        </template>
                         <pulse-loader v-else color="#1969ff"></pulse-loader>
                     </div>
                 </div>
@@ -55,13 +62,14 @@ import FForm from '../core/FForm/FForm.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'TransactionConfirmationForm',
 
-    components: { FMessage, FPasswordField, FForm, PulseLoader },
+    components: { FPlaceholder, FMessage, FPasswordField, FForm, PulseLoader },
 
     props: {
         showPasswordField: {
@@ -83,18 +91,29 @@ export default {
         /** Transaction's gas limit */
         gasLimit: {
             type: String,
-            default: GAS_LIMITS.default,
+            default: '',
         },
         /** */
         waiting: {
             type: Boolean,
             default: false,
         },
+        /** */
+        disabledSubmit: {
+            type: Boolean,
+            default: false,
+        },
+        /** */
+        tmpPwdCode: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
         return {
             gasPrice: '',
+            showPwdField: true,
         };
     },
 
@@ -112,22 +131,48 @@ export default {
                 price = this.$fWallet.getRemainingBalance(currentAccount.balance, this.gasPrice, this.gasLimit);
             }
 
-            console.log('price', price);
+            // console.log('price', price);
 
             return price <= 0;
         },
     },
 
     created() {
+        this._tid = -1;
+
+        this.showPwdField = !this.$fWallet.pwdStorage.isSet(this.tmpPwdCode);
+
         this.$fWallet.getGasPrice().then((_gasPrice) => {
             this.gasPrice = _gasPrice;
         });
+
+        if (this.showPasswordField && !this.showPwdField) {
+            this._tid = setTimeout(() => {
+                this.$fWallet.pwdStorage.clear();
+                this.showPwdField = true;
+            }, 30000);
+        }
+    },
+
+    beforeDestroy() {
+        if (this._tid > -1) {
+            clearTimeout(this._tid);
+            this._tid = -1;
+        }
     },
 
     methods: {
         checkPassword(_value) {
             return _value && _value.length > 0;
         },
+
+        formatNumberByLocale,
     },
 };
 </script>
+<style lang="scss">
+@import '../../assets/scss/vars';
+.gas-info {
+    color: $light-gray-color;
+}
+</style>

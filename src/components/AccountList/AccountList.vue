@@ -26,6 +26,7 @@
                                             name: routeName,
                                             params: { ...routeParams, address: account.address },
                                         }"
+                                        :target="targetWindow"
                                         class="value clickable"
                                         aria-label="Address"
                                         :data-address="account.address"
@@ -158,6 +159,11 @@ export default {
         pickMode: {
             type: Boolean,
             default: false,
+        },
+        /** Target window for account links */
+        targetWindow: {
+            type: String,
+            default: undefined,
         },
     },
 

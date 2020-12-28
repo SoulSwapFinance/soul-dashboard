@@ -5,10 +5,10 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :tmp-pwd-count="params.step === 1 ? 2 : 0"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -60,7 +60,6 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -71,6 +70,7 @@ import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import Web3 from 'web3';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapAddLiquidityConfirmation',
@@ -87,11 +87,11 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-pools',
             confirmationCompName: 'funiswap-add-liquidity',
             priceDecimals: 6,
             tx: {},
-            gasLimit: GAS_LIMITS.default,
+            tmpPwdCode: '',
         };
     },
 
@@ -186,6 +186,16 @@ export default {
                 return;
             }
 
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
+            }
+
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
+            }
+
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = $defi.contracts.uniswapRouter;
             }
@@ -257,11 +267,7 @@ export default {
             }
 
             if (txToSign) {
-                this.tx = await this.$fWallet.getDefiTransactionToSign(
-                    txToSign,
-                    this.currentAccount.address,
-                    GAS_LIMITS.uniswap
-                );
+                this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
             }
         },
 
@@ -275,14 +281,14 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
             } else if (this.params.step === 2) {
                 transactionSuccessComp = `${this.confirmationCompName}-transaction-success-message2`;
                 params.continueTo = `${this.confirmationCompName}-confirmation3`;
-                params.continueToParams = { ...this.params, step: 3 };
+                params.continueToParams = { ...this.params, step: 3, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -291,6 +297,7 @@ export default {
                 params.continueToParams = {
                     fromToken: { ...this.params.fromToken },
                     toToken: { ...this.params.toToken },
+                    tmpPwdCode: this.tmpPwdCode,
                 };
             }
 
@@ -320,6 +327,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });

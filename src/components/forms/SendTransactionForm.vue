@@ -16,6 +16,15 @@
                     </legend>
 
                     <div class="form-body">
+                        <div v-if="token.address" class="available-balance">
+                            <div class="row align-items-center no-collapse">
+                                <div class="col ab-label">Available balance</div>
+                                <div class="col ab-balance">
+                                    <f-token-value :value="availableERC20TokenBalance" :token="token" />
+                                </div>
+                            </div>
+                        </div>
+
                         <f-input
                             v-model="amount"
                             label="Amount"
@@ -89,11 +98,13 @@ import { mapGetters } from 'vuex';
 import { eventBusMixin } from '../../mixins/event-bus.js';
 import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbridge-exchange.js';
 import AddressField from '../AddressField/AddressField.vue';
+import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 
 export default {
     name: 'SendTransactionForm',
 
     components: {
+        FTokenValue,
         AddressField,
         FCard,
         FInput,
@@ -161,7 +172,14 @@ export default {
         maxRemainingErc20TokenBalance() {
             const { token } = this;
 
-            return this.$defi.fromTokenValue(token.availableBalance, token) || 0;
+            return this.$defi.fromTokenValue(token.balanceOf || token.availableBalance, token) || 0;
+        },
+
+        /**
+         * @return {number}
+         */
+        availableERC20TokenBalance() {
+            return this.maxRemainingErc20TokenBalance;
         },
 
         /**
@@ -293,7 +311,7 @@ export default {
                 ? parseFloat(this.maxRemainingErc20TokenBalance)
                 : parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
-            const minFTMToETH = 50001;
+            const minFTMToETH = 5001;
             const operatToEthereum = this.sendDirection === 'OperaToEthereum';
             const { tokenSymbol } = this;
             let ok = false;
@@ -398,4 +416,19 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.send-transaction-form {
+    .available-balance {
+        margin-bottom: 24px;
+
+        .ab-label {
+            font-weight: bold;
+        }
+
+        .ab-balance {
+            font-size: 26px;
+            text-align: right;
+        }
+    }
+}
+</style>

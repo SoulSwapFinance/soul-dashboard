@@ -6,9 +6,9 @@
             card-off
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
+            :tmp-pwd-code="tmpPwdCode"
             @change-component="onChangeComponent"
         >
             <h1 class="with-back-btn">
@@ -23,14 +23,11 @@
 
             <div class="confirmation-info">
                 <div v-if="increasedDebt > 0">
-                    You’re adding
-                    <span class="inc-desc-collateral">
-                        <f-token-value :token="token" :value="increasedDebt" no-currency /> {{ cTokenSymbol }}
-                    </span>
+                    <defi-minting-message :token="token" :value="increasedDebt" />
                 </div>
                 <div v-else-if="decreasedDebt > 0">
-                    <template v-if="params.step === 1">You’re allowing</template>
-                    <template v-else>You’re removing</template>
+                    <template v-if="params.step === 1">You’re allowing </template>
+                    <template v-else>You’re removing </template>
                     <span class="inc-desc-collateral">
                         <f-token-value :token="token" :value="decreasedDebt" no-currency /> {{ cTokenSymbol }}
                     </span>
@@ -50,7 +47,7 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
+import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -60,6 +57,8 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
+import DefiMintingMessage from '@/components/DefiMintingMessage/DefiMintingMessage.vue';
 
 /**
  * Common component for DefiBorrowFUSDConfirmation a DefiManageBorrowConfirmation
@@ -67,7 +66,7 @@ import appConfig from '../../../app.config.js';
 export default {
     name: 'DefiBorrowConfirmation',
 
-    components: { FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
+    components: { DefiMintingMessage, FTokenValue, FMessage, FBackButton, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** Address of smart contract. */
@@ -100,7 +99,7 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.default,
+            tmpPwdCode: '',
         };
     },
 
@@ -191,6 +190,8 @@ export default {
                 return;
             }
 
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = this.$defi.contracts.fMint;
             }
@@ -241,11 +242,7 @@ export default {
                 }
             }
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(
-                txToSign,
-                this.currentAccount.address,
-                GAS_LIMITS.defi
-            );
+            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
         },
 
         correctAmount(_amount, _borrow) {
@@ -276,7 +273,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -308,7 +305,7 @@ export default {
                     name: transactionRejectComp,
                     params: {
                         continueTo: this.compName,
-                        continueToParams: { token: { ...this.token } },
+                        continueToParams: { token: { ...this.token }, tmpPwdCode: this.tmpPwdCode },
                     },
                 });
             }

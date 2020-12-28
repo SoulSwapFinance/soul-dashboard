@@ -1,8 +1,8 @@
 const appConfig = {
     // app title
-    name: 'Fantom PWA Wallet',
+    name: 'Fantom fWallet',
     // app description
-    description: 'Fantom PWA Wallet',
+    description: 'Fantom fWallet',
     // app keywords
     keywords: 'fantom, metamask',
     // apollo client settings
@@ -29,12 +29,19 @@ const appConfig = {
                 // for subscriptions
                 ws: '',
             },
+            {
+                http: 'https://xapi6.fantom.network/api',
+                // for subscriptions
+                ws: '',
+            },
         ],
         // index into providers array of default provider or 'random' - takes index randomly
         defaultProviderIndex: 'random',
     },
     // Opera chain id
     chainId: '0xfa',
+    // JSON-RPC endpoint
+    rpc: 'https://rpcapi.fantom.network/',
     // used in links pointing to fantom explorer
     explorerUrl: 'https://explorer.fantom.network/',
     // used in links pointing to ethereum explorer
@@ -52,8 +59,7 @@ const appConfig = {
         // use Binance chain
         useBNB: true,
     },
-    // tmp
-    tmpWFTM: true,
+    disableFLend: true,
     //
     useTestnet: true,
     // testnet config
@@ -66,6 +72,8 @@ const appConfig = {
                 ws: '',
             },
         ],
+        // JSON-RPC endpoint
+        rpc: 'https://xapi.testnet.fantom.network/lachesis',
         // used in links pointing to fantom explorer
         explorerUrl: 'https://explorer.testnet.fantom.network/',
         // chain id for testnet
@@ -76,7 +84,8 @@ const appConfig = {
     // pwa settings
     pwa: {
         // name used in pwa manifest
-        name: 'Fantom PWA Wallet',
+        name: 'Fantom fWallet',
+        categories: ['finance'],
     },
     // determines if app is chrome extension
     isChromeExtension: !!process.env.VUE_APP_IS_CHROME_EXTENSION,
@@ -85,15 +94,17 @@ const appConfig = {
         // chrome extension version - increase version number, if you want to publish in the chrome web store
         version: '0.0.1',
         // chrome extension name
-        name: 'Fantom PWA Wallet',
+        name: 'Fantom fWallet',
         // chrome extension description
-        description: 'Fantom PWA Wallet',
+        description: 'Fantom fWallet',
         // output directory for application
         outputDir: 'chrome-extension/dist',
         // output directory for application (relative to outputDir)
         outputDirApp: 'app',
         // output directory for background js bundle script (relative to outputDir)
         outputDirBackgroundJs: 'background-js',
+        // show extension prompts in new tab, instead of popup window
+        tabNotPopup: false,
     },
     // default options for production build
     build: {
@@ -116,6 +127,7 @@ const appConfig = {
 if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
+    appConfig.rpc = appConfig.testnet.rpc;
     appConfig.chainId = appConfig.testnet.chainId;
 }
 

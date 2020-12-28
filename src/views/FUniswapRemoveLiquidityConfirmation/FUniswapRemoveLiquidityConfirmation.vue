@@ -5,9 +5,9 @@
             :tx="tx"
             card-off
             set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -59,7 +59,6 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -68,6 +67,7 @@ import FMessage from '../../components/core/FMessage/FMessage.vue';
 import uniswapUtils from 'fantom-ledgerjs/src/uniswap-utils.js';
 import Web3 from 'web3';
 import appConfig from '../../../app.config.js';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FUniswapRemoveLiquidityConfirmation',
@@ -84,12 +84,12 @@ export default {
 
     data() {
         return {
-            compName: 'funiswap-home',
+            compName: 'funiswap-pools',
             confirmationCompName: 'funiswap-remove-liquidity',
             priceDecimals: 6,
             tx: {},
-            gasLimit: GAS_LIMITS.default,
             liquidity: 0,
+            tmpPwdCode: '',
         };
     },
 
@@ -185,6 +185,16 @@ export default {
                 return;
             }
 
+            if (!fromToken.decimals) {
+                fromToken.decimals = 18;
+            }
+
+            if (!toToken.decimals) {
+                toToken.decimals = 18;
+            }
+
+            this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
+
             if (!contractAddress) {
                 contractAddress = $defi.contracts.uniswapRouter;
             }
@@ -229,11 +239,7 @@ export default {
             }
 
             if (txToSign) {
-                this.tx = await this.$fWallet.getDefiTransactionToSign(
-                    txToSign,
-                    this.currentAccount.address,
-                    GAS_LIMITS.uniswap
-                );
+                this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
             }
         },
 
@@ -247,7 +253,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.confirmationCompName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2 };
+                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -285,6 +291,7 @@ export default {
                         continueToParams: {
                             fromToken: { ...this.params.fromToken },
                             toToken: { ...this.params.toToken },
+                            tmpPwdCode: this.tmpPwdCode,
                         },
                     },
                 });

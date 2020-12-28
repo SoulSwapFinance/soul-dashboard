@@ -9,6 +9,10 @@
                 Assets
                 <span class="f-records-count">({{ assetsRecordsCount }})</span>
             </template>
+            <template #assets-old>
+                Assets old
+                <span class="f-records-count">({{ assetsRecordsCount }})</span>
+            </template>
 
             <f-tab title-slot="transactions">
                 <account-transaction-list
@@ -19,8 +23,8 @@
             </f-tab>
             <f-tab title-slot="assets">
                 <f-card>
-                    <assets-list
-                        :tokens="tokens"
+                    <wallet-assets-list
+                        :tokens="erc20Tokens"
                         :f-mint-account="fMintAccount"
                         @records-count="onAssetsRecordsCount"
                     />
@@ -37,12 +41,12 @@ import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import FCard from '@/components/core/FCard/FCard.vue';
-import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
+import WalletAssetsList from '@/components/data-tables/WalletAssetsList/WalletAssetsList.vue';
 
 export default {
     name: 'AccountHistory',
 
-    components: { AssetsList, FCard, FTab, FTabs, AccountTransactionList },
+    components: { WalletAssetsList, FCard, FTab, FTabs, AccountTransactionList },
 
     mixins: [eventBusMixin],
 
@@ -54,7 +58,7 @@ export default {
                 debt: [],
             },
             /** @type {DefiToken[]} */
-            tokens: [],
+            erc20Tokens: [],
             transactionsRecordsCount: 0,
             assetsRecordsCount: 0,
         };
@@ -75,12 +79,19 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchFMintAccount(this.currentAccount.address),
-                $defi.fetchTokens(this.currentAccount.address),
+                $defi.fetchERC20Tokens(),
                 $defi.init(),
             ]);
 
             this.fMintAccount = result[0];
-            this.tokens = result[1];
+            this.erc20Tokens = result[1];
+
+            setTimeout(async () => {
+                this.erc20Tokens = await $defi.getERC20TokensWithAvailableBalances(
+                    this.currentAccount.address,
+                    this.erc20Tokens
+                );
+            }, 30);
         },
 
         onTransactionsRecordsCount(_count) {

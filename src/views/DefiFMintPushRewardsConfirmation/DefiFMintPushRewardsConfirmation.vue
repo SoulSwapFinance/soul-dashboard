@@ -6,7 +6,6 @@
             card-off
             send-button-label="Submit"
             password-label="Please enter your wallet password"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -34,7 +33,6 @@ import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import { getAppParentNode } from '@/app-structure.js';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import fMintUtils from 'fantom-ledgerjs/src/fmint-utils.js';
 import { mapGetters } from 'vuex';
@@ -47,7 +45,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.pushRewards,
             compName: 'defi-fmint-push-rewards',
         };
     },
@@ -98,11 +95,9 @@ export default {
 
             txToSign = fMintUtils.fMintPushRewardTx(contractAddress);
 
-            this.tx = await this.$fWallet.getDefiTransactionToSign(
-                txToSign,
-                this.currentAccount.address,
-                this.gasLimit
-            );
+            this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
+
+            console.log('df!', JSON.stringify(this.tx));
         },
 
         onSendTransactionSuccess(_data) {

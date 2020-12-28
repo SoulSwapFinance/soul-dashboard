@@ -1,0 +1,5 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target" : { "namespace": "android_app", "package_name": "network.fantom.pwawallet.twa",
+                   "sha256_cert_fingerprints": ["AF:FA:F8:5C:EF:BA:D2:56:06:28:37:3F:3A:E3:E5:3B:DA:03:7C:6A:AE:84:0B:86:54:DF:B3:3D:59:3B:9E:7D"] }
+    }]
