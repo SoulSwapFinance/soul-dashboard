@@ -6,7 +6,6 @@
             card-off
             send-button-label="Submit"
             password-label="Please enter your wallet password to vote"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -54,7 +53,6 @@
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
@@ -110,7 +108,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.claimRewards,
             compName: toKebabCase(this.$options.name),
             /**@type {GovernanceProposal} */
             d_proposal: this.proposal,
@@ -179,8 +176,7 @@ export default {
                     params.proposalId,
                     params.votes
                 ),
-                this.currentAccount.address,
-                GAS_LIMITS.governance
+                this.currentAccount.address
             );
         },
 
