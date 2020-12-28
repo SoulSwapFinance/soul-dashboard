@@ -6,7 +6,6 @@
             card-off
             :send-button-label="sendButtonLabel"
             :password-label="passwordLabel"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -52,7 +51,7 @@
 <script>
 import TxConfirmation from '../../components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../../components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
-import { GAS_LIMITS, Web3 } from '../../plugins/fantom-web3-wallet.js';
+import { Web3 } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import { toFTM } from '../../utils/transactions.js';
 import FBackButton from '../../components/core/FBackButton/FBackButton.vue';
@@ -83,7 +82,6 @@ export default {
             compName: 'defi-ftrade',
             priceDecimals: 6,
             tx: {},
-            gasLimit: GAS_LIMITS.default,
         };
     },
 
@@ -243,11 +241,7 @@ export default {
             }
 
             if (txToSign) {
-                this.tx = await this.$fWallet.getDefiTransactionToSign(
-                    txToSign,
-                    this.currentAccount.address,
-                    GAS_LIMITS.defi
-                );
+                this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
             }
         },
 

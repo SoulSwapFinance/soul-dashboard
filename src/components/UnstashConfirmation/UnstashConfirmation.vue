@@ -5,7 +5,6 @@
             confirmation-comp-name="unstash-confirmation"
             send-button-label="Unstash"
             password-label="Please enter your wallet password to unstash your rewards"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -38,7 +37,6 @@
 
 <script>
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import { toFTM } from '../../utils/transactions.js';
@@ -67,7 +65,6 @@ export default {
     data() {
         return {
             tx: {},
-            gasLimit: GAS_LIMITS.withdraw,
         };
     },
 
@@ -84,8 +81,7 @@ export default {
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.unstashRewardsTx(),
-                this.currentAccount.address,
-                this.gasLimit
+                this.currentAccount.address
             );
         },
 

@@ -11,6 +11,8 @@
                 :password-label="passwordLabel"
                 :send-button-label="sendButtonLabel"
                 :waiting="waiting"
+                :disabled-submit="disabledSubmit"
+                :gas-limit="dGasLimit"
                 :tmp-pwd-code="tmpPwdCode"
                 @f-form-submit="onFFormSubmit"
             />
@@ -67,7 +69,6 @@ import { mapGetters, mapState } from 'vuex';
 import gql from 'graphql-tag';
 import { U2FStatus } from '../../plugins/fantom-nano.js';
 import { UPDATE_ACCOUNT_BALANCE } from '../../store/actions.type.js';
-import { GAS_LIMITS } from '../../plugins/fantom-web3-wallet.js';
 import appConfig from '../../../app.config.js';
 
 /**
@@ -101,11 +102,6 @@ export default {
         passwordLabel: {
             type: String,
             default: '',
-        },
-        /** Transaction's gas limit */
-        gasLimit: {
-            type: String,
-            default: GAS_LIMITS.default,
         },
         /**
          * Function called when transaction was successful
@@ -142,6 +138,8 @@ export default {
             errorMsg: '',
             error: null,
             waiting: false,
+            disabledSubmit: true,
+            dGasLimit: '',
         };
     },
 
@@ -170,13 +168,18 @@ export default {
                 this.$refs.metamaskNoticeWindow.show();
             }
         },
-    },
 
-    mounted() {
-        console.log('gasLimit', this.gasLimit);
+        tx() {
+            this.init();
+        },
     },
 
     methods: {
+        async init() {
+            this.dGasLimit = this.tx.gasLimit;
+            this.disabledSubmit = false;
+        },
+
         sendTransaction(_rawTransaction) {
             this.$apollo
                 .mutate({

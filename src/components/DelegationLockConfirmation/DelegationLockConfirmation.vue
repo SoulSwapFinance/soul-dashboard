@@ -5,7 +5,6 @@
             confirmation-comp-name="delegation-lock-confirmation"
             send-button-label="Lock"
             password-label="Please enter your wallet password to lock delegation"
-            :gas-limit="gasLimit"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -44,7 +43,6 @@
 </template>
 
 <script>
-import { GAS_LIMITS } from '@/plugins/fantom-web3-wallet.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
@@ -79,7 +77,6 @@ export default {
         return {
             tx: {},
             validator: null,
-            gasLimit: GAS_LIMITS.lockDelegation,
         };
     },
 
@@ -121,11 +118,9 @@ export default {
             const stakerId = parseInt(this.stakerId, 16);
 
             if (this.lockDuration > minDays * dayS) {
-                console.log('df', this.lockDuration, this.gasLimit);
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
                     sfcUtils.lockupDelegationTx(stakerId, this.lockDuration),
-                    this.currentAccount.address,
-                    this.gasLimit
+                    this.currentAccount.address
                 );
             }
         },
