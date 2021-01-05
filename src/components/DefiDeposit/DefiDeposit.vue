@@ -244,7 +244,6 @@ import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxCo
 import DefiDepositConfirmation from '@/components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
 import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
-import { appStructureTree } from '@/app-structure.js';
 
 export default {
     name: 'DefiDeposit',
@@ -335,6 +334,7 @@ export default {
             stepsCount: 2,
             /** Active step (`<1, stepsCount>`) */
             activeStep: 1,
+            viewsStructureRootNode: 'defi-home',
         };
     },
 
@@ -521,19 +521,6 @@ export default {
             const breakpoint = this.$store.state.breakpoints['large'];
 
             return breakpoint && breakpoint.matches;
-        },
-
-        // dat do component-view.js nekam
-        viewsStructure() {
-            const node = 'defi-home';
-            const appNode = appStructureTree.serialize(appStructureTree.get(node));
-
-            if (!this.currentAppNodeId) {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.currentAppNodeId = node;
-            }
-
-            return appNode ? [JSON.parse(appNode)] : [];
         },
     },
 

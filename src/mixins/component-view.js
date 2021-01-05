@@ -1,4 +1,5 @@
 import { Tree } from '@/utils/tree.js';
+import { appStructureTree } from '@/app-structure.js';
 
 /**
  * Helper methods and properties for handling component changes via `<component>`.
@@ -8,6 +9,7 @@ export const componentViewMixin = {
         return {
             currentComponent: '',
             currentAppNodeId: '',
+            viewsStructureRootNode: '',
             _viewsStructure: null,
         };
     },
@@ -19,6 +21,18 @@ export const componentViewMixin = {
             }
 
             return null;
+        },
+
+        viewsStructure() {
+            const node = this.viewsStructureRootNode;
+            const appNode = appStructureTree.serialize(appStructureTree.get(node));
+
+            if (!this.currentAppNodeId) {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.currentAppNodeId = node;
+            }
+
+            return appNode ? [JSON.parse(appNode)] : [];
         },
     },
 
@@ -37,6 +51,7 @@ export const componentViewMixin = {
                 }
 
                 const appNode = this._viewsStructure.getBy(compName, 'id');
+                console.log('!!', appNode, compName);
                 if (appNode && appNode.component) {
                     compName = appNode.component;
                     this.currentAppNodeId = appNode.id;
