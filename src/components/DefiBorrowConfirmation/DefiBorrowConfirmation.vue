@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-borrow-confirmation">
+    <div class="defi-borrow-confirmation min-h-100">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -9,9 +9,13 @@
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
             :tmp-pwd-code="tmpPwdCode"
+            :show-cancel-button="true"
+            :window-mode="!isView"
+            class="min-h-100"
             @change-component="onChangeComponent"
+            @cancel-button-click="$emit('cancel-button-click', $event)"
         >
-            <h1 class="with-back-btn">
+            <h1 v-if="isView" class="with-back-btn">
                 <f-back-button
                     v-if="!params.steps || params.step === 1"
                     :route-name="backButtonRoute"
@@ -94,6 +98,11 @@ export default {
             },
             required: true,
         },
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -169,9 +178,11 @@ export default {
     created() {
         if (!this.hasCorrectParams) {
             // redirect to <this.compName>
-            setTimeout(() => {
-                this.$router.replace({ name: this.compName });
-            }, 3000);
+            if (this.isView) {
+                setTimeout(() => {
+                    this.$router.replace({ name: this.compName });
+                }, 3000);
+            }
         } else {
             this.setTx();
         }
@@ -273,7 +284,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
+                params.continueToParams = { ...this.params, isView: this.isView, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -282,10 +293,29 @@ export default {
                 params.continueToParams = { token: { ...this.token } };
             }
 
-            this.$router.replace({
-                name: transactionSuccessComp,
-                params,
-            });
+            if (this.isView) {
+                this.$router.replace({
+                    name: transactionSuccessComp,
+                    params,
+                });
+            } else {
+                if (this.params.step === 1) {
+                    params.continueToParams = {
+                        params: { ...params.continueToParams },
+                        token: { ...this.token },
+                        compName: this.compName,
+                    };
+                    params.title = `Success`;
+                } else if (this.params.step === 2 || !this.params.step) {
+                    params.continueTo = 'hide-window';
+                    params.continueButtonLabel = 'Close';
+                }
+
+                this.$emit('change-component', {
+                    to: transactionSuccessComp,
+                    data: { ...params, cardOff: true, windowMode: true },
+                });
+            }
         },
 
         /**
