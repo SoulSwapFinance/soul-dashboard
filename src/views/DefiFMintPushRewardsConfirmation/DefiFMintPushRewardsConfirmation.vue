@@ -46,7 +46,7 @@ export default {
     components: { FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
 
     props: {
-        /** Router params */
+        /** */
         params: {
             type: Object,
             default() {

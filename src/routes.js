@@ -296,16 +296,6 @@ export const routes = [
                         path: 'fmint/claim-rewards/confirmation',
                         component: DefiFMintClaimRewardsConfirmation,
                     },
-                    {
-                        name: 'defi-fmint-claim-rewards-transaction-success-message',
-                        path: 'fmint/claim-rewards/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-fmint-claim-rewards-transaction-reject-message',
-                        path: 'fmint/claim-rewards/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-fmint-push-rewards-confirmation',

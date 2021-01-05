@@ -102,15 +102,15 @@ const appStructure = [
                             },
                             {
                                 id: 'defi-fmint-claim-rewards-confirmation',
-                                route: 'defi-fmint-claim-rewards-confirmation',
+                                component: 'defi-f-mint-claim-rewards-confirmation',
                                 _c: [
                                     {
                                         id: 'defi-fmint-claim-rewards-transaction-success-message',
-                                        route: 'defi-fmint-claim-rewards-transaction-success-message',
+                                        component: 'transaction-success-message',
                                     },
                                     {
                                         id: 'defi-fmint-claim-rewards-transaction-reject-message',
-                                        route: 'defi-fmint-claim-rewards-transaction-reject-message',
+                                        component: 'transaction-reject-message',
                                     },
                                 ],
                             },

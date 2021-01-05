@@ -101,7 +101,7 @@
                     </router-link>
                 </div>
                 <div class="col">
-                    <router-link
+                    <!--                    <router-link
                         v-if="canClaimRewards"
                         :to="{
                             name: 'defi-fmint-claim-rewards-confirmation',
@@ -113,7 +113,15 @@
                     </router-link>
                     <template v-else>
                         <button type="button" class="btn large" disabled>Claim Rewards</button>
-                    </template>
+                    </template>-->
+                    <button
+                        type="button"
+                        class="btn large"
+                        :disabled="!canClaimRewards"
+                        @click="onClaimRewardsBtnClick"
+                    >
+                        Claim Rewards
+                    </button>
                     <button
                         type="button"
                         class="btn large secondary"
@@ -272,6 +280,7 @@ import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
 import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
 import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
+import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 import { componentViewMixin } from '@/mixins/component-view.js';
 
@@ -294,6 +303,7 @@ export default {
         FBackButton,
         FMessage,
         DefiFMintPushRewardsConfirmation,
+        DefiFMintClaimRewardsConfirmation,
         TransactionSuccessMessage,
     },
 
@@ -473,6 +483,7 @@ export default {
 
     created() {
         this._eventBus.on('account-picked', this.onAccountPicked);
+        this._eventBus.on('claim-mint-rewards', this.onClaimMintRewards);
 
         this.init();
     },
@@ -529,6 +540,22 @@ export default {
 
         onAssetsRecordsCount(_count) {
             this.assetsRecordsCount = _count;
+        },
+
+        onClaimMintRewards(_data) {
+            if (this.canClaimRewards) {
+                this.changeComponent('defi-f-mint-claim-rewards-confirmation', { params: _data });
+                this.$refs.confirmationWindow.show();
+            }
+        },
+
+        onClaimRewardsBtnClick() {
+            if (this.canClaimRewards) {
+                this.changeComponent('defi-f-mint-claim-rewards-confirmation', {
+                    params: { pendingRewards: this.pendingRewardsWFTM, token: { ...this.wftmToken } },
+                });
+                this.$refs.confirmationWindow.show();
+            }
         },
 
         onPushRewardsBtnClick() {
