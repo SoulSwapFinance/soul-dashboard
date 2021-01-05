@@ -38,8 +38,6 @@ import DefiLock from '@/views/DefiLock/DefiLock.vue';
 import DefiUnlock from '@/views/DefiUnlock/DefiUnlock.vue';
 import DefiMint from '@/views/DefiMint/DefiMint.vue';
 import DefiRepay from '@/views/DefiRepay/DefiRepay.vue';
-import DefiMintConfirmation from '@/views/DefiMintConfirmation/DefiMintConfirmation.vue';
-import DefiRepayConfirmation from '@/views/DefiRepayConfirmation/DefiRepayConfirmation.vue';
 import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
@@ -250,71 +248,11 @@ export const routes = [
                         path: 'fmint/mint',
                         component: DefiMint,
                     },
-                    {
-                        name: 'defi-mint-confirmation',
-                        path: 'fmint/mint/confirmation',
-                        component: DefiMintConfirmation,
-                    },
-                    {
-                        name: 'defi-mint-confirmation2',
-                        path: 'fmint/mint/confirmation2',
-                        component: DefiMintConfirmation,
-                    },
-                    {
-                        name: 'defi-mint-transaction-success-message',
-                        path: 'fmint/mint/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-success-message2',
-                        path: 'fmint/mint/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-reject-message',
-                        path: 'fmint/mint/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-reject-message2',
-                        path: 'fmint/mint/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-repay',
                         path: 'fmint/repay',
                         component: DefiRepay,
-                    },
-                    {
-                        name: 'defi-repay-confirmation',
-                        path: 'fmint/repay/confirmation',
-                        component: DefiRepayConfirmation,
-                    },
-                    {
-                        name: 'defi-repay-confirmation2',
-                        path: 'fmint/repay/confirmation2',
-                        component: DefiRepayConfirmation,
-                    },
-                    {
-                        name: 'defi-repay-transaction-success-message',
-                        path: 'fmint/repay/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-success-message2',
-                        path: 'fmint/repay/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-reject-message',
-                        path: 'fmint/repay/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-reject-message2',
-                        path: 'fmint/repay/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
                     },
 
                     {
