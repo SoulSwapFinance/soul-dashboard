@@ -326,7 +326,7 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             label: 'tmp',
             id: getUniqueId(),
-            stepsCount: 2,
+            stepsCount: this.repay ? 2 : 1,
             /** Active step (`<1, stepsCount>`) */
             activeStep: 1,
             viewsStructureRootNode: 'defi-home',

@@ -312,16 +312,6 @@ export const routes = [
                         path: 'fmint/push-rewards/confirmation',
                         component: DefiFMintPushRewardsConfirmation,
                     },
-                    {
-                        name: 'defi-fmint-push-rewards-transaction-success-message',
-                        path: 'fmint/push-rewards/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-fmint-push-rewards-transaction-reject-message',
-                        path: 'fmint/push-rewards/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-manage-collateral',

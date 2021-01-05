@@ -114,19 +114,14 @@
                     <template v-else>
                         <button type="button" class="btn large" disabled>Claim Rewards</button>
                     </template>
-                    <router-link
-                        v-if="canPushRewards"
-                        :to="{
-                            name: 'defi-fmint-push-rewards-confirmation',
-                            params: { token: { ...wftmToken } },
-                        }"
+                    <button
+                        type="button"
                         class="btn large secondary"
+                        :disabled="!canPushRewards"
+                        @click="onPushRewardsBtnClick"
                     >
                         Push Rewards
-                    </router-link>
-                    <template v-else>
-                        <button type="button" class="btn large secondary" disabled>Push Rewards</button>
-                    </template>
+                    </button>
                 </div>
                 <div class="col align-right align-center-md">
                     <router-link :to="{ name: 'defi-mint' }" class="btn large">Mint Synths</router-link>
@@ -201,6 +196,22 @@
             </f-tab>
         </f-tabs>
 
+        <tx-confirmation-window
+            ref="confirmationWindow"
+            body-min-height="350px"
+            :steps-count="stepsCount"
+            :active-step="activeStep"
+        >
+            <f-view-transition :views-structure="viewsStructure" :app-node-id="currentAppNodeId" class="min-h-100">
+                <component
+                    :is="currentComponent"
+                    v-bind="currentComponentProperties"
+                    @change-component="onChangeComponent"
+                    @cancel-button-click="onCancelButtonClick"
+                ></component>
+            </f-view-transition>
+        </tx-confirmation-window>
+
         <!--
         <defi-menu v-else>
             <li class="col-4">
@@ -258,11 +269,18 @@ import FTab from '@/components/core/FTabs/FTab.vue';
 import CollateralPositionsList from '@/components/data-tables/CollateralPositionsList/CollateralPositionsList.vue';
 import SynthsPositionsList from '@/components/data-tables/SynthsPositionsList/SynthsPositionsList.vue';
 import AssetsList from '@/components/data-tables/AssetsList/AssetsList.vue';
+import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
+import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
+import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
+import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import { componentViewMixin } from '@/mixins/component-view.js';
 
 export default {
     name: 'DefiFMint',
 
     components: {
+        FViewTransition,
+        TxConfirmationWindow,
         AssetsList,
         SynthsPositionsList,
         CollateralPositionsList,
@@ -275,9 +293,11 @@ export default {
         FTokenValue,
         FBackButton,
         FMessage,
+        DefiFMintPushRewardsConfirmation,
+        TransactionSuccessMessage,
     },
 
-    mixins: [eventBusMixin],
+    mixins: [eventBusMixin, componentViewMixin],
 
     data() {
         return {
@@ -304,6 +324,10 @@ export default {
             synthsPositionsRecordsCount: 0,
             assetsRecordsCount: 0,
             id: getUniqueId(),
+            stepsCount: 1,
+            /** Active step (`<1, stepsCount>`) */
+            activeStep: 1,
+            viewsStructureRootNode: 'defi-home',
         };
     },
 
@@ -505,6 +529,44 @@ export default {
 
         onAssetsRecordsCount(_count) {
             this.assetsRecordsCount = _count;
+        },
+
+        onPushRewardsBtnClick() {
+            if (this.canPushRewards) {
+                this.changeComponent('defi-f-mint-push-rewards-confirmation', {
+                    params: { token: { ...this.wftmToken } },
+                });
+                this.$refs.confirmationWindow.show();
+            }
+        },
+
+        onCancelButtonClick() {
+            // this.currCollateral = '0';
+
+            this.activeStep = 1;
+            this.currentComponent = '';
+            this.currentAppNodeId = '';
+
+            this.init();
+
+            this.$refs.confirmationWindow.hide();
+            this.currentComponent = '';
+        },
+
+        /**
+         * @param {Object} _data
+         */
+        onChangeComponent(_data) {
+            const { data } = _data;
+
+            if (data && data.params && data.params.step) {
+                this.activeStep = data.params.step;
+            } else if (data && data.continueTo === 'hide-window') {
+                // last transaction success/reject message
+                this.activeStep = 1000;
+            }
+
+            componentViewMixin.methods.onChangeComponent.call(this, _data);
         },
     },
 };

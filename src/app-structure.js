@@ -116,15 +116,15 @@ const appStructure = [
                             },
                             {
                                 id: 'defi-fmint-push-rewards-confirmation',
-                                route: 'defi-fmint-push-rewards-confirmation',
+                                component: 'defi-f-mint-push-rewards-confirmation',
                                 _c: [
                                     {
                                         id: 'defi-fmint-push-rewards-transaction-success-message',
-                                        route: 'defi-fmint-push-rewards-transaction-success-message',
+                                        component: 'transaction-success-message',
                                     },
                                     {
                                         id: 'defi-fmint-push-rewards-transaction-reject-message',
-                                        route: 'defi-fmint-push-rewards-transaction-reject-message',
+                                        component: 'transaction-reject-message',
                                     },
                                 ],
                             },

@@ -1,5 +1,5 @@
 <template>
-    <div class="view-defi-fmint-push-rewards-confirmation">
+    <div class="view-defi-fmint-push-rewards-confirmation min-h-100">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -7,9 +7,12 @@
             send-button-label="Submit"
             password-label="Please enter your wallet password"
             :on-send-transaction-success="onSendTransactionSuccess"
-            @change-component="onChangeComponent"
+            :show-cancel-button="true"
+            :window-mode="!isView"
+            class="min-h-100"
+            @cancel-button-click="$emit('cancel-button-click', $event)"
         >
-            <h1 class="with-back-btn">
+            <h1 v-if="isView" class="with-back-btn">
                 <f-back-button :route-name="backButtonRoute" />
                 Confirmation
             </h1>
@@ -42,6 +45,22 @@ export default {
 
     components: { FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
 
+    props: {
+        /** Router params */
+        params: {
+            type: Object,
+            default() {
+                return {};
+            },
+            required: true,
+        },
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: false,
+        },
+    },
+
     data() {
         return {
             tx: {},
@@ -55,11 +74,13 @@ export default {
         /**
          * @return {{token: DefiToken}}
          */
+        /*
         params() {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
         },
+        */
 
         hasCorrectParams() {
             return !!this.params.token;
@@ -75,9 +96,11 @@ export default {
     created() {
         if (!this.hasCorrectParams) {
             // redirect
-            setTimeout(() => {
-                this.$router.replace({ name: this.backButtonRoute });
-            }, 3000);
+            if (this.isView) {
+                setTimeout(() => {
+                    this.$router.replace({ name: this.backButtonRoute });
+                }, 3000);
+            }
         } else {
             this.setTx();
         }
@@ -96,8 +119,6 @@ export default {
             txToSign = fMintUtils.fMintPushRewardTx(contractAddress);
 
             this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
-
-            console.log('df!', JSON.stringify(this.tx));
         },
 
         onSendTransactionSuccess(_data) {
@@ -106,28 +127,20 @@ export default {
                 title: 'Success',
                 continueTo: this.backButtonRoute,
             };
+            const transactionSuccessComp = `${this.compName}-transaction-success-message`;
 
-            this.$router.replace({
-                name: `${this.compName}-transaction-success-message`,
-                params,
-            });
-        },
-
-        /**
-         * Re-target `'change-component'` event.
-         *
-         * @param {object} _data
-         */
-        onChangeComponent(_data) {
-            let transactionRejectComp = `${this.compName}-transaction-reject-message`;
-
-            if (_data.to === 'transaction-reject-message') {
+            if (this.isView) {
                 this.$router.replace({
-                    name: transactionRejectComp,
-                    params: {
-                        continueTo: this.backButtonRoute,
-                        // continueToParams: { token: { ...this.token } },
-                    },
+                    name: transactionSuccessComp,
+                    params,
+                });
+            } else {
+                params.continueTo = 'hide-window';
+                params.continueButtonLabel = 'Close';
+
+                this.$emit('change-component', {
+                    to: transactionSuccessComp,
+                    data: { ...params, cardOff: true, windowMode: true },
                 });
             }
         },

@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div v-if="continueTo && transactionSuccess" class="form-buttons">
+            <div v-if="(continueTo && transactionSuccess) || continueTo === 'hide-window'" class="form-buttons">
                 <button class="btn large" @click="onContinueBtnClick">{{ continueButtonLabel }}</button>
             </div>
         </template>
