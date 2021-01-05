@@ -187,9 +187,11 @@ export default {
     created() {
         if (!this.hasCorrectParams) {
             // redirect to <defi-deposit>
-            setTimeout(() => {
-                this.$router.replace({ name: this.compName });
-            }, 3000);
+            if (this.isView) {
+                setTimeout(() => {
+                    this.$router.replace({ name: this.compName });
+                }, 3000);
+            }
         } else {
             this.setTx();
         }
@@ -299,7 +301,6 @@ export default {
                 });
             } else {
                 if (this.params.step === 1) {
-                    // params.continueTo = 'defi-deposit-confirmation';
                     params.continueToParams = {
                         params: { ...params.continueToParams },
                         token: { ...this.token },
@@ -313,7 +314,6 @@ export default {
 
                 this.$emit('change-component', {
                     to: transactionSuccessComp,
-                    // from: 'defi-deposit-confirmation',
                     data: { ...params, cardOff: true, windowMode: true },
                 });
             }

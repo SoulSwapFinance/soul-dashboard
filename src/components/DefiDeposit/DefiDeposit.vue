@@ -565,7 +565,7 @@ export default {
     },
 
     methods: {
-        async init() {
+        async init(_dontSetDToken) {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchFMintAccount(this.currentAccount.address),
@@ -587,17 +587,19 @@ export default {
                 }
             }
 
-            if (this.token === null) {
-                if (this.tokenAddress) {
-                    this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
-                } else if (this.tokenSymbol) {
-                    this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
+            if (!_dontSetDToken) {
+                if (this.token === null) {
+                    if (this.tokenAddress) {
+                        this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
+                    } else if (this.tokenSymbol) {
+                        this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
+                    } else {
+                        // get first token that can be deposited
+                        this.dToken = this.tokens[0];
+                    }
                 } else {
-                    // get first token that can be deposited
-                    this.dToken = this.tokens[0];
+                    this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
                 }
-            } else {
-                this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 
@@ -726,7 +728,7 @@ export default {
             this.currentComponent = '';
             this.currentAppNodeId = '';
 
-            this.init();
+            this.init(true);
 
             this.$refs.confirmationWindow.hide();
             this.currentComponent = '';
