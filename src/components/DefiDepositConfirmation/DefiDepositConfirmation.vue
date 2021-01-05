@@ -12,7 +12,6 @@
             :show-cancel-button="true"
             :window-mode="!isView"
             class="min-h-100"
-            @change-component="onChangeComponent"
             @cancel-button-click="$emit('cancel-button-click', $event)"
         >
             <h1 v-if="isView" class="with-back-btn">
@@ -315,29 +314,6 @@ export default {
                 this.$emit('change-component', {
                     to: transactionSuccessComp,
                     data: { ...params, cardOff: true, windowMode: true },
-                });
-            }
-        },
-
-        /**
-         * Re-target `'change-component'` event.
-         *
-         * @param {object} _data
-         */
-        onChangeComponent(_data) {
-            let transactionRejectComp = `${this.compName}-transaction-reject-message`;
-
-            if (_data.to === 'transaction-reject-message') {
-                if (this.params.step === 2) {
-                    transactionRejectComp = `${this.compName}-transaction-reject-message2`;
-                }
-
-                this.$router.replace({
-                    name: transactionRejectComp,
-                    params: {
-                        continueTo: this.compName,
-                        continueToParams: { token: { ...this.token }, tmpPwdCode: this.tmpPwdCode },
-                    },
                 });
             }
         },
