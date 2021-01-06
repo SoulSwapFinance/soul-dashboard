@@ -200,7 +200,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('funiswap-add-liquidity');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 

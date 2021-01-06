@@ -36,7 +36,6 @@
  * Contact object.
  * @typedef {Object} WalletAppStructureNode
  * @property {string} id Unique id of node.
- * @property {string} [route] Route name (from src/routes.js).
  * @property {string} [component] Component name in kebab case.
  * @property {WalletAppStructureNode[]} _c Children.
  */

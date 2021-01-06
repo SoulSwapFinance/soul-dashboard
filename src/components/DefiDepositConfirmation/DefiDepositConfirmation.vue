@@ -175,7 +175,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode(`${this.compName}-confirmation`);
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
 
         cTokenSymbol() {

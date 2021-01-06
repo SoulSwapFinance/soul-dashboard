@@ -43,7 +43,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-mint-repay');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 };

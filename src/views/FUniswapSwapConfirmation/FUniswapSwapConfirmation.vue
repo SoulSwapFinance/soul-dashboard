@@ -163,7 +163,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode(`${this.confirmationCompName}-confirmation`);
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 

@@ -51,7 +51,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-lock');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 };
