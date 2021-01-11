@@ -19,6 +19,7 @@ import TransactionSuccessMessage from '../../components/TransactionSuccessMessag
 import TransactionConfirmation from '../../components/TransactionConfirmation/TransactionConfirmation.vue';
 import TransactionRejectMessage from '../../components/TransactionRejectMessage/TransactionRejectMessage.vue';
 import { eventBusMixin } from '@/mixins/event-bus.js';
+import { SET_SEND_DIRECTION } from '@/store/mutations.type.js';
 
 const DEFAULT_COMPONENT = 'send-transaction-form';
 
@@ -74,6 +75,8 @@ export default {
     },
 
     created() {
+        this.$store.commit(SET_SEND_DIRECTION, 'OperaToOpera');
+
         // temporary data
         this._data_ = null;
 
