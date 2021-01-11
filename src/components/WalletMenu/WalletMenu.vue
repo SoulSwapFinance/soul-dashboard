@@ -51,6 +51,7 @@ import walletIcon from '../../assets/svg/wallet.svg';
 import defiIcon from '../../assets/svg/defi.svg';
 import stakingIcon from '../../assets/svg/stake.svg';
 import swapIcon from '../../assets/svg/defi/ftrade.svg';
+import voteIcon from '../../assets/svg/thumb.svg';
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
@@ -121,6 +122,14 @@ export default {
                     icon: swapIcon,
                     fill: true,
                     fUniswapLink: true,
+                },
+                {
+                    url: {
+                        name: 'gov',
+                    },
+                    title: 'Governance',
+                    icon: voteIcon,
+                    govLink: true,
                 },
                 {
                     url: {
@@ -226,6 +235,7 @@ export default {
             this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
             this.setMenuItemUrl('fUniswapLink', _account, 'funiswap-swap');
+            this.setMenuItemUrl('govLink', _account, 'gov-home');
         },
 
         /**

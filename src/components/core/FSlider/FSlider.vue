@@ -13,6 +13,7 @@
                                     v-for="(item, index) in labels"
                                     :key="`btn${id}${index}`"
                                     class="no-style"
+                                    type="button"
                                     :data-idx="index"
                                 >
                                     <span>{{ item }}</span>
