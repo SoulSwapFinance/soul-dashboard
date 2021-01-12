@@ -97,7 +97,13 @@
                                     </div>
 
                                     <div class="align-center form-buttons">
-                                        <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
+                                        <button
+                                            type="submit"
+                                            class="btn large"
+                                            :disabled="votingDisabled || !item.isDelegationLocked"
+                                        >
+                                            Vote
+                                        </button>
                                     </div>
                                 </div>
 
@@ -205,6 +211,7 @@ import GovVotingInfo from '@/components/GovVotingInfo/GovVotingInfo.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
 import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
 import appConfig from '../../../app.config.js';
+import { fFetch } from '@/plugins/ffetch.js';
 
 export default {
     name: 'GovProposalDetail',
@@ -385,9 +392,13 @@ export default {
                 });
             }
 
-            items.forEach((_item) => {
+            items.forEach(async (_item) => {
                 _item.id = getUniqueId();
                 _item.vote = null;
+                _item.isDelegationLocked = false;
+
+                const delegation = await this.fetchDelegation(_item.validator.id);
+                _item.isDelegationLocked = delegation.isDelegationLocked;
             });
 
             this.items = items;
@@ -416,6 +427,35 @@ export default {
                 this.loading = false;
             } catch (_error) {
                 this.loading = false;
+                this.proposalError = _error;
+            }
+        },
+
+        async fetchDelegation(_validatorAddress) {
+            if (!_validatorAddress) {
+                return null;
+            }
+
+            try {
+                const data = await fFetch.fetchGQLQuery(
+                    {
+                        query: gql`
+                            query Delegation($address: Address!, $staker: Long!) {
+                                delegation(address: $address, staker: $staker) {
+                                    isDelegationLocked
+                                }
+                            }
+                        `,
+                        variables: {
+                            address: this.currentAccount.address,
+                            staker: _validatorAddress,
+                        },
+                    },
+                    'delegation'
+                );
+
+                return data && data.data && data.data.delegation ? data.data.delegation : {};
+            } catch (_error) {
                 this.proposalError = _error;
             }
         },
