@@ -97,11 +97,7 @@
                                     </div>
 
                                     <div class="align-center form-buttons">
-                                        <button
-                                            type="submit"
-                                            class="btn large"
-                                            :disabled="votingDisabled || !item.isDelegationLocked"
-                                        >
+                                        <button type="submit" class="btn large" :disabled="votingDisabled">
                                             Vote
                                         </button>
                                     </div>
@@ -386,19 +382,21 @@ export default {
                         });
                     }
                 });
-            } else {
+            } /* else {
                 items.push({
                     validator: null,
                 });
-            }
+            }*/
 
             items.forEach(async (_item) => {
                 _item.id = getUniqueId();
                 _item.vote = null;
+                /*
                 _item.isDelegationLocked = false;
 
                 const delegation = await this.fetchDelegation(_item.validator.id);
                 _item.isDelegationLocked = delegation.isDelegationLocked;
+                */
             });
 
             this.items = items;
