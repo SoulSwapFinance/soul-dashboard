@@ -382,11 +382,11 @@ export default {
                         });
                     }
                 });
-            } /* else {
+            } else {
                 items.push({
                     validator: null,
                 });
-            }*/
+            }
 
             items.forEach(async (_item) => {
                 _item.id = getUniqueId();
