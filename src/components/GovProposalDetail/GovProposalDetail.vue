@@ -37,7 +37,7 @@
                     Your Votes
                     <f-info window-closeable window-class="light" window-style="max-width: 500px;">
                         Please express your level of agreement with each option. <br />
-                        (1) means no agreement and each level up means higher level of agreement
+                        (0) means no agreement and each level up means higher level of agreement
                     </f-info>
                 </h3>
 
@@ -57,9 +57,12 @@
                                 <div class="form-body cont-650">
                                     <div v-if="item.validator" class="gov-proposal-detail__validator-info">
                                         <h4 class="gov-proposal-detail__sub-title">
-                                            Delegated to: {{ item.validator.stakerInfo.name }} ({{
-                                                parseInt(item.validator.id, 16)
-                                            }})
+                                            You're voting with
+                                            <f-placeholder :content-loaded="!!item.amount" :replacement-num-chars="10">
+                                                {{ item.amount }}
+                                            </f-placeholder>
+                                            FTM delegated to
+                                            {{ item.validator.stakerInfo.name }} ({{ parseInt(item.validator.id, 16) }})
                                             <span v-if="item.validator.stakerInfo._unknown" class="perex">
                                                 {{ item.validator.stakerAddress }}
                                             </span>
@@ -208,11 +211,13 @@ import FInfo from '@/components/core/FInfo/FInfo.vue';
 import { GOV_PERCENTAGE_FRAC_DIGITS } from '@/plugins/governance/governance.js';
 import appConfig from '../../../app.config.js';
 import { fFetch } from '@/plugins/ffetch.js';
+import { WEIToFTM } from '@/utils/transactions.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'GovProposalDetail',
 
-    components: { FInfo, GovVotingInfo, FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
+    components: { FPlaceholder, FInfo, GovVotingInfo, FCard, FMessage, FForm, FSlider, FBackButton, PulseLoader },
 
     mixins: [viewHelpersMixin, eventBusMixin],
 
@@ -306,7 +311,7 @@ export default {
         votingResolved() {
             const { state } = this.d_proposal;
 
-            return state && state.isResolved;
+            return state && state.status !== '0x0';
         },
 
         winner() {
@@ -388,21 +393,23 @@ export default {
                 });
             }
 
-            items.forEach(async (_item) => {
+            items.forEach((_item) => {
                 _item.id = getUniqueId();
                 _item.vote = null;
-                /*
-                _item.isDelegationLocked = false;
-
-                const delegation = await this.fetchDelegation(_item.validator.id);
-                _item.isDelegationLocked = delegation.isDelegationLocked;
-                */
+                _item.amount = 0;
             });
 
             this.items = items;
 
             this.setVotes();
             this.setOptionStates();
+
+            for (let i = 0, len1 = items.length; i < len1; i++) {
+                if (items[i].validator) {
+                    const delegation = await this.fetchDelegation(items[i].validator.id);
+                    items[i].amount = this.formatNumberByLocale(this.WEIToFTM(delegation.amount));
+                }
+            }
         },
 
         async fetchProposal(_govAddress = this.d_governanceId, _proposalId = this.d_proposalId) {
@@ -429,8 +436,8 @@ export default {
             }
         },
 
-        async fetchDelegation(_validatorAddress) {
-            if (!_validatorAddress) {
+        async fetchDelegation(_validatorId) {
+            if (!_validatorId) {
                 return null;
             }
 
@@ -440,13 +447,13 @@ export default {
                         query: gql`
                             query Delegation($address: Address!, $staker: Long!) {
                                 delegation(address: $address, staker: $staker) {
-                                    isDelegationLocked
+                                    amount
                                 }
                             }
                         `,
                         variables: {
                             address: this.currentAccount.address,
-                            staker: _validatorAddress,
+                            staker: _validatorId,
                         },
                     },
                     'delegation'
@@ -667,6 +674,8 @@ export default {
 
         timestampToDate,
         formatDate,
+        formatNumberByLocale,
+        WEIToFTM,
     },
 };
 </script>
