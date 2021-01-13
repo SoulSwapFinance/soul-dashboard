@@ -17,7 +17,11 @@
             <div class="confirmation-info__">
                 <div v-if="d_validator.stakerAddress" class="gov-proposal-detail__validator-info align-center">
                     <h3>
-                        Validator: {{ d_validator.stakerInfo.name }} ({{ parseInt(d_validator.id, 16) }})
+                        You're voting with
+                        <f-placeholder :content-loaded="!!amountDelegated" :replacement-num-chars="10">
+                            {{ amountDelegated }}
+                        </f-placeholder>
+                        FTM delegated to {{ d_validator.stakerInfo.name }} ({{ parseInt(d_validator.id, 16) }})
                         <span v-if="d_validator.stakerInfo._unknown" class="perex">
                             {{ d_validator.stakerAddress }}
                         </span>
@@ -25,7 +29,7 @@
                 </div>
 
                 <div class="gov-proposal-detail__voter-votes">
-                    <h3 class="gov-proposal-detail__sub-title">Your votes</h3>
+                    <h3 class="gov-proposal-detail__sub-title">Your vote</h3>
                     <div class="gov-proposal-detail__cont-resolved">
                         <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
                             <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
@@ -59,11 +63,16 @@ import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import { toKebabCase } from '@/utils';
 import governanceUtils from 'fantom-ledgerjs/src/governance-utils.js';
 import Web3 from 'web3';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { fFetch } from '@/plugins/ffetch.js';
+import gql from 'graphql-tag';
+import { formatNumberByLocale } from '@/filters.js';
+import { WEIToFTM } from '@/utils/transactions.js';
 
 export default {
     name: 'GovProposalConfirmation',
 
-    components: { FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
+    components: { FPlaceholder, FMessage, LedgerConfirmationContent, FBackButton, TxConfirmation },
 
     mixins: [viewHelpersMixin],
 
@@ -118,6 +127,8 @@ export default {
             d_validator: this.validator,
             /** Voter's votes */
             d_votes: this.votes,
+            /** */
+            amountDelegated: '',
         };
     },
 
@@ -158,6 +169,12 @@ export default {
                     params: this.$route.params,
                 });
             }, 3000);
+        } else if (this.d_validator.id) {
+            this.fetchDelegation(this.d_validator.id).then((_delegation) => {
+                if (_delegation && _delegation.amount) {
+                    this.amountDelegated = this.formatNumberByLocale(this.WEIToFTM(_delegation.amount));
+                }
+            });
         }
 
         this.setTx();
@@ -197,6 +214,35 @@ export default {
             }
         },
 
+        async fetchDelegation(_validatorId) {
+            if (!_validatorId) {
+                return null;
+            }
+
+            try {
+                const data = await fFetch.fetchGQLQuery(
+                    {
+                        query: gql`
+                            query Delegation($address: Address!, $staker: Long!) {
+                                delegation(address: $address, staker: $staker) {
+                                    amount
+                                }
+                            }
+                        `,
+                        variables: {
+                            address: this.currentAccount.address,
+                            staker: _validatorId,
+                        },
+                    },
+                    'delegation'
+                );
+
+                return data && data.data && data.data.delegation ? data.data.delegation : {};
+            } catch (_error) {
+                console.error(_error);
+            }
+        },
+
         onSendTransactionSuccess(_data) {
             const params = {
                 tx: _data.data.sendTransaction.hash,
@@ -229,6 +275,9 @@ export default {
                 });
             }
         },
+
+        formatNumberByLocale,
+        WEIToFTM,
     },
 };
 </script>

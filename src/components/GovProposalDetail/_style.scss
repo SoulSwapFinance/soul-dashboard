@@ -39,7 +39,7 @@
     &__validator-info {
         margin-top: 24px;
 
-        h3 > span {
+        h3 > span:not(.f-placeholder) {
             font-size: 16px;
         }
     }
