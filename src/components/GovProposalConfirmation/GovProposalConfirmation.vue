@@ -16,7 +16,7 @@
 
             <div class="confirmation-info__">
                 <div v-if="d_validator.stakerAddress" class="gov-proposal-detail__validator-info align-center">
-                    <h3>
+                    <h3 class="gov-proposal-confirmation__subtitle">
                         You're voting with
                         <f-placeholder :content-loaded="!!amountDelegated" :replacement-num-chars="10">
                             {{ amountDelegated }}
@@ -281,3 +281,8 @@ export default {
     },
 };
 </script>
+<style>
+.gov-proposal-confirmation__subtitle {
+    font-size: 21px !important;
+}
+</style>
