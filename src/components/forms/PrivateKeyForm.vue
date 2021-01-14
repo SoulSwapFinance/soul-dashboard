@@ -11,6 +11,7 @@
                             type="text"
                             label="Please type in your private key"
                             field-size="large"
+                            autocomplete="off"
                             name="pk"
                             @input="onPkInput"
                         />
