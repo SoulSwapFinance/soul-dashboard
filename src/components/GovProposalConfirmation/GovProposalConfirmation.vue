@@ -33,7 +33,7 @@
                     <div class="gov-proposal-detail__cont-resolved">
                         <ul class="no-markers gov-proposal-detail__options" aria-label="list of proposals">
                             <li v-for="(item, index) in d_proposal.options" :key="`govprpsl${index}`">
-                                <div class="row align-items-center">
+                                <div class="row align-items-center no-collapse">
                                     <div class="col col-8 gov-proposal-detail__option">{{ item }}</div>
                                     <div class="col col-4 gov-proposal-detail__vote">{{ getVote(index) }}</div>
                                 </div>
