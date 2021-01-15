@@ -23,6 +23,7 @@
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col-8">
+                                {{ parseInt(item.proposal.id, 16) }} <br />
                                 {{ value }} <br />
                                 <a
                                     :href="`${explorerUrl}address/${item.proposal.contract}`"
@@ -34,6 +35,7 @@
                             </div>
                         </div>
                         <template v-else>
+                            {{ parseInt(item.proposal.id, 16) }} <br />
                             {{ value }} <br />
                             <a
                                 :href="`${explorerUrl}address/${item.proposal.contract}`"
@@ -159,7 +161,7 @@ export default {
             columns: [
                 {
                     name: 'name',
-                    label: 'Name',
+                    label: 'ID / Name',
                     itemProp: 'proposal.name',
                     width: '220px',
                 },
