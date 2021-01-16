@@ -360,7 +360,14 @@ export class FantomWeb3Wallet {
             'estimateGas'
         );
 
-        return data.data ? data.data.estimateGas : '';
+        let estimateGas = data.data ? data.data.estimateGas : '';
+
+        if (estimateGas) {
+            estimateGas = parseInt(estimateGas, 16);
+            estimateGas = `0x${(estimateGas + 2000).toString(16)}`;
+        }
+
+        return estimateGas;
     }
 
     /**
