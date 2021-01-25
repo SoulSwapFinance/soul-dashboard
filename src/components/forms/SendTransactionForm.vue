@@ -64,6 +64,7 @@
                                 <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
                                     {{ sendToErrorMsg }}
                                 </f-message>
+                                <div v-if="resolvedAddress">Domain resolved to {{ resolvedAddress }}</div>
                                 <div v-if="ETHOrBNBAccountBalance">
                                     {{ ETHOrBNBAccountBalance }}
                                 </div>
@@ -115,6 +116,8 @@ import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbr
 import AddressField from '../AddressField/AddressField.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import appConfig from '../../../app.config.js';
+import Resolution from '@unstoppabledomains/resolution';
+const resolution = new Resolution();
 
 export default {
     name: 'SendTransactionForm',
@@ -145,10 +148,11 @@ export default {
             amountErrMsg: 'Invalid amount',
             gasPrice: '',
             amount: '',
-            sendToErrorMsg: 'Enter a valid Opera FTM address',
+            sendToErrorMsg: 'Enter a valid Opera FTM address or domain name',
             /** Balance of BNB or ETH account. */
             ETHOrBNBAccountBalance: '',
             minFTMToTransfer: appConfig.bnbridgeApi.minFTMToTransfer,
+            resolvedAddress: null,
         };
     },
 
@@ -212,7 +216,7 @@ export default {
          * @return {string}
          */
         sendToLabel() {
-            let sendTo = 'Send To';
+            let sendTo = 'Send To (address or domain)';
 
             switch (this.sendDirection) {
                 case 'OperaToBinance':
@@ -269,13 +273,14 @@ export default {
         async checkAddress(_value) {
             const { sendDirection } = this;
             let validAddress = false;
-            const value = _value.trim();
+            let value = _value.trim();
 
             this.ETHOrBNBAccountBalance = '';
 
             if (sendDirection === 'OperaToOpera') {
+                value = (await this.resolveAddress(value, 'FTM', 'OPERA')) || value;
                 validAddress = this.$fWallet.isValidAddress(value);
-                this.sendToErrorMsg = 'Enter a valid Opera FTM address';
+                this.sendToErrorMsg = 'Enter a valid Opera FTM address or domain name';
             } else if (sendDirection === 'OperaToBinance') {
                 validAddress = this.$bnb.isBNBAddress(value);
                 this.sendToErrorMsg = 'Enter a valid BNB address';
@@ -321,6 +326,22 @@ export default {
             }
 
             return validAddress;
+        },
+
+        async resolveAddress(value, currency, chain) {
+            this.resolvedAddress = null;
+            if (resolution.isSupportedDomainInNetwork(value)) {
+                try {
+                    if (chain) {
+                        this.resolvedAddress = await resolution.multiChainAddr(value, currency, chain);
+                    } else {
+                        this.resolvedAddress = await resolution.addr(value, currency);
+                    }
+                } catch (e) {
+                    console.log('Domain resolution failed', e);
+                }
+            }
+            return this.resolvedAddress;
         },
 
         checkAmount(_value) {
@@ -372,7 +393,7 @@ export default {
 
             if (this.currentAccount && data.amount) {
                 if (sendDirection === 'OperaToOpera') {
-                    data.opera_address = data.address;
+                    data.opera_address = this.resolvedAddress || data.address;
                 } else if (sendDirection === 'OperaToBinance') {
                     data.bnb_address = data.address;
                 } else if (sendDirection === 'OperaToEthereum') {
