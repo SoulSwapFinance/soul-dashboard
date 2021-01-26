@@ -116,7 +116,7 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([$defi.fetchUniswapPairs(), $defi.init()]);
 
-            this.pair = result[0].find((_pair) => _pair.pairAddress === this.params.address) || {};
+            this.pair = result[0].find((_pair) => _pair.pairAddress === this.params.pairAddress) || {};
 
             this.loadSeries();
         },
@@ -124,7 +124,7 @@ export default {
         async loadSeries(_timeSpan = this.timeSpan, _resolution = this.resolution) {
             const timeSpan = getTimeSpan(_timeSpan);
 
-            this.series = await this.fetchTimeVolumes(this.params.address, _resolution, timeSpan[0], timeSpan[1]);
+            this.series = await this.fetchTimeVolumes(this.params.pairAddress, _resolution, timeSpan[0], timeSpan[1]);
         },
 
         /**

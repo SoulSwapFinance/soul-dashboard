@@ -595,6 +595,10 @@ const appStructure = [
                                             },
                                         ],
                                     },
+                                    {
+                                        id: 'funiswap-pair-detail',
+                                        route: 'funiswap-pair-detail',
+                                    },
                                 ],
                             },
                         ],

@@ -67,6 +67,7 @@ import GovHome from '@/views/GovHome/GovHome.vue';
 import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
+import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDetail.vue';
 
 export const routes = [
     {
@@ -768,6 +769,11 @@ export const routes = [
                                         component: TransactionRejectMessageView,
                                     },
                                 ],
+                            },
+                            {
+                                name: 'funiswap-pair-detail',
+                                path: 'pair/:pairAddress',
+                                component: FUniswapPairDetail,
                             },
                         ],
                     },
