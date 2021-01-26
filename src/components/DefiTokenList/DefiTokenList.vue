@@ -1,31 +1,25 @@
 <template>
     <div class="defi-token-list">
-        <ul class="no-markers" @click="onTokenListClick" @keyup="onTokenListKeyup">
-            <li
-                v-for="token in dTokens"
-                :key="token.address"
-                :data-token-address="!token._disabled ? token.address : ''"
-                :tabindex="token._disabled ? -1 : 0"
-                :class="{ disabled: token._disabled }"
-            >
+        <f-listbox ref="listbox" :data="dTokens" @item-selected="onListboxItemSelected">
+            <template v-slot="{ item }">
                 <div class="row align-items-center no-collapse">
-                    <div class="col"><f-crypto-symbol :token="token" img-width="40px" img-height="40px" /></div>
-                    <div class="col available-balance">{{ getAvailableBalance(token) }}</div>
+                    <div class="col"><f-crypto-symbol :token="item" img-width="40px" img-height="40px" /></div>
+                    <div class="col available-balance">{{ getAvailableBalance(item) }}</div>
                 </div>
-            </li>
-        </ul>
+            </template>
+        </f-listbox>
     </div>
 </template>
 
 <script>
-import { cloneObject } from '../../utils';
-import { isAriaAction } from '../../utils/aria.js';
+import { cloneObject, defer } from '../../utils';
 import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
+import FListbox from '@/components/core/FListbox/FListbox.vue';
 
 export default {
     name: 'DefiTokenList',
 
-    components: { FCryptoSymbol },
+    components: { FListbox, FCryptoSymbol },
 
     props: {
         /** @type {DefiToken[]} */
@@ -53,6 +47,12 @@ export default {
         this.setDTokens(this.tokens);
     },
 
+    mounted() {
+        defer(() => {
+            this.$refs.listbox.$el.focus();
+        });
+    },
+
     methods: {
         /**
          * @param {DefiToken[]} _tokens
@@ -75,24 +75,11 @@ export default {
         },
 
         /**
-         * @param {Event} _event
+         * @param {ERC20Token} _token
          */
-        onTokenListClick(_event) {
-            const elem = _event.target.closest('[data-token-address]');
-            const address = elem ? elem.getAttribute('data-token-address') : '';
-            const token = address ? this.dTokens.find((_item) => _item.address === address) : null;
-
-            if (token) {
-                this.$emit('defi-token-picked', cloneObject(token));
-            }
-        },
-
-        /**
-         * @param {KeyboardEvent} _event
-         */
-        onTokenListKeyup(_event) {
-            if (isAriaAction(_event)) {
-                this.onTokenListClick(_event);
+        onListboxItemSelected(_token) {
+            if (_token) {
+                this.$emit('defi-token-picked', cloneObject(_token));
             }
         },
     },

@@ -451,7 +451,7 @@ export default {
             let token = _type === 'from' ? this.fromToken : this.toToken;
 
             return this.tokens.map((_item) => {
-                return { ..._item, _disabled: _item.address === token.address };
+                return { ..._item, disabled: _item.address === token.address };
             });
         },
 
