@@ -671,7 +671,8 @@ export class FantomWeb3Wallet {
     async getTransactionToSign({ from, to, value, memo = '' }) {
         const nonce = await this.getTransactionCount(from);
         const gasPrice = await this.getGasPrice(true);
-        let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
+        // let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
+        let gasLimit = to ? await this.getEstimateGas(from, to, memo ? Web3.utils.asciiToHex(memo) : null, value) : '';
 
         if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
