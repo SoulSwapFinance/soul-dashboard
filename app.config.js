@@ -43,7 +43,9 @@ const appConfig = {
     // JSON-RPC endpoint
     rpc: 'https://rpcapi.fantom.network/',
     // used in links pointing to fantom explorer
-    explorerUrl: 'https://explorer.fantom.network/',
+    explorerUrl: 'https://ftmscan.com/',
+    // used in links pointing to fantom explorer's transaction detail
+    explorerTransactionPath: 'tx',
     // used in links pointing to ethereum explorer
     ethereumExplorerUrl: 'https://etherscan.io/',
     // used in links pointing to binance explorer
@@ -76,6 +78,8 @@ const appConfig = {
         rpc: 'https://xapi.testnet.fantom.network/lachesis',
         // used in links pointing to fantom explorer
         explorerUrl: 'https://explorer.testnet.fantom.network/',
+        // used in links pointing to fantom explorer's transaction detail
+        explorerTransactionPath: 'transactions',
         // chain id for testnet
         chainId: '0xfa2',
     },
@@ -127,6 +131,7 @@ const appConfig = {
 if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
+    appConfig.explorerTransactionPath = appConfig.testnet.explorerTransactionPath;
     appConfig.rpc = appConfig.testnet.rpc;
     appConfig.chainId = appConfig.testnet.chainId;
 }
