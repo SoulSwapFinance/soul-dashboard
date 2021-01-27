@@ -343,7 +343,6 @@ const appStructure = [
                                     },
                                     {
                                         id: 'funiswap-pair-detail',
-                                        route: 'funiswap-pair-detail',
                                     },
                                 ],
                             },
@@ -353,41 +352,32 @@ const appStructure = [
             },
             {
                 id: 'gov',
-                route: 'gov',
                 _c: [
                     {
                         id: 'gov-home',
-                        route: 'gov-home',
                         _c: [
                             {
                                 id: 'gov-proposal-detail',
-                                route: 'gov-proposal-detail',
                                 _c: [
                                     {
                                         id: 'gov-proposal-confirmation',
-                                        route: 'gov-proposal-confirmation',
                                         _c: [
                                             {
                                                 id: 'gov-proposal-transaction-success-message',
-                                                route: 'gov-proposal-transaction-success-message',
                                             },
                                             {
                                                 id: 'gov-proposal-transaction-reject-message',
-                                                route: 'gov-proposal-transaction-reject-message',
                                             },
                                         ],
                                     },
                                     {
                                         id: 'gov-cancel-vote-confirmation',
-                                        route: 'gov-cancel-vote-confirmation',
                                         _c: [
                                             {
                                                 id: 'gov-cancel-vote-transaction-success-message',
-                                                route: 'gov-cancel-vote-transaction-success-message',
                                             },
                                             {
                                                 id: 'gov-cancel-vote-transaction-reject-message',
-                                                route: 'gov-cancel-vote-transaction-reject-message',
                                             },
                                         ],
                                     },

@@ -93,7 +93,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('funiswap-pair-detail');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 
