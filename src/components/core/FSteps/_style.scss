@@ -1,47 +1,47 @@
 @import "custom-properties";
 
-.f-steps {
+.fsteps {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--f-steps-padding);
+    padding: var(--fsteps-padding);
     /*background: linear-gradient(#eee, #eee) no-repeat center/100% 1px;*/
 
     &.labels-on {
         padding-bottom: 32px;
     }
 
-    &__cont {
+    &_cont {
         display: flex;
-        padding: var(--f-steps-cont-padding);
-        background: var(--f-steps-cont-background);
+        padding: var(--fsteps-cont-padding);
+        background: var(--fsteps-cont-background);
     }
 
-    &__step {
+    &_step {
         position: relative;
-        padding: var(--f-steps-step-padding);
+        padding: var(--fsteps-step-padding);
 
         &:first-child {
             padding-left: 0;
         }
 
         &::before {
-            width: var(--f-steps-step-dot-width);
-            height: var(--f-steps-step-dot-height);
-            background: var(--f-steps-step-dot-background);
-            border: var(--f-steps-step-dot-border);
-            border-radius: var(--f-steps-step-dot-border-radius);
-            content: var(--f-steps-step-dot-content);
+            width: var(--fsteps-step-dot-width);
+            height: var(--fsteps-step-dot-height);
+            background: var(--fsteps-step-dot-background);
+            border: var(--fsteps-step-dot-border);
+            border-radius: var(--fsteps-step-dot-border-radius);
+            content: var(--fsteps-step-dot-content);
             display: block;
         }
 
-        &--active {
+        &-active {
             &::before {
                 position: relative;
-                background: var(--f-steps-step-dot-active-background);
-                border: var(--f-steps-step-dot-active-border);
+                background: var(--fsteps-step-dot-active-background);
+                border: var(--fsteps-step-dot-active-border);
                 z-index: 1;
             }
 
@@ -51,24 +51,24 @@
                 transform: translateY(-50%);
                 right: 0;
                 width: 100%;
-                height: var(--f-steps-hor-line-height);
-                background: var(--f-steps-active-hor-line-background);
+                height: var(--fsteps-hor-line-height);
+                background: var(--fsteps-active-hor-line-background);
                 content: '';
                 z-index: 0;
             }
         }
     }
 
-    &__label {
+    &_label {
         position: absolute;
-        color: var(--f-steps-label-color);
-        width: var(--f-steps-label-width);
-        padding: var(--f-steps-label-padding);
+        color: var(--fsteps-label-color);
+        width: var(--fsteps-label-width);
+        padding: var(--fsteps-label-padding);
         text-align: center;
-        transform: translateX(calc(-50% + 0.5 * var(--f-steps-step-dot-width)));
+        transform: translateX(calc(-50% + 0.5 * var(--fsteps-step-dot-width)));
 
-        &--active {
-            color: var(--f-steps-label-active-color);
+        &-active {
+            color: var(--fsteps-label-active-color);
         }
     }
 }

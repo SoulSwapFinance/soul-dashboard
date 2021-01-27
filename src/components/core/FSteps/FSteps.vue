@@ -1,13 +1,13 @@
 <template>
-    <div class="f-steps" :class="{ 'labels-on': labels.length > 0 }">
-        <div class="f-steps__cont">
+    <div class="fsteps" :class="{ 'labels-on': labels.length > 0 }">
+        <div class="fsteps_cont">
             <div
                 v-for="(step, index) in steps"
                 :key="step.id"
-                class="f-steps__step"
-                :class="{ 'f-steps__step--active': index < cActive }"
+                class="fsteps_step"
+                :class="{ 'fsteps_step-active': index < cActive }"
             >
-                <span class="f-steps__label" :class="{ 'f-steps__label--active': index < cActive }">
+                <span class="fsteps_label" :class="{ 'fsteps_label-active': index < cActive }">
                     {{ step.label }}
                 </span>
             </div>

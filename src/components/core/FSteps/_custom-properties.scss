@@ -1,39 +1,39 @@
-.f-steps {
-    --f-steps-padding: 8px;
+.fsteps {
+    --fsteps-padding: 8px;
 
     /* main colors */
-    --f-steps-primary-color: var(--f-primary-color, #666);
-    --f-steps-secondary-color: #e6e6e6;
+    --fsteps-primary-color: var(--f-primary-color, #666);
+    --fsteps-secondary-color: #e6e6e6;
 
     /* horizontal line */
-    --f-steps-hor-line-height: 1px;
-    --f-steps-hor-line-color: var(--f-steps-secondary-color);
+    --fsteps-hor-line-height: 1px;
+    --fsteps-hor-line-color: var(--fsteps-secondary-color);
     /* active horizontal line */
-    --f-steps-active-hor-line-background: var(--f-steps-primary-color);
+    --fsteps-active-hor-line-background: var(--fsteps-primary-color);
 
     /* steps container */
-    --f-steps-cont-padding: 0;
-    --f-steps-cont-background: linear-gradient(var(--f-steps-hor-line-color), var(--f-steps-hor-line-color)) no-repeat
-        center/100% var(--f-steps-hor-line-height); /* horizontal line */
+    --fsteps-cont-padding: 0;
+    --fsteps-cont-background: linear-gradient(var(--fsteps-hor-line-color), var(--fsteps-hor-line-color)) no-repeat
+        center/100% var(--fsteps-hor-line-height); /* horizontal line */
 
     /* step */
-    --f-steps-step-padding: 0 0 0 64px;
+    --fsteps-step-padding: 0 0 0 64px;
 
     /* step dot */
-    --f-steps-step-dot-width: 16px;
-    --f-steps-step-dot-height: 16px;
-    --f-steps-step-dot-border: var(--f-steps-hor-line-height) solid var(--f-steps-hor-line-color);
-    --f-steps-step-dot-border-radius: 50%;
-    --f-steps-step-dot-content: '';
-    --f-steps-step-dot-background: var(--f-steps-secondary-color);
+    --fsteps-step-dot-width: 16px;
+    --fsteps-step-dot-height: 16px;
+    --fsteps-step-dot-border: var(--fsteps-hor-line-height) solid var(--fsteps-hor-line-color);
+    --fsteps-step-dot-border-radius: 50%;
+    --fsteps-step-dot-content: '';
+    --fsteps-step-dot-background: var(--fsteps-secondary-color);
     /* active step dot */
-    --f-steps-step-dot-active-background: var(--f-steps-primary-color);
-    --f-steps-step-dot-active-border: var(--f-steps-hor-line-height) solid var(--f-steps-step-dot-active-background);
+    --fsteps-step-dot-active-background: var(--fsteps-primary-color);
+    --fsteps-step-dot-active-border: var(--fsteps-hor-line-height) solid var(--fsteps-step-dot-active-background);
 
     /* label */
-    --f-steps-label-color: inherit;
-    --f-steps-label-width: 60px;
-    --f-steps-label-padding: 4px 0 0 0;
+    --fsteps-label-color: inherit;
+    --fsteps-label-width: 60px;
+    --fsteps-label-padding: 4px 0 0 0;
     /* active label */
-    --f-steps-label-active-color: var(--f-steps-primary-color);
+    --fsteps-label-active-color: var(--fsteps-primary-color);
 }
