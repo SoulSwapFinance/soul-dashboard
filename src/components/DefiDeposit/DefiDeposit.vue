@@ -416,12 +416,19 @@ export default {
 
         maxCollateral() {
             const maxCollateral = this._maxCollateral;
+            let max = 0;
 
             if (this.withdraw) {
-                return this.collateral - this._minCollateral;
+                max = this.collateral - this._minCollateral;
             } else {
-                return maxCollateral - maxCollateral * this.defiSlippageReserve;
+                max = maxCollateral - maxCollateral * this.defiSlippageReserve;
             }
+
+            if (max < 0) {
+                max = 0;
+            }
+
+            return max;
         },
 
         _maxCollateral() {

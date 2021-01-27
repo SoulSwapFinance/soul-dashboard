@@ -275,8 +275,12 @@ export default {
             const fWallet = this.$fWallet;
             const { token } = this;
 
+            if (!dTxData.opera_address) {
+                return;
+            }
+
             if (token.address) {
-                this.tx = await this.$fWallet.getDefiTransactionToSign(
+                this.tx = await fWallet.getDefiTransactionToSign(
                     erc20Utils.erc20TransferTx(
                         token.address,
                         fWallet.toChecksumAddress(dTxData.opera_address),

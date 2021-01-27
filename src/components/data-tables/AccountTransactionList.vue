@@ -37,7 +37,7 @@
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col-7">
                             <a
-                                :href="`${explorerUrl}transactions/${item.transaction.hash}`"
+                                :href="`${explorerUrl}${explorerTransactionPath}/${item.transaction.hash}`"
                                 target="_blank"
                                 class="break-word"
                             >
@@ -47,7 +47,7 @@
                     </div>
                     <template v-else>
                         <a
-                            :href="`${explorerUrl}transactions/${item.transaction.hash}`"
+                            :href="`${explorerUrl}${explorerTransactionPath}/${item.transaction.hash}`"
                             target="_blank"
                             class="break-word"
                         >
@@ -230,6 +230,7 @@ export default {
         return {
             totalCount: 0,
             explorerUrl: appConfig.explorerUrl,
+            explorerTransactionPath: appConfig.explorerTransactionPath,
             dItems: [],
             dHasNext: false,
             dAccountByAddressError: '',

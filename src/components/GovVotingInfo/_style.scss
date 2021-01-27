@@ -1,0 +1,37 @@
+.gov-voting-info {
+    > .f-card {
+        margin-bottom: 40px;
+    }
+
+    &__title {
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    &__table {
+        max-width: 440px;
+        margin: 0 auto 16px auto;
+
+        tr {
+            height: auto;
+        }
+
+        td, th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .f-colored-number-range {
+            font-size: 21px;
+            //font-weight: bold;
+        }
+    }
+
+    /*
+    &__items {
+        li:not(:last-child) {
+            padding-bottom: 16px;
+        }
+    }
+    */
+}

@@ -69,6 +69,12 @@ a:not(.btn):hover {
 }
 
 details {
+    margin-top: 16px;
+
+    &:not([open]) {
+        color: $light-gray-color;
+    }
+
     summary {
         text-align: left;
         cursor: pointer;
@@ -110,6 +116,13 @@ details {
 
 .fs-huge {
     font-size: $fs-huge;
+}
+
+hr {
+    border: none;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--f-hr-border-color);
 }
 
 form {
@@ -257,7 +270,7 @@ legend.h2 {
     line-height: 1.23;
 }
 
-.form-buttons {
+.form-b.uttons {
     padding-top: 24px;
     padding-bottom: 8px;
 
@@ -269,6 +282,11 @@ legend.h2 {
             margin-left: 0;
         }
     }
+}
+
+.cont-650 {
+    max-width: 650px !important;
+    margin: 0 auto;
 }
 
 .f-window {

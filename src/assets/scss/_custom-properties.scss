@@ -12,6 +12,8 @@
     --f-icon-stroke-color: var(--f-doc-background-color);
     --f-icon-fill-color: var(--f-doc-background-color);
 
+    --f-hr-border-color: #{$grey-color-semi};
+
     .f-slider {
         --f-slider-label-color: var(--f-primary-color);
         --f-slider-label-font-size: 14px;
@@ -88,6 +90,17 @@
         .f-placeholder {
             --f-placeholder-on-gradient-color1: var(--f-card-background-color);
         }
+    }
+
+    .flistbox {
+        --f-listbox-item-background-color: #eee;
+        --f-listbox-item-hover-background-color: #ccddff;
+        --f-listbox-item-selected-color: inherit;
+        --f-listbox-item-selected-background-color: #ccddff;
+    }
+
+    .f-lightweight-chart {
+        --f-lightweight-chart-chart-text-color: #8997b1;
     }
 }
 

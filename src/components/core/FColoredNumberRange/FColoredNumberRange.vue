@@ -13,6 +13,8 @@
 /**
  *
  */
+import { formatNumberByLocale } from '@/filters.js';
+
 export default {
     name: 'FColoredNumberRange',
 
@@ -48,6 +50,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Number of fraction digits for percentage. */
+        percentageFracDigits: {
+            type: Number,
+            default: 0,
+        },
     },
 
     data() {
@@ -73,6 +80,10 @@ export default {
         },
 
         percentage() {
+            if (this.percentageFracDigits > 0) {
+                return formatNumberByLocale(((this.cValue - this.from) / (this.to - this.from)) * 100, 2, '', true);
+            }
+
             return Math.round(((this.cValue - this.from) / (this.to - this.from)) * 100);
         },
     },

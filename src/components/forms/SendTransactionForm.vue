@@ -330,6 +330,10 @@ export default {
                 } else if (value > 0) {
                     this.amountErrMsg = `You can transfer max ${remainingBalance} ${tokenSymbol}`;
                 }
+
+                if (!ok && value === 0) {
+                    ok = true;
+                }
             }
 
             return ok;

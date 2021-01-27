@@ -1,0 +1,123 @@
+.gov-proposal-detail {
+    &__options {
+        margin-top: 40px;
+        margin-bottom: 40px;
+
+        li {
+            margin-bottom: 24px;
+        }
+    }
+
+    &__sub-title {
+        text-align: center;
+        margin-top: 32px;
+    }
+
+    &__contract {
+        text-align: center;
+        margin-bottom: 24px !important;
+    }
+
+    &__item {
+        .f-card {
+            margin-top: 24px;
+        }
+
+        .f-slider {
+            overflow: hidden;
+        }
+
+        .gov-proposal-detail__sub-title {
+            font-weight: normal;
+        }
+    }
+
+    &__green {
+        color: #15cd72;
+    }
+
+    &__validator-info {
+        margin-top: 24px;
+
+        h3 > span:not(.f-placeholder) {
+            font-size: 16px;
+        }
+    }
+
+    &__winnigs {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    &__cont-resolved {
+        //margin-top: 40px;
+        margin-bottom: 32px;
+
+        .gov-proposal-detail__options {
+            max-width: 400px;
+            margin: 0 auto 32px auto;
+        }
+    }
+
+    &__voter-votes {
+        --f-data-layout-cols-padding: 8px;
+
+        li {
+            margin-bottom: -4px;
+        }
+
+        .gov-proposal-detail__sub-title {
+            font-size: 21px !important;
+        }
+    }
+
+    &__option {
+        font-weight: normal !important;
+    }
+
+    &__vote {
+        font-weight: bold;
+        font-size: 21px;
+        text-align: right;
+    }
+
+    &__winner {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 48px !important;
+
+        h3 {
+            margin-top: 24px;
+        }
+    }
+
+    &__dates {
+        margin-top: 24px;
+        text-align: center;
+
+        .label {
+            font-weight: normal;
+        }
+    }
+
+    &__loader {
+        text-align: center;
+        padding-top: 60px;
+    }
+
+    h2.perex {
+        color: #333;
+        font-size: 18px;
+        margin-bottom: 40px;
+    }
+
+    hr {
+        margin-top: 48px;
+    }
+
+    .f-slider {
+        label {
+            padding-bottom: 8px;
+        }
+    }
+}

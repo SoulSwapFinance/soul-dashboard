@@ -18,6 +18,8 @@
     //--f-doc-color: #fbfcff;
     --f-doc-background-color: var(--f-dark-color);
 
+    --f-hr-border-color: var(--f-darker-color-2);
+
     //--f-simple-navigation-link-color: #2C2E3F;
     --f-simple-navigation-link-color: var(--f-lighter-color);
     //--f-simple-navigation-link-hover-color: #fff;
@@ -126,6 +128,14 @@
     }
     */
 
+    .flistbox {
+        --f-listbox-item-color: #fff;
+        --f-listbox-item-hover-color: #fff;
+        --f-listbox-item-background-color: var(--f-darker-color-2);
+        --f-listbox-item-hover-background-color: var(--f-darker-color-3);
+        --f-listbox-item-selected-background-color: var(--f-darker-color-3);
+    }
+
     .defi-token-list {
         --f-defi-token-list-item-color: var(--f-darker-color-2);
         --f-defi-token-list-item-hover-color: var(--f-darker-color-3);
@@ -181,5 +191,11 @@
 
     .blockchain-picker {
         --blockchain-picker-focus-background-color: var(--f-darker-color-3);
+    }
+
+    .gov-proposal-detail {
+        h2.perex {
+            color: #fff;
+        }
     }
 }

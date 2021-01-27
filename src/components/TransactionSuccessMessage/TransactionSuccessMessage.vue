@@ -18,7 +18,7 @@
                 <h2>{{ dTitle }}</h2>
 
                 <h3 class="break-word">
-                    <a :href="`${explorerUrl}transactions/${tx}`" target="_blank">
+                    <a :href="`${explorerUrl}${explorerTransactionPath}/${tx}`" target="_blank">
                         <f-ellipsis :text="tx" overflow="middle" />
                     </a>
                 </h3>
@@ -100,6 +100,7 @@ export default {
     data() {
         return {
             explorerUrl: appConfig.explorerUrl,
+            explorerTransactionPath: appConfig.explorerTransactionPath,
             loading: true,
             transactionSuccess: true,
             dTitle: this.title,
