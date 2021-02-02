@@ -62,14 +62,16 @@
                     <div class="col">{{ txData.memo }}</div>
                 </div>
 
-                <f-message v-if="sendDirection !== 'OperaToOpera'" type="warning" class="align-center">
-                    All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from the transfer
-                    amount.
-                </f-message>
-                <f-message type="info" class="big">
-                    You will receive <b>{{ txData.amount - minFTMToTransfer }} FTM</b>
-                </f-message>
-                <br />
+                <template v-if="sendDirection !== 'OperaToOpera'">
+                    <f-message type="warning" class="align-center">
+                        All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from the
+                        transfer amount.
+                    </f-message>
+                    <f-message type="info" class="big">
+                        You will receive <b>{{ txData.amount - minFTMToTransfer }} FTM</b>
+                    </f-message>
+                    <br />
+                </template>
 
                 <!--
                 <div class="row no-collapse">

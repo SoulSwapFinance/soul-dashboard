@@ -78,14 +78,20 @@
                         />
 
                         <div class="align-center form-buttons">
-                            <f-message v-if="sendDirection !== 'OperaToOpera'" type="warning" class="align-center">
-                                All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from
-                                the transfer amount.
-                            </f-message>
-                            <f-message v-if="amount >= minFTMToTransfer && checkAmount(amount)" type="info" class="big">
-                                You will receive <b>{{ amount - minFTMToTransfer }} FTM</b>
-                            </f-message>
-                            <br />
+                            <template v-if="sendDirection !== 'OperaToOpera'">
+                                <f-message type="warning" class="align-center">
+                                    All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted
+                                    from the transfer amount.
+                                </f-message>
+                                <f-message
+                                    v-if="amount >= minFTMToTransfer && checkAmount(amount)"
+                                    type="info"
+                                    class="big"
+                                >
+                                    You will receive <b>{{ amount - minFTMToTransfer }} FTM</b>
+                                </f-message>
+                                <br />
+                            </template>
 
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
