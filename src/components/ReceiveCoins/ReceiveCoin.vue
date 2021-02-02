@@ -19,6 +19,12 @@
 
                 and then click 'Confirm Deposit' below
 
+                <br /><br />
+                <f-message type="warning" class="align-center">
+                    All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from the transfer
+                    amount.
+                </f-message>
+
                 <div class="form-buttons">
                     <pulse-loader v-if="loading" color="#1969ff"></pulse-loader>
                     <template v-else>
@@ -46,6 +52,7 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { mapGetters } from 'vuex';
 import FMessage from '../core/FMessage/FMessage.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'ReceiveCoin',
@@ -73,6 +80,7 @@ export default {
             error: '',
             loading: false,
             stData: {},
+            minFTMToTransfer: appConfig.bnbridgeApi.minFTMToTransfer,
         };
     },
 

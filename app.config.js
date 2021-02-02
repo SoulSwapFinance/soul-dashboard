@@ -55,6 +55,8 @@ const appConfig = {
         useETH: true,
         // use Binance chain
         useBNB: true,
+        // minimal amount of FTM to ETH transfer
+        minFTMToTransfer: 100,
     },
     disableFLend: true,
     //

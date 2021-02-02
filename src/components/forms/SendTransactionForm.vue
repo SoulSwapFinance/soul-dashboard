@@ -78,6 +78,15 @@
                         />
 
                         <div class="align-center form-buttons">
+                            <f-message v-if="sendDirection !== 'OperaToOpera'" type="warning" class="align-center">
+                                All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from
+                                the transfer amount.
+                            </f-message>
+                            <f-message v-if="amount >= minFTMToTransfer && checkAmount(amount)" type="info" class="big">
+                                You will receive <b>{{ amount - minFTMToTransfer }} FTM</b>
+                            </f-message>
+                            <br />
+
                             <button type="submit" class="btn large break-word" style="max-width: 100%;">
                                 Continue
                             </button>
@@ -99,6 +108,7 @@ import { eventBusMixin } from '../../mixins/event-bus.js';
 import { BNBridgeExchangeErrorCodes } from '../../plugins/bnbridge-exchange/bnbridge-exchange.js';
 import AddressField from '../AddressField/AddressField.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
     name: 'SendTransactionForm',
@@ -132,6 +142,7 @@ export default {
             sendToErrorMsg: 'Enter a valid Opera FTM address',
             /** Balance of BNB or ETH account. */
             ETHOrBNBAccountBalance: '',
+            minFTMToTransfer: appConfig.bnbridgeApi.minFTMToTransfer,
         };
     },
 
@@ -311,8 +322,8 @@ export default {
                 ? parseFloat(this.maxRemainingErc20TokenBalance)
                 : parseFloat(this.remainingBalance);
             const value = parseFloat(_value);
-            const minFTMToETH = 5001;
-            const operatToEthereum = this.sendDirection === 'OperaToEthereum';
+            const { minFTMToTransfer } = this;
+            const operaToBridge = this.sendDirection !== 'OperaToOpera';
             const { tokenSymbol } = this;
             let ok = false;
 
@@ -320,8 +331,8 @@ export default {
 
             if (!isNaN(value)) {
                 if (value <= remainingBalance && value > 0) {
-                    if (operatToEthereum && value < minFTMToETH) {
-                        this.amountErrMsg = `You must transfer at least ${minFTMToETH} ${tokenSymbol}`;
+                    if (operaToBridge && value < minFTMToTransfer) {
+                        this.amountErrMsg = `You must transfer at least ${minFTMToTransfer} ${tokenSymbol}`;
                     } else {
                         ok = true;
                     }
