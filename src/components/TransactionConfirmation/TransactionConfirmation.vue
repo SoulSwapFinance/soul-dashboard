@@ -64,8 +64,8 @@
 
                 <template v-if="sendDirection !== 'OperaToOpera'">
                     <f-message type="warning" class="align-center">
-                        All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from the
-                        transfer amount.
+                        All bridge transactions incur a fee of {{ minFTMToTransfer }} FTM, deducted from the transfer
+                        amount.
                     </f-message>
                     <f-message type="info" class="big">
                         You will receive <b>{{ txData.amount - minFTMToTransfer }} FTM</b>
@@ -123,7 +123,7 @@
                     </li>
                 </ol>
                 <f-message v-if="sendDirection === 'OperaToEthereum'" type="warning" class="align-center">
-                    All bridge transaction incur fee of {{ minFTMToTransfer }} FTM which is deducted from the transfer
+                    All bridge transactions incur a fee of {{ minFTMToTransfer }} FTM, deducted from the transfer
                     amount.
                     <br />
                     You will receive {{ txData.amount - minFTMToTransfer }} FTM
