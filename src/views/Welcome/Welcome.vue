@@ -14,7 +14,7 @@
                     Restore Wallet
                 </router-link>
                 <router-link :to="{ name: 'ledger-accounts' }" class="btn ledger-accounts-btn large w100p">
-                    Ledger (Coming)
+                    Ledger
                 </router-link>
             </div>
 
