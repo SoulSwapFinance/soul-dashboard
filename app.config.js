@@ -10,11 +10,6 @@ const appConfig = {
         // list of providers. if one of them is unavailable, another is randomly picked
         providers: [
             {
-                http: 'https://xapi2.fantom.network/api',
-                // for subscriptions
-                ws: '',
-            },
-            {
                 http: 'https://xapi3.fantom.network/api',
                 // for subscriptions
                 ws: '',
@@ -31,6 +26,21 @@ const appConfig = {
             },
             {
                 http: 'https://xapi6.fantom.network/api',
+                // for subscriptions
+                ws: '',
+            },
+            {
+                http: 'https://xapi7.fantom.network/api',
+                // for subscriptions
+                ws: '',
+            },
+            {
+                http: 'https://xapi8.fantom.network/api',
+                // for subscriptions
+                ws: '',
+            },
+            {
+                http: 'https://xapi9.fantom.network/api',
                 // for subscriptions
                 ws: '',
             },
@@ -60,6 +70,8 @@ const appConfig = {
         useETH: true,
         // use Binance chain
         useBNB: true,
+        // minimal amount of FTM to ETH transfer
+        minFTMToTransfer: 100,
     },
     disableFLend: true,
     //

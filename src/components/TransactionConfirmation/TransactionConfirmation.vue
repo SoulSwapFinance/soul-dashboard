@@ -62,6 +62,17 @@
                     <div class="col">{{ txData.memo }}</div>
                 </div>
 
+                <template v-if="sendDirection !== 'OperaToOpera'">
+                    <f-message type="warning" class="align-center">
+                        All bridge transactions incur a fee of {{ minFTMToTransfer }} FTM, deducted from the transfer
+                        amount.
+                    </f-message>
+                    <f-message type="info" class="big">
+                        You will receive <b>{{ txData.amount - minFTMToTransfer }} FTM</b>
+                    </f-message>
+                    <br />
+                </template>
+
                 <!--
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Fee</div>
@@ -111,6 +122,13 @@
                         </div>
                     </li>
                 </ol>
+                <f-message v-if="sendDirection === 'OperaToEthereum'" type="warning" class="align-center">
+                    All bridge transactions incur a fee of {{ minFTMToTransfer }} FTM, deducted from the transfer
+                    amount.
+                    <br />
+                    You will receive {{ txData.amount - minFTMToTransfer }} FTM
+                    <br />
+                </f-message>
             </template>
         </tx-confirmation>
     </div>
@@ -125,9 +143,11 @@ import { formatNumberByLocale } from '../../filters.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
+import appConfig from '../../../app.config.js';
 
 export default {
-    components: { FTokenValue, TxConfirmation },
+    components: { FMessage, FTokenValue, TxConfirmation },
 
     props: {
         // transaction data from SendTransactionForm
@@ -151,6 +171,7 @@ export default {
             sendToAddress: '',
             dTxData: this.txData,
             tx: {},
+            minFTMToTransfer: appConfig.bnbridgeApi.minFTMToTransfer,
         };
     },
 

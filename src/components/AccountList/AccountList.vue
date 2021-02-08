@@ -67,7 +67,7 @@
                                     <template v-if="account.isLedgerAccount">
                                         Ledger
                                     </template>
-                                    <template v-if="account.isMetamaskAccount">
+                                    <template v-else-if="account.isMetamaskAccount">
                                         Metamask
                                     </template>
                                     <template v-else>
