@@ -171,6 +171,7 @@ export default {
             routeName.indexOf('defi-') === -1 &&
             routeName.indexOf('staking') === -1 &&
             routeName.indexOf('funiswap') === -1 &&
+            routeName.indexOf('flend') === -1 &&
             routeName.indexOf('gov-') === -1
         ) {
             this.$store.commit(DEACTIVATE_ACTIVE_ACCOUNT);

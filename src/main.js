@@ -17,6 +17,7 @@ import { FantomWeb3Wallet } from './plugins/fantom-web3-wallet.js';
 import { BNBridgeExchange } from './plugins/bnbridge-exchange/bnbridge-exchange.js';
 import { FNano } from './plugins/fantom-nano.js';
 import { DeFi } from './plugins/defi/defi.js';
+import { FLend } from '@/plugins/flend/flend.js';
 import { Metamask } from '@/plugins/metamask/metamask.js';
 import { Governance } from '@/plugins/governance/governance.js';
 import 'focus-visible';
@@ -33,6 +34,7 @@ Vue.use(BNBridgeExchange, {
 });
 Vue.use(FNano);
 Vue.use(DeFi, { apolloClient });
+Vue.use(FLend, { apolloClient });
 Vue.use(Metamask);
 Vue.use(Governance, { apolloClient });
 

@@ -23,13 +23,8 @@ import DefiDepositFTMConfirmation from './views/DefiDepositFTMConfirmation/DefiD
 import TransactionSuccessMessageView from './views/TransactionSuccessMessageView/TransactionSuccessMessageView.vue';
 import TransactionRejectMessageView from './views/TransactionRejectMessageView/TransactionRejectMessageView.vue';
 import DefiBorrowFUSDConfirmation from './views/DefiBorrowFUSDConfirmation/DefiBorrowFUSDConfirmation.vue';
-import DefiFLend from './views/DefiFLend/DefiFLend.vue';
-import DefiManageBorrow from './views/DefiManageBorrow/DefiManageBorrow.vue';
 import DefiFTrade from './views/DefiFTrade/DefiFTrade.vue';
-import DefiManageBorrowConfirmation from './views/DefiManageBorrowConfirmation/DefiManageBorrowConfirmation.vue';
 import DefiFTradeConfirmation from './views/DefiFTradeConfirmation/DefiFTradeConfirmation.vue';
-import DefiManageDeposit from './views/DefiManageDeposit/DefiManageDeposit.vue';
-import DefiManageDepositConfirmation from './views/DefiManageDepositConfirmation/DefiManageDepositConfirmation.vue';
 import DefiLockUnlock from '@/views/DefiLockUnlock/DefiLockUnlock.vue';
 import DefiLockUnlockConfirmation from '@/views/DefiLockUnlockConfirmation/DefiLockUnlockConfirmation.vue';
 import DefiMintRepay from '@/views/DefiMintRepay/DefiMintRepay.vue';
@@ -64,6 +59,13 @@ import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
 import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDetail.vue';
+import FLend from '@/views/FLend/FLend.vue';
+import FLendMarketView from '@/views/FLendMarketView/FLendMarketView.vue';
+import FLendMarket from '@/components/FLendMarket/FLendMarket.vue';
+import FLendDeposit from '@/components/FLendDeposit/FLendDeposit.vue';
+import FLendDepositView from '@/views/FLendDepositView/FLendDepositView.vue';
+import FLendBorrow from '@/components/FLendBorrow/FLendBorrow.vue';
+import FLendBorrowView from '@/views/FLendBorrowView/FLendBorrowView.vue';
 
 export const routes = [
     {
@@ -189,11 +191,6 @@ export const routes = [
                         name: 'defi-fmint',
                         path: 'fmint',
                         component: DefiFMint,
-                    },
-                    {
-                        name: 'defi-flend',
-                        path: 'flend',
-                        component: DefiFLend,
                     },
                     {
                         name: 'defi-ftrade',
@@ -367,78 +364,6 @@ export const routes = [
                     },
 
                     {
-                        name: 'defi-manage-borrow',
-                        path: 'flend/manage-borrow',
-                        component: DefiManageBorrow,
-                    },
-                    {
-                        name: 'defi-manage-borrow-confirmation',
-                        path: 'flend/manage-borrow/confirmation',
-                        component: DefiManageBorrowConfirmation,
-                    },
-                    {
-                        name: 'defi-manage-borrow-confirmation2',
-                        path: 'flend/manage-borrow/confirmation2',
-                        component: DefiManageBorrowConfirmation,
-                    },
-                    {
-                        name: 'defi-manage-borrow-transaction-success-message',
-                        path: 'fmint/manage-borrow/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-manage-borrow-transaction-success-message2',
-                        path: 'flend/manage-borrow/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-manage-borrow-transaction-reject-message',
-                        path: 'flend/manage-borrow/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-manage-borrow-transaction-reject-message2',
-                        path: 'flend/manage-borrow/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
-                    },
-
-                    {
-                        name: 'defi-manage-deposit',
-                        path: 'flend/manage-deposit',
-                        component: DefiManageDeposit,
-                    },
-                    {
-                        name: 'defi-manage-deposit-confirmation',
-                        path: 'flend/manage-deposit/confirmation',
-                        component: DefiManageDepositConfirmation,
-                    },
-                    {
-                        name: 'defi-manage-deposit-confirmation2',
-                        path: 'flend/manage-deposit/confirmation2',
-                        component: DefiManageDepositConfirmation,
-                    },
-                    {
-                        name: 'defi-manage-deposit-transaction-success-message',
-                        path: 'fmint/manage-deposit/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-manage-deposit-transaction-success-message2',
-                        path: 'flend/manage-deposit/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-manage-deposit-transaction-reject-message',
-                        path: 'flend/manage-deposit/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-manage-deposit-transaction-reject-message2',
-                        path: 'flend/manage-deposit/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
-                    },
-
-                    {
                         name: 'defi-ftrade-confirmation',
                         path: 'fswap/confirmation',
                         component: DefiFTradeConfirmation,
@@ -467,6 +392,49 @@ export const routes = [
                         name: 'defi-ftrade-transaction-reject-message2',
                         path: 'fswap/confirmation2/reject2',
                         component: TransactionRejectMessageView,
+                    },
+                ],
+            },
+            {
+                name: 'flend',
+                path: '/flend/:address',
+                component: FLend,
+                children: [
+                    {
+                        name: 'flend-market-view',
+                        path: 'market',
+                        component: FLendMarketView,
+                        children: [
+                            {
+                                name: 'flend-market',
+                                path: '',
+                                component: FLendMarket,
+                            },
+                        ],
+                    },
+                    {
+                        name: 'flend-deposit-view',
+                        path: 'deposit',
+                        component: FLendDepositView,
+                        children: [
+                            {
+                                name: 'flend-deposit',
+                                path: '',
+                                component: FLendDeposit,
+                            },
+                        ],
+                    },
+                    {
+                        name: 'flend-borrow-view',
+                        path: 'borrow',
+                        component: FLendBorrowView,
+                        children: [
+                            {
+                                name: 'flend-borrow',
+                                path: '',
+                                component: FLendBorrow,
+                            },
+                        ],
                     },
                 ],
             },

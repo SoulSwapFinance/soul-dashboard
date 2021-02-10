@@ -50,37 +50,14 @@
                     </div>
                     -->
                 </li>
-                <li class="col-4 col-6-lg">
-                    <div class="menu-item" :class="{ disabled: fLendDisabled }" tabindex="0">
-                        <h2>fLend</h2>
-                        <div class="icon">
-                            <icon data="@/assets/svg/defi/flend.svg" width="96" height="96" original />
-                        </div>
-                        <p class="description">Loan your tokens and borrow synths</p>
-                        <div class="title">
-                            <template v-if="fLendDisabled">Coming Soon</template>
-                            <router-link v-else :to="{ name: 'defi-flend' }" class="clickable title">
-                                Access DeFi
-                            </router-link>
-                        </div>
-                    </div>
-                </li>
             </slot>
         </ul>
     </div>
 </template>
 
 <script>
-import appConfig from '../../../app.config.js';
-
 export default {
     name: 'DefiMenu',
-
-    computed: {
-        fLendDisabled() {
-            return this.$defi && appConfig.disableFLend;
-        },
-    },
 };
 </script>
 

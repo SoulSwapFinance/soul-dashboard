@@ -155,57 +155,6 @@ const appStructure = [
                         ],
                     },
                     {
-                        id: 'defi-flend',
-                        _c: [
-                            {
-                                id: 'defi-manage-borrow',
-                                _c: [
-                                    {
-                                        id: 'defi-manage-borrow-confirmation',
-                                        _c: [
-                                            {
-                                                id: 'defi-manage-borrow-transaction-success-message',
-                                                _c: [
-                                                    {
-                                                        id: 'defi-manage-borrow-confirmation2',
-                                                        _c: [
-                                                            { id: 'defi-manage-borrow-transaction-success-message2' },
-                                                            { id: 'defi-manage-borrow-transaction-reject-message2' },
-                                                        ],
-                                                    },
-                                                ],
-                                            },
-                                            { id: 'defi-manage-borrow-transaction-reject-message' },
-                                        ],
-                                    },
-                                ],
-                            },
-                            {
-                                id: 'defi-manage-deposit',
-                                _c: [
-                                    {
-                                        id: 'defi-manage-deposit-confirmation',
-                                        _c: [
-                                            {
-                                                id: 'defi-manage-deposit-transaction-success-message',
-                                                _c: [
-                                                    {
-                                                        id: 'defi-manage-deposit-confirmation2',
-                                                        _c: [
-                                                            { id: 'defi-manage-deposit-transaction-success-message2' },
-                                                            { id: 'defi-manage-deposit-transaction-reject-message2' },
-                                                        ],
-                                                    },
-                                                ],
-                                            },
-                                            { id: 'defi-manage-deposit-transaction-reject-message' },
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
                         id: 'defi-ftrade',
                         _c: [
                             {
@@ -227,6 +176,23 @@ const appStructure = [
                                 ],
                             },
                         ],
+                    },
+                ],
+            },
+            {
+                id: 'flend',
+                _c: [
+                    {
+                        id: 'flend-market-view',
+                        _c: [{ id: 'flend-market' }],
+                    },
+                    {
+                        id: 'flend-deposit-view',
+                        _c: [{ id: 'flend-deposit' }],
+                    },
+                    {
+                        id: 'flend-borrow-view',
+                        _c: [{ id: 'flend-borrow' }],
                     },
                 ],
             },

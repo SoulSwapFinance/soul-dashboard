@@ -73,9 +73,8 @@ const appConfig = {
         // minimal amount of FTM to ETH transfer
         minFTMToTransfer: 100,
     },
-    disableFLend: true,
     //
-    useTestnet: false,
+    useTestnet: true,
     // testnet config
     testnet: {
         // list of providers. if one of them is unavailable, another is randomly picked
