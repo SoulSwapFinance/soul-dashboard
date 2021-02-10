@@ -1,5 +1,5 @@
 <template>
-    <div class="funiswap-menu">
+    <div class="funiswap-menu submenu">
         <f-simple-navigation :items="navigation"></f-simple-navigation>
     </div>
 </template>
@@ -33,7 +33,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss">
-@import 'style';
-</style>
