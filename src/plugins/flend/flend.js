@@ -1,3 +1,4 @@
+import './flend.types.js';
 import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
 // import { defi } from '../defi/defi.js';
@@ -33,7 +34,34 @@ export class FLend {
     }
 
     /**
-     * @return {Promise<[{}]|[]>}
+     * @param {string} _assetAddress
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<[FLendReserve]|[]>}
+     */
+    async fetchReserveWithERC20Info(_assetAddress, _fetchPolicy = 'network-only') {
+        const data = await Promise.all([
+            this.fetchReserve(_assetAddress, _fetchPolicy),
+            this.fetchERC20Tokens('', _fetchPolicy),
+        ]);
+        /** @type {FLendReserve} */
+        const reserve = data[0];
+        /** @type {ERC20Token[]} */
+        const erc20Tokens = data[1];
+
+        if (reserve.assetAddress && erc20Tokens.length > 0) {
+            /** @type {ERC20Token} */
+            const erc20Token = erc20Tokens.find((_token) => _token.address === reserve.assetAddress);
+
+            if (erc20Token) {
+                reserve.erc20Info = cloneObject(erc20Token);
+            }
+        }
+
+        return reserve;
+    }
+
+    /**
+     * @return {Promise<[FLendReserve]|[]>}
      */
     async fetchReservesWithERC20Info(_fetchPolicy = 'network-only') {
         const data = await Promise.all([this.fetchReserves(_fetchPolicy), this.fetchERC20Tokens('', _fetchPolicy)]);
@@ -54,7 +82,45 @@ export class FLend {
     }
 
     /**
-     * @return {Promise<[{}]|[]>}
+     * @param {string} _assetAddress
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<FLendReserve>}
+     */
+    async fetchReserve(_assetAddress, _fetchPolicy = 'network-only') {
+        console.log(_assetAddress);
+        const data = await this.apolloClient.query({
+            query: gql`
+                query GetReserveData($address: Address!) {
+                    fLendLendingPool {
+                        reserveData(address: $address) {
+                            assetAddress
+                            ID
+                            configuration
+                            liquidityIndex
+                            variableBorrowIndex
+                            currentLiquidityRate
+                            currentVariableBorrowRate
+                            currentStableBorrowRate
+                            lastUpdateTimestamp
+                            aTokenAddress
+                            stableDebtTokenAddress
+                            variableDebtTokenAddress
+                            interestRateStrategyAddress
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _assetAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        });
+
+        return data.data.fLendLendingPool.reserveData || {};
+    }
+
+    /**
+     * @return {Promise<[FLendReserve]|[]>}
      */
     async fetchReserves(_fetchPolicy = 'network-only') {
         const data = await this.apolloClient.query({
