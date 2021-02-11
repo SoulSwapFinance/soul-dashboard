@@ -117,7 +117,7 @@ export default {
                 },
                 {
                     url: {
-                        name: 'flend',
+                        name: 'f-lend',
                     },
                     title: 'fLEND',
                     icon: flendIcon,
@@ -244,7 +244,7 @@ export default {
             this.setMenuItemUrl('stakingLink', _account, 'staking');
             this.setMenuItemUrl('deFiLink', _account, 'defi-home');
             this.setMenuItemUrl('fUniswapLink', _account, 'funiswap-swap');
-            this.setMenuItemUrl('fLendLink', _account, 'flend-market');
+            this.setMenuItemUrl('fLendLink', _account, 'f-lend-market');
             this.setMenuItemUrl('govLink', _account, 'gov-home');
         },
 

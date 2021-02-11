@@ -39,7 +39,7 @@ export default {
         ...mapGetters(['currentAccount']),
 
         viewsStructure() {
-            const node = appStructureTree.serialize(appStructureTree.get('flend'));
+            const node = appStructureTree.serialize(appStructureTree.get('f-lend'));
 
             return node ? [JSON.parse(node)] : [];
         },

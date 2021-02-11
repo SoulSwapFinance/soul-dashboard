@@ -17,7 +17,7 @@ export default {
 
     computed: {
         viewsStructure() {
-            const node = appStructureTree.serialize(appStructureTree.get('swap'));
+            const node = appStructureTree.serialize(appStructureTree.get('f-lend-deposit-view'));
 
             return node ? [JSON.parse(node)] : [];
         },

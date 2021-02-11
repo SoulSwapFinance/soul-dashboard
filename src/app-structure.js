@@ -180,19 +180,23 @@ const appStructure = [
                 ],
             },
             {
-                id: 'flend',
+                id: 'f-lend',
                 _c: [
                     {
-                        id: 'flend-market-view',
-                        _c: [{ id: 'flend-market' }],
+                        id: 'f-lend-market-view',
+                        _c: [
+                            {
+                                id: 'f-lend-market',
+                            },
+                        ],
                     },
                     {
-                        id: 'flend-deposit-view',
-                        _c: [{ id: 'flend-deposit' }],
+                        id: 'f-lend-deposit-view',
+                        _c: [{ id: 'f-lend-deposit' }],
                     },
                     {
-                        id: 'flend-borrow-view',
-                        _c: [{ id: 'flend-borrow' }],
+                        id: 'f-lend-borrow-view',
+                        _c: [{ id: 'f-lend-borrow' }],
                     },
                 ],
             },

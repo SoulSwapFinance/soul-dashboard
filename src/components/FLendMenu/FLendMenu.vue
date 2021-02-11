@@ -18,19 +18,19 @@ export default {
             navigation: [
                 {
                     url: {
-                        name: 'flend-market',
+                        name: 'f-lend-market',
                     },
                     title: 'Market',
                 },
                 {
                     url: {
-                        name: 'flend-deposit',
+                        name: 'f-lend-deposit',
                     },
                     title: 'Deposit',
                 },
                 {
                     url: {
-                        name: 'flend-borrow',
+                        name: 'f-lend-borrow',
                     },
                     title: 'Borrow',
                 },

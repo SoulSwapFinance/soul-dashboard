@@ -396,41 +396,38 @@ export const routes = [
                 ],
             },
             {
-                name: 'flend',
+                name: 'f-lend',
                 path: '/flend/:address',
                 component: FLend,
                 children: [
                     {
-                        name: 'flend-market-view',
                         path: 'market',
                         component: FLendMarketView,
                         children: [
                             {
-                                name: 'flend-market',
+                                name: 'f-lend-market',
                                 path: '',
                                 component: FLendMarket,
                             },
                         ],
                     },
                     {
-                        name: 'flend-deposit-view',
                         path: 'deposit',
                         component: FLendDepositView,
                         children: [
                             {
-                                name: 'flend-deposit',
+                                name: 'f-lend-deposit',
                                 path: '',
                                 component: FLendDeposit,
                             },
                         ],
                     },
                     {
-                        name: 'flend-borrow-view',
                         path: 'borrow',
                         component: FLendBorrowView,
                         children: [
                             {
-                                name: 'flend-borrow',
+                                name: 'f-lend-borrow',
                                 path: '',
                                 component: FLendBorrow,
                             },
