@@ -42,7 +42,6 @@ import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/Le
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import { mapGetters } from 'vuex';
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
-import { toKebabCase } from '@/utils';
 import governanceUtils from 'fantom-ledgerjs/src/governance-utils.js';
 import Web3 from 'web3';
 
@@ -77,17 +76,11 @@ export default {
                 return {};
             },
         },
-        /** Identifies if component is view (has route). */
-        isView: {
-            type: Boolean,
-            default: true,
-        },
     },
 
     data() {
         return {
             tx: {},
-            compName: toKebabCase(this.$options.name),
             /**@type {GovernanceProposal} */
             d_proposal: this.proposal,
             /** Proposal's od */

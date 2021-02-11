@@ -1,11 +1,36 @@
-import { cloneObject } from '@/utils';
+import { cloneObject, toKebabCase } from '@/utils';
 import { getAppParentNode } from '@/app-structure.js';
 
 export const viewHelpersMixin = {
-    methods: {
-        setDataFromParams() {
+    props: {
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: true,
+        },
+    },
+
+    data() {
+        return {
+            compName: toKebabCase(this.$options.name),
+        };
+    },
+
+    computed: {
+        params() {
             const { $route } = this;
-            const params = $route && $route.params ? $route.params : {};
+
+            return $route && $route.params ? $route.params : {};
+        },
+    },
+
+    methods: {
+        /**
+         * Map route params to properties. Param (and related prop) with name
+         * `paramName` (prop `paramName`) is then mapped to `d_paramName`.
+         */
+        setDataFromParams() {
+            const { params } = this;
             const props = {};
 
             Object.keys(this.$props).forEach((_prop) => {

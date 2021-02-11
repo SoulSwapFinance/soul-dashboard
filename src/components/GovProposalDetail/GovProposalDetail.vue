@@ -239,11 +239,6 @@ export default {
             type: String,
             default: '',
         },
-        /** Identifies if component is view (has route). */
-        isView: {
-            type: Boolean,
-            default: true,
-        },
     },
 
     data() {
