@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { cloneObject } from '@/utils';
 // import { defi } from '../defi/defi.js';
 // import { fFetch } from '@/plugins/ffetch.js';
 
@@ -34,14 +35,36 @@ export class FLend {
     /**
      * @return {Promise<[{}]|[]>}
      */
+    async fetchReservesWithERC20Info(_fetchPolicy = 'network-only') {
+        const data = await Promise.all([this.fetchReserves(_fetchPolicy), this.fetchERC20Tokens('', _fetchPolicy)]);
+        const reserves = data[0];
+        const erc20Tokens = data[1];
+
+        if (reserves.length > 0) {
+            erc20Tokens.forEach((_token) => {
+                const reserve = reserves.find((_reserve) => _reserve.assetAddress === _token.address);
+
+                if (reserve) {
+                    reserve.erc20Info = cloneObject(_token);
+                }
+            });
+        }
+
+        return reserves;
+    }
+
+    /**
+     * @return {Promise<[{}]|[]>}
+     */
     async fetchReserves(_fetchPolicy = 'network-only') {
         const data = await this.apolloClient.query({
             query: gql`
                 query GetFLendLendingPool {
                     fLendLendingPool {
                         reserveDataList {
-                            ID
                             assetAddress
+                            ID
+                            configuration
                             liquidityIndex
                             variableBorrowIndex
                             currentLiquidityRate
@@ -59,18 +82,15 @@ export class FLend {
             fetchPolicy: _fetchPolicy,
         });
 
-        console.log(await this.fetchERC20Tokens());
-
-        return data.data.fLendLendingPool || {};
+        return data.data.fLendLendingPool.reserveDataList || [];
     }
 
     /**
      * @param {string} [_ownerAddress]
-     * @param {string|array} [_symbol]
      * @param {string} [_fetchPolicy]
      * @return {Promise<ERC20Token[]>}
      */
-    async fetchERC20Tokens(_ownerAddress, _symbol, _fetchPolicy = 'network-only') {
+    async fetchERC20Tokens(_ownerAddress, _fetchPolicy = 'network-only') {
         const query = {
             query: _ownerAddress
                 ? gql`
@@ -105,25 +125,6 @@ export class FLend {
         };
         const data = await this.apolloClient.query(query);
 
-        let erc20TokenList = data.data.erc20TokenList || [];
-
-        /*if (filterTokens.length > 0) {
-            erc20TokenList = erc20TokenList.filter(this.filterTokensBySymbol);
-        }*/
-        // console.log('erc20', erc20TokenList);
-
-        let tokens = [];
-
-        if (_symbol) {
-            if (typeof _symbol === 'string') {
-                tokens = erc20TokenList.find((_item) => _item.symbol === _symbol);
-            } else if (_symbol.length) {
-                tokens = erc20TokenList.filter((_item) => _symbol.indexOf(_item.symbol) > -1);
-            }
-        } else {
-            tokens = erc20TokenList;
-        }
-
-        return tokens;
+        return data.data.erc20TokenList || [];
     }
 }
