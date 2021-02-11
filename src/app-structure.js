@@ -187,6 +187,7 @@ const appStructure = [
                         _c: [
                             {
                                 id: 'f-lend-market',
+                                _c: [{ id: 'f-lend-reserve-detail' }],
                             },
                         ],
                     },
