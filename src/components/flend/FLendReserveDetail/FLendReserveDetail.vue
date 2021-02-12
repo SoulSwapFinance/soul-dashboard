@@ -21,8 +21,8 @@
 <script>
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
-import FLendReserveStatus from '@/components/FLendReserveStatus/FLendReserveStatus.vue';
-import FLendUserInfo from '@/components/FLendUserInfo/FLendUserInfo.vue';
+import FLendReserveStatus from '@/components/flend/FLendReserveStatus/FLendReserveStatus.vue';
+import FLendUserInfo from '@/components/flend/FLendUserInfo/FLendUserInfo.vue';
 
 export default {
     name: 'FLendReserveDetail',

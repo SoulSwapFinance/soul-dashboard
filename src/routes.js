@@ -59,15 +59,15 @@ import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
 import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDetail.vue';
-import FLend from '@/views/FLend/FLend.vue';
-import FLendMarketView from '@/views/FLendMarketView/FLendMarketView.vue';
-import FLendMarket from '@/components/FLendMarket/FLendMarket.vue';
-import FLendDeposit from '@/components/FLendDeposit/FLendDeposit.vue';
-import FLendDepositView from '@/views/FLendDepositView/FLendDepositView.vue';
-import FLendBorrow from '@/components/FLendBorrow/FLendBorrow.vue';
-import FLendBorrowView from '@/views/FLendBorrowView/FLendBorrowView.vue';
-import FLendReserveDetail from '@/components/FLendReserveDetail/FLendReserveDetail.vue';
-import FLendDepositDetail from '@/components/FLendDepositDetail/FLendDepositDetail.vue';
+import FLend from '@/views/flend/FLend/FLend.vue';
+import FLendMarketView from '@/views/flend/FLendMarketView/FLendMarketView.vue';
+import FLendMarket from '@/components/flend/FLendMarket/FLendMarket.vue';
+import FLendDeposit from '@/components/flend/FLendDeposit/FLendDeposit.vue';
+import FLendDepositView from '@/views/flend/FLendDepositView/FLendDepositView.vue';
+import FLendBorrow from '@/components/flend/FLendBorrow/FLendBorrow.vue';
+import FLendBorrowView from '@/views/flend/FLendBorrowView/FLendBorrowView.vue';
+import FLendReserveDetail from '@/components/flend/FLendReserveDetail/FLendReserveDetail.vue';
+import FLendDepositDetail from '@/components/flend/FLendDepositDetail/FLendDepositDetail.vue';
 
 export const routes = [
     {

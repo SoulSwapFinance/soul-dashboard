@@ -14,7 +14,7 @@
 <script>
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
-import FLendReserveOverview from '@/components/FLendReserveOverview/FLendReserveOverview.vue';
+import FLendReserveOverview from '@/components/flend/FLendReserveOverview/FLendReserveOverview.vue';
 
 export default {
     name: 'FLendDepositDetail',

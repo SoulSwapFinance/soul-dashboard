@@ -18,7 +18,7 @@
 <script>
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import AddressInfoBox from '@/components/AddressInfoBox/AddressInfoBox.vue';
-import FLendMenu from '@/components/FLendMenu/FLendMenu.vue';
+import FLendMenu from '@/components/flend/FLendMenu/FLendMenu.vue';
 import { mapGetters } from 'vuex';
 import { appStructureTree } from '@/app-structure.js';
 import {
