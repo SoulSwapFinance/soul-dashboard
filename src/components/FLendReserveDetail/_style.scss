@@ -1,0 +1,33 @@
+@import "../../assets/scss/vars";
+
+.flendreservedetail {
+    &_body {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: auto;
+        grid-gap: 16px 16px;
+        padding-top: 16px;
+    }
+
+    &_title {
+        font-size: 18px !important;
+    }
+}
+
+@include media-max($bp-large) {
+    .flendreservedetail {
+        &_body {
+            grid-template-columns: 1fr;
+        }
+    }
+
+}
+
+@include media-max($bp-small) {
+    .flendreservedetail {
+        &_user {
+            grid-area: 1 / 1;
+        }
+    }
+
+}

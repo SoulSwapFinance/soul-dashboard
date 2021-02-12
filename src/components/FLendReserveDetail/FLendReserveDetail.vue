@@ -4,17 +4,30 @@
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
             {{ reserve.erc20Info.name }}
         </h1>
+
+        <div class="flendreservedetail_body">
+            <div class="flendreservedetail_reserve">
+                <h3 class="flendreservedetail_title">Reserve Status & Configuration</h3>
+                <f-lend-reserve-status :reserve="reserve" />
+            </div>
+            <div class="flendreservedetail_user">
+                <h3 class="flendreservedetail_title">Your information</h3>
+                <f-lend-user-info :reserve="reserve" />
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
+import FLendReserveStatus from '@/components/FLendReserveStatus/FLendReserveStatus.vue';
+import FLendUserInfo from '@/components/FLendUserInfo/FLendUserInfo.vue';
 
 export default {
     name: 'FLendReserveDetail',
 
-    components: { FBackButton },
+    components: { FLendUserInfo, FLendReserveStatus, FBackButton },
 
     mixins: [viewHelpersMixin],
 
@@ -56,3 +69,7 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+@import 'style';
+</style>
