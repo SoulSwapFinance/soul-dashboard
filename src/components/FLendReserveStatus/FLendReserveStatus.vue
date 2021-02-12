@@ -4,7 +4,9 @@
             <div class="flendreservestatus_top">
                 <div class="flendreservestatus_reserve">
                     <div class="flendreservestatus_reserve_borrowed">
-                        <div class="light-text-color">Total Borrowed</div>
+                        <div class="light-text-color">
+                            <span class="flendreservestatus_square flendreservestatus_square-red"></span> Total Borrowed
+                        </div>
                         <div class="flendreservestatus_reserve_value">{{ totalBorrowed }}</div>
                         <div class="light-text-color">{{ totalBorrowedUSD }}</div>
                     </div>
@@ -15,7 +17,10 @@
                         </div>
                     </div>
                     <div class="flendreservestatus_reserve_liquidity">
-                        <div class="light-text-color">Available Liquidity</div>
+                        <div class="light-text-color">
+                            Available Liquidity
+                            <span class="flendreservestatus_square flendreservestatus_square-green"></span>
+                        </div>
                         <div class="flendreservestatus_reserve_value">{{ available }}</div>
                         <div class="light-text-color">{{ availableUSD }}</div>
                     </div>

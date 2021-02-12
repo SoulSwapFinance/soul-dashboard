@@ -111,6 +111,21 @@
         --f-gridauto-min-width: 180px;
         text-align: center;
     }
+
+    &_square {
+        display: inline-block;
+        vertical-align: middle;
+        width: 12px;
+        height: 12px;
+
+        &-red {
+            background-color: var(--f-flend-red);
+        }
+
+        &-green {
+            background-color: var(--f-flend-green);
+        }
+    }
 }
 
 @include media-max($bp-small) {
