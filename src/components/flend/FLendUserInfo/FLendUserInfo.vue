@@ -18,22 +18,7 @@
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
-                    <div class="col-5 light-text-color fs-80">
-                        Use as collateral
-                        <f-info
-                            window-closeable
-                            window-class="light"
-                            window-style="max-width: 550px;"
-                            window-title="Adding and removing assets as collateral"
-                            icon-size="16"
-                            class="debt-limit-f-info"
-                        >
-                            <p>
-                                Allows you to decide whether to use a deposited asset as collateral. An asset used as
-                                collateral will affect your borrowing power and health factor
-                            </p>
-                        </f-info>
-                    </div>
+                    <div class="col-5 light-text-color fs-80">Use as collateral <f-lend-collateral-info /></div>
                     <div class="col-7 flenduserinfo_value"><f-toggle-button v-model="usedAsCollateral" /></div>
                 </div>
                 <div class="flenduserinfo_buttons">
@@ -53,22 +38,7 @@
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
-                    <div class="col-5 light-text-color fs-80">
-                        Health factor
-                        <f-info
-                            window-closeable
-                            window-class="light"
-                            window-style="max-width: 400px;"
-                            window-title="Health factor"
-                            icon-size="16"
-                            class="debt-limit-f-info"
-                        >
-                            <p>
-                                The health factor represents the safety of your loan derived from the proportion of
-                                collateral versus amount borrowed. Keep it above 1 to avoid liquidation.
-                            </p>
-                        </f-info>
-                    </div>
+                    <div class="col-5 light-text-color fs-80">Health factor <f-lend-health-factor-info /></div>
                     <div class="col-7 flenduserinfo_value">
                         <b>{{ healthFactor }}</b>
                     </div>
@@ -96,12 +66,13 @@
 <script>
 import FCard from '@/components/core/FCard/FCard.vue';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
-import FInfo from '@/components/core/FInfo/FInfo.vue';
+import FLendHealthFactorInfo from '@/components/flend/infos/FLendHealthFactorInfo.vue';
+import FLendCollateralInfo from '@/components/flend/infos/FLendCollateralInfo.vue';
 
 export default {
     name: 'FLendUserInfo',
 
-    components: { FInfo, FToggleButton, FCard },
+    components: { FLendCollateralInfo, FLendHealthFactorInfo, FToggleButton, FCard },
 
     props: {
         /** @type {FLendReserve} */

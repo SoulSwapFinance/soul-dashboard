@@ -36,46 +36,14 @@
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
-                            <div class="col-8 light-text-color fs-80">
-                                Maximum LTV
-                                <f-info
-                                    window-closeable
-                                    window-class="light"
-                                    window-style="max-width: 500px;"
-                                    window-title="Loan to Value (LTV) Ratio"
-                                    icon-size="16"
-                                    class="debt-limit-f-info"
-                                >
-                                    <p>
-                                        The Maximum Loan-to-Value ratio represents the maximum borrowing power of a
-                                        specific collateral. For example, if a collateral has a LTV of 75%, the user can
-                                        borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth
-                                        of collateral.
-                                    </p>
-                                </f-info>
-                            </div>
+                            <div class="col-8 light-text-color fs-80">Maximum LTV <f-lend-l-t-v-info /></div>
                             <div class="col-4 flendreserveoverview_value">
                                 <b>{{ maximumLTV }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">
-                                Liquidation threshold
-                                <f-info
-                                    window-closeable
-                                    window-class="light"
-                                    window-style="max-width: 500px;"
-                                    window-title="Liquidation threshold"
-                                    icon-size="16"
-                                    class="debt-limit-f-info"
-                                >
-                                    <p>
-                                        This represents the threshold at which a borrow position will be considered
-                                        undercollateralized and subject to liquidation for each collateral. For example,
-                                        if a collateral has a liquidation threshold of 80%, it means that the loan will
-                                        be liquidated when the debt value is worth 80% of the collateral value.
-                                    </p>
-                                </f-info>
+                                Liquidation threshold <f-lend-liquidation-treshold-info />
                             </div>
                             <div class="col-4 flendreserveoverview_value">
                                 <b>{{ liquidationTreshold }}</b> %
@@ -83,21 +51,7 @@
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">
-                                Liquidation penalty
-                                <f-info
-                                    window-closeable
-                                    window-class="light"
-                                    window-style="max-width: 500px;"
-                                    window-title="Liquidation penalty"
-                                    icon-size="16"
-                                    class="debt-limit-f-info"
-                                >
-                                    <p>
-                                        When a liquidation occurs, liquidators repay part or all of the outstanding
-                                        borrowed amount on behalf of the borrower. In return, they can buy the
-                                        collateral at a discount and keep the difference as a bonus!
-                                    </p>
-                                </f-info>
+                                Liquidation penalty <f-lend-liquidation-penalty />
                             </div>
                             <div class="col-4 flendreserveoverview_value">
                                 <b>{{ liquidationPenalty }}</b> %
@@ -146,14 +100,23 @@
 
 <script>
 import FCard from '@/components/core/FCard/FCard.vue';
-import FInfo from '@/components/core/FInfo/FInfo.vue';
 import FYesNo from '@/components/core/FYesNo/FYesNo.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
+import FLendLTVInfo from '@/components/flend/infos/FLendLTVInfo.vue';
+import FLendLiquidationTresholdInfo from '@/components/flend/infos/FLendLiquidationTresholdInfo.vue';
+import FLendLiquidationPenalty from '@/components/flend/infos/FLendLiquidationPenalty.vue';
 
 export default {
     name: 'FLendReserveOverview',
 
-    components: { FCryptoSymbol, FYesNo, FInfo, FCard },
+    components: {
+        FLendLiquidationPenalty,
+        FLendLiquidationTresholdInfo,
+        FLendLTVInfo,
+        FCryptoSymbol,
+        FYesNo,
+        FCard,
+    },
 
     props: {
         /** @type {FLendReserve} */
