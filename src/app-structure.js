@@ -193,7 +193,12 @@ const appStructure = [
                     },
                     {
                         id: 'f-lend-deposit-view',
-                        _c: [{ id: 'f-lend-deposit' }],
+                        _c: [
+                            {
+                                id: 'f-lend-deposit',
+                                _c: [{ id: 'f-lend-deposit-detail' }],
+                            },
+                        ],
                     },
                     {
                         id: 'f-lend-borrow-view',

@@ -67,6 +67,7 @@ import FLendDepositView from '@/views/FLendDepositView/FLendDepositView.vue';
 import FLendBorrow from '@/components/FLendBorrow/FLendBorrow.vue';
 import FLendBorrowView from '@/views/FLendBorrowView/FLendBorrowView.vue';
 import FLendReserveDetail from '@/components/FLendReserveDetail/FLendReserveDetail.vue';
+import FLendDepositDetail from '@/components/FLendDepositDetail/FLendDepositDetail.vue';
 
 export const routes = [
     {
@@ -425,6 +426,11 @@ export const routes = [
                                 name: 'f-lend-deposit',
                                 path: '',
                                 component: FLendDeposit,
+                            },
+                            {
+                                name: 'f-lend-deposit-detail',
+                                path: 'deposit/:assetAddress',
+                                component: FLendDepositDetail,
                             },
                         ],
                     },
