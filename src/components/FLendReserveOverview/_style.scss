@@ -1,0 +1,22 @@
+.flendreserveoverview {
+    &_label {
+        font-weight: bold;
+        padding-bottom: 8px;
+        text-align: center;
+
+        .f-crypto-symbol {
+            align-items: baseline;
+        }
+    }
+
+    &_body {
+        //--f-gridauto-min-width: 260px;
+        --f-gridauto-min-width: 360px;
+        --f-gridauto-column-gap: 32px;
+        --f-gridauto-row-gap: 0;
+    }
+
+    &_value {
+        text-align: right;
+    }
+}
