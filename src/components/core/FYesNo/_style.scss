@@ -1,0 +1,13 @@
+@import "custom-properties";
+
+.fyesno {
+    font-weight: bold;
+
+    &_yes {
+        color: var(--fyesno-color-yes);
+    }
+
+    &_no {
+        color: var(--fyesno-color-no);
+    }
+}
