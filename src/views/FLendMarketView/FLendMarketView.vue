@@ -19,8 +19,6 @@ export default {
         viewsStructure() {
             const node = appStructureTree.serialize(appStructureTree.get('f-lend-market-view'));
 
-            console.log('???', node);
-
             return node ? [JSON.parse(node)] : [];
         },
     },
