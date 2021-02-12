@@ -1,0 +1,168 @@
+@import '../../assets/scss/vars';
+@import "custom-properties";
+
+.flendreservestatus {
+    &_top {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &_reserve {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        //gap: var(--flendreservestatus-gap);
+        margin-bottom: var(--flendreservestatus-gap);
+
+        &_borrowed {
+            text-align: right;
+        }
+
+        &_value {
+            font-weight: bold;
+            font-size: 31px;
+        }
+
+        &_circle {
+            &_wrap {
+                position: relative;
+
+                .f-circle-progress {
+                    --f-circle-progress-stroke-linecap: square;
+                    --f-circle-progress-bg-circle-color: var(--f-flend-red) !important;
+                    --f-circle-progress-circle-color: var(--f-flend-green);
+                }
+
+                .f-crypto-symbol {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translateX(-50%) translateY(-55%);
+
+                    .img {
+                        width: 80px !important;
+                        height: 80px !important;
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+
+        > * {
+            padding: var(--flendreservestatus-gap);
+        }
+    }
+
+    &_sizerate {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: calc(1.5 * var(--flendreservestatus-gap));
+
+        > * {
+            width: 280px;
+            //padding: var(--flendreservestatus-gap);
+        }
+
+        &_box {
+            display: flex;
+            border: 1px solid var(--flendreservestatus-border-color);
+            padding: calc(0.5 * var(--flendreservestatus-gap));
+
+            > * {
+                flex: 1;
+            }
+
+            + .flendreservestatus_sizerate_box {
+                margin-left: var(--flendreservestatus-gap);
+            }
+
+            &_value {
+                text-align: right;
+            }
+        }
+    }
+
+    &_boxes {
+        margin-bottom: var(--flendreservestatus-gap);
+
+        &_box {
+            border: 1px solid var(--flendreservestatus-border-color);
+
+            &_label {
+                font-size: 1rem !important;
+                margin-bottom: 0;
+                text-align: center;
+                background-color: var(--flendreservestatus-border-color);
+                padding: calc(0.5 * var(--flendreservestatus-gap)) var(--flendreservestatus-gap);
+            }
+
+            &_body {
+                padding: 0 calc(0.5 * var(--flendreservestatus-gap));
+            }
+
+            &_value {
+                text-align: right;
+            }
+        }
+    }
+
+    &_info {
+        --f-gridauto-min-width: 180px;
+        text-align: center;
+    }
+}
+
+@include media-max($bp-small) {
+    .flendreservestatus {
+        &_top {
+            .flendreservestatus_sizerate {
+                order: -1;
+            }
+        }
+
+        &_reserve {
+            flex-direction: column;
+            text-align: center;
+
+            > * {
+                text-align: center;
+            }
+
+            &_circle {
+                order: -1;
+
+                &_wrap {
+                    position: relative;
+
+                    .f-circle-progress {
+                        --f-circle-progress-width: 120px;
+                        --f-circle-progress-height: 120px;
+                    }
+
+                    .f-crypto-symbol {
+                        .img {
+                            width: 64px !important;
+                            height: 64px !important;
+                        }
+                    }
+                }
+            }
+        }
+
+        &_sizerate {
+            &_box {
+                &:last-child {
+                    display: none;
+                }
+            }
+        }
+
+        &_boxes {
+        }
+
+        &_info {
+            --f-gridauto-min-width: 160px;
+        }
+    }
+}
