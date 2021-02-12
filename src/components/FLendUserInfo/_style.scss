@@ -1,0 +1,17 @@
+.flenduserinfo {
+    --f-gridauto-min-width: 300px;
+
+    &_label {
+        font-weight: bold;
+        padding-bottom: 8px;
+    }
+
+    &_value {
+        text-align: right;
+    }
+
+    &_buttons {
+        text-align: center;
+        padding-top: 8px;
+    }
+}
