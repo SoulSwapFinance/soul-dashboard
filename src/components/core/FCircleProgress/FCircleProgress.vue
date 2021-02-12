@@ -24,7 +24,7 @@
                 :cy="dotCy(index)"
                 :fill="dot.color"
             />
-            <text text-anchor="middle" dominant-baseline="central" class="text">
+            <text v-if="showValue" text-anchor="middle" dominant-baseline="central" class="text">
                 <slot :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
                     <slot name="value" :value="cValue" :percentage="percentage" :showPercentage="showPercentage">
                         <tspan>{{ showPercentage ? percentage : cValue }}</tspan>
@@ -87,6 +87,11 @@ export default {
         },
         /** Animate progress circle. */
         animate: {
+            type: Boolean,
+            default: true,
+        },
+        /** */
+        showValue: {
             type: Boolean,
             default: true,
         },
