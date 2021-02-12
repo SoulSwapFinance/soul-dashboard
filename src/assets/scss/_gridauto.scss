@@ -1,0 +1,16 @@
+.gridauto {
+    --f-gridauto-min-width: 192px;
+    --f-gridauto-gap: 16px;
+    --f-gridauto-column-gap: var(--f-gridauto-gap);
+    --f-gridauto-row-gap: var(--f-gridauto-gap);
+    --f-gridauto-cols-padding: 8px 16px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--f-gridauto-min-width), 1fr));
+    grid-column-gap: var(--f-gridauto-column-gap);
+    grid-row-gap: var(--f-gridauto-row-gap);
+
+    &-colspadding > * {
+        padding: var(--f-gridauto-cols-padding);
+    }
+}

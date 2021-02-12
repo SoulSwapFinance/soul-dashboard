@@ -1,12 +1,12 @@
-@import "vars";
-@import "fonts";
-@import "core/custom-properties";
-@import "custom-properties";
-@import "dark-theme";
-@import "core/normalize";
-@import "core/reset";
+@import 'vars';
+@import 'fonts';
+@import 'core/custom-properties';
+@import 'custom-properties';
+@import 'dark-theme';
+@import 'core/normalize';
+@import 'core/reset';
 
-@import "core/all";
+@import 'core/all';
 /*
 @import "core/main";
 @import "core/general";
@@ -17,18 +17,19 @@
 @import "core/animations";
 */
 
-@import "core/vue-animations";
-@import "core/_positioning.scss";
-@import "vertical-layout";
+@import 'core/vue-animations';
+@import 'core/_positioning.scss';
+@import 'vertical-layout';
+@import "gridauto";
 
-@import "buttons";
-@import "fcard-window";
-@import "f-data-layout";
-@import "info-box";
-@import "actions-box";
-@import "submenu";
-@import "windows";
-@import "funiswap";
+@import 'buttons';
+@import 'fcard-window';
+@import 'f-data-layout';
+@import 'info-box';
+@import 'actions-box';
+@import 'submenu';
+@import 'windows';
+@import 'funiswap';
 //@include flexbox-layout(24);
 
 //@include media-max($bp-menu) {
@@ -127,7 +128,8 @@ hr {
 }
 
 form {
-    .f-input, .f-select {
+    .f-input,
+    .f-select {
         margin-bottom: 16px;
 
         label {
@@ -172,7 +174,8 @@ form {
     }
 }
 
-.f-input, .f-select {
+.f-input,
+.f-select {
     .f-message {
         font-size: 14px;
         width: auto;
@@ -226,6 +229,14 @@ form {
     color: $light-gray-color;
 }
 
+.light-text-color {
+    color: var(--f-light-text-color);
+}
+
+.fs-80 {
+    font-size: 80%;
+}
+
 .icon-stroke-color {
     g {
         stroke: var(--f-icon-stroke-color);
@@ -238,7 +249,8 @@ form {
     }
 }
 
-.theme-transition, .theme-transition * {
+.theme-transition,
+.theme-transition * {
     transition: background-color $transition-length $transition-func, border-color $transition-length $transition-func;
 }
 
@@ -300,7 +312,8 @@ legend.h2 {
     .f-data-table {
         --f-data-table-header-sticky-top: 0;
 
-        td, th {
+        td,
+        th {
             &.f-col {
                 padding-left: 0;
             }
