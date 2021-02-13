@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FLendDepositList from '@/components/data-tables/FLendDepositList/FLendDepositList.vue';
+import FLendDepositList from '@/components/data-tables/flend/FLendDepositList/FLendDepositList.vue';
 
 export default {
     name: 'FLendDeposit',

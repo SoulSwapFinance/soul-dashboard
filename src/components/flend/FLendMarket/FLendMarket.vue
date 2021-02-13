@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FLendMarketList from '@/components/data-tables/FLendMarketList/FLendMarketList.vue';
+import FLendMarketList from '@/components/data-tables/flend/FLendMarketList/FLendMarketList.vue';
 
 export default {
     name: 'FLendMarket',

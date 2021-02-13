@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FLendBorrowList from '@/components/data-tables/FLendBorrowList/FLendBorrowList.vue';
+import FLendBorrowList from '@/components/data-tables/flend/FLendBorrowList/FLendBorrowList.vue';
 
 export default {
     name: 'FLendBorrow',
