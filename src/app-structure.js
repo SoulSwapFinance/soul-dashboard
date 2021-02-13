@@ -202,7 +202,12 @@ const appStructure = [
                     },
                     {
                         id: 'f-lend-borrow-view',
-                        _c: [{ id: 'f-lend-borrow' }],
+                        _c: [
+                            {
+                                id: 'f-lend-borrow',
+                                _c: [{ id: 'f-lend-borrow-detail' }],
+                            },
+                        ],
                     },
                 ],
             },
