@@ -5,7 +5,10 @@
             Deposit {{ $defi.getTokenSymbol(reserve.erc20Info) }}
         </h1>
 
+        <h2 class="perex">Please enter an amount you would like to deposit.</h2>
+
         <div class="flenddepositdetail_body">
+            <f-lend-deposit-withdraw :reserve="reserve" />
             <f-lend-reserve-overview :reserve="reserve" />
         </div>
     </div>
@@ -15,11 +18,12 @@
 import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import FLendReserveOverview from '@/components/flend/FLendReserveOverview/FLendReserveOverview.vue';
+import FLendDepositWithdraw from '@/components/flend/FLendDepositWithdraw/FLendDepositWithdraw.vue';
 
 export default {
     name: 'FLendDepositDetail',
 
-    components: { FLendReserveOverview, FBackButton },
+    components: { FLendDepositWithdraw, FLendReserveOverview, FBackButton },
 
     mixins: [viewHelpersMixin],
 

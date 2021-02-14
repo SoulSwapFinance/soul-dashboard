@@ -1,0 +1,58 @@
+@import "../../../assets/scss/vars";
+
+.flenddepositwithdraw {
+    &_body {
+        display: grid;
+        grid-template-columns: 220px auto 220px;
+        grid-template-rows: auto;
+        grid-gap: 16px 16px;
+        margin: 32px 8px 0 8px;
+    }
+
+    &_rightcol {
+        text-align: right;
+    }
+
+    &_tokenlabel {
+        /*
+        position: absolute;
+        top: -68px;
+        width: 100%;
+        text-align: center;
+        z-index: 0;
+        */
+        font-size: 26px;
+        margin-bottom: 24px;
+    }
+
+    &_input {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 8px !important;
+        font-size: 64px !important;
+    }
+}
+
+@include media-max($bp-small) {
+    .flenddepositwithdraw {
+        &_body {
+            grid-template-columns: 1fr;
+            margin-top: 24px;
+        }
+
+        &_rightcol {
+            display: none;
+        }
+
+        .f-circle-progress {
+            --f-circle-progress-width: 120px;
+            --f-circle-progress-height: 120px;
+        }
+
+        &.view-defi {
+            .df-data-item {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}
