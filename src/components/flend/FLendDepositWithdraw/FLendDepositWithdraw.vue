@@ -64,7 +64,7 @@
         </div>
 
         <div class="flenddepositwithdraw_footer">
-            <div>
+            <div v-if="!submitDisabled" class="flenddepositwithdraw_messages">
                 <f-message v-if="!withdraw" type="info" role="alert" class="big">
                     You’re adding
                     <span class="inc-desc-collateral">
