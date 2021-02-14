@@ -6,9 +6,7 @@
             :loading="loading"
             first-m-v-column-width="6"
             f-card-off
-            action-on-row
             class="f-data-table-body-bg-color"
-            @row-action="onRowAction"
         >
             <template v-slot:column-asset="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
@@ -19,6 +17,37 @@
                 </div>
                 <template v-else>
                     <f-crypto-symbol :token="item.erc20Info" />
+                </template>
+            </template>
+
+            <template v-slot:column-actions="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        <router-link
+                            :to="{ name: 'f-lend-borrow-detail', params: { assetAddress: item.assetAddress } }"
+                        >
+                            Borrow
+                        </router-link>
+                        ,
+                        <router-link
+                            v-if="canRepay(item)"
+                            :to="{ name: 'f-lend-repay-detail', params: { assetAddress: item.assetAddress } }"
+                        >
+                            Repay
+                        </router-link>
+                    </div>
+                </div>
+                <template v-else>
+                    <router-link :to="{ name: 'f-lend-borrow-detail', params: { assetAddress: item.assetAddress } }">
+                        Borrow
+                    </router-link>
+                    <router-link
+                        v-if="canRepay(item)"
+                        :to="{ name: 'f-lend-repay-detail', params: { assetAddress: item.assetAddress } }"
+                    >
+                        Repay
+                    </router-link>
                 </template>
             </template>
         </f-data-table>
@@ -82,6 +111,12 @@ export default {
                         return '-';
                     },
                 },
+                {
+                    name: 'actions',
+                    label: 'Actions',
+                    width: '120px',
+                    css: { textAlign: 'right' },
+                },
             ],
             loading: true,
         };
@@ -106,15 +141,12 @@ export default {
         },
 
         /**
-         * @param {{proposal: GovernanceProposal}} _item
+         * @param {FLendReserve} _reserve
+         * @return {boolean}
          */
-        onRowAction(_item) {
-            this.$router.push({
-                name: 'f-lend-borrow-detail',
-                params: {
-                    assetAddress: _item.assetAddress,
-                },
-            });
+        canRepay(_reserve) {
+            console.log(_reserve);
+            return false;
         },
     },
 };
