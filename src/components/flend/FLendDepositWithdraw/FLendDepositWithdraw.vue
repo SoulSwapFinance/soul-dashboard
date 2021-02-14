@@ -236,7 +236,7 @@ export default {
                 stepsCount: this.stepsCount,
                 activeStep: this.activeStep,
                 withdraw: this.withdraw,
-                compName: 'f-lend-deposit-withdraw',
+                compName: 'f-lend-deposit',
                 reserve: cloneObject(this.reserve),
             };
 

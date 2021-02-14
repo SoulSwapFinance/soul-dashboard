@@ -167,7 +167,6 @@ export default {
             const params = {
                 tx: _data.data.sendTransaction.hash,
                 title: 'Success',
-                continueTo: this.compName,
             };
             let transactionSuccessComp = `${this.compName}-transaction-success-message`;
 
