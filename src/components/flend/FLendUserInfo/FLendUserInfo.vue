@@ -22,9 +22,26 @@
                     <div class="col-7 flenduserinfo_value"><f-toggle-button v-model="usedAsCollateral" /></div>
                 </div>
                 <div class="flenduserinfo_buttons">
-                    <button class="btn small" :disabled="depositDisabled" @click="onDepositClick">Deposit</button>
+                    <router-link
+                        v-if="canDeposit"
+                        :to="{ name: 'f-lend-deposit-detail', params: { assetAddress: reserve.assetAddress } }"
+                        class="btn small"
+                    >
+                        Deposit
+                    </router-link>
+                    <button v-else disabled class="btn small">Deposit</button>
                     &nbsp;
-                    <button class="btn small" :disabled="withdrawDisabled" @click="onWithdrawClick">Withdraw</button>
+                    <router-link
+                        v-if="canWithdraw"
+                        :to="{
+                            name: 'f-lend-withdraw-detail',
+                            params: { assetAddress: reserve.assetAddress },
+                        }"
+                        class="btn small"
+                    >
+                        Withdraw
+                    </router-link>
+                    <button v-else disabled class="btn small">Withdraw</button>
                 </div>
             </f-card>
         </div>
@@ -56,7 +73,17 @@
                     </div>
                 </div>
                 <div class="flenduserinfo_buttons">
-                    <button class="btn small" :disabled="borrowDisabled" @click="onBorrowClick">Borrow</button>
+                    <router-link
+                        v-if="canBorrow"
+                        :to="{
+                            name: 'f-lend-borrow-detail',
+                            params: { assetAddress: reserve.assetAddress },
+                        }"
+                        class="btn small"
+                    >
+                        Borrow
+                    </router-link>
+                    <button v-else disabled class="btn small">Borrow</button>
                 </div>
             </f-card>
         </div>
@@ -103,16 +130,16 @@ export default {
             return this.$defi.getTokenSymbol(this.reserve.erc20Info);
         },
 
-        depositDisabled() {
+        canDeposit() {
             return true;
         },
 
-        withdrawDisabled() {
-            return true;
+        canWithdraw() {
+            return false;
         },
 
-        borrowDisabled() {
-            return true;
+        canBorrow() {
+            return false;
         },
     },
 
@@ -123,10 +150,6 @@ export default {
     },
 
     methods: {
-        onDepositClick() {},
-
-        onWithdrawClick() {},
-
         onBorrowClick() {},
     },
 };
