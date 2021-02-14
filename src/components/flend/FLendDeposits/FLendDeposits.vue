@@ -1,5 +1,5 @@
 <template>
-    <div class="flenddeposit">
+    <div class="flenddeposits">
         <f-lend-deposit-list />
     </div>
 </template>
@@ -8,7 +8,7 @@
 import FLendDepositList from '@/components/data-tables/flend/FLendDepositList/FLendDepositList.vue';
 
 export default {
-    name: 'FLendDeposit',
+    name: 'FLendDeposits',
 
     components: { FLendDepositList },
 };

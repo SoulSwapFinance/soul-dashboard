@@ -1,5 +1,5 @@
 <template>
-    <div class="flenddepositview">
+    <div class="flenddepositsview">
         <f-view-transition watch-route :views-structure="viewsStructure">
             <router-view></router-view>
         </f-view-transition>
@@ -11,13 +11,13 @@ import FViewTransition from '@/components/core/FViewTransition/FViewTransition.v
 import { appStructureTree } from '@/app-structure.js';
 
 export default {
-    name: 'FLendDepositView',
+    name: 'FLendDepositsView',
 
     components: { FViewTransition },
 
     computed: {
         viewsStructure() {
-            const node = appStructureTree.serialize(appStructureTree.get('f-lend-deposit-view'));
+            const node = appStructureTree.serialize(appStructureTree.get('f-lend-deposits-view'));
 
             return node ? [JSON.parse(node)] : [];
         },

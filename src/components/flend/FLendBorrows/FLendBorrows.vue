@@ -1,5 +1,5 @@
 <template>
-    <div class="flendborrow">
+    <div class="flendborrows">
         <f-lend-borrow-list />
     </div>
 </template>
@@ -8,7 +8,7 @@
 import FLendBorrowList from '@/components/data-tables/flend/FLendBorrowList/FLendBorrowList.vue';
 
 export default {
-    name: 'FLendBorrow',
+    name: 'FLendBorrows',
 
     components: { FLendBorrowList },
 };

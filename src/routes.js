@@ -62,13 +62,13 @@ import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDeta
 import FLend from '@/views/flend/FLend/FLend.vue';
 import FLendMarketView from '@/views/flend/FLendMarketView/FLendMarketView.vue';
 import FLendMarket from '@/components/flend/FLendMarket/FLendMarket.vue';
-import FLendDeposit from '@/components/flend/FLendDeposit/FLendDeposit.vue';
-import FLendDepositView from '@/views/flend/FLendDepositView/FLendDepositView.vue';
-import FLendBorrow from '@/components/flend/FLendBorrow/FLendBorrow.vue';
-import FLendBorrowView from '@/views/flend/FLendBorrowView/FLendBorrowView.vue';
 import FLendReserveDetail from '@/components/flend/FLendReserveDetail/FLendReserveDetail.vue';
 import FLendDepositDetail from '@/components/flend/FLendDepositDetail/FLendDepositDetail.vue';
 import FLendBorrowDetail from '@/components/flend/FLendBorrowDetail/FLendBorrowDetail.vue';
+import FLendDepositsView from '@/views/flend/FLendDepositsView/FLendDepositsView.vue';
+import FLendBorrowsView from '@/views/flend/FLendBorrowsView/FLendBorrowsView.vue';
+import FLendDeposits from '@/components/flend/FLendDeposits/FLendDeposits.vue';
+import FLendBorrows from '@/components/flend/FLendBorrows/FLendBorrows.vue';
 
 export const routes = [
     {
@@ -420,13 +420,13 @@ export const routes = [
                         ],
                     },
                     {
-                        path: 'deposit',
-                        component: FLendDepositView,
+                        path: 'deposits',
+                        component: FLendDepositsView,
                         children: [
                             {
-                                name: 'f-lend-deposit',
+                                name: 'f-lend-deposits',
                                 path: '',
-                                component: FLendDeposit,
+                                component: FLendDeposits,
                             },
                             {
                                 name: 'f-lend-deposit-detail',
@@ -436,13 +436,13 @@ export const routes = [
                         ],
                     },
                     {
-                        path: 'borrow',
-                        component: FLendBorrowView,
+                        path: 'borrows',
+                        component: FLendBorrowsView,
                         children: [
                             {
-                                name: 'f-lend-borrow',
+                                name: 'f-lend-borrows',
                                 path: '',
-                                component: FLendBorrow,
+                                component: FLendBorrows,
                             },
                             {
                                 name: 'f-lend-borrow-detail',

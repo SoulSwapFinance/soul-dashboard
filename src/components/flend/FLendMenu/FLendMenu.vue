@@ -24,15 +24,15 @@ export default {
                 },
                 {
                     url: {
-                        name: 'f-lend-deposit',
+                        name: 'f-lend-deposits',
                     },
-                    title: 'Deposit',
+                    title: 'Deposits',
                 },
                 {
                     url: {
-                        name: 'f-lend-borrow',
+                        name: 'f-lend-borrows',
                     },
-                    title: 'Borrow',
+                    title: 'Borrows',
                 },
             ],
         };
