@@ -65,20 +65,7 @@
 
         <div class="flenddepositwithdraw_footer">
             <div v-if="!submitDisabled" class="flenddepositwithdraw_messages">
-                <f-message v-if="!withdraw" type="info" role="alert" class="big">
-                    You’re adding
-                    <span class="inc-desc-collateral">
-                        <f-token-value :token="token" :value="currAmount" no-currency /> {{ tokenSymbol }}
-                    </span>
-                    to your deposits
-                </f-message>
-                <f-message v-else type="info" role="alert" class="big">
-                    You’re removing
-                    <span class="inc-desc-collateral">
-                        <f-token-value :token="token" :value="currAmount" no-currency /> {{ tokenSymbol }}
-                    </span>
-                    from your deposits
-                </f-message>
+                <f-lend-deposit-withdraw-message :token="token" :value="currAmount" :withdraw="withdraw" />
             </div>
 
             <div class="defi-buttons">
@@ -119,11 +106,13 @@ import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxCo
 import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import FLendDepositWithdrawConfirmation from '@/components/flend/FLendDepositWithdrawConfirmation/FLendDepositWithdrawConfirmation.vue';
+import FLendDepositWithdrawMessage from '@/components/flend/FLendDepositWithdrawMessage/FLendDepositWithdrawMessage.vue';
 
 export default {
     name: 'FLendDepositWithdraw',
 
     components: {
+        FLendDepositWithdrawMessage,
         FMessage,
         FViewTransition,
         TxConfirmationWindow,

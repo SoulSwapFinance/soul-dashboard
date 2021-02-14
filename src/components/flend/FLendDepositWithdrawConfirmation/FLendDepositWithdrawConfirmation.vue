@@ -23,22 +23,7 @@
                     </span>
                 </template>
                 <div v-else>
-                    <f-message v-if="!withdraw" type="info" role="alert" class="big">
-                        You’re adding
-                        <span class="inc-desc-collateral">
-                            <f-token-value :token="token" :value="currAmount" no-currency /> &nbsp;
-                            {{ tokenSymbol }}
-                        </span>
-                        to your deposits
-                    </f-message>
-                    <f-message v-else type="info" role="alert" class="big">
-                        You’re removing
-                        <span class="inc-desc-collateral">
-                            <f-token-value :token="token" :value="currAmount" no-currency /> &nbsp;
-                            {{ tokenSymbol }}
-                        </span>
-                        from your deposits
-                    </f-message>
+                    <f-lend-deposit-withdraw-message :token="token" :value="currAmount" :withdraw="withdraw" />
                 </div>
             </div>
 
@@ -60,11 +45,12 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import appConfig from '../../../../app.config.js';
+import FLendDepositWithdrawMessage from '@/components/flend/FLendDepositWithdrawMessage/FLendDepositWithdrawMessage.vue';
 
 export default {
     name: 'FLendDepositWithdrawConfirmation',
 
-    components: { FMessage, LedgerConfirmationContent, FTokenValue, TxConfirmation },
+    components: { FLendDepositWithdrawMessage, FMessage, LedgerConfirmationContent, FTokenValue, TxConfirmation },
 
     props: {
         currAmount: {
