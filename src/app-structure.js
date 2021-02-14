@@ -234,6 +234,43 @@ const appStructure = [
                                             },
                                         ],
                                     },
+                                    {
+                                        id: 'f-lend-withdraw-detail',
+                                        _c: [
+                                            {
+                                                id: 'f-lend-withdraw-confirmation',
+                                                component: 'f-lend-deposit-withdraw-confirmation',
+                                                _c: [
+                                                    {
+                                                        id: 'f-lend-withdraw-transaction-success-message',
+                                                        component: 'transaction-success-message',
+                                                        _c: [
+                                                            {
+                                                                id: 'f-lend-withdraw-confirmation2',
+                                                                component: 'f-lend-deposit-withdraw-confirmation',
+                                                                _c: [
+                                                                    {
+                                                                        id:
+                                                                            'f-lend-withdraw-transaction-success-message2',
+                                                                        component: 'transaction-success-message',
+                                                                    },
+                                                                    {
+                                                                        id:
+                                                                            'f-lend-withdraw-transaction-reject-message2',
+                                                                        component: 'transaction-reject-message',
+                                                                    },
+                                                                ],
+                                                            },
+                                                        ],
+                                                    },
+                                                    {
+                                                        id: 'f-lend-withdraw-transaction-reject-message',
+                                                        component: 'transaction-reject-message',
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
                                 ],
                             },
                         ],
