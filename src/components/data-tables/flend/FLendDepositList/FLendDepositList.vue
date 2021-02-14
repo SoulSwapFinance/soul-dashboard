@@ -29,6 +29,13 @@
                         >
                             Deposit
                         </router-link>
+                        ,
+                        <router-link
+                            v-if="canWithdraw(item)"
+                            :to="{ name: 'f-lend-withdraw-detail', params: { assetAddress: item.assetAddress } }"
+                        >
+                            Withdraw
+                        </router-link>
                     </div>
                 </div>
                 <template v-else>
