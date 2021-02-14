@@ -17,7 +17,7 @@ export const viewHelpersMixin = {
     },
 
     computed: {
-        params() {
+        routeParams() {
             const { $route } = this;
 
             return $route && $route.params ? $route.params : {};
@@ -28,9 +28,11 @@ export const viewHelpersMixin = {
         /**
          * Map route params to properties. Param (and related prop) with name
          * `paramName` (prop `paramName`) is then mapped to `d_paramName`.
+         *
+         * @param {object} [_params]
          */
-        setDataFromParams() {
-            const { params } = this;
+        setDataFromParams(_params) {
+            const params = _params || this.routeParams;
             const props = {};
 
             Object.keys(this.$props).forEach((_prop) => {
