@@ -1,3 +1,5 @@
+@import "../../../assets/scss/vars";
+
 .flendreserveoverview {
     &_label {
         font-weight: bold;
@@ -18,5 +20,13 @@
 
     &_value {
         text-align: right;
+    }
+}
+
+@include media-max($bp-small) {
+    .flendreserveoverview {
+        &_body {
+            --f-gridauto-min-width: 260px;
+        }
     }
 }
