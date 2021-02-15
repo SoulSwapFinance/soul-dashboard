@@ -1,6 +1,8 @@
 import './flend.types.js';
 import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
+import { BigNumber } from 'bignumber.js';
+import web3utils from 'web3-utils';
 // import { defi } from '../defi/defi.js';
 // import { fFetch } from '@/plugins/ffetch.js';
 
@@ -198,5 +200,50 @@ export class FLend {
         const data = await this.apolloClient.query(query);
 
         return data.data.erc20TokenList || [];
+    }
+
+    /**
+     * Returns the configuration data for asset.
+     *
+     * @param {string} _configuration Hex uint256 number. (https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getreservedata)
+     * @return {{borrowingEnabled: boolean, liquidationBonus: (string|number), reserved: (string|number), decimals: (string|number), stableBorrowRateEnabled: boolean, liquidationThreshold: (string|number), isActive: boolean, isFrozen: boolean, reserveFactor: (string|number), ltv: (string|number)}}
+     */
+    getReserveConfigurationData(_configuration) {
+        const bConfiguration = new BigNumber(_configuration);
+        const bConfiguration256 = web3utils.padLeft(bConfiguration.toString(2), 256, '0');
+
+        return {
+            ltv: this.getBits(bConfiguration256, 0, 15, true),
+            liquidationThreshold: this.getBits(bConfiguration256, 16, 31, true),
+            liquidationBonus: this.getBits(bConfiguration256, 32, 47, true),
+            decimals: this.getBits(bConfiguration256, 48, 55, true),
+            isActive: this.getBits(bConfiguration256, 56, 56) === '1',
+            isFrozen: this.getBits(bConfiguration256, 57, 57) === '1',
+            borrowingEnabled: this.getBits(bConfiguration256, 58, 58) === '1',
+            stableBorrowRateEnabled: this.getBits(bConfiguration256, 59, 59) === '1',
+            reserved: this.getBits(bConfiguration256, 60, 63, true),
+            reserveFactor: this.getBits(bConfiguration256, 64, 79, true),
+        };
+    }
+
+    /**
+     * @param {string} _binNumber
+     * @param {number} _from
+     * @param {number} _to
+     * @param {number} [_toInt] Convert to integer
+     * @return {string|number}
+     */
+    getBits(_binNumber, _from = 0, _to = 15, _toInt = false) {
+        let n = '';
+
+        if (_from <= _to) {
+            n = _binNumber.substr(_binNumber.length - (_to + 1), _to - _from + 1);
+
+            if (_toInt) {
+                n = parseInt(n, 2);
+            }
+        }
+
+        return n;
     }
 }
