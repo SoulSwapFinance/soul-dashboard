@@ -3,8 +3,12 @@ import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
 import { BigNumber } from 'bignumber.js';
 import web3utils from 'web3-utils';
+import { toBigNumber } from '@/utils/bignumber.js';
 // import { defi } from '../defi/defi.js';
 // import { fFetch } from '@/plugins/ffetch.js';
+
+export const RAYP = 27;
+export const RAY = toBigNumber(10).pow(RAYP);
 
 /** @type {FLend} */
 export let flend = null;
@@ -200,6 +204,36 @@ export class FLend {
         const data = await this.apolloClient.query(query);
 
         return data.data.erc20TokenList || [];
+    }
+
+    /**
+     * @param {string} [_tokenAddress]
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<ERC20Token[]>}
+     */
+    async fetchERC20TotalSupply(_tokenAddress, _fetchPolicy = 'network-only') {
+        const query = {
+            query: gql`
+                query ERC20TokenTotalSupply($token: Address!) {
+                    ercTotalSupply(token: $token)
+                }
+            `,
+            variables: {
+                token: _tokenAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        };
+        const data = await this.apolloClient.query(query);
+
+        return data.data.ercTotalSupply || '';
+    }
+
+    /**
+     * @param {string} _value
+     * @return {BigNumber}
+     */
+    fromRay(_value) {
+        return toBigNumber(_value).shiftedBy(-27);
     }
 
     /**
