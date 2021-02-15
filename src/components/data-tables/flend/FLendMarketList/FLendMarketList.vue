@@ -14,11 +14,11 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <f-crypto-symbol :token="item.erc20Info" />
+                        <f-crypto-symbol :token="item.asset" />
                     </div>
                 </div>
                 <template v-else>
-                    <f-crypto-symbol :token="item.erc20Info" />
+                    <f-crypto-symbol :token="item.asset" />
                 </template>
             </template>
         </f-data-table>
@@ -46,8 +46,8 @@ export default {
                     label: 'Asset',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
-                            const a = _a.erc20Info.symbol;
-                            const b = _b.erc20Info.symbol;
+                            const a = _a.asset.symbol;
+                            const b = _b.asset.symbol;
 
                             return (_direction === 'desc' ? -1 : 1) * stringSort(a, b);
                         };

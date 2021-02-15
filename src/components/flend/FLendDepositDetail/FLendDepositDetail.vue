@@ -2,7 +2,7 @@
     <div class="flenddepositdetail">
         <h1 class="with-back-btn">
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
-            Deposit {{ $defi.getTokenSymbol(reserve.erc20Info) }}
+            Deposit {{ $defi.getTokenSymbol(reserve.asset) }}
         </h1>
 
         <h2 class="perex">Please enter an amount you would like to deposit.</h2>
@@ -39,7 +39,7 @@ export default {
             d_assetAddress: '',
             /** @type {FLendReserve} */
             reserve: {
-                erc20Info: {},
+                asset: {},
             },
         };
     },

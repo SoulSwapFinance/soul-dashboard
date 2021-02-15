@@ -107,7 +107,7 @@ export default {
             type: Object,
             default() {
                 return {
-                    erc20Info: {},
+                    asset: {},
                 };
             },
         },
@@ -127,7 +127,7 @@ export default {
 
     computed: {
         tokenSymbol() {
-            return this.$defi.getTokenSymbol(this.reserve.erc20Info);
+            return this.$defi.getTokenSymbol(this.reserve.asset);
         },
 
         canDeposit() {

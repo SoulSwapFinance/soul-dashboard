@@ -2,7 +2,7 @@
     <div class="flendborrowdetail">
         <h1 class="with-back-btn">
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
-            Borrow {{ $defi.getTokenSymbol(reserve.erc20Info) }}
+            Borrow {{ $defi.getTokenSymbol(reserve.asset) }}
         </h1>
 
         <div class="flendborrowdetail_body">
@@ -35,7 +35,7 @@ export default {
             d_assetAddress: '',
             /** @type {FLendReserve} */
             reserve: {
-                erc20Info: {},
+                asset: {},
             },
         };
     },

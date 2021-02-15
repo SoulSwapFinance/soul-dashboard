@@ -12,11 +12,11 @@
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
-                        <f-crypto-symbol :token="item.erc20Info" />
+                        <f-crypto-symbol :token="item.asset" />
                     </div>
                 </div>
                 <template v-else>
-                    <f-crypto-symbol :token="item.erc20Info" />
+                    <f-crypto-symbol :token="item.asset" />
                 </template>
             </template>
 
@@ -78,8 +78,8 @@ export default {
                     label: 'Asset',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
-                            const a = _a.erc20Info.symbol;
-                            const b = _b.erc20Info.symbol;
+                            const a = _a.asset.symbol;
+                            const b = _b.asset.symbol;
 
                             return (_direction === 'desc' ? -1 : 1) * stringSort(a, b);
                         };
@@ -90,14 +90,14 @@ export default {
                 {
                     name: 'balance',
                     label: 'Your wallet balance',
-                    itemProp: 'erc20Info.balanceOf',
+                    itemProp: 'asset.balanceOf',
                     formatter: (_availableBalance, _item) => {
-                        const balance = this.$defi.fromTokenValue(_availableBalance, _item.erc20Info);
+                        const balance = this.$defi.fromTokenValue(_availableBalance, _item.asset);
 
                         return balance > 0
                             ? formatNumberByLocale(
                                   balance,
-                                  this.$defi.getTokenDecimals(_item.erc20Info, MAX_TOKEN_DECIMALS_IN_TABLES)
+                                  this.$defi.getTokenDecimals(_item.asset, MAX_TOKEN_DECIMALS_IN_TABLES)
                               )
                             : 0;
                     },

@@ -74,7 +74,7 @@ export default {
             type: Object,
             default() {
                 return {
-                    erc20Info: {},
+                    asset: {},
                 };
             },
         },
@@ -122,7 +122,7 @@ export default {
          * @return {ERC20Token|*}
          */
         token() {
-            return this.reserve.erc20Info;
+            return this.reserve.asset;
         },
 
         tokenSymbol() {

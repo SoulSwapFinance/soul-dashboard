@@ -2,7 +2,7 @@
     <div class="flendreservedetail">
         <h1 class="with-back-btn">
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
-            {{ reserve.erc20Info.name }}
+            {{ reserve.asset.name }}
         </h1>
 
         <div class="flendreservedetail_body">
@@ -43,7 +43,7 @@ export default {
             d_assetAddress: '',
             /** @type {FLendReserve} */
             reserve: {
-                erc20Info: {},
+                asset: {},
             },
         };
     },

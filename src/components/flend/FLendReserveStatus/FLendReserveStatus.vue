@@ -13,7 +13,7 @@
                     <div class="flendreservestatus_reserve_circle">
                         <div class="flendreservestatus_reserve_circle_wrap">
                             <f-circle-progress :value="availableLiquidityValue" :show-value="false" />
-                            <f-crypto-symbol :token="reserve.erc20Info" no-symbol />
+                            <f-crypto-symbol :token="reserve.asset" no-symbol />
                         </div>
                     </div>
                     <div class="flendreservestatus_reserve_liquidity">
@@ -159,7 +159,7 @@ export default {
             type: Object,
             default() {
                 return {
-                    erc20Info: {},
+                    asset: {},
                 };
             },
         },

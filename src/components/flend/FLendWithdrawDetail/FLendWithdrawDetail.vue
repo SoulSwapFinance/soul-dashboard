@@ -2,7 +2,7 @@
     <div class="flendwithdrawdetail">
         <h1 class="with-back-btn">
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
-            Withdraw {{ $defi.getTokenSymbol(reserve.erc20Info) }}
+            Withdraw {{ $defi.getTokenSymbol(reserve.asset) }}
         </h1>
 
         <h2 class="perex">Please enter an amount you would like to withdraw.</h2>

@@ -56,7 +56,7 @@ export class FLend {
             const erc20Token = erc20Tokens.find((_token) => _token.address === reserve.assetAddress);
 
             if (erc20Token) {
-                reserve.erc20Info = cloneObject(erc20Token);
+                reserve.asset = cloneObject(erc20Token);
             }
         }
 
@@ -81,7 +81,7 @@ export class FLend {
                 const reserve = reserves.find((_reserve) => _reserve.assetAddress === _token.address);
 
                 if (reserve) {
-                    reserve.erc20Info = cloneObject(_token);
+                    reserve.asset = cloneObject(_token);
                 }
             });
         }

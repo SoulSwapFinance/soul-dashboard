@@ -2,7 +2,7 @@
     <div class="flendreserveoverview">
         <f-card>
             <div class="flendreserveoverview_label">
-                <f-crypto-symbol :token="reserve.erc20Info" img-width="16px" img-height="16px" /> Reserve Overview
+                <f-crypto-symbol :token="reserve.asset" img-width="16px" img-height="16px" /> Reserve Overview
             </div>
             <div class="flendreserveoverview_body gridauto">
                 <template v-if="!borrow">
@@ -124,7 +124,7 @@ export default {
             type: Object,
             default() {
                 return {
-                    erc20Info: {},
+                    asset: {},
                 };
             },
         },
@@ -153,7 +153,7 @@ export default {
 
     computed: {
         tokenSymbol() {
-            return this.$defi.getTokenSymbol(this.reserve.erc20Info);
+            return this.$defi.getTokenSymbol(this.reserve.asset);
         },
     },
 };
