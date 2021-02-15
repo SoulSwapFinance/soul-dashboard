@@ -23,7 +23,7 @@
                 </div>
                 <div class="flenduserinfo_buttons">
                     <router-link
-                        v-if="canDeposit"
+                        v-if="canDeposit && reserve.assetAddress"
                         :to="{ name: 'f-lend-deposit-detail', params: { assetAddress: reserve.assetAddress } }"
                         class="btn small"
                     >
@@ -32,7 +32,7 @@
                     <button v-else disabled class="btn small">Deposit</button>
                     &nbsp;
                     <router-link
-                        v-if="canWithdraw"
+                        v-if="canWithdraw && reserve.assetAddress"
                         :to="{
                             name: 'f-lend-withdraw-detail',
                             params: { assetAddress: reserve.assetAddress },
@@ -74,7 +74,7 @@
                 </div>
                 <div class="flenduserinfo_buttons">
                     <router-link
-                        v-if="canBorrow"
+                        v-if="canBorrow && reserve.assetAddress"
                         :to="{
                             name: 'f-lend-borrow-detail',
                             params: { assetAddress: reserve.assetAddress },
