@@ -207,13 +207,15 @@ export default {
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
                     );
                 } else if (fromToken.canWrapFTM && toToken.symbol === 'FTM') {
+                    const amount = Web3.utils.toHex(
+                        this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals)
+                    );
+
                     txToSign = wftmUtils.defiUnwrapFtm(
                         fromToken.address,
-                        params.max
+                        params.max || this.$defi.compareBN(amount, fromToken.availableBalance) === 1
                             ? fromToken.availableBalance
-                            : Web3.utils.toHex(
-                                  this.$defi.shiftDecPointRight(params.fromValue.toString(), toToken.decimals)
-                              )
+                            : amount
                     );
                 }
                 /* else if (fromToken.symbol === 'FUSD') {
