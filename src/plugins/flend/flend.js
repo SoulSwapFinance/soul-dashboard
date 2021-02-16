@@ -233,7 +233,24 @@ export class FLend {
     }
 
     /**
-     * @param {string} _value
+     * @param {FLendReserve} _reserve
+     * @return {Promise<BigNumber>}
+     */
+    async fetchTotalBorrowed(_reserve) {
+        if (_reserve) {
+            const totalSupplies = await this.fetchERC20TotalSupplies([
+                _reserve.stableDebtTokenAddress,
+                _reserve.variableDebtTokenAddress,
+            ]);
+
+            return toBigNumber(totalSupplies[0]).plus(totalSupplies[1]);
+        }
+
+        return toBigNumber(0);
+    }
+
+    /**
+     * @param {string|number|BigNumber} _value
      * @return {BigNumber}
      */
     fromRay(_value) {
