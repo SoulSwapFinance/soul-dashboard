@@ -14,5 +14,5 @@
  * @property {string} stableDebtTokenAddress Address of associated stable debt token
  * @property {string} variableDebtTokenAddress Address of associated variable debt token
  * @property {string} interestRateStrategyAddress Address of interest rate strategy
- * @property {ERC20Token} [asset]
+ * @property {DefiToken} [asset]
  */

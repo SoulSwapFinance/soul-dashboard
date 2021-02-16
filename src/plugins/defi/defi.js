@@ -4,6 +4,7 @@ import { cloneObject, isObjectEmpty, lowercaseFirstChar } from '../../utils';
 import web3utils from 'web3-utils';
 import { fFetch } from '@/plugins/ffetch.js';
 import { TokenPairs } from '@/utils/token-pairs.js';
+import { formatNumberByLocale } from '@/filters.js';
 
 /** @type {BNBridgeExchange} */
 export let defi = null;
@@ -294,6 +295,22 @@ export class DeFi {
      */
     getTokenPrice(_token) {
         return _token && 'price' in _token ? this.fromTokenValue(_token.price, _token, true) : 0;
+    }
+
+    /**
+     * @param {number} _value
+     * @param {DefiToken} _token
+     * @param {number} [_decimals]
+     * @return {string}
+     */
+    formatValueInUSD(_value, _token, _decimals) {
+        const tokenPrice = this.getTokenPrice(_token);
+
+        return formatNumberByLocale(
+            _value * tokenPrice,
+            _decimals !== undefined ? _decimals : this.getTokenDecimals(_token),
+            'USD'
+        );
     }
 
     /**
