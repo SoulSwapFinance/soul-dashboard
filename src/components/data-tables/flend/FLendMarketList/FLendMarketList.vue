@@ -29,8 +29,9 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
-// import {formatNumberByLocale} from "@/filters.js";
-// import {MAX_TOKEN_DECIMALS_IN_TABLES} from "@/plugins/fantom-web3-wallet.js";
+import { formatNumberByLocale } from '@/filters.js';
+import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
+import { bFromWei } from '@/utils/bignumber.js';
 
 export default {
     name: 'FLendMarketList',
@@ -58,15 +59,19 @@ export default {
                 {
                     name: 'marketsize',
                     label: 'Market Size',
-                    formatter: () => {
-                        return '-';
+                    formatter: (_value, _item) => {
+                        return formatNumberByLocale(
+                            bFromWei(_item.asset.totalSupply).toNumber(),
+                            MAX_TOKEN_DECIMALS_IN_TABLES
+                        );
                     },
                 },
                 {
                     name: 'borrowed',
                     label: 'Total Borrowed',
-                    formatter: () => {
-                        return '-';
+                    itemProp: '_totalBorrowed',
+                    formatter: (_value) => {
+                        return _value !== undefined ? _value : '-';
                     },
                 },
                 {
@@ -74,7 +79,14 @@ export default {
                     label: 'Deposit APY',
                     itemProp: 'currentLiquidityRate',
                     formatter: (_value) => {
-                        return _value;
+                        return (
+                            formatNumberByLocale(
+                                this.$flend.fromRay(_value).multipliedBy(100).toNumber(),
+                                undefined,
+                                undefined,
+                                true
+                            ) + ' % ??'
+                        );
                     },
                 },
                 {
@@ -82,7 +94,14 @@ export default {
                     label: 'Variable Borrow APR',
                     itemProp: 'currentVariableBorrowRate',
                     formatter: (_value) => {
-                        return _value;
+                        return (
+                            formatNumberByLocale(
+                                this.$flend.fromRay(_value).multipliedBy(100).toNumber(),
+                                undefined,
+                                undefined,
+                                true
+                            ) + ' %'
+                        );
                     },
                 },
                 {
@@ -90,7 +109,14 @@ export default {
                     label: 'Stable Borrow APR',
                     itemProp: 'currentStableBorrowRate',
                     formatter: (_value) => {
-                        return _value;
+                        return (
+                            formatNumberByLocale(
+                                this.$flend.fromRay(_value).multipliedBy(100).toNumber(),
+                                undefined,
+                                undefined,
+                                true
+                            ) + ' %'
+                        );
                     },
                 },
             ],
@@ -108,6 +134,13 @@ export default {
 
             this.loading = false;
             this.items = reserves;
+
+            let totalBorrowed;
+
+            for (let i = 0, len1 = this.items.length; i < len1; i++) {
+                totalBorrowed = await this.$flend.fetchTotalBorrowed(this.items[i]);
+                this.$set(this.items[i], '_totalBorrowed', bFromWei(totalBorrowed).toNumber());
+            }
         },
 
         /**
