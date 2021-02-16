@@ -8,16 +8,16 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Balance</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ balance }}</b> {{ tokenSymbol }}
+                        <b>{{ formatAmount(balance) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Deposited</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ deposited }}</b> {{ tokenSymbol }}
+                        <b>{{ formatAmount(deposited) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
-                <div class="row no-collapse align-items-center">
+                <div v-if="deposited && reserveUsedAsCollateral" class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Use as collateral <f-lend-collateral-info /></div>
                     <div class="col-7 flenduserinfo_value"><f-toggle-button v-model="usedAsCollateral" /></div>
                 </div>
@@ -51,25 +51,25 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Borrowed</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ borrowed }}</b> {{ tokenSymbol }}
+                        <b>{{ formatAmount(borrowed) }}</b> {{ tokenSymbol }} ??
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Health factor <f-lend-health-factor-info /></div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ healthFactor }}</b>
+                        <b>{{ borrowed > 0 ? healthFactor : '-' }} ??</b>
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Loan to value</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ loanToValue }}</b> %
+                        <b>{{ loanToValue }} ??</b> %
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Available to you</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ available }}</b> {{ tokenSymbol }}
+                        <b>{{ formatAmount(available) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
                 <div class="flenduserinfo_buttons">
@@ -95,6 +95,9 @@ import FCard from '@/components/core/FCard/FCard.vue';
 import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
 import FLendHealthFactorInfo from '@/components/flend/infos/FLendHealthFactorInfo.vue';
 import FLendCollateralInfo from '@/components/flend/infos/FLendCollateralInfo.vue';
+import { mapGetters } from 'vuex';
+import { bFromWei } from '@/utils/bignumber.js';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'FLendUserInfo',
@@ -115,31 +118,45 @@ export default {
 
     data() {
         return {
-            balance: '9,900.00',
-            deposited: '100.00',
-            borrowed: '0.00',
-            healthFactor: '-',
-            loanToValue: 79.7,
-            available: '1,340.26',
+            balance: 0,
+            deposited: 0,
+            borrowed: 0,
+            healthFactor: 0,
+            loanToValue: 0,
+            available: 0,
             usedAsCollateral: true,
+            reserveConfig: {},
         };
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         tokenSymbol() {
             return this.$defi.getTokenSymbol(this.reserve.asset);
         },
 
         canDeposit() {
-            return true;
+            const { reserveConfig } = this;
+
+            return reserveConfig.isActive;
         },
 
         canWithdraw() {
-            return false;
+            const { reserveConfig } = this;
+
+            return this.deposited > 0 && reserveConfig.isActive;
         },
 
         canBorrow() {
-            return false;
+            const { reserveConfig } = this;
+
+            return reserveConfig.borrowingEnabled && reserveConfig.isActive;
+        },
+
+        reserveUsedAsCollateral() {
+            // ??
+            return true;
         },
     },
 
@@ -147,9 +164,49 @@ export default {
         usedAsCollateral(_value) {
             console.log('usedAsCollateral change', _value);
         },
+
+        reserve: {
+            immediate: true,
+            handler() {
+                this.setData();
+            },
+        },
     },
 
     methods: {
+        async setData() {
+            /** @type {FLendReserve} */
+            const reserve = this.reserve;
+            const { $flend } = this;
+
+            if (!reserve.ID) {
+                return;
+            }
+
+            const { assetAddress } = reserve;
+            const userData = await $flend.fetchUserData(this.currentAccount.address);
+            const deposits = await $flend.fetchUserDeposits(this.currentAccount.address, assetAddress);
+            const deposit = deposits.find((_deposit) => _deposit.assetAddress === assetAddress);
+            const userTokenBalance = await $flend.fetchERC20TokenBalance(this.currentAccount.address, assetAddress);
+
+            this.balance = bFromWei(userTokenBalance).toNumber();
+            if (deposit) {
+                this.deposited = bFromWei(deposit.amount).toNumber();
+            }
+            // this.borrowed = bFromWei(userData.totalDebtFUSD).toNumber();
+            this.healthFactor = $flend.fromRay(userData.healthFactor).toNumber();
+            // this.loanToValue = $flend.fromRay(userData.ltv).toNumber();
+            this.available = bFromWei(userData.availableBorrowsFUSD)
+                .dividedBy(this.$defi.getTokenPrice(reserve.asset))
+                .toNumber();
+
+            this.reserveConfig = $flend.getReserveConfigurationData(reserve.configuration);
+        },
+
+        formatAmount(_amount) {
+            return formatNumberByLocale(_amount, 2);
+        },
+
         onBorrowClick() {},
     },
 };
