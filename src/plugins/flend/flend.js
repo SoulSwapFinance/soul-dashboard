@@ -48,7 +48,7 @@ export class FLend {
     async fetchReserveWithERC20Info(_assetAddress, _ownerAddress = '', _fetchPolicy = 'network-only') {
         const data = await Promise.all([
             this.fetchReserve(_assetAddress, _fetchPolicy),
-            this.fetchERC20Tokens(_ownerAddress, _fetchPolicy),
+            this.fetchDefiTokens(_ownerAddress, _fetchPolicy),
         ]);
         /** @type {FLendReserve} */
         const reserve = data[0];
@@ -75,7 +75,7 @@ export class FLend {
     async fetchReservesWithERC20Info(_ownerAddress = '', _fetchPolicy = 'network-only') {
         const data = await Promise.all([
             this.fetchReserves(_fetchPolicy),
-            this.fetchERC20Tokens(_ownerAddress, _fetchPolicy),
+            this.fetchDefiTokens(_ownerAddress, _fetchPolicy),
         ]);
         const reserves = data[0];
         const erc20Tokens = data[1];
@@ -204,6 +204,66 @@ export class FLend {
         const data = await this.apolloClient.query(query);
 
         return data.data.erc20TokenList || [];
+    }
+
+    /**
+     * @param {string} [_ownerAddress]
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<ERC20Token[]>}
+     */
+    async fetchDefiTokens(_ownerAddress, _fetchPolicy = 'network-only') {
+        const query = {
+            query: _ownerAddress
+                ? gql`
+                      query DefiTokens($owner: Address!) {
+                          defiTokens {
+                              address
+                              name
+                              symbol
+                              logoUrl
+                              decimals
+                              price
+                              priceDecimals
+                              totalSupply
+                              isActive
+                              canWrapFTM
+                              canDeposit
+                              canMint
+                              canBorrow
+                              canTrade
+                              availableBalance(owner: $owner)
+                              allowance(owner: $owner)
+                          }
+                      }
+                  `
+                : gql`
+                      query DefiTokens {
+                          defiTokens {
+                              address
+                              name
+                              symbol
+                              logoUrl
+                              decimals
+                              price
+                              priceDecimals
+                              totalSupply
+                              isActive
+                              canWrapFTM
+                              canDeposit
+                              canMint
+                              canBorrow
+                              canTrade
+                          }
+                      }
+                  `,
+            variables: {
+                owner: _ownerAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        };
+        const data = await this.apolloClient.query(query);
+
+        return data.data.defiTokens || [];
     }
 
     /**
