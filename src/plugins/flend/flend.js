@@ -431,6 +431,52 @@ export class FLend {
     }
 
     /**
+     * Returns the configuration data for user.
+     * (https://docs.aave.com/developers/the-core-protocol/lendingpool#getuserconfiguration)
+     *
+     * @param {string} _configuration Hex uint256 number.
+     * @param {number} _numReserves
+     * @return {{usedAsCollateral: boolean, borrowed: boolean}[]}
+     */
+    getUserConfiguration(_configuration, _numReserves) {
+        const bConfiguration = new BigNumber(_configuration);
+        const bConfiguration256 = web3utils.padLeft(bConfiguration.toString(2), 256, '0');
+        const configuration = [];
+        let bits = '';
+
+        for (let i = 0; i < _numReserves * 2; i += 2) {
+            bits = this.getBits(bConfiguration256, i, i + 1);
+            configuration.push({
+                usedAsCollateral: bits.charAt(0) === '1',
+                borrowed: bits.charAt(1) === '1',
+            });
+        }
+
+        return configuration;
+    }
+
+    /**
+     * Get indices of borrowed or 'used as collateral' reserves.
+     *
+     * @param {{usedAsCollateral: boolean, borrowed: boolean}[]} _userConfiguration
+     * @param {'usedAsCollateral'|'borrowed'} _key
+     * @return {number[]}
+     */
+    getUserReservesIndices(_userConfiguration, _key = 'usedAsCollateral') {
+        const reserves = [];
+
+        if (_userConfiguration && _userConfiguration.length > 0) {
+            _userConfiguration.forEach((_item, _index) => {
+                if (_item[_key]) {
+                    reserves.push(_index);
+                }
+            });
+        }
+
+        return reserves;
+    }
+
+    /**
      * @param {string} _binNumber
      * @param {number} _from
      * @param {number} _to
