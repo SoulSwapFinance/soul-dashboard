@@ -164,6 +164,71 @@ export class FLend {
     }
 
     /**
+     * @param {string} _ownerAddress
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<ERC20Token[]>}
+     */
+    async fetchUserData(_ownerAddress, _fetchPolicy = 'network-only') {
+        const query = {
+            query: gql`
+                query UserAccountData($address: Address!) {
+                    fLendLendingPool {
+                        userAccountData(address: $address) {
+                            totalCollateralFUSD
+                            totalDebtFUSD
+                            availableBorrowsFUSD
+                            currentLiquidationThreshold
+                            ltv
+                            healthFactor
+                            configurationData
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _ownerAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        };
+        const data = await this.apolloClient.query(query);
+
+        return data.data.fLendLendingPool.userAccountData || {};
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @param {string} _assetAddress
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<ERC20Token[]>}
+     */
+    async fetchUserDeposits(_ownerAddress, _assetAddress, _fetchPolicy = 'network-only') {
+        const query = {
+            query: gql`
+                query UserAccountData($address: Address, $asset: Address) {
+                    fLendLendingPool {
+                        userDepositHistory(address: $address, asset: $asset) {
+                            assetAddress
+                            userAddress
+                            onBehalfOfAddress
+                            amount
+                            referalCode
+                            timestamp
+                        }
+                    }
+                }
+            `,
+            variables: {
+                address: _ownerAddress,
+                asset: _assetAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        };
+        const data = await this.apolloClient.query(query);
+
+        return data.data.fLendLendingPool.userDepositHistory || [];
+    }
+
+    /**
      * @param {string} [_ownerAddress]
      * @param {string} [_fetchPolicy]
      * @return {Promise<ERC20Token[]>}
@@ -264,6 +329,30 @@ export class FLend {
         const data = await this.apolloClient.query(query);
 
         return data.data.defiTokens || [];
+    }
+
+    /**
+     * @param {string} _ownerAddress
+     * @param {string} _assetAddress
+     * @param {string} [_fetchPolicy]
+     * @return {Promise<ERC20Token[]>}
+     */
+    async fetchERC20TokenBalance(_ownerAddress, _assetAddress, _fetchPolicy = 'network-only') {
+        const query = {
+            query: gql`
+                query UserAccountData($owner: Address!, $token: Address!) {
+                    ercTokenBalance(owner: $owner, token: $token)
+                }
+            `,
+            variables: {
+                owner: _ownerAddress,
+                token: _assetAddress,
+            },
+            fetchPolicy: _fetchPolicy,
+        };
+        const data = await this.apolloClient.query(query);
+
+        return data.data.ercTokenBalance || [];
     }
 
     /**
