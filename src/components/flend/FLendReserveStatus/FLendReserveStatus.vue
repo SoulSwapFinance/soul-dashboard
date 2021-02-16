@@ -9,7 +9,7 @@
                         </div>
                         <div class="flendreservestatus_reserve_value">
                             <f-placeholder :content-loaded="loaded" block :replacement-num-chars="10">
-                                {{ totalBorrowed }}
+                                {{ cTotalBorrowed }}
                             </f-placeholder>
                         </div>
                         <div class="light-text-color">
@@ -31,7 +31,7 @@
                         </div>
                         <div class="flendreservestatus_reserve_value">
                             <f-placeholder :content-loaded="loaded" block :replacement-num-chars="10">
-                                {{ available }}
+                                {{ cAvailable }}
                             </f-placeholder>
                         </div>
                         <div class="light-text-color">
@@ -188,6 +188,8 @@ import FLendLTVInfo from '@/components/flend/infos/FLendLTVInfo.vue';
 import FLendLiquidationTresholdInfo from '@/components/flend/infos/FLendLiquidationTresholdInfo.vue';
 import FLendLiquidationPenalty from '@/components/flend/infos/FLendLiquidationPenalty.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import { bFromWei } from '@/utils/bignumber.js';
+import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'FLendReserveStatus',
@@ -217,11 +219,11 @@ export default {
 
     data() {
         return {
-            totalBorrowed: '??',
-            totalBorrowedUSD: '??',
-            available: '??',
-            availableUSD: '??',
-            reserveSizeUSD: '??',
+            totalBorrowed: 0,
+            totalBorrowedUSD: '',
+            available: 0,
+            availableUSD: '',
+            reserveSizeUSD: '',
             utilisationRate: '??',
             depositAPY: '??',
             depositAPY30d: '??',
@@ -235,12 +237,25 @@ export default {
             liquidationPenalty: 0,
             usedAsColllateral: true,
             stableBorrowing: false,
+            totalSupply: 0,
         };
     },
 
     computed: {
         availableLiquidityValue() {
-            return 15;
+            if (this.totalSupply > 0) {
+                return (this.available / this.totalSupply) * 100;
+            }
+
+            return 0;
+        },
+
+        cTotalBorrowed() {
+            return formatNumberByLocale(this.totalBorrowed, 2);
+        },
+
+        cAvailable() {
+            return formatNumberByLocale(this.available, 2);
         },
 
         loaded() {
@@ -260,7 +275,7 @@ export default {
     methods: {
         async setData() {
             /** @type {FLendReserve} */
-            const { reserve } = this;
+            const reserve = this.reserve;
             const { $flend } = this;
 
             if (!reserve.ID) {
@@ -275,6 +290,27 @@ export default {
             this.stableBorrowAPR = $flend.fromRay(reserve.currentStableBorrowRate).multipliedBy(100).toFixed(2);
             this.variableBorrowAPR = $flend.fromRay(reserve.currentVariableBorrowRate).multipliedBy(100).toFixed(2);
             this.maximumLTV = configuration.ltv / 100;
+
+            this.setTotalBorrowed();
+        },
+
+        async setTotalBorrowed() {
+            const totalBorrowed = await this.$flend.fetchTotalBorrowed(this.reserve);
+
+            this.totalBorrowed = bFromWei(totalBorrowed).toNumber();
+            this.totalBorrowedUSD = this.$defi.formatValueInUSD(this.totalBorrowed, this.reserve.asset);
+
+            this.setReserveSizeAndAvailableLiquidity();
+        },
+
+        setReserveSizeAndAvailableLiquidity() {
+            /** @type {FLendReserve} */
+            const reserve = this.reserve;
+
+            this.totalSupply = bFromWei(reserve.asset.totalSupply).toNumber();
+            this.available = this.totalSupply - this.totalBorrowed;
+            this.availableUSD = this.$defi.formatValueInUSD(this.available, reserve.asset);
+            this.reserveSizeUSD = this.$defi.formatValueInUSD(this.totalSupply, reserve.asset);
         },
     },
 };
