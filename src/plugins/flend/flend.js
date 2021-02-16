@@ -228,12 +228,16 @@ export class FLend {
         return data.data.ercTotalSupply || '';
     }
 
+    async fetchERC20TotalSupplies(_tokenAdresses) {
+        return await Promise.all(_tokenAdresses.map((_tokenAddress) => this.fetchERC20TotalSupply(_tokenAddress)));
+    }
+
     /**
      * @param {string} _value
      * @return {BigNumber}
      */
     fromRay(_value) {
-        return toBigNumber(_value).shiftedBy(-27);
+        return toBigNumber(_value).shiftedBy(-RAYP);
     }
 
     /**
