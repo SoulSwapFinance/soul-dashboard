@@ -298,7 +298,7 @@ export default {
             const totalBorrowed = await this.$flend.fetchTotalBorrowed(this.reserve);
 
             this.totalBorrowed = bFromWei(totalBorrowed).toNumber();
-            this.totalBorrowedUSD = this.$defi.formatValueInUSD(this.totalBorrowed, this.reserve.asset);
+            this.totalBorrowedUSD = this.$defi.formatValueInUSD(this.totalBorrowed, this.reserve.asset, 2);
 
             this.setReserveSizeAndAvailableLiquidity();
         },
@@ -309,7 +309,7 @@ export default {
 
             this.totalSupply = bFromWei(reserve.asset.totalSupply).toNumber();
             this.available = this.totalSupply - this.totalBorrowed;
-            this.availableUSD = this.$defi.formatValueInUSD(this.available, reserve.asset);
+            this.availableUSD = this.$defi.formatValueInUSD(this.available, reserve.asset, 2);
             this.reserveSizeUSD = this.$defi.formatValueInUSD(this.totalSupply, reserve.asset);
         },
     },
