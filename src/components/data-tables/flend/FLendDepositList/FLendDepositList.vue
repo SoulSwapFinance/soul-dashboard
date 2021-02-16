@@ -61,6 +61,7 @@ import { stringSort } from '@/utils/array-sorting.js';
 import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '@/filters.js';
 import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
+import { bFromWei } from '@/utils/bignumber.js';
 // import {formatNumberByLocale} from "@/filters.js";
 // import {MAX_TOKEN_DECIMALS_IN_TABLES} from "@/plugins/fantom-web3-wallet.js";
 
@@ -90,7 +91,7 @@ export default {
                 {
                     name: 'balance',
                     label: 'Your wallet balance',
-                    itemProp: 'asset.balanceOf',
+                    itemProp: 'asset.availableBalance',
                     formatter: (_availableBalance, _item) => {
                         const balance = this.$defi.fromTokenValue(_availableBalance, _item.asset);
 
@@ -105,8 +106,9 @@ export default {
                 {
                     name: 'deposits',
                     label: 'Your deposits',
-                    formatter: () => {
-                        return '-';
+                    itemProp: '_deposit',
+                    formatter: (_value) => {
+                        return _value || 0;
                     },
                 },
                 {
@@ -114,7 +116,7 @@ export default {
                     label: 'Deposit APY',
                     itemProp: 'currentLiquidityRate',
                     formatter: (_value) => {
-                        return _value;
+                        return _value + ' ??';
                     },
                 },
                 {
@@ -125,6 +127,7 @@ export default {
                 },
             ],
             loading: true,
+            aTokenAdresses: [],
         };
     },
 
@@ -138,12 +141,45 @@ export default {
 
     methods: {
         async init() {
-            const reserves = await this.$flend.fetchReservesWithERC20Info(
+            const { $flend } = this;
+            let reserves = await this.$flend.fetchReservesWithERC20Info(
                 this.currentAccount ? this.currentAccount.address : ''
             );
 
             this.loading = false;
-            this.items = reserves;
+            this.aTokenAdresses = reserves.map((_reserve) => _reserve.aTokenAddress);
+
+            reserves = reserves.map((_reserve) => {
+                return { ..._reserve, _config: $flend.getReserveConfigurationData(_reserve.configuration) };
+            });
+            this.items = reserves.filter((_reserve) => _reserve._config.isActive);
+
+            this.setDeposits();
+        },
+
+        async setDeposits() {
+            const { $flend } = this;
+            const { aTokenAdresses } = this;
+            const userData = await $flend.fetchUserData(this.currentAccount.address);
+            const userConfig = $flend.getUserConfiguration(userData.configurationData, this.aTokenAdresses.length);
+            const reservesUsedAsCollateral = $flend.getUserReservesIndices(userConfig);
+
+            let deposit = null;
+            let aTokenAddress = '';
+            let item = null;
+
+            if (reservesUsedAsCollateral.length > 0) {
+                for (let i = 0, len1 = reservesUsedAsCollateral.length; i < len1; i++) {
+                    aTokenAddress = aTokenAdresses[reservesUsedAsCollateral[i]];
+
+                    deposit = await $flend.fetchERC20TokenBalance(this.currentAccount.address, aTokenAddress);
+
+                    item = this.items.find((_item) => _item.aTokenAddress === aTokenAddress);
+                    if (item) {
+                        this.$set(item, '_deposit', bFromWei(deposit).toNumber());
+                    }
+                }
+            }
         },
 
         /**
@@ -151,8 +187,7 @@ export default {
          * @return {boolean}
          */
         canWithdraw(_reserve) {
-            console.log(_reserve);
-            return false;
+            return _reserve._deposit > 0;
         },
     },
 };
