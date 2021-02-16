@@ -184,15 +184,17 @@ export default {
             }
 
             const { assetAddress } = reserve;
-            const userData = await $flend.fetchUserData(this.currentAccount.address);
-            const deposits = await $flend.fetchUserDeposits(this.currentAccount.address, assetAddress);
-            const deposit = deposits.find((_deposit) => _deposit.assetAddress === assetAddress);
-            const userTokenBalance = await $flend.fetchERC20TokenBalance(this.currentAccount.address, assetAddress);
+            const data = await Promise.all([
+                $flend.fetchUserData(this.currentAccount.address),
+                $flend.fetchERC20TokenBalance(this.currentAccount.address, reserve.aTokenAddress),
+                $flend.fetchERC20TokenBalance(this.currentAccount.address, assetAddress),
+            ]);
+            const userData = data[0];
+            const deposit = data[1];
+            const userTokenBalance = data[2];
 
             this.balance = bFromWei(userTokenBalance).toNumber();
-            if (deposit) {
-                this.deposited = bFromWei(deposit.amount).toNumber();
-            }
+            this.deposited = bFromWei(deposit).toNumber();
             // this.borrowed = bFromWei(userData.totalDebtFUSD).toNumber();
             this.healthFactor = $flend.fromRay(userData.healthFactor).toNumber();
             // this.loanToValue = $flend.fromRay(userData.ltv).toNumber();
