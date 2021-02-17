@@ -3,8 +3,9 @@ import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
 import { BigNumber } from 'bignumber.js';
 import web3utils from 'web3-utils';
-import { toBigNumber } from '@/utils/bignumber.js';
-// import { defi } from '../defi/defi.js';
+import { bFromWei, toBigNumber } from '@/utils/bignumber.js';
+import { defi } from '../defi/defi.js';
+import { formatNumberByLocale } from '@/filters.js';
 // import { fFetch } from '@/plugins/ffetch.js';
 
 export const RAYP = 27;
@@ -399,21 +400,50 @@ export class FLend {
     }
 
     /**
-     * @param {string|number|BigNumber} _value
-     * @return {BigNumber}
+     * @param {FLendReserve} _reserve
+     * @return {Promise<FLendReserveOverview>}
      */
-    fromRay(_value) {
-        return toBigNumber(_value).shiftedBy(-RAYP);
+    async getReserveOverview(_reserve) {
+        if (!_reserve.ID) {
+            return {};
+        }
+
+        const configuration = this.getReserveConfigurationData(_reserve.configuration);
+        const { asset } = _reserve;
+        const overview = {};
+        const totalBorrowed = await this.fetchTotalBorrowed(_reserve);
+
+        overview.stableBorrowing = configuration.stableBorrowRateEnabled;
+        overview.liquidationTreshold = configuration.liquidationThreshold / 100;
+        overview.liquidationPenalty = configuration.liquidationBonus / 100 - 100;
+        overview.stableBorrowAPR = this.fromRay(_reserve.currentStableBorrowRate).multipliedBy(100).toNumber();
+        overview.variableBorrowAPR = this.fromRay(_reserve.currentVariableBorrowRate).multipliedBy(100).toNumber();
+        overview.maximumLTV = configuration.ltv / 100;
+        overview.usedAsColllateral = true; // ??
+
+        overview.assetPrice = defi.getTokenPrice(asset);
+        overview.assetPriceFormatted = defi.formatValueInUSD(1, asset, 2);
+        overview.totalBorrowed = bFromWei(totalBorrowed).toNumber();
+        overview.totalBorrowedFUSD = overview.totalBorrowed * overview.assetPrice;
+        overview.totalBorrowedFUSDFormatted = defi.formatValueInUSD(overview.totalBorrowed, asset, 2);
+        overview.totalSupply = bFromWei(asset.totalSupply).toNumber();
+        overview.available = overview.totalSupply - overview.totalBorrowed;
+        overview.availableFUSD = overview.available * overview.assetPrice;
+        overview.availableFUSDFormatted = defi.formatValueInUSD(overview.available, asset, 2);
+        overview.reserveSizeFUSD = overview.totalSupply * overview.assetPrice;
+        overview.reserveSizeFUSDFormatted = defi.formatValueInUSD(overview.totalSupply, asset);
+
+        return overview;
     }
 
     /**
      * Returns the configuration data for asset.
      *
-     * @param {string} _configuration Hex uint256 number. (https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getreservedata)
-     * @return {{borrowingEnabled: boolean, liquidationBonus: (string|number), reserved: (string|number), decimals: (string|number), stableBorrowRateEnabled: boolean, liquidationThreshold: (string|number), isActive: boolean, isFrozen: boolean, reserveFactor: (string|number), ltv: (string|number)}}
+     * @param {string} _reserveConfiguration Hex uint256 number. (https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getreservedata)
+     * @return {FLendReserveConfigurationData}
      */
-    getReserveConfigurationData(_configuration) {
-        const bConfiguration = new BigNumber(_configuration);
+    getReserveConfigurationData(_reserveConfiguration) {
+        const bConfiguration = new BigNumber(_reserveConfiguration);
         const bConfiguration256 = web3utils.padLeft(bConfiguration.toString(2), 256, '0');
 
         return {
@@ -495,5 +525,21 @@ export class FLend {
         }
 
         return n;
+    }
+
+    /**
+     * @param {number} _amount
+     * @return {string}
+     */
+    formatAmount(_amount) {
+        return formatNumberByLocale(_amount, 2);
+    }
+
+    /**
+     * @param {string|number|BigNumber} _value
+     * @return {BigNumber}
+     */
+    fromRay(_value) {
+        return toBigNumber(_value).shiftedBy(-RAYP);
     }
 }
