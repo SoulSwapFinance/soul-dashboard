@@ -16,3 +16,41 @@
  * @property {string} interestRateStrategyAddress Address of interest rate strategy
  * @property {DefiToken} [asset]
  */
+
+/**
+ * FLend reserve overview object.
+ * @typedef {Object} FLendReserveOverview
+ * @property {number} assetPrice
+ * @property {string} assetPriceFormatted
+ * @property {number} available
+ * @property {number} availableFUSD
+ * @property {string} availableFUSDFormatted
+ * @property {number} liquidationPenalty
+ * @property {number} liquidationTreshold
+ * @property {number} maximumLTV
+ * @property {number} reserveSizeFUSD
+ * @property {string} reserveSizeFUSDFormatted
+ * @property {number} stableBorrowAPR
+ * @property {boolean} stableBorrowing
+ * @property {number} totalBorrowed
+ * @property {number} totalBorrowedFUSD
+ * @property {string} totalBorrowedFUSDFormatted
+ * @property {number} totalSupply
+ * @property {boolean} usedAsColllateral
+ * @property {number} variableBorrowAPR
+ */
+
+/**
+ * FLend reserve overview object.
+ * @typedef {Object} FLendReserveConfigurationData
+ * @property {boolean} borrowingEnabled Whether borrowing is enabled on the reserve
+ * @property {number} decimals The decimals used by the reserve
+ * @property {boolean} isActive Whether the reserve is active
+ * @property {boolean} isFrozen Whether the reserve is frozen / disabled
+ * @property {number} liquidationBonus The bonus awarded to liquidators
+ * @property {number} liquidationThreshold The liquidation threshold of the reserve
+ * @property {number} ltv The Loan To Value
+ * @property {number} reserveFactor The reserve factor
+ * @property {number} reserved
+ * @property {boolean} stableBorrowRateEnabled Whether stable borrowing is enabled
+ */
