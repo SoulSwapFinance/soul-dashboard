@@ -38,6 +38,8 @@ export class FLend {
         this.contracts = {
             lendingPool: '0x42bA5A1C2bdc4b3C0aCFDf69DFFaF326C446022E',
         };
+        /** Referral code for referral program (https://docs.aave.com/developers/referral-program). */
+        this.referralCode = '0';
     }
 
     /**
