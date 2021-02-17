@@ -8,13 +8,13 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Balance</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ formatAmount(balance) }}</b> {{ tokenSymbol }}
+                        <b>{{ $flend.formatAmount(balance) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Deposited</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ formatAmount(deposited) }}</b> {{ tokenSymbol }}
+                        <b>{{ $flend.formatAmount(deposited) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
                 <div v-if="deposited && reserveUsedAsCollateral" class="row no-collapse align-items-center">
@@ -51,7 +51,7 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Borrowed</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ formatAmount(borrowed) }}</b> {{ tokenSymbol }} ??
+                        <b>{{ $flend.formatAmount(borrowed) }}</b> {{ tokenSymbol }} ??
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
@@ -69,7 +69,7 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Available to you</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ formatAmount(available) }}</b> {{ tokenSymbol }}
+                        <b>{{ $flend.formatAmount(available) }}</b> {{ tokenSymbol }}
                     </div>
                 </div>
                 <div class="flenduserinfo_buttons">
@@ -97,7 +97,6 @@ import FLendHealthFactorInfo from '@/components/flend/infos/FLendHealthFactorInf
 import FLendCollateralInfo from '@/components/flend/infos/FLendCollateralInfo.vue';
 import { mapGetters } from 'vuex';
 import { bFromWei } from '@/utils/bignumber.js';
-import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'FLendUserInfo',
@@ -203,10 +202,6 @@ export default {
                 .toNumber();
 
             this.reserveConfig = $flend.getReserveConfigurationData(reserve.configuration);
-        },
-
-        formatAmount(_amount) {
-            return formatNumberByLocale(_amount, 2);
         },
 
         onBorrowClick() {},

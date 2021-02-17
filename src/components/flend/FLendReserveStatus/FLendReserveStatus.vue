@@ -188,7 +188,6 @@ import FLendLTVInfo from '@/components/flend/infos/FLendLTVInfo.vue';
 import FLendLiquidationTresholdInfo from '@/components/flend/infos/FLendLiquidationTresholdInfo.vue';
 import FLendLiquidationPenalty from '@/components/flend/infos/FLendLiquidationPenalty.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import { bFromWei } from '@/utils/bignumber.js';
 
 export default {
     name: 'FLendReserveStatus',
