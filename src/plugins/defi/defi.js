@@ -6,7 +6,7 @@ import { fFetch } from '@/plugins/ffetch.js';
 import { TokenPairs } from '@/utils/token-pairs.js';
 import { formatNumberByLocale } from '@/filters.js';
 
-/** @type {BNBridgeExchange} */
+/** @type {DeFi} */
 export let defi = null;
 
 // TMP!!
