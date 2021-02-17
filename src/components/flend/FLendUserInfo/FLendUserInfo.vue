@@ -8,13 +8,17 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Balance</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ $flend.formatAmount(balance) }}</b> {{ tokenSymbol }}
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ $flend.formatAmount(balance) }}</b> {{ tokenSymbol }}
+                        </f-placeholder>
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Deposited</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ $flend.formatAmount(deposited) }}</b> {{ tokenSymbol }}
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ $flend.formatAmount(deposited) }}</b> {{ tokenSymbol }}
+                        </f-placeholder>
                     </div>
                 </div>
                 <div v-if="deposited && reserveUsedAsCollateral" class="row no-collapse align-items-center">
@@ -51,25 +55,33 @@
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Borrowed</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ $flend.formatAmount(borrowed) }}</b> {{ tokenSymbol }} ??
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ $flend.formatAmount(borrowed) }}</b> {{ tokenSymbol }} ??
+                        </f-placeholder>
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Health factor <f-lend-health-factor-info /></div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ borrowed > 0 ? healthFactor : '-' }} ??</b>
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ borrowed > 0 ? healthFactor : '-' }} ??</b>
+                        </f-placeholder>
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Loan to value</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ loanToValue }} ??</b> %
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ loanToValue }} ??</b> %
+                        </f-placeholder>
                     </div>
                 </div>
                 <div class="row no-collapse align-items-center">
                     <div class="col-5 light-text-color fs-80">Available to you</div>
                     <div class="col-7 flenduserinfo_value">
-                        <b>{{ $flend.formatAmount(available) }}</b> {{ tokenSymbol }}
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <b>{{ $flend.formatAmount(available) }}</b> {{ tokenSymbol }}
+                        </f-placeholder>
                     </div>
                 </div>
                 <div class="flenduserinfo_buttons">
@@ -97,11 +109,12 @@ import FLendHealthFactorInfo from '@/components/flend/infos/FLendHealthFactorInf
 import FLendCollateralInfo from '@/components/flend/infos/FLendCollateralInfo.vue';
 import { mapGetters } from 'vuex';
 import { bFromWei } from '@/utils/bignumber.js';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'FLendUserInfo',
 
-    components: { FLendCollateralInfo, FLendHealthFactorInfo, FToggleButton, FCard },
+    components: { FPlaceholder, FLendCollateralInfo, FLendHealthFactorInfo, FToggleButton, FCard },
 
     props: {
         /** @type {FLendReserve} */
@@ -157,6 +170,10 @@ export default {
             // ??
             return true;
         },
+
+        loaded() {
+            return this.reserve.ID !== undefined;
+        },
     },
 
     watch: {
@@ -183,10 +200,11 @@ export default {
             }
 
             const { assetAddress } = reserve;
+            const accountAddress = this.currentAccount.address;
             const data = await Promise.all([
-                $flend.fetchUserData(this.currentAccount.address),
-                $flend.fetchERC20TokenBalance(this.currentAccount.address, reserve.aTokenAddress),
-                $flend.fetchERC20TokenBalance(this.currentAccount.address, assetAddress),
+                $flend.fetchUserData(accountAddress),
+                $flend.fetchERC20TokenBalance(accountAddress, reserve.aTokenAddress),
+                $flend.fetchERC20TokenBalance(accountAddress, assetAddress),
             ]);
             const userData = data[0];
             const deposit = data[1];

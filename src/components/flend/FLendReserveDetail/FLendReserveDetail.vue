@@ -2,7 +2,9 @@
     <div class="flendreservedetail">
         <h1 class="with-back-btn">
             <f-back-button :route-name="getBackButtonRoute(compName)" :params="$route.params" />
-            {{ reserve.asset.name }}
+            <f-placeholder :content-loaded="!!reserve.asset.name" :replacement-num-chars="14">
+                {{ reserve.asset.name }}
+            </f-placeholder>
         </h1>
 
         <div class="flendreservedetail_body">
@@ -23,11 +25,12 @@ import { viewHelpersMixin } from '@/mixins/view-helpers.js';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import FLendReserveStatus from '@/components/flend/FLendReserveStatus/FLendReserveStatus.vue';
 import FLendUserInfo from '@/components/flend/FLendUserInfo/FLendUserInfo.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
     name: 'FLendReserveDetail',
 
-    components: { FLendUserInfo, FLendReserveStatus, FBackButton },
+    components: { FPlaceholder, FLendUserInfo, FLendReserveStatus, FBackButton },
 
     mixins: [viewHelpersMixin],
 
