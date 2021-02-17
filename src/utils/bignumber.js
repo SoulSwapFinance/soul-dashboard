@@ -1,11 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 
+export const BigNumber0 = BigNumber.clone({
+    DECIMAL_PLACES: 0,
+    ROUNDING_MODE: BigNumber.ROUND_DOWN,
+});
+
 /**
  * @param {string|number|BigNumber} _value
  * @return {BigNumber}
  */
 export function toBigNumber(_value) {
-    return new BigNumber(_value);
+    return new BigNumber0(_value);
 }
 
 /**
