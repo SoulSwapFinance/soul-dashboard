@@ -9,12 +9,12 @@
                         </div>
                         <div class="flendreservestatus_reserve_value">
                             <f-placeholder :content-loaded="loaded" block :replacement-num-chars="10">
-                                {{ cTotalBorrowed }}
+                                {{ $flend.formatAmount(overview.totalBorrowed) }}
                             </f-placeholder>
                         </div>
                         <div class="light-text-color">
                             <f-placeholder :content-loaded="loaded" :replacement-num-chars="14">
-                                {{ totalBorrowedUSD }}
+                                {{ overview.totalBorrowedFUSDFormatted }}
                             </f-placeholder>
                         </div>
                     </div>
@@ -31,12 +31,12 @@
                         </div>
                         <div class="flendreservestatus_reserve_value">
                             <f-placeholder :content-loaded="loaded" block :replacement-num-chars="10">
-                                {{ cAvailable }}
+                                {{ $flend.formatAmount(overview.available) }}
                             </f-placeholder>
                         </div>
                         <div class="light-text-color">
                             <f-placeholder :content-loaded="loaded" :replacement-num-chars="14">
-                                {{ availableUSD }}
+                                {{ overview.availableFUSDFormatted }}
                             </f-placeholder>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                         <span class="light-text-color">Reserve size</span>
                         <span class="flendreservestatus_sizerate_box_value">
                             <f-placeholder :content-loaded="loaded" :replacement-num-chars="14">
-                                <b>{{ reserveSizeUSD }}</b>
+                                <b>{{ overview.reserveSizeFUSDFormatted }}</b>
                             </f-placeholder>
                         </span>
                     </div>
@@ -54,7 +54,7 @@
                         <span class="light-text-color">Utilisation rate</span>
                         <span class="flendreservestatus_sizerate_box_value">
                             <f-placeholder :content-loaded="loaded" :replacement-num-chars="14">
-                                <b>{{ utilisationRate }}</b> %
+                                <b>{{ overview.utilisationRate }}</b> %
                             </f-placeholder>
                         </span>
                     </div>
@@ -68,7 +68,7 @@
                             <div class="col light-text-color fs-80">Deposit APY</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ depositAPY }}</b> %
+                                    <b>{{ overview.depositAPY }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                             <div class="col light-text-color fs-80">Past 30D Avg.</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ depositAPY30d }}</b> %
+                                    <b>{{ overview.depositAPY30d }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                             <div class="col light-text-color fs-80">Borrow APR</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ stableBorrowAPR }}</b> %
+                                    <b>{{ $flend.formatAmount(overview.stableBorrowAPR) }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                             <div class="col light-text-color fs-80">% over total</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ stableBorrowAPROverTotal }}</b> %
+                                    <b>{{ overview.stableBorrowAPROverTotal }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                             <div class="col light-text-color fs-80">Borrow APR</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ variableBorrowAPR }}</b> %
+                                    <b>{{ $flend.formatAmount(overview.variableBorrowAPR) }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                             <div class="col light-text-color fs-80">Past 30D Avg.</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ variableBorrowAPR30d }}</b> %
+                                    <b>{{ overview.variableBorrowAPR30d }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                             <div class="col light-text-color fs-80">% over total</div>
                             <div class="col flendreservestatus_boxes_box_value">
                                 <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                                    <b>{{ variableBorrowAPROverTotal }}</b> %
+                                    <b>{{ overview.variableBorrowAPROverTotal }}</b> %
                                 </f-placeholder>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                     <div class="light-text-color">Maximum LTV <f-lend-l-t-v-info /></div>
                     <div>
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                            <b>{{ maximumLTV }}</b> %
+                            <b>{{ overview.maximumLTV }}</b> %
                         </f-placeholder>
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                     <div class="light-text-color">Liquidation threshold <f-lend-liquidation-treshold-info /></div>
                     <div>
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                            <b>{{ liquidationTreshold }}</b> %
+                            <b>{{ overview.liquidationTreshold }}</b> %
                         </f-placeholder>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                     <div class="light-text-color">Liquidation penalty <f-lend-liquidation-penalty /></div>
                     <div>
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="6">
-                            <b>{{ liquidationPenalty }} </b> % ??
+                            <b>{{ overview.liquidationPenalty }} </b> % ??
                         </f-placeholder>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
                     <div class="light-text-color">Used as collateral</div>
                     <div>
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="3">
-                            <f-yes-no :value="usedAsColllateral" /> ??
+                            <f-yes-no :value="overview.usedAsColllateral" /> ??
                         </f-placeholder>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                     <div class="light-text-color">Stable borrowing</div>
                     <div>
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="3">
-                            <f-yes-no :value="stableBorrowing" />
+                            <f-yes-no :value="overview.stableBorrowing" />
                         </f-placeholder>
                     </div>
                 </div>
@@ -189,7 +189,6 @@ import FLendLiquidationTresholdInfo from '@/components/flend/infos/FLendLiquidat
 import FLendLiquidationPenalty from '@/components/flend/infos/FLendLiquidationPenalty.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import { bFromWei } from '@/utils/bignumber.js';
-import { formatNumberByLocale } from '@/filters.js';
 
 export default {
     name: 'FLendReserveStatus',
@@ -219,43 +218,39 @@ export default {
 
     data() {
         return {
-            totalBorrowed: 0,
-            totalBorrowedUSD: '',
-            available: 0,
-            availableUSD: '',
-            reserveSizeUSD: '',
-            utilisationRate: '??',
-            depositAPY: '??',
-            depositAPY30d: '??',
-            stableBorrowAPR: 0,
-            stableBorrowAPROverTotal: '??',
-            variableBorrowAPR: 0,
-            variableBorrowAPR30d: '??',
-            variableBorrowAPROverTotal: '??',
-            maximumLTV: 0,
-            liquidationTreshold: 0,
-            liquidationPenalty: 0,
-            usedAsColllateral: true,
-            stableBorrowing: false,
-            totalSupply: 0,
+            overview: {
+                totalBorrowed: 0,
+                totalBorrowedFUSDFormatted: '',
+                available: 0,
+                availableFUSDFormatted: '',
+                reserveSizeFUSDFormatted: '',
+                utilisationRate: '??',
+                depositAPY: '??',
+                depositAPY30d: '??',
+                stableBorrowAPR: 0,
+                stableBorrowAPROverTotal: '??',
+                variableBorrowAPR: 0,
+                variableBorrowAPR30d: '??',
+                variableBorrowAPROverTotal: '??',
+                maximumLTV: 0,
+                liquidationTreshold: 0,
+                liquidationPenalty: 0,
+                usedAsColllateral: true,
+                stableBorrowing: false,
+                totalSupply: 0,
+            },
         };
     },
 
     computed: {
         availableLiquidityValue() {
-            if (this.totalSupply > 0) {
-                return (this.available / this.totalSupply) * 100;
+            const { overview } = this;
+
+            if (overview.totalSupply > 0) {
+                return (overview.available / overview.totalSupply) * 100;
             }
 
             return 0;
-        },
-
-        cTotalBorrowed() {
-            return formatNumberByLocale(this.totalBorrowed, 2);
-        },
-
-        cAvailable() {
-            return formatNumberByLocale(this.available, 2);
         },
 
         loaded() {
@@ -276,41 +271,15 @@ export default {
         async setData() {
             /** @type {FLendReserve} */
             const reserve = this.reserve;
-            const { $flend } = this;
 
             if (!reserve.ID) {
                 return;
             }
 
-            const configuration = $flend.getReserveConfigurationData(reserve.configuration);
+            /** @type {FLendReserveOverview} */
+            const reserveOverview = await this.$flend.getReserveOverview(reserve);
 
-            this.stableBorrowing = configuration.stableBorrowRateEnabled;
-            this.liquidationTreshold = configuration.liquidationThreshold / 100;
-            this.liquidationPenalty = configuration.liquidationBonus / 100 - 100;
-            this.stableBorrowAPR = $flend.fromRay(reserve.currentStableBorrowRate).multipliedBy(100).toFixed(2);
-            this.variableBorrowAPR = $flend.fromRay(reserve.currentVariableBorrowRate).multipliedBy(100).toFixed(2);
-            this.maximumLTV = configuration.ltv / 100;
-
-            this.setTotalBorrowed();
-        },
-
-        async setTotalBorrowed() {
-            const totalBorrowed = await this.$flend.fetchTotalBorrowed(this.reserve);
-
-            this.totalBorrowed = bFromWei(totalBorrowed).toNumber();
-            this.totalBorrowedUSD = this.$defi.formatValueInUSD(this.totalBorrowed, this.reserve.asset, 2);
-
-            this.setReserveSizeAndAvailableLiquidity();
-        },
-
-        setReserveSizeAndAvailableLiquidity() {
-            /** @type {FLendReserve} */
-            const reserve = this.reserve;
-
-            this.totalSupply = bFromWei(reserve.asset.totalSupply).toNumber();
-            this.available = this.totalSupply - this.totalBorrowed;
-            this.availableUSD = this.$defi.formatValueInUSD(this.available, reserve.asset, 2);
-            this.reserveSizeUSD = this.$defi.formatValueInUSD(this.totalSupply, reserve.asset);
+            this.overview = { ...this.overview, ...reserveOverview };
         },
     },
 };
