@@ -28,6 +28,7 @@
  * @property {number} liquidationPenalty
  * @property {number} liquidationTreshold
  * @property {number} maximumLTV
+ * @property {number} reserveSize
  * @property {number} reserveSizeFUSD
  * @property {string} reserveSizeFUSDFormatted
  * @property {number} stableBorrowAPR
@@ -36,6 +37,7 @@
  * @property {number} totalBorrowedFUSD
  * @property {string} totalBorrowedFUSDFormatted
  * @property {number} totalSupply
+ * @property {number} totalDeposited
  * @property {boolean} usedAsColllateral
  * @property {number} variableBorrowAPR
  */

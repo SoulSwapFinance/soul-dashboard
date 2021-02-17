@@ -403,6 +403,20 @@ export class FLend {
 
     /**
      * @param {FLendReserve} _reserve
+     * @return {Promise<BigNumber>}
+     */
+    async fetchTotalDeposited(_reserve) {
+        if (_reserve && _reserve.aTokenAddress) {
+            const totalSupply = await this.fetchERC20TotalSupply(_reserve.aTokenAddress);
+
+            return toBigNumber(totalSupply);
+        }
+
+        return toBigNumber(0);
+    }
+
+    /**
+     * @param {FLendReserve} _reserve
      * @return {Promise<FLendReserveOverview>}
      */
     async getReserveOverview(_reserve) {
@@ -413,7 +427,9 @@ export class FLend {
         const configuration = this.getReserveConfigurationData(_reserve.configuration);
         const { asset } = _reserve;
         const overview = {};
-        const totalBorrowed = await this.fetchTotalBorrowed(_reserve);
+        const data = await Promise.all([this.fetchTotalBorrowed(_reserve), this.fetchTotalDeposited(_reserve)]);
+        const totalBorrowed = data[0];
+        const totalDeposited = data[1];
 
         overview.stableBorrowing = configuration.stableBorrowRateEnabled;
         overview.liquidationTreshold = configuration.liquidationThreshold / 100;
@@ -429,11 +445,13 @@ export class FLend {
         overview.totalBorrowedFUSD = overview.totalBorrowed * overview.assetPrice;
         overview.totalBorrowedFUSDFormatted = defi.formatValueInUSD(overview.totalBorrowed, asset, 2);
         overview.totalSupply = bFromWei(asset.totalSupply).toNumber();
-        overview.available = overview.totalSupply - overview.totalBorrowed;
+        overview.totalDeposited = bFromWei(totalDeposited).toNumber();
+        overview.available = overview.totalDeposited - overview.totalBorrowed;
         overview.availableFUSD = overview.available * overview.assetPrice;
         overview.availableFUSDFormatted = defi.formatValueInUSD(overview.available, asset, 2);
-        overview.reserveSizeFUSD = overview.totalSupply * overview.assetPrice;
-        overview.reserveSizeFUSDFormatted = defi.formatValueInUSD(overview.totalSupply, asset);
+        overview.reserveSize = overview.totalDeposited;
+        overview.reserveSizeFUSD = overview.reserveSize * overview.assetPrice;
+        overview.reserveSizeFUSDFormatted = defi.formatValueInUSD(overview.reserveSize, asset);
 
         return overview;
     }
