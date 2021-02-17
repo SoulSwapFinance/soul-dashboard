@@ -8,7 +8,7 @@
         <h2 class="perex">Please enter an amount you would like to withdraw.</h2>
 
         <div class="flendwithdrawdetail_body">
-            <f-lend-deposit-withdraw :reserve="reserve" withdraw />
+            <f-lend-deposit-withdraw :reserve="reserve" withdraw @cancel-button-click="onCancelButtonClick" />
             <f-lend-reserve-overview :reserve="reserve" />
         </div>
     </div>

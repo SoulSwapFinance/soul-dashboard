@@ -18,12 +18,12 @@
                 <template v-if="activeStep === 1">
                     You’re allowing
                     <span class="inc-desc-collateral">
-                        <f-token-value :token="token" :value="currAmount" no-currency /> &nbsp;
-                        {{ tokenSymbol }}
+                        <f-token-value :token="asset" :value="currAmount" no-currency /> &nbsp;
+                        {{ assetSymbol }}
                     </span>
                 </template>
                 <div v-else>
-                    <f-lend-deposit-withdraw-message :token="token" :value="currAmount" :withdraw="withdraw" />
+                    <f-lend-deposit-withdraw-message :token="asset" :value="currAmount" :withdraw="withdraw" />
                 </div>
             </div>
 
@@ -89,8 +89,18 @@ export default {
             type: String,
             default: '',
         },
-        /** Withdraw deposit. */
+        /** Hex number */
+        userDeposit: {
+            type: String,
+            default: '',
+        },
+        /** Withdraw deposit */
         withdraw: {
+            type: Boolean,
+            default: false,
+        },
+        /** Withdraw  or deposit maximal amount */
+        maxAmount: {
             type: Boolean,
             default: false,
         },
@@ -134,12 +144,12 @@ export default {
          *
          * @return {DefiToken|*}
          */
-        token() {
+        asset() {
             return this.reserve.asset;
         },
 
-        tokenSymbol() {
-            return this.$defi.getTokenSymbol(this.token);
+        assetSymbol() {
+            return this.$defi.getTokenSymbol(this.asset);
         },
     },
 
@@ -152,47 +162,52 @@ export default {
     methods: {
         async setTx() {
             const web3 = new Web3();
-            const { token } = this;
-            const { reserve } = this;
+            const { asset } = this;
+            const { withdraw } = this;
+            /** @type {FLendReserve} */
+            const reserve = this.reserve;
             const contractAddress = this.$flend.contracts.lendingPool;
             const accountAddress = this.currentAccount.address;
             let txToSign;
             let bAmount;
             let { currAmount } = this;
-            const bUserTokenBalance = toBigNumber(this.userTokenBalance);
+            const bBalanceOrDeposit = toBigNumber(withdraw ? this.userDeposit : this.userTokenBalance);
 
-            if (!token) {
+            if (!asset) {
                 return;
             }
 
             this.dTmpPwdCode = this.tmpPwdCode || getUniqueId();
 
-            bAmount = toBigNumber(currAmount);
+            // bAmount = toBigNumber(currAmount);
+            bAmount = bShiftDP(currAmount, asset.decimals);
 
-            if (bAmount.comparedTo(bUserTokenBalance) === 1) {
-                bAmount = bUserTokenBalance;
+            if (this.maxAmount || bAmount.comparedTo(bBalanceOrDeposit) === 1) {
+                bAmount = bBalanceOrDeposit;
             }
 
+            // allowance
             if (this.activeStep === 1) {
-                bAmount = bShiftDP(bAmount.times(1.05).abs(), token.decimals);
+                // bAmount = bShiftDP(bAmount.times(1.05).abs(), asset.decimals);
+                bAmount = bAmount.times(1.05).abs();
 
                 txToSign = erc20Utils.erc20IncreaseAllowanceTx(
-                    token.address,
+                    this.withdraw ? reserve.aTokenAddress : asset.address,
                     contractAddress,
                     Web3.utils.toHex(bAmount)
                 );
-            } else if (this.withdraw) {
+            } else if (withdraw) {
                 txToSign = flendUtils.fLendWithdraw(
                     web3,
                     reserve.assetAddress,
-                    Web3.utils.toHex(bShiftDP(bAmount, token.decimals)),
+                    Web3.utils.toHex(bAmount),
                     accountAddress
                 );
             } else {
                 txToSign = flendUtils.fLendDeposit(
                     web3,
                     reserve.assetAddress,
-                    Web3.utils.toHex(bShiftDP(bAmount, token.decimals)),
+                    Web3.utils.toHex(bAmount),
                     accountAddress,
                     this.$flend.referralCode
                 );
@@ -217,7 +232,7 @@ export default {
                 transactionSuccessComp = `${this.compName}-transaction-success-message2`;
                 params.continueTo = 'hide-window';
                 params.continueButtonLabel = 'Close';
-                // params.continueToParams = { token: { ...this.token } };
+                // params.continueToParams = { asset: { ...this.asset } };
             }
 
             this.$emit('change-component', {

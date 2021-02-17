@@ -6,7 +6,7 @@
                     <h3 class="label">Available Balance</h3>
                     <div class="value">
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
-                            <f-token-value :token="token" :value="availableBalance" />
+                            <f-token-value :token="asset" :value="availableBalance" />
                         </f-placeholder>
                     </div>
                 </div>
@@ -14,7 +14,7 @@
                     <h3 class="label">Deposited</h3>
                     <div class="value">
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
-                            <f-token-value :token="token" :value="deposited" />
+                            <f-token-value :token="asset" :value="deposited" />
                         </f-placeholder>
                     </div>
                 </div>
@@ -24,15 +24,15 @@
                 <div class="defi-price-input">
                     <div class="flenddepositwithdraw_tokenlabel">
                         <f-select-button
-                            v-if="!singleToken"
+                            v-if="!singleAsset"
                             collapsed
-                            aria-label="pick a token"
+                            aria-label="pick an asset"
                             @click.native="onTokenSelectorClick"
                         >
-                            <f-crypto-symbol :token="token" />
+                            <f-crypto-symbol :token="asset" />
                         </f-select-button>
                         <template v-else>
-                            <f-crypto-symbol :token="token" />
+                            <f-crypto-symbol :token="asset" />
                         </template>
                     </div>
 
@@ -75,7 +75,7 @@
 
         <div class="flenddepositwithdraw_footer">
             <div v-if="!submitDisabled" class="flenddepositwithdraw_messages">
-                <f-lend-deposit-withdraw-message :token="token" :value="currAmount" :withdraw="withdraw" />
+                <f-lend-deposit-withdraw-message :token="asset" :value="currAmount" :withdraw="withdraw" />
             </div>
 
             <div class="defi-buttons">
@@ -152,8 +152,8 @@ export default {
                 };
             },
         },
-        /** Mode with sindgle token - no token picker,... */
-        singleToken: {
+        /** Mode with single asset - no asset picker,... */
+        singleAsset: {
             type: Boolean,
             default: true,
         },
@@ -172,7 +172,8 @@ export default {
             availableBalance: 0,
             deposited: 0,
             healthFactor: 0,
-            userTokenBalance: 0,
+            userTokenBalance: '',
+            userDeposit: '',
 
             dataSet: false,
             id: getUniqueId(),
@@ -196,7 +197,7 @@ export default {
         },
 
         maxAmount() {
-            return this.availableBalance;
+            return this.withdraw ? this.deposited : this.availableBalance;
         },
 
         currAmountF() {
@@ -212,12 +213,12 @@ export default {
          *
          * @return {DefiToken|*}
          */
-        token() {
+        asset() {
             return this.reserve.asset;
         },
 
-        tokenSymbol() {
-            return this.$defi.getTokenSymbol(this.token);
+        assetSymbol() {
+            return this.$defi.getTokenSymbol(this.asset);
         },
 
         loaded() {
@@ -262,6 +263,7 @@ export default {
             const userTokenBalance = data[2];
 
             this.userTokenBalance = userTokenBalance;
+            this.userDeposit = deposit;
 
             this.availableBalance = bFromWei(userTokenBalance).toNumber();
             this.deposited = bFromWei(deposit).toNumber();
@@ -271,7 +273,7 @@ export default {
         },
 
         formatInputValue(_value) {
-            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.token));
+            return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.asset));
         },
 
         onInput(_event) {
@@ -285,7 +287,9 @@ export default {
                 stepsCount: this.stepsCount,
                 activeStep: this.activeStep,
                 userTokenBalance: this.userTokenBalance,
+                userDeposit: this.userDeposit,
                 withdraw: this.withdraw,
+                maxAmount: this.currAmountF === this.maxAmount,
                 compName: 'f-lend-deposit',
                 reserve: cloneObject(this.reserve),
             };
@@ -302,15 +306,20 @@ export default {
             }
         },
 
+        /**
+         * Called when tx window's cancel button was clicked
+         */
         onCancelButtonClick() {
             this.currAmount = '0';
             this.activeStep = 1;
             this.currentAppNodeId = '';
 
-            this.setData();
+            // this.setData();
 
             this.$refs.confirmationWindow.hide();
             this.currentComponent = '';
+
+            this.$emit('cancel-button-click');
         },
 
         /**

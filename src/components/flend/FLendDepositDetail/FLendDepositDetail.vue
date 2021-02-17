@@ -8,7 +8,7 @@
         <h2 class="perex">Please enter an amount you would like to deposit.</h2>
 
         <div class="flenddepositdetail_body">
-            <f-lend-deposit-withdraw :reserve="reserve" />
+            <f-lend-deposit-withdraw :reserve="reserve" @cancel-button-click="onCancelButtonClick" />
             <f-lend-reserve-overview :reserve="reserve" />
         </div>
     </div>
@@ -61,6 +61,13 @@ export default {
             if (reserve.assetAddress) {
                 this.reserve = reserve;
             }
+        },
+
+        /**
+         * Called when tx window's cancel button was clicked
+         */
+        onCancelButtonClick() {
+            this.setReserve();
         },
     },
 };
