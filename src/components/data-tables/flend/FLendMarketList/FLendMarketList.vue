@@ -61,7 +61,7 @@ export default {
                     label: 'Market Size',
                     formatter: (_value, _item) => {
                         return formatNumberByLocale(
-                            bFromWei(_item.asset.totalSupply).toNumber(),
+                            bFromWei(_item._totalDeposited).toNumber(),
                             MAX_TOKEN_DECIMALS_IN_TABLES
                         );
                     },

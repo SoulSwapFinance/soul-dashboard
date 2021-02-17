@@ -236,7 +236,7 @@ export default {
                 liquidationPenalty: 0,
                 usedAsColllateral: true,
                 stableBorrowing: false,
-                totalSupply: 0,
+                totalDeposited: 0,
             },
         };
     },
@@ -245,8 +245,8 @@ export default {
         availableLiquidityValue() {
             const { overview } = this;
 
-            if (overview.totalSupply > 0) {
-                return (overview.available / overview.totalSupply) * 100;
+            if (overview.totalDeposited > 0) {
+                return (overview.available / overview.totalDeposited) * 100;
             }
 
             return 0;
