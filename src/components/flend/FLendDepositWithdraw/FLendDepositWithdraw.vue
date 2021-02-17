@@ -5,7 +5,17 @@
                 <div class="df-data-item smaller">
                     <h3 class="label">Available Balance</h3>
                     <div class="value">
-                        <f-token-value :token="token" :value="availableBalance" />
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <f-token-value :token="token" :value="availableBalance" />
+                        </f-placeholder>
+                    </div>
+                </div>
+                <div class="df-data-item smaller">
+                    <h3 class="label">Deposited</h3>
+                    <div class="value">
+                        <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
+                            <f-token-value :token="token" :value="deposited" />
+                        </f-placeholder>
                     </div>
                 </div>
             </div>
@@ -107,11 +117,16 @@ import FViewTransition from '@/components/core/FViewTransition/FViewTransition.v
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import FLendDepositWithdrawConfirmation from '@/components/flend/FLendDepositWithdrawConfirmation/FLendDepositWithdrawConfirmation.vue';
 import FLendDepositWithdrawMessage from '@/components/flend/FLendDepositWithdrawMessage/FLendDepositWithdrawMessage.vue';
+import { bFromWei } from '@/utils/bignumber.js';
+import { mapGetters } from 'vuex';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
 
 export default {
     name: 'FLendDepositWithdraw',
 
     components: {
+        FPlaceholder,
         FLendDepositWithdrawMessage,
         FMessage,
         FViewTransition,
@@ -122,6 +137,7 @@ export default {
         FSelectButton,
         FSlider,
         FLendDepositWithdrawConfirmation,
+        TransactionSuccessMessage,
     },
 
     mixins: [eventBusMixin, componentViewMixin],
@@ -153,6 +169,12 @@ export default {
             currAmount: '0',
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
 
+            availableBalance: 0,
+            deposited: 0,
+            healthFactor: 0,
+            userTokenBalance: 0,
+
+            dataSet: false,
             id: getUniqueId(),
             label: 'Amount',
             stepsCount: 2,
@@ -163,12 +185,10 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         inputValue() {
             return this.formatInputValue(this.currAmount);
-        },
-
-        availableBalance() {
-            return 100;
         },
 
         minAmount() {
@@ -184,13 +204,13 @@ export default {
         },
 
         submitDisabled() {
-            return this.currAmountF === this.minAmount;
+            return this.currAmountF === this.minAmount || !this.loaded;
         },
 
         /**
-         * ERC20 token
+         * Defi token
          *
-         * @return {ERC20Token|*}
+         * @return {DefiToken|*}
          */
         token() {
             return this.reserve.asset;
@@ -199,16 +219,56 @@ export default {
         tokenSymbol() {
             return this.$defi.getTokenSymbol(this.token);
         },
+
+        loaded() {
+            return this.reserve.ID !== undefined && this.dataSet;
+        },
+    },
+
+    watch: {
+        reserve: {
+            immediate: true,
+            handler() {
+                this.setData();
+            },
+        },
     },
 
     created() {
-        this.init();
-
         this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
-        init() {},
+        async setData() {
+            /** @type {FLendReserve} */
+            const reserve = this.reserve;
+            const { $flend } = this;
+
+            if (!reserve.ID) {
+                return;
+            }
+
+            this.dataSet = false;
+
+            const { assetAddress } = reserve;
+            const accountAddress = this.currentAccount.address;
+            const data = await Promise.all([
+                $flend.fetchUserData(accountAddress),
+                $flend.fetchERC20TokenBalance(accountAddress, reserve.aTokenAddress),
+                $flend.fetchERC20TokenBalance(accountAddress, assetAddress),
+            ]);
+            const userData = data[0];
+            const deposit = data[1];
+            const userTokenBalance = data[2];
+
+            this.userTokenBalance = userTokenBalance;
+
+            this.availableBalance = bFromWei(userTokenBalance).toNumber();
+            this.deposited = bFromWei(deposit).toNumber();
+            this.healthFactor = $flend.fromRay(userData.healthFactor).toNumber();
+
+            this.dataSet = true;
+        },
 
         formatInputValue(_value) {
             return parseFloat(_value).toFixed(this.$defi.getTokenDecimals(this.token));
@@ -224,6 +284,7 @@ export default {
                 currAmount: this.currAmountF,
                 stepsCount: this.stepsCount,
                 activeStep: this.activeStep,
+                userTokenBalance: this.userTokenBalance,
                 withdraw: this.withdraw,
                 compName: 'f-lend-deposit',
                 reserve: cloneObject(this.reserve),
@@ -246,7 +307,7 @@ export default {
             this.activeStep = 1;
             this.currentAppNodeId = '';
 
-            this.init();
+            this.setData();
 
             this.$refs.confirmationWindow.hide();
             this.currentComponent = '';
@@ -271,7 +332,7 @@ export default {
         onTokenSelectorClick() {},
 
         onAccountPicked() {
-            this.init();
+            this.setData();
         },
     },
 };
