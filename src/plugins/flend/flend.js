@@ -488,7 +488,7 @@ export class FLend {
     }
 
     /**
-     * Get indices of borrowed or 'used as collateral' reserves.
+     * Get indices of borrowed or 'used as collateral' reserves (reserve.ID attribute).
      *
      * @param {{usedAsCollateral: boolean, borrowed: boolean}[]} _userConfiguration
      * @param {'usedAsCollateral'|'borrowed'} _key
