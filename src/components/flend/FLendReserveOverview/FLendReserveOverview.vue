@@ -10,35 +10,39 @@
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">Utilization rate</div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ utilisationRate }}</b> %
+                                <b>{{ overview.utilisationRate }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-5 light-text-color fs-80">Available liquidity</div>
-                            <div class="col-7 flendreserveoverview_value"><b>6,834,233.97004</b> {{ tokenSymbol }}</div>
+                            <div class="col-7 flendreserveoverview_value">
+                                <b>{{ $flend.formatAmount(overview.available) }}</b> {{ tokenSymbol }}
+                            </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">Deposit APY</div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ depositAPY }}</b> %
+                                <b>{{ overview.depositAPY }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">Can be used as collateral</div>
-                            <div class="col-4 flendreserveoverview_value"><f-yes-no :value="usedAsColllateral" /></div>
+                            <div class="col-4 flendreserveoverview_value">
+                                <f-yes-no :value="overview.usedAsColllateral" /> ??
+                            </div>
                         </div>
                     </div>
                     <div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-5 light-text-color fs-80">Asset price</div>
                             <div class="col-7 flendreserveoverview_value">
-                                <b>{{ assetPrice }}</b> USD
+                                <b>{{ overview.assetPriceFormatted }}</b> USD
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">Maximum LTV <f-lend-l-t-v-info /></div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ maximumLTV }}</b> %
+                                <b>{{ overview.maximumLTV }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
@@ -46,7 +50,7 @@
                                 Liquidation threshold <f-lend-liquidation-treshold-info />
                             </div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ liquidationTreshold }}</b> %
+                                <b>{{ overview.liquidationTreshold }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
@@ -54,7 +58,7 @@
                                 Liquidation penalty <f-lend-liquidation-penalty />
                             </div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ liquidationPenalty }}</b> %
+                                <b>{{ overview.liquidationPenalty }}</b> %
                             </div>
                         </div>
                     </div>
@@ -64,7 +68,7 @@
                         <div class="row no-collapse align-items-center">
                             <div class="col-8 light-text-color fs-80">Utilization rate</div>
                             <div class="col-4 flendreserveoverview_value">
-                                <b>{{ utilisationRate }}</b> %
+                                <b>{{ overview.utilisationRate }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
@@ -74,7 +78,7 @@
                         <div class="row no-collapse align-items-center">
                             <div class="col-5 light-text-color fs-80">Asset price</div>
                             <div class="col-7 flendreserveoverview_value">
-                                <b>{{ assetPrice }}</b> USD
+                                <b>{{ overview.assetPrice }}</b> USD
                             </div>
                         </div>
                     </div>
@@ -82,13 +86,13 @@
                         <div class="row no-collapse align-items-center">
                             <div class="col light-text-color fs-80">Stable borrow APR</div>
                             <div class="col flendreserveoverview_value">
-                                <b>{{ stableBorrowAPR }}</b> %
+                                <b>{{ overview.stableBorrowAPR }}</b> %
                             </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col light-text-color fs-80">Variable borrow APR</div>
                             <div class="col flendreserveoverview_value">
-                                <b>{{ variableBorrowAPR }}</b> %
+                                <b>{{ overview.variableBorrowAPR }}</b> %
                             </div>
                         </div>
                     </div>
@@ -137,23 +141,51 @@ export default {
 
     data() {
         return {
-            utilisationRate: 98.59,
-            depositAPY: 14.97,
-            depositAPY30d: 9.87,
-            assetPrice: '$1',
-            maximumLTV: 80,
-            liquidationTreshold: 82.5,
-            liquidationPenalty: 5,
-            usedAsColllateral: true,
-            stableBorrowAPR: 30.35,
-            variableBorrowAPR: 25.35,
-            variableBorrowAPR30d: 14.96,
+            overview: {
+                available: 0,
+                utilisationRate: '??',
+                depositAPY: '??',
+                depositAPY30d: '??',
+                assetPriceFormatted: '$0',
+                maximumLTV: 0,
+                liquidationTreshold: 0,
+                liquidationPenalty: 0,
+                usedAsColllateral: true,
+                stableBorrowAPR: 0,
+                variableBorrowAPR: 0,
+                variableBorrowAPR30d: '??',
+            },
         };
     },
 
     computed: {
         tokenSymbol() {
             return this.$defi.getTokenSymbol(this.reserve.asset);
+        },
+    },
+
+    watch: {
+        reserve: {
+            immediate: true,
+            handler() {
+                this.setData();
+            },
+        },
+    },
+
+    methods: {
+        async setData() {
+            /** @type {FLendReserve} */
+            const reserve = this.reserve;
+
+            if (!reserve.ID) {
+                return;
+            }
+
+            /** @type {FLendReserveOverview} */
+            const reserveOverview = await this.$flend.getReserveOverview(reserve);
+
+            this.overview = { ...this.overview, ...reserveOverview };
         },
     },
 };
