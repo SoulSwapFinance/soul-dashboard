@@ -624,6 +624,19 @@ export default {
         },
 
         /**
+         * Sort table by column.
+         *
+         * @param {number} _columnIndex
+         */
+        sortByColumnIndex(_columnIndex) {
+            const column = this.columns[_columnIndex];
+
+            if (column) {
+                this.sortByColumn(column, column.sortDir);
+            }
+        },
+
+        /**
          * @param {Event} _event
          */
         onTableClick(_event) {
