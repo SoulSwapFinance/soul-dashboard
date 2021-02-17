@@ -741,6 +741,37 @@ export class FantomWeb3Wallet {
         };
     }
 
+    /**
+     * @param {Object} _tx Defi transaction object.
+     * @param {String} _from Address.
+     * @param {String} [_to]
+     * @return {Promise<{}|null>}
+     */
+    async getFLendTransactionToSign(_tx, _from, _to = '') {
+        const nonce = await this.getTransactionCount(_from);
+        const gasPrice = await this.getGasPrice(true);
+
+        if (_tx && !_tx.to) {
+            _tx.to = _to;
+        }
+
+        let gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '';
+
+        if (!gasLimit) {
+            gasLimit = GAS_LIMITS.max;
+        }
+
+        return gasLimit
+            ? {
+                  ..._tx,
+                  gasPrice,
+                  gas: gasLimit,
+                  gasLimit: gasLimit,
+                  nonce,
+              }
+            : null;
+    }
+
     async signTransaction(_tx, _keystore, _password, _tmpPwdCode) {
         const { pwdStorage } = this;
         let password = _password;
