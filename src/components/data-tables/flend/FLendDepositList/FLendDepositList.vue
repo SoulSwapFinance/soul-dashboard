@@ -1,6 +1,7 @@
 <template>
     <div class="flenddepositlist">
         <f-data-table
+            ref="dataTable"
             :columns="columns"
             :items="items"
             :loading="loading"
@@ -57,11 +58,12 @@
 <script>
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import { stringSort } from '@/utils/array-sorting.js';
+import { sortByHex, sortByNumber, stringSort } from '@/utils/array-sorting.js';
 import { mapGetters } from 'vuex';
 import { formatNumberByLocale } from '@/filters.js';
 import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 import { bFromWei } from '@/utils/bignumber.js';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 // import {formatNumberByLocale} from "@/filters.js";
 // import {MAX_TOKEN_DECIMALS_IN_TABLES} from "@/plugins/fantom-web3-wallet.js";
 
@@ -69,6 +71,8 @@ export default {
     name: 'FLendDepositList',
 
     components: { FCryptoSymbol, FDataTable },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -85,13 +89,13 @@ export default {
                             return (_direction === 'desc' ? -1 : 1) * stringSort(a, b);
                         };
                     },
-                    sortDir: 'desc',
                     width: '180px',
                 },
                 {
                     name: 'balance',
                     label: 'Your wallet balance',
                     itemProp: 'asset.availableBalance',
+                    sortFunc: sortByHex,
                     formatter: (_availableBalance, _item) => {
                         const balance = this.$defi.fromTokenValue(_availableBalance, _item.asset);
 
@@ -107,14 +111,22 @@ export default {
                     name: 'deposits',
                     label: 'Your deposits',
                     itemProp: '_deposit',
-                    formatter: (_value) => {
-                        return _value || 0;
+                    sortDir: 'desc',
+                    sortFunc: sortByNumber,
+                    formatter: (_value, _item) => {
+                        return _value > 0
+                            ? formatNumberByLocale(
+                                  _value,
+                                  this.$defi.getTokenDecimals(_item.asset, MAX_TOKEN_DECIMALS_IN_TABLES)
+                              )
+                            : 0;
                     },
                 },
                 {
                     name: 'depositapy',
                     label: 'Deposit APY',
                     itemProp: 'currentLiquidityRate',
+                    sortFunc: sortByHex,
                     formatter: (_value) => {
                         return _value + ' ??';
                     },
@@ -127,7 +139,10 @@ export default {
                 },
             ],
             loading: true,
-            aTokenAdresses: [],
+            // length of reserves
+            reservesLen: 0,
+            // keys are reserve IDs, values are aTokenAdresses
+            aTokenAdresses: {},
         };
     },
 
@@ -137,6 +152,8 @@ export default {
 
     created() {
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -147,11 +164,23 @@ export default {
             );
 
             this.loading = false;
-            this.aTokenAdresses = reserves.map((_reserve) => _reserve.aTokenAddress);
+
+            // set this.aTokenAddress
+            reserves.forEach((_reserve) => {
+                this.aTokenAdresses[_reserve.ID] = _reserve.aTokenAddress;
+            });
+
+            // store original reserves length
+            this.reservesLen = reserves.length;
 
             reserves = reserves.map((_reserve) => {
-                return { ..._reserve, _config: $flend.getReserveConfigurationData(_reserve.configuration) };
+                return {
+                    ..._reserve,
+                    _config: $flend.getReserveConfigurationData(_reserve.configuration),
+                    _deposit: 0,
+                };
             });
+
             this.items = reserves.filter((_reserve) => _reserve._config.isActive);
 
             this.setDeposits();
@@ -161,7 +190,7 @@ export default {
             const { $flend } = this;
             const { aTokenAdresses } = this;
             const userData = await $flend.fetchUserData(this.currentAccount.address);
-            const userConfig = $flend.getUserConfiguration(userData.configurationData, this.aTokenAdresses.length);
+            const userConfig = $flend.getUserConfiguration(userData.configurationData, this.reservesLen);
             const reservesUsedAsCollateral = $flend.getUserReservesIndices(userConfig);
 
             let deposit = null;
@@ -179,6 +208,9 @@ export default {
                         this.$set(item, '_deposit', bFromWei(deposit).toNumber());
                     }
                 }
+
+                // re-sort table by the third column
+                this.$refs.dataTable.sortByColumnIndex(2);
             }
         },
 
@@ -188,6 +220,10 @@ export default {
          */
         canWithdraw(_reserve) {
             return _reserve._deposit > 0;
+        },
+
+        onAccountPicked() {
+            this.init();
         },
     },
 };
