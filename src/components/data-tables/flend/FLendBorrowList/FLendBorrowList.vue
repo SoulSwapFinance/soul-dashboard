@@ -59,11 +59,14 @@ import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import { stringSort } from '@/utils/array-sorting.js';
 import { mapGetters } from 'vuex';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     name: 'FLendBorrowList',
 
     components: { FCryptoSymbol, FDataTable },
+
+    mixins: [eventBusMixin],
 
     data() {
         return {
@@ -128,6 +131,8 @@ export default {
 
     created() {
         this.init();
+
+        this._eventBus.on('account-picked', this.onAccountPicked);
     },
 
     methods: {
@@ -147,6 +152,10 @@ export default {
         canRepay(_reserve) {
             console.log(_reserve);
             return false;
+        },
+
+        onAccountPicked() {
+            this.init();
         },
     },
 };
