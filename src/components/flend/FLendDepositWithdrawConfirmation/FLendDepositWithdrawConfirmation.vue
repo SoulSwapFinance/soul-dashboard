@@ -46,6 +46,12 @@ import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/Le
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import appConfig from '../../../../app.config.js';
 import FLendDepositWithdrawMessage from '@/components/flend/FLendDepositWithdrawMessage/FLendDepositWithdrawMessage.vue';
+import erc20Utils from 'fantom-ledgerjs/src/erc20-utils.js';
+import flendUtils from 'fantom-ledgerjs/src/flend-utils.js';
+import Web3 from 'web3';
+import { bShiftDP, toBigNumber } from '@/utils/bignumber.js';
+import { mapGetters } from 'vuex';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'FLendDepositWithdrawConfirmation',
@@ -78,6 +84,11 @@ export default {
                 };
             },
         },
+        /** Hex number */
+        userTokenBalance: {
+            type: String,
+            default: '',
+        },
         /** Withdraw deposit. */
         withdraw: {
             type: Boolean,
@@ -98,6 +109,8 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currentAccount']),
+
         hasCorrectParams() {
             return true;
         },
@@ -117,9 +130,9 @@ export default {
         },
 
         /**
-         * ERC20 token
+         * Defi token
          *
-         * @return {ERC20Token|*}
+         * @return {DefiToken|*}
          */
         token() {
             return this.reserve.asset;
@@ -138,15 +151,54 @@ export default {
 
     methods: {
         async setTx() {
+            const web3 = new Web3();
             const { token } = this;
-            // const contractAddress = this.$flend.contracts.lendingPool;
-            // let txToSign;
+            const { reserve } = this;
+            const contractAddress = this.$flend.contracts.lendingPool;
+            const accountAddress = this.currentAccount.address;
+            let txToSign;
+            let bAmount;
+            let { currAmount } = this;
+            const bUserTokenBalance = toBigNumber(this.userTokenBalance);
 
             if (!token) {
                 return;
             }
 
-            // this.tx = await this.$fWallet.getDefiTransactionToSign(txToSign, this.currentAccount.address);
+            this.dTmpPwdCode = this.tmpPwdCode || getUniqueId();
+
+            bAmount = toBigNumber(currAmount);
+
+            if (bAmount.comparedTo(bUserTokenBalance) === 1) {
+                bAmount = bUserTokenBalance;
+            }
+
+            if (this.activeStep === 1) {
+                bAmount = bShiftDP(bAmount.times(1.05).abs(), token.decimals);
+
+                txToSign = erc20Utils.erc20IncreaseAllowanceTx(
+                    token.address,
+                    contractAddress,
+                    Web3.utils.toHex(bAmount)
+                );
+            } else if (this.withdraw) {
+                txToSign = flendUtils.fLendWithdraw(
+                    web3,
+                    reserve.assetAddress,
+                    Web3.utils.toHex(bShiftDP(bAmount, token.decimals)),
+                    accountAddress
+                );
+            } else {
+                txToSign = flendUtils.fLendDeposit(
+                    web3,
+                    reserve.assetAddress,
+                    Web3.utils.toHex(bShiftDP(bAmount, token.decimals)),
+                    accountAddress,
+                    this.$flend.referralCode
+                );
+            }
+
+            this.tx = await this.$fWallet.getFLendTransactionToSign(txToSign, accountAddress, contractAddress);
         },
 
         onSendTransactionSuccess(_data) {
