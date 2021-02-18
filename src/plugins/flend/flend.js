@@ -452,6 +452,7 @@ export class FLend {
         overview.reserveSize = overview.totalDeposited;
         overview.reserveSizeFUSD = overview.reserveSize * overview.assetPrice;
         overview.reserveSizeFUSDFormatted = defi.formatValueInUSD(overview.reserveSize, asset);
+        overview.utilisationRate = overview.totalDeposited > 0 ? overview.totalBorrowed / overview.totalDeposited : 0;
 
         return overview;
     }

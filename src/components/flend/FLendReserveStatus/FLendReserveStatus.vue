@@ -223,7 +223,7 @@ export default {
                 available: 0,
                 availableFUSDFormatted: '',
                 reserveSizeFUSDFormatted: '',
-                utilisationRate: '??',
+                utilisationRate: 0,
                 depositAPY: '??',
                 depositAPY30d: '??',
                 stableBorrowAPR: 0,
