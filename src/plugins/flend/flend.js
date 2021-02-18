@@ -102,7 +102,6 @@ export class FLend {
      * @return {Promise<FLendReserve>}
      */
     async fetchReserve(_assetAddress, _fetchPolicy = 'network-only') {
-        console.log(_assetAddress);
         const data = await this.apolloClient.query({
             query: gql`
                 query GetReserveData($address: Address!) {
@@ -512,8 +511,6 @@ export class FLend {
             promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.stableDebtTokenAddress));
             promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.variableDebtTokenAddress));
         }
-
-        console.log(promises);
 
         const data = await Promise.all(promises);
         const userData = data[0];

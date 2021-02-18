@@ -263,7 +263,6 @@ export default {
             const userOverview = await this.$flend.getUserOverview(this.currentAccount.address, reserve, {
                 borrow: false,
             });
-            console.log(userOverview);
 
             this.userTokenBalance = toHex(userOverview.bBalance);
             this.userDeposit = toHex(userOverview.bDeposited);
