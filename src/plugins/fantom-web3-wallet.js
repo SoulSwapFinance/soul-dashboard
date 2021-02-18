@@ -757,9 +757,9 @@ export class FantomWeb3Wallet {
 
         let gasLimit = _tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '';
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return gasLimit
             ? {
@@ -769,7 +769,7 @@ export class FantomWeb3Wallet {
                   gasLimit: gasLimit,
                   nonce,
               }
-            : null;
+            : {};
     }
 
     async signTransaction(_tx, _keystore, _password, _tmpPwdCode) {
