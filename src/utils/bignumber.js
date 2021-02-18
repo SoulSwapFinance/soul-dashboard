@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import web3utils from 'web3-utils';
 
 export const BigNumber0 = BigNumber.clone({
     DECIMAL_PLACES: 0,
@@ -42,4 +43,12 @@ export function bFromWei(_value) {
  */
 export function bToWei(_value) {
     return bShiftDP(_value, 18);
+}
+
+/**
+ * @param {string|number|BigNumber} _value
+ * @return {BigNumber}
+ */
+export function toHex(_value) {
+    return web3utils.toHex(_value);
 }
