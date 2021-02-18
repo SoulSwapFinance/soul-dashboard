@@ -73,7 +73,9 @@
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-5 light-text-color fs-80">Available liquidity</div>
-                            <div class="col-7 flendreserveoverview_value"><b>6,834,233.97004</b> {{ tokenSymbol }}</div>
+                            <div class="col-7 flendreserveoverview_value">
+                                <b>{{ $flend.formatAmount(overview.available) }}</b> {{ tokenSymbol }}
+                            </div>
                         </div>
                         <div class="row no-collapse align-items-center">
                             <div class="col-5 light-text-color fs-80">Asset price</div>
