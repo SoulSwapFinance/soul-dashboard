@@ -27,6 +27,8 @@
                 </div>
             </div>
 
+            <f-message v-if="error" type="error">{{ error }}</f-message>
+
             <template #window-content>
                 <ledger-confirmation-content :to="tx.to" :amount="0" />
             </template>
@@ -115,6 +117,7 @@ export default {
         return {
             tx: {},
             dTmpPwdCode: '',
+            error: '',
         };
     },
 
@@ -214,6 +217,10 @@ export default {
             }
 
             this.tx = await this.$fWallet.getFLendTransactionToSign(txToSign, accountAddress, contractAddress);
+
+            if (!this.tx.to) {
+                this.error = 'An transaction error occurred';
+            }
         },
 
         onSendTransactionSuccess(_data) {
