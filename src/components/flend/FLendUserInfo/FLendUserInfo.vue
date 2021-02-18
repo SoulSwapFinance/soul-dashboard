@@ -72,7 +72,7 @@
                     <div class="col-5 light-text-color fs-80">Loan to value</div>
                     <div class="col-7 flenduserinfo_value">
                         <f-placeholder :content-loaded="loaded" :replacement-num-chars="9">
-                            <b>{{ loanToValue }} ??</b> %
+                            <b>{{ loanToValue }}</b> %
                         </f-placeholder>
                     </div>
                 </div>
@@ -108,7 +108,6 @@ import FToggleButton from '@/components/core/FToggleButton/FToggleButton.vue';
 import FLendHealthFactorInfo from '@/components/flend/infos/FLendHealthFactorInfo.vue';
 import FLendCollateralInfo from '@/components/flend/infos/FLendCollateralInfo.vue';
 import { mapGetters } from 'vuex';
-import { bFromWei } from '@/utils/bignumber.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 
 export default {
@@ -199,25 +198,15 @@ export default {
                 return;
             }
 
-            const { assetAddress } = reserve;
-            const accountAddress = this.currentAccount.address;
-            const data = await Promise.all([
-                $flend.fetchUserData(accountAddress),
-                $flend.fetchERC20TokenBalance(accountAddress, reserve.aTokenAddress),
-                $flend.fetchERC20TokenBalance(accountAddress, assetAddress),
-            ]);
-            const userData = data[0];
-            const deposit = data[1];
-            const userTokenBalance = data[2];
+            /** @type {FLendUserOverview} */
+            const userOverview = await this.$flend.getUserOverview(this.currentAccount.address, reserve);
 
-            this.balance = bFromWei(userTokenBalance).toNumber();
-            this.deposited = bFromWei(deposit).toNumber();
-            // this.borrowed = bFromWei(userData.totalDebtFUSD).toNumber();
-            this.healthFactor = $flend.fromRay(userData.healthFactor).toNumber();
-            // this.loanToValue = $flend.fromRay(userData.ltv).toNumber();
-            this.available = bFromWei(userData.availableBorrowsFUSD)
-                .dividedBy(this.$defi.getTokenPrice(reserve.asset))
-                .toNumber();
+            this.balance = userOverview.balance;
+            this.deposited = userOverview.deposited;
+            this.borrowed = userOverview.stableBorrow + userOverview.variableBorrow;
+            // this.healthFactor = userOverview.bHealthFactor.toNumber();
+            this.loanToValue = userOverview.ltv;
+            this.available = userOverview.availableAssetBorrows;
 
             this.reserveConfig = $flend.getReserveConfigurationData(reserve.configuration);
         },

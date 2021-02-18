@@ -126,10 +126,10 @@ import FViewTransition from '@/components/core/FViewTransition/FViewTransition.v
 import FMessage from '@/components/core/FMessage/FMessage.vue';
 import FLendDepositWithdrawConfirmation from '@/components/flend/FLendDepositWithdrawConfirmation/FLendDepositWithdrawConfirmation.vue';
 import FLendDepositWithdrawMessage from '@/components/flend/FLendDepositWithdrawMessage/FLendDepositWithdrawMessage.vue';
-import { bFromWei } from '@/utils/bignumber.js';
 import { mapGetters } from 'vuex';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import { toHex } from '@/utils/bignumber.js';
 
 export default {
     name: 'FLendDepositWithdraw',
@@ -252,7 +252,6 @@ export default {
         async setData() {
             /** @type {FLendReserve} */
             const reserve = this.reserve;
-            const { $flend } = this;
 
             if (!('ID' in reserve)) {
                 return;
@@ -260,23 +259,18 @@ export default {
 
             this.dataSet = false;
 
-            const { assetAddress } = reserve;
-            const accountAddress = this.currentAccount.address;
-            const data = await Promise.all([
-                $flend.fetchUserData(accountAddress),
-                $flend.fetchERC20TokenBalance(accountAddress, reserve.aTokenAddress),
-                $flend.fetchERC20TokenBalance(accountAddress, assetAddress),
-            ]);
-            const userData = data[0];
-            const deposit = data[1];
-            const userTokenBalance = data[2];
+            /** @type {FLendUserOverview} */
+            const userOverview = await this.$flend.getUserOverview(this.currentAccount.address, reserve, {
+                borrow: false,
+            });
+            console.log(userOverview);
 
-            this.userTokenBalance = userTokenBalance;
-            this.userDeposit = deposit;
+            this.userTokenBalance = toHex(userOverview.bBalance);
+            this.userDeposit = toHex(userOverview.bDeposited);
 
-            this.availableBalance = bFromWei(userTokenBalance).toNumber();
-            this.deposited = bFromWei(deposit).toNumber();
-            this.healthFactor = $flend.fromRay(userData.healthFactor).toNumber();
+            this.availableBalance = userOverview.balance;
+            this.deposited = userOverview.deposited;
+            // this.healthFactor = userOverview.bHealthFactor.toNumber();
 
             this.dataSet = true;
         },

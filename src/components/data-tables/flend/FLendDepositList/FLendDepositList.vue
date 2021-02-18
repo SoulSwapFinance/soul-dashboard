@@ -207,10 +207,9 @@ export default {
         async setDeposits() {
             const { $flend } = this;
             const { aTokenAdresses } = this;
-            const userData = await $flend.fetchUserData(this.currentAccount.address);
-            const userConfig = $flend.getUserConfiguration(userData.configurationData, this.reservesLen);
-            const reservesUsedAsCollateral = $flend.getUserReservesIndices(userConfig);
-
+            /** @type {FLendUserOverview} */
+            const userOverview = await $flend.getUserOverview(this.currentAccount.address, null, {}, this.reservesLen);
+            const { reservesUsedAsCollateral } = userOverview;
             let deposit = null;
             let aTokenAddress = '';
             let item = null;

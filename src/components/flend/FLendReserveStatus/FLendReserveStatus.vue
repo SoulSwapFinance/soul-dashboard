@@ -54,7 +54,7 @@
                         <span class="light-text-color">Utilisation rate</span>
                         <span class="flendreservestatus_sizerate_box_value">
                             <f-placeholder :content-loaded="loaded" :replacement-num-chars="14">
-                                <b>{{ overview.utilisationRate }}</b> %
+                                <b>{{ $flend.formatAmount(overview.utilisationRate) }}</b> %
                             </f-placeholder>
                         </span>
                     </div>
