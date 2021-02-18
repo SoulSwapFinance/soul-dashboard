@@ -271,7 +271,7 @@ export default {
             /** @type {FLendReserve} */
             const reserve = this.reserve;
 
-            if (!reserve.ID) {
+            if (!('ID' in reserve)) {
                 return;
             }
 
