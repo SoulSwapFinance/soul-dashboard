@@ -56,7 +56,7 @@ export default {
 
         async setReserve() {
             /** @type {FLendReserve} */
-            const reserve = await this.$flend.fetchReserveWithERC20Info(this.d_assetAddress);
+            const reserve = await this.$flend.fetchReserveWithAsset(this.d_assetAddress);
 
             if (reserve.assetAddress) {
                 this.reserve = reserve;

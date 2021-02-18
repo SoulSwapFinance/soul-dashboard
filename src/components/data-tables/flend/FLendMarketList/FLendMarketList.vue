@@ -132,7 +132,7 @@ export default {
 
     methods: {
         async init() {
-            const reserves = await this.$flend.fetchReservesWithERC20Info();
+            const reserves = await this.$flend.fetchReservesWithAsset();
 
             this.loading = false;
             this.items = reserves;

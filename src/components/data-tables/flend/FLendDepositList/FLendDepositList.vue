@@ -173,7 +173,7 @@ export default {
         async init() {
             const { $flend } = this;
             const { $defi } = this;
-            let reserves = await this.$flend.fetchReservesWithERC20Info(
+            let reserves = await this.$flend.fetchReservesWithAsset(
                 this.currentAccount ? this.currentAccount.address : ''
             );
 

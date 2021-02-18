@@ -48,7 +48,7 @@ export class FLend {
      * @param {string} [_fetchPolicy]
      * @return {Promise<[FLendReserve]|[]>}
      */
-    async fetchReserveWithERC20Info(_assetAddress, _ownerAddress = '', _fetchPolicy = 'network-only') {
+    async fetchReserveWithAsset(_assetAddress, _ownerAddress = '', _fetchPolicy = 'network-only') {
         const data = await Promise.all([
             this.fetchReserve(_assetAddress, _fetchPolicy),
             this.fetchDefiTokens(_ownerAddress, _fetchPolicy),
@@ -75,7 +75,7 @@ export class FLend {
      * @param {string} [_fetchPolicy]
      * @return {Promise<[FLendReserve]|[]>}
      */
-    async fetchReservesWithERC20Info(_ownerAddress = '', _fetchPolicy = 'network-only') {
+    async fetchReservesWithAsset(_ownerAddress = '', _fetchPolicy = 'network-only') {
         const data = await Promise.all([
             this.fetchReserves(_fetchPolicy),
             this.fetchDefiTokens(_ownerAddress, _fetchPolicy),
