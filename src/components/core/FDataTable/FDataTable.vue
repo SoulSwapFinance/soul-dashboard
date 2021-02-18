@@ -171,6 +171,9 @@ export default {
          * `itemProp` {string} - can be used to get data from nested data item property - 'prop1.prop2' for example
          * `formatter` {function} - apply this formatter to data item value
          * `readValueFrom` {string} - if there is no key `name` in data item object, read value from column with name `value`
+         * `sortFunc` {function} - function used for sorting
+         * `sortDir` {function} - initial sort direction of the column ('asc' | 'desc')
+         * `sortItemProp` {string} - determines which item property to use for sorting. If not set, `itemProp` or `name` is used instead
          * `width` {string} - minimum width of column
          * `hidden` {boolean} - if `true`, column will be hidden
          * `css` {object} - style for whole column. Keys are css properties in camel case, values are valid css values.
@@ -619,7 +622,9 @@ export default {
 
                 this._sortByCol = _column._index;
 
-                this.items.sort(_column.sortFunc(_column.itemProp || _column.name, _column.sortDir));
+                this.items.sort(
+                    _column.sortFunc(_column.sortItemProp || _column.itemProp || _column.name, _column.sortDir)
+                );
             }
         },
 
