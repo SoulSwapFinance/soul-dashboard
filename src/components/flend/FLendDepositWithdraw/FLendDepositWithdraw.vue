@@ -74,8 +74,17 @@
         </div>
 
         <div class="flenddepositwithdraw_footer">
-            <div v-if="!submitDisabled" class="flenddepositwithdraw_messages">
-                <f-lend-deposit-withdraw-message :token="asset" :value="currAmount" :withdraw="withdraw" />
+            <div v-if="!submitDisabled || availableBalance === 0" class="flenddepositwithdraw_messages">
+                <f-message v-if="availableBalance === 0" type="info" role="alert" class="big">
+                    Your balance of {{ assetSymbol }} is 0. Transfer {{ assetSymbol }} to your wallet to be able to
+                    deposit
+                </f-message>
+                <f-lend-deposit-withdraw-message
+                    v-if="!submitDisabled"
+                    :token="asset"
+                    :value="currAmount"
+                    :withdraw="withdraw"
+                />
             </div>
 
             <div class="defi-buttons">
