@@ -28,7 +28,7 @@
 <script>
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import { stringSort } from '@/utils/array-sorting.js';
+import { sortByHex, sortByNumber, stringSort } from '@/utils/array-sorting.js';
 import { formatNumberByLocale } from '@/filters.js';
 import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
 import { bFromWei } from '@/utils/bignumber.js';
@@ -59,19 +59,19 @@ export default {
                 {
                     name: 'marketsize',
                     label: 'Market Size',
-                    formatter: (_value, _item) => {
-                        return formatNumberByLocale(
-                            bFromWei(_item._totalDeposited).toNumber(),
-                            MAX_TOKEN_DECIMALS_IN_TABLES
-                        );
+                    itemProp: '_totalDeposited',
+                    sortFunc: sortByNumber,
+                    formatter: (_value) => {
+                        return _value !== undefined ? formatNumberByLocale(_value, MAX_TOKEN_DECIMALS_IN_TABLES) : '-';
                     },
                 },
                 {
                     name: 'borrowed',
                     label: 'Total Borrowed',
                     itemProp: '_totalBorrowed',
+                    sortFunc: sortByNumber,
                     formatter: (_value) => {
-                        return _value !== undefined ? _value : '-';
+                        return _value !== undefined ? formatNumberByLocale(_value, MAX_TOKEN_DECIMALS_IN_TABLES) : '-';
                     },
                 },
                 {
@@ -93,6 +93,7 @@ export default {
                     name: 'variableapr',
                     label: 'Variable Borrow APR',
                     itemProp: 'currentVariableBorrowRate',
+                    sortFunc: sortByHex,
                     formatter: (_value) => {
                         return (
                             formatNumberByLocale(
@@ -108,6 +109,7 @@ export default {
                     name: 'stableapr',
                     label: 'Stable Borrow APR',
                     itemProp: 'currentStableBorrowRate',
+                    sortFunc: sortByHex,
                     formatter: (_value) => {
                         return (
                             formatNumberByLocale(
@@ -135,11 +137,29 @@ export default {
             this.loading = false;
             this.items = reserves;
 
+            this.loadMarketSize();
+            this.loadTotalBorrowed();
+        },
+
+        async loadMarketSize() {
+            const { items } = this;
+            const { $flend } = this;
+            let totalDeposited;
+
+            for (let i = 0, len1 = items.length; i < len1; i++) {
+                totalDeposited = await $flend.fetchTotalDeposited(items[i]);
+                this.$set(items[i], '_totalDeposited', bFromWei(totalDeposited).toNumber());
+            }
+        },
+
+        async loadTotalBorrowed() {
+            const { items } = this;
+            const { $flend } = this;
             let totalBorrowed;
 
-            for (let i = 0, len1 = this.items.length; i < len1; i++) {
-                totalBorrowed = await this.$flend.fetchTotalBorrowed(this.items[i]);
-                this.$set(this.items[i], '_totalBorrowed', bFromWei(totalBorrowed).toNumber());
+            for (let i = 0, len1 = items.length; i < len1; i++) {
+                totalBorrowed = await $flend.fetchTotalBorrowed(items[i]);
+                this.$set(items[i], '_totalBorrowed', bFromWei(totalBorrowed).toNumber());
             }
         },
 
