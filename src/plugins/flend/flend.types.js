@@ -43,7 +43,7 @@
  */
 
 /**
- * FLend reserve overview object.
+ * FLend reserve configuration data object.
  * @typedef {Object} FLendReserveConfigurationData
  * @property {boolean} borrowingEnabled Whether borrowing is enabled on the reserve
  * @property {number} decimals The decimals used by the reserve
@@ -55,4 +55,25 @@
  * @property {number} reserveFactor The reserve factor
  * @property {number} reserved
  * @property {boolean} stableBorrowRateEnabled Whether stable borrowing is enabled
+ */
+
+/**
+ * FLend user overview object.
+ * @typedef {Object} FLendUserOverview
+ * @property {number} availableAssetBorrows
+ * @property {number} availableBorrowsFUSD
+ * @property {BigNumber} bBalance
+ * @property {BigNumber} bDeposited
+ * @property {BigNumber} bHealthFactor
+ * @property {BigNumber} bStableBorrow
+ * @property {BigNumber} bVariableBorrow
+ * @property {number} balance
+ * @property {string} configurationData
+ * @property {number} currentLiquidationThreshold
+ * @property {number} deposited
+ * @property {number} ltv
+ * @property {number} stableBorrow
+ * @property {number} totalBorrowsFUSD
+ * @property {number} totalCollateralFUSD
+ * @property {number} variableBorrow
  */

@@ -420,7 +420,7 @@ export class FLend {
      * @return {Promise<FLendReserveOverview>}
      */
     async getReserveOverview(_reserve) {
-        if (!_reserve.ID) {
+        if (!('ID' in _reserve)) {
             return {};
         }
 
@@ -479,6 +479,76 @@ export class FLend {
             reserved: this.getBits(bConfiguration256, 60, 63, true),
             reserveFactor: this.getBits(bConfiguration256, 64, 79, true),
         };
+    }
+
+    /**
+     * @param {string} _userAddress
+     * @param {FLendReserve} [_reserve]
+     * @param {{deposit: boolean, borrow: boolean}} [_fetch]
+     * @param {number} [_reservesLen]
+     * @return {Promise<FLendUserOverview>}
+     */
+    async getUserOverview(_userAddress, _reserve, _fetch = {}, _reservesLen) {
+        if (_reserve && !('ID' in _reserve)) {
+            return {};
+        }
+
+        const fetch = {
+            deposit: true,
+            borrow: true,
+            ..._fetch,
+        };
+        const promises = [this.fetchUserData(_userAddress)];
+
+        if (_reserve) {
+            promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.assetAddress));
+        }
+
+        if (fetch.deposit && _reserve) {
+            promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.aTokenAddress));
+        }
+
+        if (fetch.borrow && _reserve) {
+            promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.stableDebtTokenAddress));
+            promises.push(this.fetchERC20TokenBalance(_userAddress, _reserve.variableDebtTokenAddress));
+        }
+
+        console.log(promises);
+
+        const data = await Promise.all(promises);
+        const userData = data[0];
+        const userTokenBalance = data[1] || 0;
+        const deposit = data[2] || 0;
+        const stableBorrow = data[3] || 0;
+        const variableBorrow = data[4] || 0;
+        const overview = {};
+
+        overview.bBalance = toBigNumber(userTokenBalance);
+        overview.balance = bFromWei(userTokenBalance).toNumber();
+        overview.bDeposited = toBigNumber(deposit);
+        overview.deposited = bFromWei(deposit).toNumber();
+        overview.bStableBorrow = toBigNumber(stableBorrow);
+        overview.stableBorrow = bFromWei(stableBorrow).toNumber();
+        overview.bVariableBorrow = toBigNumber(variableBorrow);
+        overview.variableBorrow = bFromWei(variableBorrow).toNumber();
+        overview.bHealthFactor = toBigNumber(userData.healthFactor);
+        overview.ltv = parseInt(userData.ltv, 16) / 100;
+        overview.currentLiquidationThreshold = parseInt(userData.currentLiquidationThreshold, 16) / 100;
+        overview.totalCollateralFUSD = bFromWei(userData.totalCollateralFUSD).toNumber();
+        overview.totalBorrowsFUSD = bFromWei(userData.totalDebtFUSD).toNumber();
+        overview.availableBorrowsFUSD = bFromWei(userData.availableBorrowsFUSD).toNumber();
+        overview.availableAssetBorrows = bFromWei(userData.availableBorrowsFUSD)
+            .dividedBy(_reserve ? defi.getTokenPrice(_reserve.asset) : 1)
+            .toNumber();
+        overview.configurationData = userData.configurationData;
+
+        if (_reservesLen > 0) {
+            const userConfig = this.getUserConfiguration(userData.configurationData, _reservesLen);
+            overview.reservesUsedAsCollateral = this.getUserReservesIndices(userConfig, 'usedAsCollateral');
+            overview.reservesBorrowed = this.getUserReservesIndices(userConfig, 'borrowed');
+        }
+
+        return overview;
     }
 
     /**
