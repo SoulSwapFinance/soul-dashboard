@@ -21,6 +21,20 @@
                 </template>
             </template>
 
+            <template v-slot:column-balance="{ value, item, column }">
+                <div v-if="column" class="row no-collapse no-vert-col-padding">
+                    <div class="col-6 f-row-label">{{ column.label }}</div>
+                    <div class="col break-word">
+                        {{ value }} <br />
+                        <span class="light-text-color">{{ getAssetPriceF(value, item.asset) }}</span>
+                    </div>
+                </div>
+                <template v-else>
+                    {{ value }} <br />
+                    <span class="light-text-color">{{ getAssetPriceF(value, item.asset) }}</span>
+                </template>
+            </template>
+
             <template v-slot:column-actions="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
@@ -94,14 +108,14 @@ export default {
                 {
                     name: 'balance',
                     label: 'Your wallet balance',
-                    itemProp: 'asset.availableBalance',
+                    itemProp: '_availableBalance',
+                    sortDir: 'desc',
+                    sortItemProp: '_availableBalanceFUSD',
                     sortFunc: sortByHex,
                     formatter: (_availableBalance, _item) => {
-                        const balance = this.$defi.fromTokenValue(_availableBalance, _item.asset);
-
-                        return balance > 0
+                        return _availableBalance > 0
                             ? formatNumberByLocale(
-                                  balance,
+                                  _availableBalance,
                                   this.$defi.getTokenDecimals(_item.asset, MAX_TOKEN_DECIMALS_IN_TABLES)
                               )
                             : 0;
@@ -111,7 +125,6 @@ export default {
                     name: 'deposits',
                     label: 'Your deposits',
                     itemProp: '_deposit',
-                    sortDir: 'desc',
                     sortFunc: sortByNumber,
                     formatter: (_value, _item) => {
                         return _value > 0
@@ -159,6 +172,7 @@ export default {
     methods: {
         async init() {
             const { $flend } = this;
+            const { $defi } = this;
             let reserves = await this.$flend.fetchReservesWithERC20Info(
                 this.currentAccount ? this.currentAccount.address : ''
             );
@@ -174,10 +188,14 @@ export default {
             this.reservesLen = reserves.length;
 
             reserves = reserves.map((_reserve) => {
+                const availableBalance = $defi.fromTokenValue(_reserve.asset.availableBalance, _reserve.asset);
+
                 return {
                     ..._reserve,
                     _config: $flend.getReserveConfigurationData(_reserve.configuration),
                     _deposit: 0,
+                    _availableBalance: availableBalance,
+                    _availableBalanceFUSD: availableBalance * this.getAssetPrice(_reserve.asset),
                 };
             });
 
@@ -210,8 +228,25 @@ export default {
                 }
 
                 // re-sort table by the third column
-                this.$refs.dataTable.sortByColumnIndex(2);
+                // this.$refs.dataTable.sortByColumnIndex(2);
             }
+        },
+
+        /**
+         * @param {DefiToken} _asset
+         * @return {number}
+         */
+        getAssetPrice(_asset) {
+            return this.$defi.getTokenPrice(_asset);
+        },
+
+        /**
+         * @param {number} _value
+         * @param {DefiToken} _asset
+         * @return {number}
+         */
+        getAssetPriceF(_value, _asset) {
+            return this.$defi.formatValueInUSD(_value, _asset, 2);
         },
 
         /**
