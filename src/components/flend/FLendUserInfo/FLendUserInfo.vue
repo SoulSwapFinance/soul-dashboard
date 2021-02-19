@@ -194,7 +194,7 @@ export default {
             const reserve = this.reserve;
             const { $flend } = this;
 
-            if (!('ID' in reserve)) {
+            if (!$flend.reserveExist(reserve)) {
                 return;
             }
 

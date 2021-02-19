@@ -419,7 +419,7 @@ export class FLend {
      * @return {Promise<FLendReserveOverview>}
      */
     async getReserveOverview(_reserve) {
-        if (!('ID' in _reserve)) {
+        if (!this.reserveExist(_reserve)) {
             return {};
         }
 
@@ -481,6 +481,14 @@ export class FLend {
     }
 
     /**
+     * @param {FLendReserve} [_reserve]
+     * @return {boolean}
+     */
+    reserveExist(_reserve) {
+        return _reserve && 'ID' in _reserve;
+    }
+
+    /**
      * @param {string} _userAddress
      * @param {FLendReserve} [_reserve]
      * @param {{deposit: boolean, borrow: boolean}} [_fetch]
@@ -488,7 +496,7 @@ export class FLend {
      * @return {Promise<FLendUserOverview>}
      */
     async getUserOverview(_userAddress, _reserve, _fetch = {}, _reservesLen) {
-        if (_reserve && !('ID' in _reserve)) {
+        if (!this.reserveExist(_reserve)) {
             return {};
         }
 

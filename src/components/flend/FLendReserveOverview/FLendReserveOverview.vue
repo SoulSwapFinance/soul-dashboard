@@ -180,7 +180,7 @@ export default {
             /** @type {FLendReserve} */
             const reserve = this.reserve;
 
-            if (!('ID' in reserve)) {
+            if (!this.$flend.reserveExist(reserve)) {
                 return;
             }
 
