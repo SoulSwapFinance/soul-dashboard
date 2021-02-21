@@ -1,13 +1,15 @@
 <template>
     <div class="f-uniswap-pair-symbol">
-        <f-crypto-symbol
-            :token="tokens[0]"
-            :img-width="imgWidth"
-            :img-height="imgHeight"
-            no-symbol
-            class="first-symbol"
-        />
-        <f-crypto-symbol :token="tokens[1]" :img-width="imgWidth" :img-height="imgHeight" no-symbol />
+        <template v-if="!noSymbols">
+            <f-crypto-symbol
+                :token="tokens[0]"
+                :img-width="imgWidth"
+                :img-height="imgHeight"
+                no-symbol
+                class="first-symbol"
+            />
+            <f-crypto-symbol :token="tokens[1]" :img-width="imgWidth" :img-height="imgHeight" no-symbol />
+        </template>
 
         <router-link v-if="routerLinkTo.name" :to="routerLinkTo">
             {{ $defi.getTokenSymbol(tokens[0]) }}-{{ $defi.getTokenSymbol(tokens[1]) }}
@@ -34,8 +36,8 @@ export default {
             },
             required: true,
         },
-        /** Hide symbol (text). */
-        noSymbol: {
+        /** Hide symbols */
+        noSymbols: {
             type: Boolean,
             default: false,
         },
