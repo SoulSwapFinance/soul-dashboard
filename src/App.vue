@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <top-disclaimer />
         <!--            <router-view :key="$route.path"></router-view>-->
 
         <!--        <router-view aria-live="polite"></router-view>-->
@@ -50,11 +51,13 @@ import { eventBusMixin } from './mixins/event-bus.js';
 import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
 import MetamaskAccountPickerWindow from '@/components/windows/MetamaskAccountPickerWindow/MetamaskAccountPickerWindow.vue';
 import { mapGetters } from 'vuex';
+import TopDisclaimer from '@/components/TopDisclaimer/TopDisclaimer.vue';
 
 export default {
     name: 'App',
 
     components: {
+        TopDisclaimer,
         MetamaskAccountPickerWindow,
         FNetworkStatus,
         FAriaAlert,
