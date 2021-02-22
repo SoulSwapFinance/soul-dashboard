@@ -6,6 +6,11 @@
         --f-card-padding: 16px;
     }
 
+    .f-tabs {
+        --f-tabs-font-size: 1rem;
+        --f-tabs-tab-padding: 4px 8px;
+    }
+
     &_title {
         display: flex;
         align-items: center;
@@ -51,11 +56,6 @@
 
     &_charts {
         position: relative;
-
-        .f-tabs {
-            --f-tabs-font-size: 1rem;
-            --f-tabs-tab-padding: 4px 8px;
-        }
 
         .f-lightweight-chart {
             min-height: 300px;
