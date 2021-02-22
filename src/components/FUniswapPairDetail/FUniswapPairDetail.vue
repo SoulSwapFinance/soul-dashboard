@@ -41,6 +41,13 @@
                     </div>
                 </f-card>
                 <f-card>
+                    <h3 class="funiswappairdetail_subsubtitle">Fees (24h)</h3>
+                    <div class="funiswappairdetail_stats_body">
+                        <!--                        {{ formatUSD(volume24h) }}-->
+                        {{ volume24h * liquidityProviderFee }}
+                    </div>
+                </f-card>
+                <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Pooled Tokens</h3>
                     <div class="funiswappairdetail_stats_body">
                         <f-crypto-symbol :token="token1" img-width="21px" img-height="21px" no-symbol />
@@ -185,6 +192,9 @@
         </f-card>
 
         <h2 class="funiswappairdetail_subtitle">Transactions</h2>
+        <f-card>
+            <f-uniswap-transaction-list :pair="pair" />
+        </f-card>
     </div>
 </template>
 
@@ -207,11 +217,13 @@ import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 import FCopyButton from '@/components/core/FCopyButton/FCopyButton.vue';
 import appConfig from '../../../app.config.js';
 import { WeiToFtm } from '@/utils/transactions.js';
+import FUniswapTransactionList from '@/components/data-tables/FUniswapTransactionList/FUniswapTransactionList.vue';
 
 export default {
     name: 'FUniswapPairDetail',
 
     components: {
+        FUniswapTransactionList,
         FCopyButton,
         FEllipsis,
         FTokenValue,
@@ -256,8 +268,9 @@ export default {
                 { value: 'day', label: 'D' },
                 { value: 'month', label: '1M' },
             ],
-            totalLiquidity: 123434,
-            volume24h: 3544,
+            totalLiquidity: 0,
+            volume24h: 0,
+            liquidityProviderFee: appConfig.settings.fUniswapLiquidityProviderFee,
             explorerUrl: appConfig.explorerUrl,
             explorerTransactionPath: appConfig.explorerTransactionPath,
         };
