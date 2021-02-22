@@ -81,3 +81,20 @@
  * @property {string} totalSupply Total amount of the pair tokens in circulation and represents the total share pool of all the participants.
  * @property {string} shareOf Share of the given user/participant on the pair.
  */
+
+/**
+ * UniswapAction represents a Uniswap action - swap, mint, burn
+ * @typedef {Object} UniswapAction
+ * @property {string} id
+ * @property {UniswapPair} uniswapPair
+ * @property {string} pairAddress
+ * @property {string} transactionHash
+ * @property {string} sender
+ * @property {number} type 0 - swap, 1 - mint, 2 - burn
+ * @property {string} blockNr
+ * @property {string} time
+ * @property {string} amount0in
+ * @property {string} amount0out
+ * @property {string} amount1in
+ * @property {string} amount1out
+ */
