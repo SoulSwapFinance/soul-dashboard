@@ -661,6 +661,24 @@ export class DeFi {
     }
 
     /**
+     * @param {UniswapPair} _pair
+     * @param {number} _tokenIndex
+     * @return {ERC20Token|{}}
+     */
+    getPairToken(_pair, _tokenIndex = 0) {
+        return _pair && _pair.tokens ? _pair.tokens[_tokenIndex] : {};
+    }
+
+    /**
+     * @param {UniswapPair} _pair
+     * @param {number} _tokenIndex
+     * @return {string}
+     */
+    getPairTokenSymbol(_pair, _tokenIndex = 0) {
+        return _pair && _pair.tokens ? this.getTokenSymbol(_pair.tokens[_tokenIndex]) : '';
+    }
+
+    /**
      * @return {Promise<DefiSettings>}
      */
     async fetchSettings() {

@@ -292,19 +292,19 @@ export default {
         },
 
         token1() {
-            return this.getPairToken(this.pair);
+            return this.$defi.getPairToken(this.pair);
         },
 
         token2() {
-            return this.getPairToken(this.pair, 1);
+            return this.$defi.getPairToken(this.pair, 1);
         },
 
         token1Symbol() {
-            return this.getPairTokenSymbol(this.pair);
+            return this.$defi.getPairTokenSymbol(this.pair);
         },
 
         token2Symbol() {
-            return this.getPairTokenSymbol(this.pair, 1);
+            return this.$defi.getPairTokenSymbol(this.pair, 1);
         },
 
         totalToken1Liquidity() {
@@ -557,24 +557,6 @@ export default {
             const data = await this.$fFetch.fetchGQLQuery(query, 'defiTimePrices');
 
             return data.data.defiTimePrices || [];
-        },
-
-        /**
-         * @param {UniswapPair} _pair
-         * @param {number} _tokenIndex
-         * @return {ERC20Token|{}}
-         */
-        getPairToken(_pair, _tokenIndex = 0) {
-            return _pair && _pair.tokens ? _pair.tokens[_tokenIndex] : {};
-        },
-
-        /**
-         * @param {UniswapPair} _pair
-         * @param {number} _tokenIndex
-         * @return {string}
-         */
-        getPairTokenSymbol(_pair, _tokenIndex = 0) {
-            return _pair && _pair.tokens ? this.$defi.getTokenSymbol(_pair.tokens[_tokenIndex]) : '';
         },
 
         /**
