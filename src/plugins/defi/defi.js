@@ -1113,6 +1113,7 @@ export class DeFi {
                         name
                         symbol
                         logoURL
+                        decimals
                     }
                     reservesTimeStamp
                     reserves
@@ -1132,6 +1133,7 @@ export class DeFi {
                             name
                             symbol
                             logoURL
+                            decimals
                             balanceOf(owner: $owner)
                         }
                         reservesTimeStamp
@@ -1152,6 +1154,7 @@ export class DeFi {
                             name
                             symbol
                             logoURL
+                            decimals
                             balanceOf(owner: $owner)
                         }
                         reservesTimeStamp
