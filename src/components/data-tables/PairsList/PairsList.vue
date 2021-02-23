@@ -206,7 +206,7 @@
 <script>
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import { formatNumberByLocale } from '@/filters.js';
-import FUniswapPairSymbol from '@/components/FUniswapPairSymbol/FUniswapPairSymbol.vue';
+import FUniswapPairSymbol from '@/components/funi/FUniswapPairSymbol/FUniswapPairSymbol.vue';
 import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import { defer } from '@/utils';

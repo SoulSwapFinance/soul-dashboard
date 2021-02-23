@@ -192,9 +192,9 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import FCryptoSymbol from '../../components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import FSelectButton from '../../components/core/FSelectButton/FSelectButton.vue';
-import { cloneObject, debounce, defer, getUniqueId } from '../../utils';
+import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
+import FSelectButton from '@/components/core/FSelectButton/FSelectButton.vue';
+import { cloneObject, debounce, defer, getUniqueId } from '@/utils';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FCard from '@/components/core/FCard/FCard.vue';
 import FInfo from '@/components/core/FInfo/FInfo.vue';
@@ -203,7 +203,7 @@ import { pollingMixin } from '@/mixins/polling.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import { TokenPairs } from '@/utils/token-pairs.js';
 import Erc20TokenPickerWindow from '@/components/windows/Erc20TokenPickerWindow/Erc20TokenPickerWindow.vue';
-import appConfig from '../../../app.config.js';
+import appConfig from '../../../../app.config.js';
 // import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 export default {

@@ -26,7 +26,7 @@ import {
 } from '@/store/mutations.type.js';
 import { eventBusMixin } from '@/mixins/event-bus.js';
 import { appStructureTree } from '@/app-structure.js';
-import FUniswapMenu from '@/components/FUniswapMenu/FUniswapMenu.vue';
+import FUniswapMenu from '@/components/funi/FUniswapMenu/FUniswapMenu.vue';
 
 export default {
     name: 'FUniswap',

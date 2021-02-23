@@ -42,28 +42,28 @@ import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
-import FUniswap from '@/views/FUniswap/FUniswap.vue';
-import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
-import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
-import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
+import FUniswap from '@/views/funi/FUniswap/FUniswap.vue';
+import FUniswapSwapConfirmation from '@/views/funi/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
+import FUniswapAddLiquidityConfirmation from '@/views/funi/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
+import FUniswapRemoveLiquidityConfirmation from '@/views/funi/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
 import Eip from '@/views/Eip/Eip';
 import EipWelcome from '@/views/EipWelcome/EipWelcome';
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import EipSelectAccounts from '@/views/EipSelectAccounts/EipSelectAccounts';
 import Swap from '@/views/Swap/Swap.vue';
-import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
+import FUniswapSwap from '@/components/funi/FUniswapSwap/FUniswapSwap.vue';
 import Pools from '@/views/Pools/Pools.vue';
-import FUniswapPools from '@/components/FUniswapPools/FUniswapPools.vue';
-import FUniswapAddLiquidity from '@/components/FUniswapAddLiquidity/FUniswapAddLiquidity.vue';
+import FUniswapPools from '@/components/funi/FUniswapPools/FUniswapPools.vue';
+import FUniswapAddLiquidity from '@/components/funi/FUniswapAddLiquidity/FUniswapAddLiquidity.vue';
 import AddLiquidity from '@/views/AddLiquidity/AddLiquidity.vue';
-import FUniswapRemoveLiquidity from '@/components/FUniswapRemoveLiquidity/FUniswapRemoveLiquidity.vue';
+import FUniswapRemoveLiquidity from '@/components/funi/FUniswapRemoveLiquidity/FUniswapRemoveLiquidity.vue';
 import RemoveLiquidity from '@/views/RemoveLiquidity/RemoveLiquidity.vue';
 import Gov from '@/views/Gov/Gov.vue';
 import GovHome from '@/views/GovHome/GovHome.vue';
 import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
-import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDetail.vue';
+import FUniswapPairDetail from '@/components/funi/FUniswapPairDetail/FUniswapPairDetail.vue';
 
 export const routes = [
     {

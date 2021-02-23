@@ -76,7 +76,7 @@ import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import FUniswapPairLiquidityInfo from '@/components/FUniswapPairLiquidityInfo/FUniswapPairLiquidityInfo.vue';
+import FUniswapPairLiquidityInfo from '@/components/funi/FUniswapPairLiquidityInfo/FUniswapPairLiquidityInfo.vue';
 import { formatNumberByLocale } from '@/filters.js';
 import { pollingMixin } from '@/mixins/polling.js';
 import { TokenPairs } from '@/utils/token-pairs.js';

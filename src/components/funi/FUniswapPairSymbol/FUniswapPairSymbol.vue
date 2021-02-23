@@ -20,6 +20,7 @@
 
 <script>
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
+
 /**
  * Renders uniswap pair.
  * Requires vue defi plugin ($defi) and FCryptoSymbol.

@@ -199,10 +199,10 @@
 </template>
 
 <script>
-import FBackButton from '../core/FBackButton/FBackButton.vue';
-import { getAppParentNode } from '../../app-structure.js';
+import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
+import { getAppParentNode } from '@/app-structure.js';
 import FUniswapPairSymbol from '../FUniswapPairSymbol/FUniswapPairSymbol.vue';
-import FLightweightCharts from '../core/FLightweightCharts/FLightweightCharts.vue';
+import FLightweightCharts from '@/components/core/FLightweightCharts/FLightweightCharts.vue';
 import gql from 'graphql-tag';
 import { getTimeSpan } from '@/utils/time.js';
 import FDropdownListbox from '@/components/core/FDropdownListbox/FDropdownListbox.vue';
@@ -215,7 +215,7 @@ import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 import FCopyButton from '@/components/core/FCopyButton/FCopyButton.vue';
-import appConfig from '../../../app.config.js';
+import appConfig from '../../../../app.config.js';
 import { WeiToFtm } from '@/utils/transactions.js';
 import FUniswapTransactionList from '@/components/data-tables/FUniswapTransactionList/FUniswapTransactionList.vue';
 

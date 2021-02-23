@@ -158,13 +158,13 @@ import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FSelectButton from '@/components/core/FSelectButton/FSelectButton.vue';
 import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
-import FUniswapPairLiquidityInfo from '@/components/FUniswapPairLiquidityInfo/FUniswapPairLiquidityInfo.vue';
+import FUniswapPairLiquidityInfo from '@/components/funi/FUniswapPairLiquidityInfo/FUniswapPairLiquidityInfo.vue';
 import FBackButton from '@/components/core/FBackButton/FBackButton.vue';
 import { pollingMixin } from '@/mixins/polling.js';
 import Erc20TokenPickerWindow from '@/components/windows/Erc20TokenPickerWindow/Erc20TokenPickerWindow.vue';
 import { TokenPairs } from '@/utils/token-pairs.js';
 import { getAppParentNode } from '@/app-structure.js';
-import appConfig from '../../../app.config.js';
+import appConfig from '../../../../app.config.js';
 
 export default {
     name: 'FUniswapAddLiquidity',
