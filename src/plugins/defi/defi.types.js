@@ -98,3 +98,31 @@
  * @property {string} amount1in
  * @property {string} amount1out
  */
+
+/**
+ * DefiTimeVolume represents swap volume for given pair and time interval
+ * @typedef {Object} DefiTimeVolume
+ * @property {string} pairAddress
+ * @property {string} time
+ * @property {string} value
+ */
+
+/**
+ * DefiTimePrice represents a calculated price for swap pairs in history
+ * @typedef {Object} DefiTimePrice
+ * @property {string} pairAddress
+ * @property {string} time
+ * @property {number} open
+ * @property {number} close
+ * @property {number} low
+ * @property {number} high
+ * @property {number} average
+ */
+
+/**
+ * DefiTimeReserve represents a Uniswap pair reserve in history
+ * @typedef {Object} DefiTimeReserve
+ * @property {UniswapPair} uniswapPair
+ * @property {string} time
+ * @property {string} reserveClose
+ */
