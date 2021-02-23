@@ -308,6 +308,14 @@ export default {
         },
     },
 
+    watch: {
+        currentAccount(_value, _oldValue) {
+            if (!_oldValue || !_value || _value.address !== _oldValue.address) {
+                this.onAccountPicked();
+            }
+        },
+    },
+
     created() {
         this.init();
     },
@@ -419,6 +427,10 @@ export default {
             const share = _pair && _pair.shareOf ? _pair.shareOf : '0x0';
 
             return _pair.pairAddress && share !== '0x0' ? parseInt(share, 16) / parseInt(_pair.totalSupply, 16) : 0;
+        },
+
+        onAccountPicked() {
+            this.init(true);
         },
     },
 };
