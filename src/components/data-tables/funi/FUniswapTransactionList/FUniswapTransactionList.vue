@@ -83,14 +83,14 @@ export default {
                         return _value.transactionHash;
                     },*/
                 },
-                {
+                /*{
                     name: 'totalvalue',
                     label: 'Total Value',
                     formatter: () => {
                         return '-';
                     },
                     css: { textAlign: 'right' },
-                },
+                },*/
                 {
                     name: 'token1amount',
                     label: 'Token amount',
