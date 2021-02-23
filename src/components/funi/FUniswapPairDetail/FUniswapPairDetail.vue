@@ -217,7 +217,7 @@ import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 import FCopyButton from '@/components/core/FCopyButton/FCopyButton.vue';
 import appConfig from '../../../../app.config.js';
 import { WeiToFtm } from '@/utils/transactions.js';
-import FUniswapTransactionList from '@/components/data-tables/FUniswapTransactionList/FUniswapTransactionList.vue';
+import FUniswapTransactionList from '@/components/data-tables/funi/FUniswapTransactionList/FUniswapTransactionList.vue';
 
 export default {
     name: 'FUniswapPairDetail',

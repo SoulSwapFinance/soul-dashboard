@@ -211,7 +211,7 @@ import { mapGetters } from 'vuex';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import { defer } from '@/utils';
 import Vue from 'vue';
-import FCryptoSymbol from '../../core/FCryptoSymbol/FCryptoSymbol.vue';
+import FCryptoSymbol from '@/components/core/FCryptoSymbol/FCryptoSymbol.vue';
 
 export default {
     name: 'PairsList',
