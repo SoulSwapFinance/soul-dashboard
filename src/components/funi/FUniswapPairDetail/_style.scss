@@ -49,8 +49,18 @@
             font-size: 28px;
 
             .f-crypto-symbol {
-                margin-right: -8px;
+                margin-right: -2px;
             }
+        }
+
+        &_cols {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fpricediff {
+            font-size: 14px;
         }
     }
 
@@ -58,7 +68,7 @@
         position: relative;
 
         .f-lightweight-chart {
-            min-height: 300px;
+            min-height: 280px;
         }
 
         .chart-controls-top-bar {

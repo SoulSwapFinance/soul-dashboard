@@ -29,25 +29,36 @@
                 <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Total Liquidity</h3>
                     <div class="funiswappairdetail_stats_body">
-                        <!--                        {{ formatUSD(totalLiquidity) }}-->
-                        {{ totalLiquidity }}
+                        <f-crypto-symbol :token="token1" img-width="21px" img-height="21px" no-symbol />
+                        <!--                        {{ formatNumberByLocale(totalToken1Liquidity, 0) }} {{ token1Symbol }}-->
+                        <f-token-value :token="token1" :value="totalToken1Liquidity" :decimals="0" />
+                        <br />
+                        <f-crypto-symbol :token="token2" img-width="21px" img-height="21px" no-symbol />
+                        <!--                        {{ formatNumberByLocale(totalToken2Liquidity, 0) }} {{ token2Symbol }}-->
+                        <f-token-value :token="token2" :value="totalToken2Liquidity" :decimals="0" />
                     </div>
                 </f-card>
+                <!--                <f-card>
+                    <h3 class="funiswappairdetail_subsubtitle">Total Liquidity</h3>
+                    <div class="funiswappairdetail_stats_body">
+                        {{ totalLiquidity }}
+                    </div>
+                </f-card>-->
                 <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Volume (24h)</h3>
-                    <div class="funiswappairdetail_stats_body">
-                        <!--                        {{ formatUSD(volume24h) }}-->
-                        {{ volume24h }}
+                    <div class="funiswappairdetail_stats_body funiswappairdetail_stats_cols">
+                        <f-token-value :token="token1" :value="volume24h" />
+                        <f-price-diff :curr-value="volume24h" :prev-value="prevVolume24h" :decimals="1" />
                     </div>
                 </f-card>
                 <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Fees (24h)</h3>
-                    <div class="funiswappairdetail_stats_body">
-                        <!--                        {{ formatUSD(volume24h) }}-->
-                        {{ volume24h * liquidityProviderFee }}
+                    <div class="funiswappairdetail_stats_body funiswappairdetail_stats_cols">
+                        <f-token-value :token="token1" :value="volume24h * liquidityProviderFee" />
+                        <f-price-diff :curr-value="volume24h" :prev-value="prevVolume24h" :decimals="1" />
                     </div>
                 </f-card>
-                <f-card>
+                <!--                <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Pooled Tokens</h3>
                     <div class="funiswappairdetail_stats_body">
                         <f-crypto-symbol :token="token1" img-width="21px" img-height="21px" no-symbol />
@@ -56,17 +67,18 @@
                         <f-crypto-symbol :token="token2" img-width="21px" img-height="21px" no-symbol />
                         {{ formatNumberByLocale(totalToken2Liquidity, 0) }} {{ token2Symbol }}
                     </div>
-                </f-card>
+                </f-card>-->
             </div>
 
             <f-card class="funiswappairdetail_charts">
                 <f-tabs aria-label="Default tabs" @tab-set="activeTabId = $event.tabId">
-                    <f-tab id="t-reserves" title="Liquidity">
+                    <f-tab id="t-reserves" :title="`Liquidity (${token1Symbol})`">
                         <f-lightweight-charts
                             :series="reserveSeries"
                             series-type="area"
                             transform-values="to-eth"
                             time-to-timestamp
+                            :height="280"
                             :add-missing-values="{ value: 'last', timeResolution: timeResolution[resolution] }"
                             :options="{
                                 timeScale: {
@@ -86,6 +98,7 @@
                             :series-options="{ priceFormat: { type: 'volume' } }"
                             transform-values="to-eth"
                             time-to-timestamp
+                            :height="280"
                             :add-missing-values="{ value: 0, timeResolution: timeResolution[resolution] }"
                             :options="{
                                 timeScale: {
@@ -104,6 +117,7 @@
                             series-type="candlestick"
                             transform-values="to-eth"
                             time-to-timestamp
+                            :height="280"
                             :options="{
                                 handleScroll: true,
                                 handleScale: true,
@@ -116,6 +130,7 @@
                             series-type="candlestick"
                             transform-values="to-eth"
                             time-to-timestamp
+                            :height="280"
                             :options="{
                                 handleScroll: true,
                                 handleScale: true,
@@ -204,7 +219,7 @@ import { getAppParentNode } from '@/app-structure.js';
 import FUniswapPairSymbol from '../FUniswapPairSymbol/FUniswapPairSymbol.vue';
 import FLightweightCharts from '@/components/core/FLightweightCharts/FLightweightCharts.vue';
 import gql from 'graphql-tag';
-import { getTimeSpan } from '@/utils/time.js';
+import { getTimeSpan, nowDJS } from '@/utils/time.js';
 import FDropdownListbox from '@/components/core/FDropdownListbox/FDropdownListbox.vue';
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
@@ -218,11 +233,14 @@ import FCopyButton from '@/components/core/FCopyButton/FCopyButton.vue';
 import appConfig from '../../../../app.config.js';
 import { WeiToFtm } from '@/utils/transactions.js';
 import FUniswapTransactionList from '@/components/data-tables/funi/FUniswapTransactionList/FUniswapTransactionList.vue';
+import dayjs from 'dayjs';
+import FPriceDiff from '@/components/core/FPriceDiff/FPriceDiff.vue';
 
 export default {
     name: 'FUniswapPairDetail',
 
     components: {
+        FPriceDiff,
         FUniswapTransactionList,
         FCopyButton,
         FEllipsis,
@@ -270,6 +288,7 @@ export default {
             ],
             totalLiquidity: 0,
             volume24h: 0,
+            prevVolume24h: 0,
             liquidityProviderFee: appConfig.settings.fUniswapLiquidityProviderFee,
             explorerUrl: appConfig.explorerUrl,
             explorerTransactionPath: appConfig.explorerTransactionPath,
@@ -325,18 +344,8 @@ export default {
     },
 
     watch: {
-        async timeSpan(_value) {
-            const { activeTabId } = this;
-
-            if (activeTabId === 't-reserves') {
-                this.loadReserveSeries(_value);
-            } else if (activeTabId === 't-volumes') {
-                this.loadVolumeSeries(_value);
-            } else if (activeTabId === 't-price1') {
-                this.loadPrice1Series(_value);
-            } else if (activeTabId === 't-price2') {
-                this.loadPrice2Series(_value);
-            }
+        async timeSpan() {
+            this.loadChartDataByTabId(this.activeTabId);
         },
 
         async resolution(_value) {
@@ -350,15 +359,7 @@ export default {
         },
 
         activeTabId(_tabId) {
-            if (_tabId === 't-reserves') {
-                this.loadReserveSeries();
-            } else if (_tabId === 't-volumes') {
-                this.loadVolumeSeries();
-            } else if (_tabId === 't-price1') {
-                this.loadPrice1Series();
-            } else if (_tabId === 't-price2') {
-                this.loadPrice2Series();
-            }
+            this.loadChartDataByTabId(_tabId);
         },
     },
 
@@ -426,19 +427,62 @@ export default {
             );
         },
 
-        async setPairStats() {
-            await this.loadVolumeSeries('1w');
-
-            const { volumeSeries } = this;
-            const { reserveSeries } = this;
-
-            if (volumeSeries.length > 0) {
-                this.volume24h = WeiToFtm(volumeSeries[volumeSeries.length - 1].value);
+        /**
+         * @param {string} _tabId
+         */
+        loadChartDataByTabId(_tabId) {
+            if (_tabId === 't-reserves') {
+                this.loadReserveSeries();
+            } else if (_tabId === 't-volumes') {
+                this.loadVolumeSeries();
+            } else if (_tabId === 't-price1') {
+                this.loadPrice1Series();
+            } else if (_tabId === 't-price2') {
+                this.loadPrice2Series();
             }
+        },
+
+        async setPairStats() {
+            const { reserveSeries } = this;
+            const now = nowDJS();
+            const nowMinus1d = now.subtract(1, 'd');
+            const nowMinus2d = now.subtract(2, 'd');
 
             if (reserveSeries.length > 0) {
                 this.totalLiquidity = WeiToFtm(reserveSeries[reserveSeries.length - 1].value);
             }
+
+            const data = await Promise.all([
+                this.getVolumesByDateInterval(nowMinus1d.unix(), now.unix()),
+                this.getVolumesByDateInterval(nowMinus2d.unix(), nowMinus1d.unix()),
+            ]);
+            const nowMinus1dData = data[0];
+            const nowMinus2dData = data[1];
+
+            this.volume24h = nowMinus1dData.reduce((_prev, _item) => {
+                return _prev + WeiToFtm(_item.value);
+            }, 0);
+
+            this.prevVolume24h = nowMinus2dData.reduce((_prev, _item) => {
+                return _prev + WeiToFtm(_item.value);
+            }, 0);
+        },
+
+        /**
+         * @param {number} _fromDate
+         * @param {number} _toDate
+         * @return {Promise<*[]>}
+         */
+        async getVolumesByDateInterval(_fromDate, _toDate) {
+            /** @type {array} */
+            const data = await this.fetchVolumes(this.params.pairAddress, '5m', _fromDate, _toDate);
+
+            return data.filter((_item) => {
+                const ts = dayjs(_item.time).unix();
+
+                console.log(_item.time, ts >= _fromDate && ts <= _toDate);
+                return ts >= _fromDate && ts <= _toDate;
+            });
         },
 
         /**
