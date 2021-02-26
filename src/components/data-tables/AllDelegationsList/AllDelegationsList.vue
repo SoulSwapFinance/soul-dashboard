@@ -88,6 +88,11 @@ export default {
             default: '',
             required: true,
         },
+        /** */
+        loadData: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -167,8 +172,18 @@ export default {
         },
     },
 
+    watch: {
+        loadData(_value) {
+            if (_value) {
+                this.init();
+            }
+        },
+    },
+
     created() {
-        this.init();
+        if (this.loadData) {
+            this.init();
+        }
     },
 
     beforeDestroy() {

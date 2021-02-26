@@ -105,10 +105,6 @@ export default {
                                 amount
                                 isDelegationLocked
                                 lockedFromEpoch
-                                lockedUntil
-                                pendingRewards {
-                                    amount
-                                }
                             }
                         }
                     }
@@ -144,7 +140,12 @@ export default {
                     }
 
                     this.totalCount = data.totalCount;
-                    this.$emit('records-count', formatHexToInt(this.totalCount));
+                    const totalCount = formatHexToInt(this.totalCount);
+                    this.$emit('records-count', totalCount);
+
+                    if (totalCount === this.dItems.length) {
+                        this.$emit('all-records-loaded');
+                    }
 
                     const stakers = await this.fetchStakers();
                     if (stakers && stakers.length > 0) {
@@ -189,7 +190,7 @@ export default {
                     width: '160px',
                     css: { textAlign: 'center' },
                 },
-                {
+                /*{
                     name: 'rewards',
                     label: 'Pending Rewards (FTM)',
                     itemProp: 'delegation.pendingRewards',
@@ -203,11 +204,12 @@ export default {
                     itemProp: 'delegation.lockedUntil',
                     formatter: (_value) => formatDate(timestampToDate(_value), true) || '-',
                     css: { textAlign: 'center' },
-                },
+                },*/
                 {
                     name: 'detail',
                     label: 'Action',
-                    itemProp: 'delegation.lockedUntil',
+                    // itemProp: 'delegation.lockedUntil',
+                    formatter: () => true,
                     css: { textAlign: 'right' },
                 },
             ],

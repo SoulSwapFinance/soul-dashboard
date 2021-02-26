@@ -1,8 +1,8 @@
 <template>
     <div class="delegations-info">
-        <f-card class="f-card-double-padding f-data-layout">
+        <!--        <f-card class="f-card-double-padding f-data-layout">
             <staking-overview />
-        </f-card>
+        </f-card>-->
 
         <f-tabs class="account-main-content-mt">
             <template #delegations>
@@ -20,6 +20,7 @@
                         :account-address="currentAccount.address"
                         @row-action="onDelegationsRowAction"
                         @records-count="onDelegationsRecordsCount"
+                        @all-records-loaded="onDelegationsRecordsLoaded"
                     />
                     <div class="add-delegation-cont">
                         <button class="btn large" type="button" @click="onAddDelegationBtnClick">
@@ -33,6 +34,7 @@
                 <f-card>
                     <all-delegations-list
                         :account-address="currentAccount.address"
+                        :load-data="loadAllDelegations"
                         @row-action="onAllDelegationsRowAction"
                         @records-count="onAllDelegationsRecordsCount"
                     />
@@ -46,7 +48,6 @@
 import FCard from '@/components/core/FCard/FCard.vue';
 import DelegationList from '@/components/data-tables/DelegationList/DelegationList.vue';
 import { mapGetters } from 'vuex';
-import StakingOverview from '@/components/StakingOverview/StakingOverview.vue';
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
 import AllDelegationsList from '@/components/data-tables/AllDelegationsList/AllDelegationsList.vue';
@@ -59,12 +60,13 @@ import {
 export default {
     name: 'DelegationsInfo',
 
-    components: { AllDelegationsList, FTab, FTabs, StakingOverview, DelegationList, FCard },
+    components: { AllDelegationsList, FTab, FTabs, DelegationList, FCard },
 
     data() {
         return {
             delegationsRecordsCount: 0,
             allDelegationsRecordsCount: 0,
+            loadAllDelegations: false,
         };
     },
 
@@ -136,6 +138,10 @@ export default {
 
         onDelegationsRecordsCount(_count) {
             this.delegationsRecordsCount = _count;
+        },
+
+        onDelegationsRecordsLoaded() {
+            this.loadAllDelegations = true;
         },
 
         onAllDelegationsRecordsCount(_count) {
