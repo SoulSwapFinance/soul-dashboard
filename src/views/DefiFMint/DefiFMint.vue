@@ -469,7 +469,8 @@ export default {
             this.wftmToken = this.tokens.find((_item) => _item.symbol === 'WFTM') || {};
             this.sftmToken = this.tokens.find((_item) => _item.symbol === 'SFTM') || {};
 
-            this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
+            // this.tokenPrice = $defi.getTokenPrice(this.wftmToken);
+            this.tokenPrice = await this.$fWallet.getTokenPrice();
 
             this.mintableTokens = this.tokens.filter($defi.canTokenBeMinted);
 
