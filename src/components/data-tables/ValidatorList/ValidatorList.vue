@@ -255,7 +255,7 @@ export default {
 
     data() {
         return {
-            explorerUrl: appConfig.explorerUrl,
+            explorerUrl: appConfig.explorerUrl2,
             dItems: [],
             dValidatorListError: '',
             dColumns: [

@@ -283,7 +283,7 @@ export default {
         return {
             isFluidStakingActive: false,
             lockedUntil: '',
-            explorerUrl: appConfig.explorerUrl,
+            explorerUrl: appConfig.explorerUrl2,
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
             /** @type {DefiToken} */
             sftmToken: {},
