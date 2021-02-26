@@ -31,6 +31,8 @@ import { eventBusMixin } from '../mixins/event-bus.js';
 const DEFAULT_COMPONENT = 'delegations-info';
 
 export default {
+    name: 'AccountStake',
+
     components: {
         UnstakeFTM,
         TransactionSuccessMessage,
@@ -77,6 +79,7 @@ export default {
                         undelegateMax: this._data_.undelegateMax,
                         stakerId: this._data_.stakerId,
                         reStake: this._data_.reStake,
+                        fromDelegationList: this._data_.fromDelegationList,
                     };
                 case 'transaction-success-message':
                     return {

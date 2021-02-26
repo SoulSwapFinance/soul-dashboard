@@ -19,6 +19,7 @@
                     <delegation-list
                         :account-address="currentAccount.address"
                         @row-action="onDelegationsRowAction"
+                        @claim-rewards="onClaimRewards"
                         @records-count="onDelegationsRecordsCount"
                         @all-records-loaded="onDelegationsRecordsLoaded"
                     />
@@ -146,6 +147,18 @@ export default {
 
         onAllDelegationsRecordsCount(_count) {
             this.allDelegationsRecordsCount = _count;
+        },
+
+        onClaimRewards(_data) {
+            this.$emit('change-component', {
+                to: 'claim-rewards-confirmation',
+                from: 'delegations-info',
+                data: {
+                    stakerId: _data.delegation.toStakerId,
+                    reStake: _data.reStake,
+                    fromDelegationList: _data.fromDelegationList,
+                },
+            });
         },
     },
 };

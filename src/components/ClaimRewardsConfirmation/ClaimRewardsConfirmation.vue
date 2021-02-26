@@ -18,13 +18,23 @@
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Validator</div>
                     <div class="col break-word">
-                        {{ accountInfo.stakerInfo.stakerInfo.name }}, {{ accountInfo.stakerId }}
+                        <f-placeholder :content-loaded="!!dAccountInfo.stakerId" :replacement-num-chars="14">
+                            <template v-if="dAccountInfo.stakerId">
+                                {{ dAccountInfo.stakerInfo.stakerInfo.name }}, {{ dAccountInfo.stakerId }}
+                            </template>
+                        </f-placeholder>
                     </div>
                 </div>
 
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Amount</div>
-                    <div class="col break-word">{{ toFTM(accountInfo.delegation.pendingRewards.amount) }} FTM</div>
+                    <div class="col break-word">
+                        <f-placeholder :content-loaded="!!dAccountInfo.stakerId" :replacement-num-chars="14">
+                            <template v-if="dAccountInfo.stakerId">
+                                {{ toFTM(dAccountInfo.delegation.pendingRewards.amount) }} FTM
+                            </template>
+                        </f-placeholder>
+                    </div>
                 </div>
             </div>
 
@@ -36,17 +46,19 @@
 </template>
 
 <script>
-import { toFTM } from '../../utils/transactions.js';
+import { toFTM } from '@/utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
-import { SFC_CLAIM_MAX_EPOCHS } from '../../plugins/fantom-web3-wallet.js';
+import { SFC_CLAIM_MAX_EPOCHS } from '@/plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
+import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import gql from 'graphql-tag';
 
 export default {
     name: 'ClaimRewardsConfirmation',
 
-    components: { LedgerConfirmationContent, TxConfirmation },
+    components: { FPlaceholder, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** `accountInfo` object from `StakingInfo` component. */
@@ -66,11 +78,17 @@ export default {
             type: Boolean,
             default: false,
         },
+        /***/
+        fromDelegationList: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
         return {
             tx: {},
+            dAccountInfo: this.accountInfo,
         };
     },
 
@@ -79,8 +97,12 @@ export default {
     },
 
     // activated() {
-    mounted() {
-        this.setTx();
+    async mounted() {
+        await this.setTx();
+
+        if (!this.accountInfo.stakerId) {
+            this.loadDelegationInfo();
+        }
     },
 
     methods: {
@@ -92,6 +114,52 @@ export default {
                     : sfcUtils.claimDelegationRewardsTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16)),
                 this.currentAccount.address
             );
+        },
+
+        async loadDelegationInfo() {
+            const data = await Promise.all([this.fetchDelegation(), this.fetchStakerInfo()]);
+
+            this.dAccountInfo = {
+                stakerId: parseInt(this.stakerId, 16),
+                delegation: data[0],
+                stakerInfo: data[1],
+            };
+        },
+
+        /**
+         * Fetch delegation by staker id and current account address.
+         */
+        async fetchDelegation() {
+            const data = await this.$apollo.query({
+                query: gql`
+                    query Delegation($address: Address!, $staker: Long!) {
+                        delegation(address: $address, staker: $staker) {
+                            pendingRewards {
+                                amount
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    address: this.currentAccount.address,
+                    staker: this.stakerId,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data.data.delegation;
+        },
+
+        async fetchStakerInfo() {
+            const stakerInfo = this.stakerId ? await this.$fWallet.getStakerById(this.stakerId) : null;
+
+            if (stakerInfo && !stakerInfo.stakerInfo) {
+                stakerInfo.stakerInfo = {
+                    name: 'Unknown',
+                };
+            }
+
+            return stakerInfo;
         },
 
         onSendTransactionSuccess(_data) {
@@ -120,6 +188,7 @@ export default {
 
         onBackBtnClick() {
             this.$emit('change-component', {
+                // to: this.fromDelegationList ? 'delegations-info' : 'staking-info',
                 to: 'staking-info',
                 from: 'claim-rewards-confirmation',
                 data: {

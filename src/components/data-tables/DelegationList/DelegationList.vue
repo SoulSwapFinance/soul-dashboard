@@ -42,11 +42,27 @@
                         <div class="col break-word">
                             <!--                        <button class="btn">Detail</button>-->
                             <a href="#" @click="onDetailLinkClick">Detail</a>
+                            <br />
+                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item.delegation)">
+                                Claim Rewards
+                            </a>
+                            <br />
+                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item.delegation, true)">
+                                Claim & Restake
+                            </a>
                         </div>
                     </div>
                     <template v-else-if="value">
                         <!--                        <button class="btn">Detail</button>-->
                         <a href="#" @click="onDetailLinkClick">Detail</a>
+                        <br />
+                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item.delegation)">
+                            Claim Rewards
+                        </a>
+                        <br />
+                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item.delegation, true)">
+                            Claim & Restake
+                        </a>
                     </template>
                 </template>
             </f-data-table>
@@ -283,6 +299,17 @@ export default {
 
         onDetailLinkClick(_event) {
             _event.preventDefault();
+        },
+
+        onClaimRewardsLinkClick(_event, _delegation, _reStake = false) {
+            _event.preventDefault();
+            _event.stopPropagation();
+
+            this.$emit('claim-rewards', {
+                delegation: _delegation,
+                reStake: _reStake,
+                fromDelegationList: true,
+            });
         },
     },
 };
