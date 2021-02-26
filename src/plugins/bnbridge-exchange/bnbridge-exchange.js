@@ -6,6 +6,8 @@ const sha256 = require('sha256');
 
 const BNB_ADDRESS_LENGTH = 42;
 const ERC20_ADDRESS_LENGTH = 42;
+const MAX_NUM_TRIES = 50;
+const POLLING_INTERVAL = 3000;
 
 /** @type {BNBridgeExchange} */
 export let bnb = null;
@@ -76,6 +78,13 @@ export class BNBridgeExchange {
          * @private
          */
         this._fstRequestDone = null;
+        /**
+         * Function called when request is canceled.
+         *
+         * @type {function}
+         * @private
+         */
+        this._fstRequestCancel = null;
         /**
          * Function called when object is appended to `this._fstPendingRequests` array.
          *
@@ -483,6 +492,10 @@ export class BNBridgeExchange {
 
         const request = _request || requests[0];
 
+        if (!request._cntr || request._cntr > MAX_NUM_TRIES) {
+            request._cntr = 1;
+        }
+
         this._fstInProgress = true;
 
         try {
@@ -509,9 +522,22 @@ export class BNBridgeExchange {
             this.processFSTPendingRequests();
         } catch (_error) {
             if (_error.code === BNBridgeExchangeErrorCodes.FINALIZE_SWAP_TOKEN_API_ERROR) {
-                setTimeout(() => {
-                    this.processFSTPendingRequests(request);
-                }, 1000);
+                if (request._cntr >= MAX_NUM_TRIES) {
+                    const reqIdx = requests.findIndex((_req) => _req.uuid === request.uuid);
+                    if (reqIdx > -1) {
+                        if (typeof this._fstRequestCancel === 'function') {
+                            this._fstRequestCancel(_request);
+                        }
+
+                        requests.splice(reqIdx, 1);
+                        this._fstInProgress = false;
+                    }
+                } else {
+                    setTimeout(() => {
+                        request._cntr++;
+                        this.processFSTPendingRequests(request);
+                    }, POLLING_INTERVAL);
+                }
             }
         }
     }
@@ -543,6 +569,13 @@ export class BNBridgeExchange {
      */
     setFSTRequestDoneCallback(_callback) {
         this._fstRequestDone = _callback;
+    }
+
+    /**
+     * @param {function} _callback
+     */
+    setFSTRequestCancelCallback(_callback) {
+        this._fstRequestCancel = _callback;
     }
 
     /**

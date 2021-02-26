@@ -18,6 +18,7 @@ import {
     SET_SEND_DIRECTION,
     PUSH_BNBRIDGE_PENDING_REQUEST,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
+    REMOVE_BNBRIDGE_PENDING_REQUEST,
     APPEND_CONTACT,
     MOVE_CONTACT,
     REMOVE_CONTACT,
@@ -413,6 +414,18 @@ export const store = new Vuex.Store({
          */
         [SHIFT_BNBRIDGE_PENDING_REQUEST](_state) {
             _state.bnbridgePendingRequests.shift();
+        },
+        /**
+         * Remove request from `bnbridgePendingRequests` array.
+         *
+         * @param {Object} _state
+         * @param {FSTRequest} _request
+         */
+        [REMOVE_BNBRIDGE_PENDING_REQUEST](_state, _request) {
+            const reqIdx = _state.bnbridgePendingRequests.findIndex((_req) => _req.uuid === _request.uuid);
+            if (reqIdx > -1) {
+                _state.bnbridgePendingRequests.splice(reqIdx, 1);
+            }
         },
         /**
          * @param {Object} _state

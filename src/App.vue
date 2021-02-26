@@ -43,6 +43,7 @@ import {
     SET_DARK_MODE,
     SET_TOKEN_PRICE,
     SHIFT_BNBRIDGE_PENDING_REQUEST,
+    REMOVE_BNBRIDGE_PENDING_REQUEST,
     SET_FUNISWAP_SLIPPAGE_TOLERANCE,
 } from './store/mutations.type.js';
 import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
@@ -107,6 +108,9 @@ export default {
         });
         this.$bnb.setFSTRequestDoneCallback((_request) => {
             this.onFSTRequestDone(_request);
+        });
+        this.$bnb.setFSTRequestCancelCallback((_request) => {
+            this.onFSTRequestCancel(_request);
         });
         this.$bnb.setFSTPendingRequests([...this.$store.state.bnbridgePendingRequests]);
         this.$bnb.processFSTPendingRequests();
@@ -217,6 +221,13 @@ export default {
             // console.log('onFSTRequestDone', _request);
             this._eventBus.emit('fst-request-done', _request);
             this.$store.commit(SHIFT_BNBRIDGE_PENDING_REQUEST);
+        },
+
+        /**
+         * @param {FSTRequest} _request
+         */
+        onFSTRequestCancel(_request) {
+            this.$store.commit(REMOVE_BNBRIDGE_PENDING_REQUEST, _request);
         },
     },
 };
