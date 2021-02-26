@@ -40,11 +40,13 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
-                            <button class="btn">Detail</button>
+                            <!--                        <button class="btn">Detail</button>-->
+                            <a href="#" @click="onDetailLinkClick">Detail</a>
                         </div>
                     </div>
                     <template v-else-if="value">
-                        <button class="btn">Detail</button>
+                        <!--                        <button class="btn">Detail</button>-->
+                        <a href="#" @click="onDetailLinkClick">Detail</a>
                     </template>
                 </template>
             </f-data-table>
@@ -277,6 +279,10 @@ export default {
                     },
                 });
             }
+        },
+
+        onDetailLinkClick(_event) {
+            _event.preventDefault();
         },
     },
 };

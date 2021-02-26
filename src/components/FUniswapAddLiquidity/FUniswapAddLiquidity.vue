@@ -663,6 +663,8 @@ export default {
                 toToken.address,
             ]);
 
+            console.log(pair);
+
             const fromTokenTotal = this.$defi.totalTokenLiquidity(fromToken, pair);
             const toTokenTotal = this.$defi.totalTokenLiquidity(toToken, pair);
 
