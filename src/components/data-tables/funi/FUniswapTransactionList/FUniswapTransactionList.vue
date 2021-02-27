@@ -24,9 +24,17 @@
             <template v-slot:column-action="{ value, item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
-                    <div class="col break-word">{{ formatActionText(value) }}</div>
+                    <div class="col break-word">
+                        <a :href="`${explorerUrl}${explorerTransactionPath}/${value.transactionHash}`" target="_blank">
+                            {{ formatActionText(value) }}
+                        </a>
+                    </div>
                 </div>
-                <template v-else> {{ formatActionText(value) }} </template>
+                <template v-else>
+                    <a :href="`${explorerUrl}${explorerTransactionPath}/${value.transactionHash}`" target="_blank">
+                        {{ formatActionText(value) }}
+                    </a>
+                </template>
             </template>
 
             <template v-slot:column-time="{ value, item, column }">
@@ -51,6 +59,7 @@ import { formatHexToInt, timestampToDate } from '@/filters.js';
 import { cloneObject } from '@/utils';
 import FTabs from '@/components/core/FTabs/FTabs.vue';
 import FTab from '@/components/core/FTabs/FTab.vue';
+import appConfig from '../../../../../app.config.js';
 
 export default {
     name: 'FUniswapTransactionList',
@@ -128,6 +137,8 @@ export default {
             pageInfo: {},
             totalCount: 0,
             loading: false,
+            explorerUrl: appConfig.explorerUrl,
+            explorerTransactionPath: appConfig.explorerTransactionPath,
         };
     },
 
@@ -249,13 +260,10 @@ export default {
             return `${this.getTokenAmount(amount, tokenNum)} ${symbol}`;
         },
 
-        getTokenAmount(_amount) {
-            // console.log(_tokenNum);
-            // const token = _tokenNum === 1 ? this.token1 : this.token2;
-            // console.log('!!!', _amount, _tokenNum, token.decimals);
+        getTokenAmount(_amount, _tokenNum) {
+            const token = _tokenNum === 1 ? this.token1 : this.token2;
 
-            // TMP
-            return (parseInt(_amount, 16) / 1000000000).toFixed(2);
+            return this.$defi.fromTokenValue(_amount, token).toFixed(2);
         },
 
         /**
