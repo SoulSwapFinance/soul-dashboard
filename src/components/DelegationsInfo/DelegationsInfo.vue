@@ -37,6 +37,7 @@
                         :account-address="currentAccount.address"
                         :load-data="loadAllDelegations"
                         @row-action="onAllDelegationsRowAction"
+                        @claim-rewards="onAllDelegationsClaimRewards"
                         @records-count="onAllDelegationsRecordsCount"
                     />
                 </f-card>
@@ -150,6 +151,28 @@ export default {
         },
 
         onClaimRewards(_data) {
+            this.$emit('change-component', {
+                to: 'claim-rewards-confirmation',
+                from: 'delegations-info',
+                data: {
+                    stakerId: _data.delegation.toStakerId,
+                    reStake: _data.reStake,
+                    fromDelegationList: _data.fromDelegationList,
+                },
+            });
+        },
+
+        onAllDelegationsClaimRewards(_data) {
+            const address = _data.accountAddress;
+
+            if (address && this.currentAccount.address.toLowerCase() !== address.toLowerCase()) {
+                this.setActiveAccount(address);
+                this.$router.replace({
+                    name: 'staking',
+                    params: { address },
+                });
+            }
+
             this.$emit('change-component', {
                 to: 'claim-rewards-confirmation',
                 from: 'delegations-info',

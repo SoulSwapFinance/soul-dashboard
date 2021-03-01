@@ -51,11 +51,29 @@
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
-                            <button class="btn">Detail</button>
+                            <!--                            <button class="btn">Detail</button>-->
+                            <a href="#" @click="onDetailLinkClick">Detail</a>
+                            <br />
+                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)">
+                                Claim Rewards
+                            </a>
+                            <br />
+                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item, true)">
+                                Claim & Restake
+                            </a>
                         </div>
                     </div>
                     <template v-else-if="value">
-                        <button class="btn">Detail</button>
+                        <!--                        <button class="btn">Detail</button>-->
+                        <a href="#" @click="onDetailLinkClick">Detail</a>
+                        <br />
+                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)">
+                            Claim Rewards
+                        </a>
+                        <br />
+                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item, true)">
+                            Claim & Restake
+                        </a>
                     </template>
                 </template>
             </f-data-table>
@@ -126,7 +144,7 @@ export default {
                     width: '160px',
                     css: { textAlign: 'center' },
                 },
-                {
+                /*{
                     name: 'rewards',
                     label: 'Pending Rewards (FTM)',
                     itemProp: 'delegation.pendingRewards',
@@ -140,7 +158,7 @@ export default {
                     itemProp: 'delegation.lockedUntil',
                     formatter: (_value) => formatDate(timestampToDate(_value), true, false, { month: 'short' }) || '-',
                     css: { textAlign: 'center' },
-                },
+                },*/
                 {
                     name: 'detail',
                     label: 'Action',
@@ -313,6 +331,22 @@ export default {
             });
 
             return data.data.stakers;
+        },
+
+        onDetailLinkClick(_event) {
+            _event.preventDefault();
+        },
+
+        onClaimRewardsLinkClick(_event, _item, _reStake = false) {
+            _event.preventDefault();
+            _event.stopPropagation();
+
+            this.$emit('claim-rewards', {
+                delegation: _item.delegation,
+                accountAddress: _item.accountAddress,
+                reStake: _reStake,
+                fromDelegationList: true,
+            });
         },
     },
 };
