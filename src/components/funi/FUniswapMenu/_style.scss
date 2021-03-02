@@ -1,0 +1,39 @@
+@import "../../core/variables";
+
+.funiswap-menu {
+    //--f-simple-navigation-link-color: var(--f-secondary-color-lighter);
+    --f-simple-navigation-link-color: #565a69;
+    --f-simple-navigation-link-hover-color: #000;
+
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    color: #000;
+    margin-bottom: 24px;
+
+    .f-simple-navigation {
+        ul {
+            margin-bottom: -2px;
+
+            li {
+                padding: 0;
+
+                @include links() {
+                    //font-weight: normal;
+                    color: #{$light-gray-color};
+                    font-family: #{$font-family-proxima};
+                    font-size: 21px;
+                    font-weight: inherit;
+                    border-bottom: 2px solid transparent;
+                    border-radius: 0;
+                    padding: 8px 16px !important;
+                }
+                @include links('', ':hover') {
+                    color: var(--f-primary-color);
+                }
+                @include links('', '.router-link-active') {
+                    //font-weight: bold;
+                    border-color: var(--f-primary-color);
+                }
+            }
+        }
+    }
+}

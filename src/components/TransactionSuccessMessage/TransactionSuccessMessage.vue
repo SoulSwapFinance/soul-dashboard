@@ -1,26 +1,37 @@
 <template>
-    <f-card class="transaction-success-message f-card-double-padding" :class="{ loading: loading }" :off="cardOff">
+    <f-card
+        class="transaction-success-message f-card-double-padding"
+        :class="{
+            loading: loading,
+            'window-mode': windowMode,
+            'column-layout': windowMode && !loading,
+            'column-layout--body-footer': windowMode && !loading,
+        }"
+        :off="cardOff"
+    >
         <template v-if="loading">
             <h2>Verifying Transaction</h2>
             <pulse-loader color="#1969ff"></pulse-loader>
         </template>
         <template v-else>
-            <h2>{{ dTitle }}</h2>
+            <div :class="{ 'center-v': windowMode }">
+                <h2>{{ dTitle }}</h2>
 
-            <h3 class="break-word">
-                <a :href="`${explorerUrl}${explorerTransactionPath}/${tx}`" target="_blank">
-                    <f-ellipsis :text="tx" overflow="middle" />
-                </a>
-            </h3>
+                <h3 class="break-word">
+                    <a :href="`${explorerUrl}${explorerTransactionPath}/${tx}`" target="_blank">
+                        <f-ellipsis :text="tx" overflow="middle" />
+                    </a>
+                </h3>
 
-            <div v-if="transactionSuccess" class="success-icon">
-                <icon data="@/assets/svg/message/check-circle.svg" width="96" height="96" aria-hidden="true" />
+                <div v-if="transactionSuccess" class="success-icon">
+                    <icon data="@/assets/svg/message/check-circle.svg" width="96" height="96" aria-hidden="true" />
+                </div>
+                <div v-else class="error-icon">
+                    <icon data="@/assets/svg/message/times-circle.svg" width="96" height="96" aria-hidden="true" />
+                </div>
             </div>
-            <div v-else class="error-icon">
-                <icon data="@/assets/svg/message/times-circle.svg" width="96" height="96" aria-hidden="true" />
-            </div>
 
-            <div v-if="continueTo && transactionSuccess">
+            <div v-if="(continueTo && transactionSuccess) || continueTo === 'hide-window'" class="form-buttons">
                 <button class="btn large" @click="onContinueBtnClick">{{ continueButtonLabel }}</button>
             </div>
         </template>
@@ -76,6 +87,11 @@ export default {
         },
         /** Don't render card */
         cardOff: {
+            type: Boolean,
+            default: false,
+        },
+        /** Component is placed in FWindow */
+        windowMode: {
             type: Boolean,
             default: false,
         },
@@ -150,6 +166,8 @@ export default {
         onContinueBtnClick() {
             if (this.continueTo === 'account-history' || this.continueToIsRoute) {
                 this.$router.replace({ name: this.continueTo, params: this.continueToParams });
+            } else if (this.continueTo === 'hide-window') {
+                this.$emit('cancel-button-click');
             } else {
                 this.$emit('change-component', {
                     to: this.continueTo,

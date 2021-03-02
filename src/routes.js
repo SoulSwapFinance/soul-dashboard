@@ -35,39 +35,35 @@ import DefiLockUnlockConfirmation from '@/views/DefiLockUnlockConfirmation/DefiL
 import DefiMintRepay from '@/views/DefiMintRepay/DefiMintRepay.vue';
 import DefiMintRepayConfirmation from '@/views/DefiMintRepayConfirmation/DefiMintRepayConfirmation.vue';
 import DefiLock from '@/views/DefiLock/DefiLock.vue';
-import DefiLockConfirmation from '@/views/DefiLockConfirmation/DefiLockConfirmation.vue';
 import DefiUnlock from '@/views/DefiUnlock/DefiUnlock.vue';
-import DefiUnlockConfirmation from '@/views/DefiUnlockConfirmation/DefiUnlockConfirmation.vue';
 import DefiMint from '@/views/DefiMint/DefiMint.vue';
 import DefiRepay from '@/views/DefiRepay/DefiRepay.vue';
-import DefiMintConfirmation from '@/views/DefiMintConfirmation/DefiMintConfirmation.vue';
-import DefiRepayConfirmation from '@/views/DefiRepayConfirmation/DefiRepayConfirmation.vue';
 import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
-import FUniswap from '@/views/FUniswap/FUniswap.vue';
-import FUniswapSwapConfirmation from '@/views/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
-import FUniswapAddLiquidityConfirmation from '@/views/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
-import FUniswapRemoveLiquidityConfirmation from '@/views/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
+import FUniswap from '@/views/funi/FUniswap/FUniswap.vue';
+import FUniswapSwapConfirmation from '@/views/funi/FUniswapSwapConfirmation/FUniswapSwapConfirmation.vue';
+import FUniswapAddLiquidityConfirmation from '@/views/funi/FUniswapAddLiquidityConfirmation/FUniswapAddLiquidityConfirmation.vue';
+import FUniswapRemoveLiquidityConfirmation from '@/views/funi/FUniswapRemoveLiquidityConfirmation/FUniswapRemoveLiquidityConfirmation.vue';
 import Eip from '@/views/Eip/Eip';
 import EipWelcome from '@/views/EipWelcome/EipWelcome';
 import EipSendTransaction from '@/views/EipSendTransaction/EipSendTransaction';
 import EipSelectAccounts from '@/views/EipSelectAccounts/EipSelectAccounts';
 import Swap from '@/views/Swap/Swap.vue';
-import FUniswapSwap from '@/components/FUniswapSwap/FUniswapSwap.vue';
+import FUniswapSwap from '@/components/funi/FUniswapSwap/FUniswapSwap.vue';
 import Pools from '@/views/Pools/Pools.vue';
-import FUniswapPools from '@/components/FUniswapPools/FUniswapPools.vue';
-import FUniswapAddLiquidity from '@/components/FUniswapAddLiquidity/FUniswapAddLiquidity.vue';
+import FUniswapPools from '@/components/funi/FUniswapPools/FUniswapPools.vue';
+import FUniswapAddLiquidity from '@/components/funi/FUniswapAddLiquidity/FUniswapAddLiquidity.vue';
 import AddLiquidity from '@/views/AddLiquidity/AddLiquidity.vue';
-import FUniswapRemoveLiquidity from '@/components/FUniswapRemoveLiquidity/FUniswapRemoveLiquidity.vue';
+import FUniswapRemoveLiquidity from '@/components/funi/FUniswapRemoveLiquidity/FUniswapRemoveLiquidity.vue';
 import RemoveLiquidity from '@/views/RemoveLiquidity/RemoveLiquidity.vue';
 import Gov from '@/views/Gov/Gov.vue';
 import GovHome from '@/views/GovHome/GovHome.vue';
 import GovProposalDetail from '@/components/GovProposalDetail/GovProposalDetail.vue';
 import GovProposalConfirmation from '@/components/GovProposalConfirmation/GovProposalConfirmation.vue';
 import GovCancelVoteConfirmation from '@/components/GovCancelVoteConfirmation/GovCancelVoteConfirmation.vue';
-import FUniswapPairDetail from '@/components/FUniswapPairDetail/FUniswapPairDetail.vue';
+import FUniswapPairDetail from '@/components/funi/FUniswapPairDetail/FUniswapPairDetail.vue';
 
 export const routes = [
     {
@@ -210,71 +206,11 @@ export const routes = [
                         path: 'fmint/lock',
                         component: DefiLock,
                     },
-                    {
-                        name: 'defi-lock-confirmation',
-                        path: 'fmint/lock/confirmation',
-                        component: DefiLockConfirmation,
-                    },
-                    {
-                        name: 'defi-lock-confirmation2',
-                        path: 'fmint/lock/confirmation2',
-                        component: DefiLockConfirmation,
-                    },
-                    {
-                        name: 'defi-lock-transaction-success-message',
-                        path: 'fmint/lock/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-lock-transaction-success-message2',
-                        path: 'fmint/lock/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-lock-transaction-reject-message',
-                        path: 'fmint/lock/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-lock-transaction-reject-message2',
-                        path: 'fmint/lock/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-unlock',
                         path: 'fmint/unlock',
                         component: DefiUnlock,
-                    },
-                    {
-                        name: 'defi-unlock-confirmation',
-                        path: 'fmint/unlock/confirmation',
-                        component: DefiUnlockConfirmation,
-                    },
-                    {
-                        name: 'defi-unlock-confirmation2',
-                        path: 'fmint/unlock/confirmation2',
-                        component: DefiUnlockConfirmation,
-                    },
-                    {
-                        name: 'defi-unlock-transaction-success-message',
-                        path: 'fmint/unlock/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-unlock-transaction-success-message2',
-                        path: 'fmint/unlock/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-unlock-transaction-reject-message',
-                        path: 'fmint/unlock/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-unlock-transaction-reject-message2',
-                        path: 'fmint/unlock/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
                     },
 
                     {
@@ -318,71 +254,11 @@ export const routes = [
                         path: 'fmint/mint',
                         component: DefiMint,
                     },
-                    {
-                        name: 'defi-mint-confirmation',
-                        path: 'fmint/mint/confirmation',
-                        component: DefiMintConfirmation,
-                    },
-                    {
-                        name: 'defi-mint-confirmation2',
-                        path: 'fmint/mint/confirmation2',
-                        component: DefiMintConfirmation,
-                    },
-                    {
-                        name: 'defi-mint-transaction-success-message',
-                        path: 'fmint/mint/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-success-message2',
-                        path: 'fmint/mint/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-reject-message',
-                        path: 'fmint/mint/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-mint-transaction-reject-message2',
-                        path: 'fmint/mint/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-repay',
                         path: 'fmint/repay',
                         component: DefiRepay,
-                    },
-                    {
-                        name: 'defi-repay-confirmation',
-                        path: 'fmint/repay/confirmation',
-                        component: DefiRepayConfirmation,
-                    },
-                    {
-                        name: 'defi-repay-confirmation2',
-                        path: 'fmint/repay/confirmation2',
-                        component: DefiRepayConfirmation,
-                    },
-                    {
-                        name: 'defi-repay-transaction-success-message',
-                        path: 'fmint/repay/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-success-message2',
-                        path: 'fmint/repay/confirmation2/success2',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-reject-message',
-                        path: 'fmint/repay/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
-                    {
-                        name: 'defi-repay-transaction-reject-message2',
-                        path: 'fmint/repay/confirmation2/reject2',
-                        component: TransactionRejectMessageView,
                     },
 
                     {
@@ -426,31 +302,11 @@ export const routes = [
                         path: 'fmint/claim-rewards/confirmation',
                         component: DefiFMintClaimRewardsConfirmation,
                     },
-                    {
-                        name: 'defi-fmint-claim-rewards-transaction-success-message',
-                        path: 'fmint/claim-rewards/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-fmint-claim-rewards-transaction-reject-message',
-                        path: 'fmint/claim-rewards/confirmation/reject',
-                        component: TransactionRejectMessageView,
-                    },
 
                     {
                         name: 'defi-fmint-push-rewards-confirmation',
                         path: 'fmint/push-rewards/confirmation',
                         component: DefiFMintPushRewardsConfirmation,
-                    },
-                    {
-                        name: 'defi-fmint-push-rewards-transaction-success-message',
-                        path: 'fmint/push-rewards/confirmation/success',
-                        component: TransactionSuccessMessageView,
-                    },
-                    {
-                        name: 'defi-fmint-push-rewards-transaction-reject-message',
-                        path: 'fmint/push-rewards/confirmation/reject',
-                        component: TransactionRejectMessageView,
                     },
 
                     {

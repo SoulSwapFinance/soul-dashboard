@@ -173,18 +173,14 @@
                             </template>
                         </template>
                         <template v-if="canClaimRewards(item.rewards)">
-                            ,<router-link
+                            ,<a
                                 v-if="canClaimRewards"
-                                :to="{
-                                    name: 'defi-fmint-claim-rewards-confirmation',
-                                    params: {
-                                        pendingRewards: pendingRewardsWFTM(item.rewards),
-                                        token: { ...wftmToken },
-                                    },
-                                }"
+                                href="#"
+                                :data-pending-rewards="pendingRewardsWFTM(item.rewards)"
+                                @click="onClaimRewardsLinkClick"
                             >
                                 Claim
-                            </router-link>
+                            </a>
                         </template>
                     </div>
                 </div>
@@ -239,17 +235,14 @@
                     </template>
                     <template v-if="canClaimRewards(item.rewards)">
                         <br />
-                        <router-link
+                        <a
                             v-if="canClaimRewards"
-                            :to="{
-                                path: `/defi/${item._fMintAccount.address}/fmint/claim-rewards/confirmation`,
-                                query: { pendingRewards: pendingRewardsWFTM(item.rewards), token: { ...wftmToken } },
-                                // name: 'defi-fmint-claim-rewards-confirmation',
-                                // params: { pendingRewards: pendingRewardsWFTM(item.rewards), token: { ...wftmToken } },
-                            }"
+                            href="#"
+                            :data-pending-rewards="pendingRewardsWFTM(item.rewards)"
+                            @click="onClaimRewardsLinkClick"
                         >
                             Claim
-                        </router-link>
+                        </a>
                     </template>
                 </template>
             </template>
@@ -274,11 +267,14 @@ import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import FEllipsis from '@/components/core/FEllipsis/FEllipsis.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
 import { MAX_TOKEN_DECIMALS_IN_TABLES } from '@/plugins/fantom-web3-wallet.js';
+import { eventBusMixin } from '@/mixins/event-bus.js';
 
 export default {
     name: 'FMintOverviewList',
 
     components: { RatioInfo, FEllipsis, FTokenValue, DepositOrBorrowTokenWindow, FCryptoSymbol, FDataTable },
+
+    mixins: [eventBusMixin],
 
     props: {
         /** @type {DefiToken[]} */
@@ -581,6 +577,20 @@ export default {
                 this.$router.push({ name: this.borrowRouteName, params: { token: { ..._item } } });
             } else if (_item._collateral > 0) {
                 this.$router.push({ name: this.depositRouteName, params: { token: { ..._item } } });
+            }
+        },
+
+        onClaimRewardsLinkClick(_event) {
+            const elem = _event.target;
+            const pendingRewards = elem ? elem.getAttribute('data-pending-rewards') : '';
+
+            _event.preventDefault();
+
+            if (pendingRewards) {
+                this._eventBus.emit('claim-mint-rewards', {
+                    pendingRewards,
+                    token: { ...this.wftmToken },
+                });
             }
         },
     },

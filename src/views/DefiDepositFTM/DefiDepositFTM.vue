@@ -296,7 +296,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-manage-collateral');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
 
         /**

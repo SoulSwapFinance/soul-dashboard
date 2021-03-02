@@ -232,7 +232,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-ftrade');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
 
         fromInputValue() {

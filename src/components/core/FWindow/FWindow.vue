@@ -21,7 +21,7 @@
                             <h2>{{ title }}</h2>
                         </slot>
                     </div>
-                    <div class="controls" @click="onControlsClick">
+                    <div v-if="!noControls" class="controls" @click="onControlsClick">
                         <!-- @slot Default to `close-btn` button -->
                         <slot name="controls">
                             <button class="btn close-btn same-size round light" title="Close window">
@@ -32,7 +32,9 @@
                 </header>
 
                 <div :id="_ids.body" class="body">
-                    <slot></slot>
+                    <div :class="{ 'min-h-100': bodyMinHeight !== 'auto' }" :style="{ minHeight: bodyMinHeight }">
+                        <slot></slot>
+                    </div>
                 </div>
 
                 <footer v-if="withFooter">
@@ -187,6 +189,11 @@ export default {
             type: Number,
             default: 0,
         },
+        /** Minimal height of window's body. */
+        bodyMinHeight: {
+            type: String,
+            default: 'auto',
+        },
         /** Center window horizontally. */
         centerHorizontally: {
             type: Boolean,
@@ -217,6 +224,11 @@ export default {
             type: Boolean,
             default: true,
         },
+        /** Hide controls in the header. */
+        noControls: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -242,6 +254,7 @@ export default {
                 'with-header': this.withHeader,
                 'with-footer': this.withFooter,
                 'no-title': this.noTitle,
+                'no-controls': this.noControls,
                 modal: this.modal,
                 popover: this.popover,
             };

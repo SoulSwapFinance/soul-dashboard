@@ -35,6 +35,15 @@
 
                         <template v-if="!waiting">
                             <button
+                                v-if="showCancelButton"
+                                type="button"
+                                class="btn secondary large break-word"
+                                style="max-width: 100%;"
+                                @click="onCancelButtonClick"
+                            >
+                                {{ cancelButtonLabel }}
+                            </button>
+                            <button
                                 type="submit"
                                 class="btn large break-word"
                                 style="max-width: 100%;"
@@ -90,6 +99,14 @@ export default {
         sendButtonLabel: {
             type: String,
             default: 'Send',
+        },
+        cancelButtonLabel: {
+            type: String,
+            default: 'Cancel',
+        },
+        showCancelButton: {
+            type: Boolean,
+            default: false,
         },
         /** Transaction's gas limit */
         gasLimit: {
@@ -167,6 +184,10 @@ export default {
     methods: {
         checkPassword(_value) {
             return _value && _value.length > 0;
+        },
+
+        onCancelButtonClick() {
+            this.$emit('cancel-button-click');
         },
 
         formatNumberByLocale,

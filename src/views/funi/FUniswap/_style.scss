@@ -1,0 +1,95 @@
+@import "../../../assets/scss/vars";
+
+.view-funiswap {
+    .main {
+        //padding-top: 32px;
+    }
+
+    .address-info-box {
+        margin-bottom: 16px;
+    }
+
+    h1, .h1 {
+        font-size: 42px;
+        font-weight: normal;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    h1.with-back-btn {
+        font-size: 28px;
+        margin-bottom: 0;
+    }
+
+    h2, .h2 {
+        font-size: 31px;
+        font-weight: normal;
+    }
+
+    h3, .h3 {
+        font-size: 26px;
+        font-weight: normal;
+    }
+
+    .df-data-item {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 24px;
+
+        .label {
+            color: $light-gray-color;
+            font-size: 1em;
+            margin-bottom: 0;
+        }
+
+        .value {
+            font-size: 2.36em;
+            margin-top: -2px;
+        }
+
+        &.smaller {
+            //@include df-data-item-smaller;
+        }
+    }
+
+    .perex {
+        font-size: 16px;
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+        color: $light-gray-color;
+    }
+}
+
+@include media-max($bp-small) {
+    .view-funiswap {
+        .main {
+            padding-top: 0;
+        }
+
+        h1, .h1 {
+            font-size: 30px;
+            //margin-bottom: 24px;
+        }
+
+        h2, .h2 {
+            font-size: 20px;
+        }
+
+        /*
+        .df-data-item {
+            @include df-data-item-smaller;
+
+            .value {
+                font-size: 2em;
+            }
+        }
+        */
+
+        .f-message {
+            font-size: 18px;
+            padding-bottom: 16px;
+        }
+    }
+}

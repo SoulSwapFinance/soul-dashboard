@@ -36,7 +36,7 @@ export const viewHelpersMixin = {
         getBackButtonRoute(_nodeId) {
             const parentNode = getAppParentNode(_nodeId);
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 };

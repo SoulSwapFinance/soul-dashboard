@@ -1,5 +1,5 @@
 <template>
-    <div class="defi-deposit-confirmation">
+    <div class="defi-deposit-confirmation min-h-100">
         <tx-confirmation
             v-if="hasCorrectParams"
             :tx="tx"
@@ -9,9 +9,12 @@
             :on-send-transaction-success="onSendTransactionSuccess"
             :set-tmp-pwd="params.step === 1"
             :tmp-pwd-code="tmpPwdCode"
-            @change-component="onChangeComponent"
+            :show-cancel-button="true"
+            :window-mode="!isView"
+            class="min-h-100"
+            @cancel-button-click="$emit('cancel-button-click', $event)"
         >
-            <h1 class="with-back-btn">
+            <h1 v-if="isView" class="with-back-btn">
                 <f-back-button
                     v-if="!params.steps || params.step === 1"
                     :route-name="backButtonRoute"
@@ -111,6 +114,11 @@ export default {
             },
             required: true,
         },
+        /** Identifies if component is view (has route). */
+        isView: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -138,11 +146,7 @@ export default {
         sendButtonLabel() {
             let label = '';
 
-            if (this.params.step === 1) {
-                label = 'Continue to the next step';
-            } else {
-                label = 'Submit';
-            }
+            label = 'Submit';
             /*
             else if (this.params.collateral > 0) {
                 label = 'Rebalance now';
@@ -171,7 +175,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode(`${this.compName}-confirmation`);
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
 
         cTokenSymbol() {
@@ -182,9 +186,11 @@ export default {
     created() {
         if (!this.hasCorrectParams) {
             // redirect to <defi-deposit>
-            setTimeout(() => {
-                this.$router.replace({ name: this.compName });
-            }, 3000);
+            if (this.isView) {
+                setTimeout(() => {
+                    this.$router.replace({ name: this.compName });
+                }, 3000);
+            }
         } else {
             this.setTx();
         }
@@ -278,7 +284,7 @@ export default {
 
             if (this.params.step === 1) {
                 params.continueTo = `${this.compName}-confirmation2`;
-                params.continueToParams = { ...this.params, step: 2, tmpPwdCode: this.tmpPwdCode };
+                params.continueToParams = { ...this.params, isView: this.isView, step: 2, tmpPwdCode: this.tmpPwdCode };
                 params.autoContinueToAfter = appConfig.settings.autoContinueToAfter;
                 params.continueButtonLabel = 'Next Step';
                 params.title = `${this.params.step}/${this.params.steps}  ${params.title}`;
@@ -287,31 +293,27 @@ export default {
                 params.continueToParams = { token: { ...this.token } };
             }
 
-            this.$router.replace({
-                name: transactionSuccessComp,
-                params,
-            });
-        },
-
-        /**
-         * Re-target `'change-component'` event.
-         *
-         * @param {object} _data
-         */
-        onChangeComponent(_data) {
-            let transactionRejectComp = `${this.compName}-transaction-reject-message`;
-
-            if (_data.to === 'transaction-reject-message') {
-                if (this.params.step === 2) {
-                    transactionRejectComp = `${this.compName}-transaction-reject-message2`;
+            if (this.isView) {
+                this.$router.replace({
+                    name: transactionSuccessComp,
+                    params,
+                });
+            } else {
+                if (this.params.step === 1) {
+                    params.continueToParams = {
+                        params: { ...params.continueToParams },
+                        token: { ...this.token },
+                        compName: this.compName,
+                    };
+                    params.title = `Success`;
+                } else if (this.params.step === 2) {
+                    params.continueTo = 'hide-window';
+                    params.continueButtonLabel = 'Close';
                 }
 
-                this.$router.replace({
-                    name: transactionRejectComp,
-                    params: {
-                        continueTo: this.compName,
-                        continueToParams: { token: { ...this.token }, tmpPwdCode: this.tmpPwdCode },
-                    },
+                this.$emit('change-component', {
+                    to: transactionSuccessComp,
+                    data: { ...params, cardOff: true, windowMode: true },
                 });
             }
         },

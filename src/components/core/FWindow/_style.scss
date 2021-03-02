@@ -66,6 +66,18 @@
         }
     }
 
+    &.no-controls {
+        header {
+            .title {
+                padding-right: 0;
+
+                h1, h2, h3, h4, h5 {
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+
     .body {
         /*max-height: 150px;*/
         height: 100%;

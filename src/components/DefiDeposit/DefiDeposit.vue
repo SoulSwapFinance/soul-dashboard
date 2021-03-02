@@ -209,6 +209,21 @@
         </div>
 
         <defi-token-picker-window ref="pickTokenWindow" :tokens="tokens" @defi-token-picked="onDefiTokenPicked" />
+        <tx-confirmation-window
+            ref="confirmationWindow"
+            body-min-height="350px"
+            :steps-count="stepsCount"
+            :active-step="activeStep"
+        >
+            <f-view-transition :views-structure="viewsStructure" :app-node-id="currentAppNodeId" class="min-h-100">
+                <component
+                    :is="currentComponent"
+                    v-bind="currentComponentProperties"
+                    @change-component="onChangeComponent"
+                    @cancel-button-click="onCancelButtonClick"
+                ></component>
+            </f-view-transition>
+        </tx-confirmation-window>
     </div>
 </template>
 
@@ -224,11 +239,20 @@ import FCryptoSymbol from '../core/FCryptoSymbol/FCryptoSymbol.vue';
 import DefiTokenPickerWindow from '../windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
 import FTokenValue from '@/components/core/FTokenValue/FTokenValue.vue';
 import RatioInfo from '@/components/RatioInfo/RatioInfo.vue';
+import { componentViewMixin } from '@/mixins/component-view.js';
+import TxConfirmationWindow from '@/components/windows/TxConfirmationWindow/TxConfirmationWindow.vue';
+import DefiDepositConfirmation from '@/components/DefiDepositConfirmation/DefiDepositConfirmation.vue';
+import TransactionSuccessMessage from '@/components/TransactionSuccessMessage/TransactionSuccessMessage.vue';
+import FViewTransition from '@/components/core/FViewTransition/FViewTransition.vue';
 
 export default {
     name: 'DefiDeposit',
 
     components: {
+        FViewTransition,
+        TransactionSuccessMessage,
+        DefiDepositConfirmation,
+        TxConfirmationWindow,
         RatioInfo,
         FTokenValue,
         DefiTokenPickerWindow,
@@ -238,7 +262,7 @@ export default {
         FMessage,
     },
 
-    mixins: [eventBusMixin],
+    mixins: [eventBusMixin, componentViewMixin],
 
     props: {
         /** @type {DefiToken} */
@@ -307,6 +331,10 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             label: 'tmp',
             id: getUniqueId(),
+            stepsCount: 2,
+            /** Active step (`<1, stepsCount>`) */
+            activeStep: 1,
+            viewsStructureRootNode: 'defi-home',
         };
     },
 
@@ -544,7 +572,7 @@ export default {
     },
 
     methods: {
-        async init() {
+        async init(_dontSetDToken) {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchFMintAccount(this.currentAccount.address),
@@ -566,17 +594,19 @@ export default {
                 }
             }
 
-            if (this.token === null) {
-                if (this.tokenAddress) {
-                    this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
-                } else if (this.tokenSymbol) {
-                    this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
+            if (!_dontSetDToken) {
+                if (this.token === null) {
+                    if (this.tokenAddress) {
+                        this.dToken = this.tokens.find((_token) => _token.address === this.tokenAddress);
+                    } else if (this.tokenSymbol) {
+                        this.dToken = this.tokens.find((_token) => _token.symbol === this.tokenSymbol);
+                    } else {
+                        // get first token that can be deposited
+                        this.dToken = this.tokens[0];
+                    }
                 } else {
-                    // get first token that can be deposited
-                    this.dToken = this.tokens[0];
+                    this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
                 }
-            } else {
-                this.dToken = this.tokens.find((_item) => _item.symbol === this.token.symbol);
             }
         },
 
@@ -641,8 +671,8 @@ export default {
                 collateral: this.collateral,
                 collateralHex: tokenBalance.balance,
                 token: { ...this.dToken },
-                steps: 2,
-                step: 1,
+                steps: this.stepsCount,
+                step: this.activeStep,
             };
 
             if (this.deposit) {
@@ -652,10 +682,19 @@ export default {
             }
 
             if (!this.submitDisabled) {
+                this.changeComponent('defi-deposit-confirmation', {
+                    params,
+                    compName: 'defi-lock-unlock',
+                    token: params.token,
+                });
+                this.$refs.confirmationWindow.show();
+
+                /*
                 this.$router.push({
                     name: this.onSubmitRoute,
                     params,
                 });
+                */
             }
         },
 
@@ -687,6 +726,35 @@ export default {
 
         onAccountPicked() {
             this.init();
+        },
+
+        onCancelButtonClick() {
+            this.currCollateral = '0';
+            this.activeStep = 1;
+            // toto by melo byt onwindowclose
+            this.currentComponent = '';
+            this.currentAppNodeId = '';
+
+            this.init(true);
+
+            this.$refs.confirmationWindow.hide();
+            this.currentComponent = '';
+        },
+
+        /**
+         * @param {Object} _data
+         */
+        onChangeComponent(_data) {
+            const { data } = _data;
+
+            if (data && data.params && data.params.step) {
+                this.activeStep = data.params.step;
+            } else if (data && data.continueTo === 'hide-window') {
+                // last transaction success/reject message
+                this.activeStep = 1000;
+            }
+
+            componentViewMixin.methods.onChangeComponent.call(this, _data);
         },
 
         formatNumberByLocale,

@@ -32,7 +32,7 @@ export default {
         backButtonRoute() {
             const parentNode = getAppParentNode('defi-manage-deposit');
 
-            return parentNode ? parentNode.route : '';
+            return parentNode ? parentNode.id : '';
         },
     },
 };
