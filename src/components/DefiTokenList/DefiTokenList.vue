@@ -4,7 +4,7 @@
             <template v-slot="{ item }">
                 <div class="row align-items-center no-collapse">
                     <div class="col"><f-crypto-symbol :token="item" img-width="40px" img-height="40px" /></div>
-                    <div class="col available-balance">{{ getAvailableBalance(item) }}</div>
+                    <div v-if="!hideBalance" class="col available-balance">{{ getAvailableBalance(item) }}</div>
                 </div>
             </template>
         </f-listbox>
@@ -28,6 +28,11 @@ export default {
             default() {
                 return [];
             },
+        },
+        /** @type {DefiToken[]} */
+        hideBalance: {
+            type: Boolean,
+            default: false,
         },
     },
 

@@ -66,6 +66,7 @@
                     <defi-token-picker-window
                         ref="tokenPicker"
                         :tokens="defiTokens"
+                        hide-balance
                         @window-hide="stopLoadingIndicators"
                         @defi-token-picked="onDefiTokenPicked"
                     />
