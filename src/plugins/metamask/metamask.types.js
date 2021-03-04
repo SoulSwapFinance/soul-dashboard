@@ -16,3 +16,19 @@
  * @property {string[]} [blockExplorerUrls]
  * @property {string[]} [iconUrls] Currently ignored.
  */
+
+/**
+ * MetamaskAssetOptions info object
+ * @typedef {Object} MetamaskAssetOptions
+ * @property {string} address The address that the token is at
+ * @property {string} symbol A ticker symbol or shorthand, up to 5 chars
+ * @property {number} decimals The number of decimals in the token
+ * @property {string} image A string url of the token logo
+ */
+
+/**
+ * MetamaskAsset info object
+ * @typedef {Object} MetamaskAsset
+ * @property {'ERC20'} type Initially only supports ERC20
+ * @property {MetamaskAssetOptions} options
+ */

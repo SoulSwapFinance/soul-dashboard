@@ -164,14 +164,23 @@ export class Metamask {
      */
     async addEthereumChain(_chain) {
         if (this._provider) {
-            try {
-                return await this._provider.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [{ ..._chain }],
-                });
-            } catch (_error) {
-                console.error(_error);
-            }
+            return await this._provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [{ ..._chain }],
+            });
+        }
+    }
+
+    /**
+     * @param {MetamaskAsset} _asset
+     * @return {Promise<*>}
+     */
+    async watchAsset(_asset) {
+        if (this._provider) {
+            return await this._provider.request({
+                method: 'wallet_watchAsset',
+                params: { ..._asset },
+            });
         }
     }
 
