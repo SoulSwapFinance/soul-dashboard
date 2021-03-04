@@ -50,7 +50,7 @@ import FAriaAlert from './components/core/FAriaAlert/FAriaAlert.vue';
 import { filtersOptions } from './filters.js';
 import { eventBusMixin } from './mixins/event-bus.js';
 import FNetworkStatus from '@/components/core/FNetworkStatus/FNetworkStatus.vue';
-import MetamaskAccountPickerWindow from '@/components/windows/MetamaskAccountPickerWindow/MetamaskAccountPickerWindow.vue';
+import MetamaskAccountPickerWindow from '@/components/metamask/MetamaskAccountPickerWindow/MetamaskAccountPickerWindow.vue';
 import { mapGetters } from 'vuex';
 import TopDisclaimer from '@/components/TopDisclaimer/TopDisclaimer.vue';
 

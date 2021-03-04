@@ -18,7 +18,7 @@
 
 <script>
 import FWindow from '@/components/core/FWindow/FWindow.vue';
-import MetamaskAccountPicker from '@/components/MetamaskAccountPicker/MetamaskAccountPicker.vue';
+import MetamaskAccountPicker from '@/components/metamask/MetamaskAccountPicker/MetamaskAccountPicker.vue';
 
 export default {
     name: 'MetamaskAccountPickerWindow',
