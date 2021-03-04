@@ -93,7 +93,7 @@ export default {
 
     data() {
         return {
-            isMetamaskInstalled: true,
+            isMetamaskInstalled: false,
             popoverText: '',
             btnId: '',
             addFantomMainnetInProgress: false,
@@ -105,6 +105,19 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+    },
+
+    created() {
+        this._intervalId = setInterval(() => {
+            if (this.$metamask._initialized) {
+                this.isMetamaskInstalled = this.$metamask.isInstalled();
+                this.clearInterval();
+            }
+        }, 30);
+    },
+
+    beforeDestroy() {
+        this.clearInterval();
     },
 
     methods: {
@@ -180,6 +193,13 @@ export default {
 
         onAddOwnAssettClick() {
             alert('Not implemented yet');
+        },
+
+        clearInterval() {
+            if (this._intervalId > -1) {
+                clearInterval(this._intervalId);
+                this._intervalId = -1;
+            }
         },
     },
 };

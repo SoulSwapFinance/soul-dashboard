@@ -68,8 +68,6 @@ export class Metamask {
 
     async init() {
         if (!this._initialized && !appConfig.isChromeExtension && window.ethereum) {
-            this._initialized = true;
-
             await this._detectProvider();
 
             const provider = this._provider;
@@ -89,6 +87,8 @@ export class Metamask {
                 this._setAccount(await this.getAccounts());
             }
         }
+
+        this._initialized = true;
     }
 
     /**
