@@ -146,6 +146,13 @@ const appConfig = {
     },
 };
 
+appConfig.mainnet = {
+    chainId: appConfig.chainId,
+    rpc: appConfig.rpc,
+    explorerUrl: appConfig.explorerUrl,
+    explorerUrl2: appConfig.explorerUrl2,
+};
+
 if (appConfig.useTestnet) {
     appConfig.apollo.providers = appConfig.testnet.providers;
     appConfig.explorerUrl = appConfig.testnet.explorerUrl;
