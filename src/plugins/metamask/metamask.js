@@ -82,6 +82,9 @@ export class Metamask {
                 provider.on('accountsChanged', (_account) => {
                     this._onAccountsChange(_account);
                 });
+                provider.on('disconnect', () => {
+                    window.location.reload();
+                });
 
                 this._setChainId(provider.chainId);
                 this._setAccount(await this.getAccounts());

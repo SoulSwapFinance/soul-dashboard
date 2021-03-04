@@ -11,10 +11,8 @@
                             :disabled="addFantomMainnetInProgress"
                             @click="onAddChainClick('mainnet')"
                         >
-                            <template v-if="!addFantomMainnetInProgress">
-                                Add Fantom Opera Mainnet
-                            </template>
-                            <pulse-loader v-else color="#fff"></pulse-loader>
+                            Add Fantom Opera Mainnet
+                            <pulse-loader v-if="addFantomMainnetInProgress" color="#fff"></pulse-loader>
                         </button>
                         <button
                             id="add_testnet_btn"
@@ -22,10 +20,8 @@
                             :disabled="addFantomTestnetInProgress"
                             @click="onAddChainClick('testnet')"
                         >
-                            <template v-if="!addFantomTestnetInProgress">
-                                Add Fantom Testnet
-                            </template>
-                            <pulse-loader v-else color="#1969ff"></pulse-loader>
+                            Add Fantom Testnet
+                            <pulse-loader v-if="addFantomTestnetInProgress" color="#1969ff"></pulse-loader>
                         </button>
                     </div>
 
@@ -37,10 +33,7 @@
                             :disabled="addAssetInProgress"
                             @click="onAddAssetClick"
                         >
-                            <template v-if="!addAssetInProgress">
-                                Add Asset
-                            </template>
-                            <pulse-loader v-else color="#fff"></pulse-loader>
+                            Add Asset <pulse-loader v-if="addAssetInProgress" color="#fff"></pulse-loader>
                         </button>
                         <!--                        <button class="btn large secondary" @click="onAddOwnAssettClick">Add Your Own Asset</button>-->
                     </div>
@@ -53,7 +46,7 @@
                         preferred-attach-position="top"
                         :attach-margin="[4, 4, 4, 4]"
                         :with-header="false"
-                        :hide-after="3000"
+                        :hide-after="3800"
                         animation-in="scale-center-enter-active"
                         animation-out="scale-center-leave-active"
                         style="width: auto; max-width: 360px;"
@@ -72,7 +65,9 @@
                     />
                 </template>
                 <template v-else>
-                    Install Metamask
+                    <button class="btn large" :disabled="installMetamaskInProgress" @click="onInstallMetamaskClick">
+                        Install Metamask <pulse-loader v-if="installMetamaskInProgress" color="#fff"></pulse-loader>
+                    </button>
                 </template>
             </div>
         </f-card>
@@ -86,6 +81,7 @@ import FWindow from '@/components/core/FWindow/FWindow.vue';
 import { mapGetters } from 'vuex';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import DefiTokenPickerWindow from '@/components/windows/DefiTokenPickerWindow/DefiTokenPickerWindow.vue';
+import MetaMaskOnboarding from '@metamask/onboarding';
 
 export default {
     name: 'MetamaskSettings',
@@ -100,7 +96,9 @@ export default {
             addFantomMainnetInProgress: false,
             addFantomTestnetInProgress: false,
             addAssetInProgress: false,
+            installMetamaskInProgress: false,
             defiTokens: [],
+            requestPendingMessage: 'Request already pending',
         };
     },
 
@@ -109,23 +107,52 @@ export default {
     },
 
     created() {
-        this._intervalId = setInterval(() => {
-            if (this.$metamask._initialized) {
-                this.isMetamaskInstalled = this.$metamask.isInstalled();
-                this.clearInterval();
-            }
-        }, 30);
+        this._intervalId = -1;
+        /** @type {MetaMaskOnboarding} */
+        this._onboarding = null;
+
+        this.setInterval();
     },
 
     beforeDestroy() {
         this.clearInterval();
+        this._onboarding = null;
     },
 
     methods: {
+        showPopover(_text, _btnId) {
+            const ePopover = this.$refs.popover;
+
+            if (ePopover) {
+                this.popoverText = _text;
+                this.btnId = _btnId;
+                ePopover.show();
+            }
+        },
+
         stopLoadingIndicators() {
             this.addFantomMainnetInProgress = false;
             this.addFantomTestnetInProgress = false;
             this.addAssetInProgress = false;
+            this.installMetamaskInProgress = false;
+        },
+
+        setInterval(_interval = 30) {
+            this.clearInterval();
+
+            this._intervalId = setInterval(() => {
+                if (this.$metamask._initialized) {
+                    this.isMetamaskInstalled = this.$metamask.isInstalled();
+                    this.clearInterval();
+                }
+            }, _interval);
+        },
+
+        clearInterval() {
+            if (this._intervalId > -1) {
+                clearInterval(this._intervalId);
+                this._intervalId = -1;
+            }
         },
 
         /**
@@ -147,14 +174,17 @@ export default {
                 const response = await this.$metamask.addEthereumChain(chain);
 
                 if (response === null) {
-                    this.popoverText = `${chain.chainName} was added to Metamask`;
-                    this.btnId = btnId;
-                    this.$refs.popover.show();
+                    this.showPopover(`${chain.chainName} was added to Metamask`, btnId);
                 }
 
                 this.stopLoadingIndicators();
             } catch (_error) {
-                this.stopLoadingIndicators();
+                if (_error.code !== -32002) {
+                    this.stopLoadingIndicators();
+                } else {
+                    this.showPopover(this.requestPendingMessage, btnId);
+                }
+
                 console.error(_error);
             }
         },
@@ -168,6 +198,8 @@ export default {
         },
 
         async onDefiTokenPicked(_token) {
+            const btnId = 'add_asset_btn';
+
             try {
                 const response = await this.$metamask.watchAsset({
                     type: 'ERC20',
@@ -180,14 +212,16 @@ export default {
                 });
 
                 if (response) {
-                    this.popoverText = `Asset ${_token.symbol} was added to Metamask`;
-                    this.btnId = 'add_asset_btn';
-                    this.$refs.popover.show();
+                    this.showPopover(`Asset ${_token.symbol} was added to Metamask`, btnId);
                 }
 
                 this.stopLoadingIndicators();
             } catch (_error) {
-                this.stopLoadingIndicators();
+                if (_error.code !== -32002) {
+                    this.stopLoadingIndicators();
+                } else {
+                    this.showPopover(this.requestPendingMessage, btnId);
+                }
                 console.error(_error);
             }
         },
@@ -196,11 +230,10 @@ export default {
             alert('Not implemented yet');
         },
 
-        clearInterval() {
-            if (this._intervalId > -1) {
-                clearInterval(this._intervalId);
-                this._intervalId = -1;
-            }
+        onInstallMetamaskClick() {
+            this.installMetamaskInProgress = true;
+            this._onboarding = new MetaMaskOnboarding();
+            this._onboarding.startOnboarding();
         },
     },
 };
