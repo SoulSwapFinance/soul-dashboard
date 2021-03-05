@@ -1,7 +1,7 @@
 <template>
     <div class="metamasksettings">
         <f-card class="f-card-double-padding">
-            <div class="metamasksettings_body">
+            <div class="small-container">
                 <template v-if="isMetamaskInstalled">
                     <div class="metamasksettings_section">
                         <h3>Networks</h3>

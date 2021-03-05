@@ -32,7 +32,11 @@ export default {
                 return [];
             },
         },
-        hideBalance: { ...DefiTokenList.props.hideBalance },
+        /** @type {DefiToken[]} */
+        hideBalance: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     methods: {
