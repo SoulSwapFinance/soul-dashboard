@@ -8,7 +8,6 @@ import Dashboard from './views/Dashboard/Dashboard.vue';
 import AccountSend from './views/AccountSend.vue';
 import AccountReceive from './views/AccountReceive.vue';
 // import AccountStake from './views/AccountStake.vue';
-import Playground from './views/Playground.vue';
 import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 import AccountHistory from './views/AccountHistory/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
@@ -688,11 +687,6 @@ export const routes = [
                 component: Settings,
             },
         ],
-    },
-    {
-        name: 'playground',
-        path: '/playground',
-        component: Playground,
     },
     {
         name: 'not-found',
