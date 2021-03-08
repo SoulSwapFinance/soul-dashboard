@@ -13,7 +13,13 @@
                         class="btn large light same-size round"
                     />
                     <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
-                        <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                        <icon
+                            data="@/assets/svg/static/Options/QR.svg"
+                            original
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                        />
                     </button>
                 </h3>
 

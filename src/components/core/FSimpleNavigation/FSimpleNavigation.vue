@@ -17,6 +17,7 @@
                                 :width="item.iconSize || iconSize"
                                 :height="item.iconSize || iconSize"
                                 :fill="item.fill || false"
+                                :original="item.original || false"
                             />
                             <span class="title">{{ item.title }}</span>
                         </router-link>
@@ -33,6 +34,7 @@
                                 :width="item.iconSize || iconSize"
                                 :height="item.iconSize || iconSize"
                                 :fill="item.fill || false"
+                                :original="item.original || false"
                             />
                             <span class="title">{{ item.title }}</span>
                         </a>

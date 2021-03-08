@@ -2,10 +2,10 @@
     <button :id="id" type="button" :title="tooltip" class="f-copy-button" @click="onClick">
         <slot>
             <icon
-                data="@/assets/svg/copy.svg"
+                data="@/assets/svg/static/Options/Copy.svg"
                 :width="defaultIconSize.toString()"
                 :height="defaultIconSize.toString()"
-                :fill="false"
+                original
                 aria-hidden="true"
             />
         </slot>
