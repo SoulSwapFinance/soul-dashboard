@@ -2,4 +2,8 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target" : { "namespace": "android_app", "package_name": "network.fantom.pwawallet.twa",
                    "sha256_cert_fingerprints": ["F7:A8:4C:BB:01:04:B8:10:7C:3A:4A:32:4C:71:90:58:A1:95:EB:53:65:2A:46:46:12:98:0A:20:59:28:32:E5"] }
-    }]
+}, {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target" : { "namespace": "android_app", "package_name": "network.fantom.fwallet",
+                   "sha256_cert_fingerprints": ["49:C5:94:DB:C5:8A:03:0F:7D:F8:5D:3F:C3:16:84:22:0A:D5:01:83:0C:7E:BA:20:62:5A:61:F0:6F:B3:81:BF"] }
+}]
