@@ -17,13 +17,7 @@
             </li>
             <li>
                 <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
-                    <icon
-                        data="@/assets/svg/static/Options/QR.svg"
-                        original
-                        width="20"
-                        height="20"
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/QR.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </li>
             <li v-if="downloadKeystoreFile">
@@ -33,10 +27,9 @@
                     @click="onDownloadKeystoreClick"
                 >
                     <icon
-                        data="@/assets/svg/static/Options/Download.svg"
+                        data="@/assets/svg/monochrome/Options/Download.svg"
                         width="20"
                         height="20"
-                        original
                         aria-hidden="true"
                     />
                 </button>
@@ -52,13 +45,7 @@
                     title="Edit Wallet"
                     @click="$refs.accountSettingsWindow.show()"
                 >
-                    <icon
-                        data="@/assets/svg/static/Options/Edit.svg"
-                        width="16"
-                        height="16"
-                        original
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/Edit.svg" width="16" height="16" aria-hidden="true" />
                 </button>
             </li>
             <li>
@@ -67,13 +54,7 @@
                     title="Remove Wallet"
                     @click="$refs.removeAccountWindow.show()"
                 >
-                    <icon
-                        data="@/assets/svg/static/Options/Logout.svg"
-                        original
-                        width="20"
-                        height="20"
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/Logout.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </li>
         </ul>
@@ -85,13 +66,7 @@
                     class="btn large light"
                     @window-hide="onWindowHide"
                 >
-                    <icon
-                        data="@/assets/svg/static/Options/Copy.svg"
-                        width="20"
-                        height="20"
-                        original
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/Copy.svg" width="20" height="20" aria-hidden="true" />
                     Copy Address
                     <template #popover-text>
                         Address copied to clipboard. <br />
@@ -102,13 +77,7 @@
             </li>
             <li>
                 <button class="btn large light" @click="$refs.qrWindow.show()">
-                    <icon
-                        data="@/assets/svg/static/Options/QR.svg"
-                        original
-                        width="20"
-                        height="20"
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/QR.svg" width="20" height="20" aria-hidden="true" />
                     Show QR Code
                 </button>
             </li>
@@ -120,23 +89,16 @@
             </li>
             <li>
                 <button class="btn large light" @click="$refs.accountSettingsWindow.show()">
-                    <icon
-                        data="@/assets/svg/static/Options/Edit.svg"
-                        width="16"
-                        height="16"
-                        original
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/Edit.svg" width="16" height="16" aria-hidden="true" />
                     Edit Wallet
                 </button>
             </li>
             <li v-if="downloadKeystoreFile">
                 <button class="btn large light" @click="onDownloadKeystoreClick">
                     <icon
-                        data="@/assets/svg/static/Options/Download.svg"
+                        data="@/assets/svg/monochrome/Options/Download.svg"
                         width="20"
                         height="20"
-                        original
                         aria-hidden="true"
                     />
                     Download Keystore
@@ -144,13 +106,7 @@
             </li>
             <li>
                 <button class="btn large light" @click="$refs.removeAccountWindow.show()">
-                    <icon
-                        data="@/assets/svg/static/Options/Logout.svg"
-                        original
-                        width="20"
-                        height="20"
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/Logout.svg" width="20" height="20" aria-hidden="true" />
                     Remove Wallet
                 </button>
             </li>

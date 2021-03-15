@@ -25,13 +25,7 @@
                     </template>
                 </f-copy-button>
                 <button class="btn large light same-size round" title="Show QR Code" @click="$refs.qrWindow.show()">
-                    <icon
-                        data="@/assets/svg/static/Options/QR.svg"
-                        original
-                        width="20"
-                        height="20"
-                        aria-hidden="true"
-                    />
+                    <icon data="@/assets/svg/monochrome/Options/QR.svg" width="20" height="20" aria-hidden="true" />
                 </button>
             </h3>
         </div>

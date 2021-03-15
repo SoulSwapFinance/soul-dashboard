@@ -45,8 +45,7 @@
                                 @click.prevent="$refs.qrWindow.show()"
                             >
                                 <icon
-                                    data="@/assets/svg/static/Options/QR.svg"
-                                    original
+                                    data="@/assets/svg/monochrome/Options/QR.svg"
                                     width="20"
                                     height="20"
                                     aria-hidden="true"

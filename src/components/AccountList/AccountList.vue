@@ -55,11 +55,10 @@
                                         :data-index="index"
                                     >
                                         <icon
-                                            data="@/assets/svg/static/Options/Edit.svg"
+                                            data="@/assets/svg/monochrome/Options/Edit.svg"
                                             width="16"
                                             height="16"
                                             aria-hidden="true"
-                                            original
                                         />
                                     </button>
                                 </span>
@@ -104,10 +103,9 @@
                                             @click="onEditAccountClick"
                                         >
                                             <icon
-                                                data="@/assets/svg/static/Options/Edit.svg"
+                                                data="@/assets/svg/monochrome/Options/Edit.svg"
                                                 width="16"
                                                 height="16"
-                                                original
                                                 aria-hidden="true"
                                             />
                                         </button>
