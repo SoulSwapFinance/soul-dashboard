@@ -41,6 +41,11 @@ export default {
             type: Boolean,
             default: false,
         },
+        /** Transitions are disabled */
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -59,11 +64,21 @@ export default {
         appNodeId(_value, _oldValue) {
             this.runTransition(_oldValue, _value);
         },
+
+        disabled(_value) {
+            if (_value) {
+                this._transitionName = this.transitionName;
+                this.transitionName = '';
+            } else {
+                this.transitionName = this._transitionName;
+            }
+        },
     },
 
     created() {
         /** @type {Tree} */
         this._viewsStructure = this.viewsStructure.length > 0 ? new Tree(this.viewsStructure) : null;
+        this._transitionName = '';
     },
 
     beforeDestroy() {
@@ -73,6 +88,11 @@ export default {
     methods: {
         runTransition(_nodeFromName, _nodeToName) {
             const { _viewsStructure } = this;
+
+            if (this.disabled) {
+                this.transitionName = '';
+                return;
+            }
 
             // Choose transition (forward or backward) according to position of route nodes in views structure.
             if (_viewsStructure) {
