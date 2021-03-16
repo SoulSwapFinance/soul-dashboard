@@ -575,10 +575,13 @@ export default {
             this.currentComponent = '';
             this.currentAppNodeId = '';
 
-            this.init();
+            // this.init();
+            // this.$router.go();
 
             this.$refs.confirmationWindow.hide();
             this.currentComponent = '';
+
+            this.$emit('reload-view');
         },
 
         /**
