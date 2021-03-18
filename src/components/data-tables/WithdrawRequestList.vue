@@ -148,7 +148,7 @@ export default {
          */
         canNotWithdraw(_timestamp) {
             const start = dayjs(this.prepareTimestamp(_timestamp)).utc();
-            let end = start.add(12, 'days');
+            let end = start.add(7, 'days');
             const now = dayjs().utc();
 
             if (appConfig.useTestnet) {
