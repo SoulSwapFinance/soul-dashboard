@@ -452,9 +452,15 @@ export default {
 
                 if (delegation.deactivation && delegation.deactivation.length) {
                     delegation.deactivation.forEach((_request) => {
+                        if (!_request.withdrawBlock && !amount) {
+                            amount = delegation.amountDelegated;
+                        }
+
                         _request.amount = amount;
                         _request.final = true;
                         requests.push(_request);
+
+                        amount = '';
                     });
                 } else if (accountInfo.preparedForWithdrawal) {
                     requests.push({

@@ -1,10 +1,10 @@
 <template>
     <div class="ballot-list">
-        <f-card class="account-transaction-list-dt" :off="windowMode">
-            <h2 v-if="!windowMode" class="dt-heading">
-                Polls <span class="f-records-count">({{ totalCount }})</span>
-            </h2>
+        <h2 v-if="!windowMode" class="dt-heading">
+            Polls <span class="f-records-count">({{ totalCount }})</span>
+        </h2>
 
+        <f-card class="account-transaction-list-dt" :off="windowMode">
             <template v-if="!ballotsError">
                 <f-data-table
                     :columns="columns"

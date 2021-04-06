@@ -5,6 +5,7 @@
             confirmation-comp-name="claim-rewards-confirmation"
             send-button-label="Claim Rewards"
             password-label="Please enter your wallet password to claim rewards"
+            :hide-tx-form="cantRestake"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -38,6 +39,18 @@
                 </div>
             </div>
 
+            <f-message
+                v-if="dAccountInfo.stakerId"
+                v-show="cantRestake"
+                type="error"
+                role="alert"
+                with-icon
+                style="margin-bottom: 16px;"
+            >
+                Staking limit reached. You can restake max {{ delegatedLimit }} FTM on validator
+                {{ dAccountInfo.stakerInfo.stakerInfo.name }}, {{ dAccountInfo.stakerId }}
+            </f-message>
+
             <template #window-content>
                 <ledger-confirmation-content :to="tx.to" :amount="0" />
             </template>
@@ -54,11 +67,12 @@ import { SFC_CLAIM_MAX_EPOCHS } from '@/plugins/fantom-web3-wallet.js';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
 import gql from 'graphql-tag';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'ClaimRewardsConfirmation',
 
-    components: { FPlaceholder, LedgerConfirmationContent, TxConfirmation },
+    components: { FMessage, FPlaceholder, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** `accountInfo` object from `StakingInfo` component. */
@@ -89,6 +103,8 @@ export default {
         return {
             tx: {},
             dAccountInfo: this.accountInfo,
+            cantRestake: false,
+            delegatedLimit: 0,
         };
     },
 
@@ -98,14 +114,26 @@ export default {
 
     // activated() {
     async mounted() {
-        await this.setTx();
-
         if (!this.accountInfo.stakerId) {
-            this.loadDelegationInfo();
+            await this.loadDelegationInfo();
+        }
+
+        if (!this.reStake || !this.delegatedLimitReached()) {
+            await this.setTx();
         }
     },
 
     methods: {
+        delegatedLimitReached() {
+            const delegatedLimit = this.dAccountInfo.stakerInfo.delegatedLimit;
+            const amount = this.dAccountInfo.delegation.pendingRewards.amount;
+
+            this.delegatedLimit = parseFloat(this.$fWallet.WEIToFTM(delegatedLimit)).toFixed(2);
+            this.cantRestake = this.$defi.compareBN(delegatedLimit, amount) === -1;
+
+            return this.cantRestake;
+        },
+
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),

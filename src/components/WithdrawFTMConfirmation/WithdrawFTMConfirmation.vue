@@ -33,10 +33,24 @@
                     <div class="col-3 f-row-label">Amount</div>
                     <div class="col break-word">{{ amount }}</div>
                 </div>
+
+                <!--                <div class="row no-collapse">
+                    <div class="col-3 f-row-label">Transaction Value</div>
+                    <div class="col break-word">0</div>
+                </div>-->
             </div>
 
             <template #window-content>
-                <ledger-confirmation-content :to="tx.to" :amount="0" />
+                <ledger-confirmation-content :to="tx.to" :amount="0">
+                    <li>
+                        <div class="row no-collapse">
+                            <div class="col-3 f-row-label">Transaction Value</div>
+                            <div class="col">
+                                0
+                            </div>
+                        </div>
+                    </li>
+                </ledger-confirmation-content>
             </template>
         </tx-confirmation>
     </div>

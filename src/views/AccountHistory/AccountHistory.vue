@@ -69,7 +69,9 @@ export default {
     },
 
     created() {
-        this.init();
+        setTimeout(() => {
+            this.init();
+        }, 200);
 
         this._eventBus.on('account-picked', this.onAccountPicked);
     },
@@ -79,19 +81,20 @@ export default {
             const { $defi } = this;
             const result = await Promise.all([
                 $defi.fetchFMintAccount(this.currentAccount.address),
-                $defi.fetchERC20Tokens(),
+                $defi.fetchERC20Assets(this.currentAccount.address),
+                // $defi.fetchERC20Tokens(),
                 $defi.init(),
             ]);
 
             this.fMintAccount = result[0];
             this.erc20Tokens = result[1];
 
-            setTimeout(async () => {
+            /*setTimeout(async () => {
                 this.erc20Tokens = await $defi.getERC20TokensWithAvailableBalances(
                     this.currentAccount.address,
                     this.erc20Tokens
                 );
-            }, 30);
+            }, 30);*/
         },
 
         onTransactionsRecordsCount(_count) {

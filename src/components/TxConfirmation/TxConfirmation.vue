@@ -13,6 +13,7 @@
                 <ledger-message :error="error" @ledger-status-code="onLedgerStatusCode" />
 
                 <transaction-confirmation-form
+                    v-if="!hideTxForm"
                     :error-message="errorMsg"
                     :show-password-field="!currentAccount.isLedgerAccount && !currentAccount.isMetamaskAccount"
                     :password-label="passwordLabel"
@@ -143,6 +144,11 @@ export default {
         },
         /** Component is placed in FWindow */
         windowMode: {
+            type: Boolean,
+            default: false,
+        },
+        /** Hide transaction form */
+        hideTxForm: {
             type: Boolean,
             default: false,
         },

@@ -44,7 +44,12 @@
                                 type="button"
                                 @click.prevent="$refs.qrWindow.show()"
                             >
-                                <icon data="@/assets/svg/qr.svg" width="20" height="20" aria-hidden="true" />
+                                <icon
+                                    data="@/assets/svg/monochrome/Options/QR.svg"
+                                    width="20"
+                                    height="20"
+                                    aria-hidden="true"
+                                />
                             </button>
                         </div>
                         <br />

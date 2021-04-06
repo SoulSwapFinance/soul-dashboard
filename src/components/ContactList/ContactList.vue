@@ -24,11 +24,10 @@
                                         type="button"
                                     >
                                         <icon
-                                            data="@/assets/svg/pen.svg"
+                                            data="@/assets/svg/monochrome/Options/Edit.svg"
                                             width="16"
                                             height="16"
                                             aria-hidden="true"
-                                            :fill="false"
                                         />
                                     </button>
 

@@ -45,6 +45,14 @@ import FHamburgerSwitch from '../core/FHamburgerSwitch/FHamburgerSwitch.vue';
 import SocialMediaLinks from '../SocialMediaLinks/SocialMediaLinks.vue';
 import { mapGetters, mapState } from 'vuex';
 import { helpersMixin } from '../../mixins/helpers.js';
+import homeIcon from '../../assets/svg/monochrome/Sidebar/Home.svg';
+import settingsIcon from '../../assets/svg/monochrome/Sidebar/Settings.svg';
+import walletIcon from '../../assets/svg/monochrome/Sidebar/Wallet.svg';
+import defiIcon from '../../assets/svg/monochrome/Sidebar/DeFi.svg';
+import stakingIcon from '../../assets/svg/monochrome/Sidebar/Staking.svg';
+import swapIcon from '../../assets/svg/monochrome/Sidebar/fUNI.svg';
+import voteIcon from '../../assets/svg/monochrome/Sidebar/Governance.svg';
+/*
 import homeIcon from '../../assets/svg/home.svg';
 import settingsIcon from '../../assets/svg/settings.svg';
 import walletIcon from '../../assets/svg/wallet.svg';
@@ -52,6 +60,7 @@ import defiIcon from '../../assets/svg/defi.svg';
 import stakingIcon from '../../assets/svg/stake.svg';
 import swapIcon from '../../assets/svg/defi/ftrade.svg';
 import voteIcon from '../../assets/svg/thumb.svg';
+*/
 
 const ACCOUNT_DEFAULT_VIEW = 'account-history';
 
@@ -87,6 +96,7 @@ export default {
                     },
                     title: 'Home',
                     icon: homeIcon,
+                    fill: true,
                 },
                 {
                     url: {
@@ -95,7 +105,7 @@ export default {
                     title: 'Wallet',
                     icon: walletIcon,
                     walletLink: true,
-                    // fill: true,
+                    fill: true,
                 },
                 {
                     url: {
@@ -104,7 +114,7 @@ export default {
                     title: 'Staking',
                     icon: stakingIcon,
                     stakingLink: true,
-                    // fill: true,
+                    fill: true,
                 },
                 {
                     url: {
@@ -113,6 +123,7 @@ export default {
                     title: 'DeFi',
                     icon: defiIcon,
                     deFiLink: true,
+                    fill: true,
                 },
                 {
                     url: {
@@ -130,6 +141,7 @@ export default {
                     title: 'Governance',
                     icon: voteIcon,
                     govLink: true,
+                    fill: true,
                 },
                 {
                     url: {
@@ -137,7 +149,8 @@ export default {
                     },
                     title: 'Settings',
                     icon: settingsIcon,
-                    // fill: true,
+                    // original: true,
+                    fill: true,
                 },
             ],
         };

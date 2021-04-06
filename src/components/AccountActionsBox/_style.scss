@@ -7,6 +7,10 @@
                 .action {
                     min-width: 68px;
                 }
+
+                + li {
+                    margin-left: 16px;
+                }
             }
         }
     }

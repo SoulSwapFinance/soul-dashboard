@@ -54,6 +54,9 @@ module.exports = {
             _args[0].title = appConfig.name;
             _args[0].description = appConfig.description;
             _args[0].keywords = appConfig.keywords;
+
+            delete _args[0].minify;
+
             return _args;
         });
 
