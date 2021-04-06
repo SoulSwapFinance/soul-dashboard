@@ -342,7 +342,7 @@ export default {
         async fetchDelegation(_stakerId) {
             const data = await this.$apollo.query({
                 query: gql`
-                    query Delegation($address: Address!, $staker: Long!) {
+                    query Delegation($address: Address!, $staker: BigInt!) {
                         delegation(address: $address, staker: $staker) {
                             isDelegationLocked
                             lockedFromEpoch

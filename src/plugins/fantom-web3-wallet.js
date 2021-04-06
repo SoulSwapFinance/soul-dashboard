@@ -237,8 +237,6 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
-                        stashed
-                        canUnStash
                         totalValue
                         staker {
                             id
@@ -263,39 +261,15 @@ export class FantomWeb3Wallet {
                                     claimedReward
                                     pendingRewards {
                                         amount
-                                        fromEpoch
-                                        toEpoch
                                     }
                                     withdrawRequests {
                                         address
-                                        receiver
                                         account {
                                             address
                                         }
                                         stakerID
                                         withdrawRequestID
-                                        isDelegation
                                         amount
-                                        withdrawPenalty
-                                        requestBlock {
-                                            number
-                                            timestamp
-                                        }
-                                        withdrawBlock {
-                                            number
-                                            timestamp
-                                        }
-                                    }
-                                    deactivation {
-                                        address
-                                        requestBlock {
-                                            number
-                                            timestamp
-                                        }
-                                        withdrawBlock {
-                                            number
-                                            timestamp
-                                        }
                                     }
                                 }
                                 cursor
@@ -418,7 +392,7 @@ export class FantomWeb3Wallet {
     async getStakerById(_id) {
         const data = await this.apolloClient.query({
             query: gql`
-                query StakerById($id: Long!) {
+                query StakerById($id: BigInt!) {
                     staker(id: $id) {
                         id
                         stakerAddress
@@ -428,7 +402,6 @@ export class FantomWeb3Wallet {
                         totalDelegatedLimit
                         delegatedLimit
                         createdTime
-                        validationScore
                         downtime
                         isActive
                         isOffline

@@ -35,14 +35,6 @@
                         </div>
                     </div>
                     <div class="row no-collapse">
-                        <div class="col f-row-label">Stashed Rewards</div>
-                        <div class="col">
-                            <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                                <template v-if="accountInfo">{{ toFTM(accountInfo.stashed) }} FTM</template>
-                            </f-placeholder>
-                        </div>
-                    </div>
-                    <div class="row no-collapse">
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
@@ -137,9 +129,6 @@
                                 -->
                             </template>
                             <template v-else>
-                                <button v-if="accountInfo.canUnStash" class="btn large" @click="unstash()">
-                                    Unstash Rewards
-                                </button>
                                 <button
                                     v-show="canClaimRewards"
                                     class="btn large"
@@ -305,7 +294,6 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards !== '0x0' &&
-                    accountInfo.stashed === '0x0' &&
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true)
@@ -325,7 +313,6 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
-                    accountInfo.stashed === '0x0' &&
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true)
@@ -347,7 +334,6 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
-                    accountInfo.stashed === '0x0' &&
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true)
@@ -365,7 +351,6 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
-                    accountInfo.stashed === '0x0' &&
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true) &&
@@ -450,19 +435,7 @@ export default {
                     amount = delegation.amountDelegated;
                 }
 
-                if (delegation.deactivation && delegation.deactivation.length) {
-                    delegation.deactivation.forEach((_request) => {
-                        if (!_request.withdrawBlock && !amount) {
-                            amount = delegation.amountDelegated;
-                        }
-
-                        _request.amount = amount;
-                        _request.final = true;
-                        requests.push(_request);
-
-                        amount = '';
-                    });
-                } else if (accountInfo.preparedForWithdrawal) {
+                if (accountInfo.preparedForWithdrawal) {
                     requests.push({
                         amount: amount,
                         final: true,
@@ -559,14 +532,7 @@ export default {
             accountInfo.stakerIdHex = delegation ? delegation.toStakerId : '0x0';
             accountInfo.createdTime = delegation ? delegation.createdTime : '';
 
-            accountInfo.preparedForWithdrawal =
-                delegation &&
-                delegation.pendingRewards.amount === '0x0' &&
-                delegation.pendingRewards.fromEpoch === '0x0' &&
-                delegation.pendingRewards.toEpoch === '0x0';
-
-            accountInfo.fromEpoch = delegation ? formatHexToInt(delegation.pendingRewards.fromEpoch) : 0;
-            accountInfo.toEpoch = delegation ? formatHexToInt(delegation.pendingRewards.toEpoch) : 0;
+            accountInfo.preparedForWithdrawal = delegation && delegation.pendingRewards.amount === '0x0';
 
             return accountInfo;
         },
@@ -742,25 +708,6 @@ export default {
             // }
         },
 
-        async unstash() {
-            const accountInfo = await this.accountInfo;
-            const stakerInfo = await this.stakerInfo;
-
-            if (accountInfo.canUnStash) {
-                this.$emit('change-component', {
-                    to: 'unstash-confirmation',
-                    from: 'staking-info',
-                    data: {
-                        accountInfo: {
-                            ...accountInfo,
-                            stakerInfo,
-                        },
-                        stakerId: this.stakerId,
-                    },
-                });
-            }
-        },
-
         /**
          * Fetch account info by current account address.
          */
@@ -771,8 +718,6 @@ export default {
                         account(address: $address) {
                             address
                             balance
-                            stashed
-                            canUnStash
                         }
                     }
                 `,
@@ -793,7 +738,7 @@ export default {
         async fetchDelegation(_stakerId) {
             const data = await this.$apollo.query({
                 query: gql`
-                    query Delegation($address: Address!, $staker: Long!) {
+                    query Delegation($address: Address!, $staker: BigInt!) {
                         delegation(address: $address, staker: $staker) {
                             toStakerId
                             createdTime
@@ -803,45 +748,20 @@ export default {
                             claimedReward
                             outstandingSFTM
                             tokenizerAllowedToWithdraw
-                            paidUntilEpoch
                             isFluidStakingActive
                             isDelegationLocked
                             lockedUntil
                             pendingRewards {
                                 amount
-                                fromEpoch
-                                toEpoch
                             }
                             withdrawRequests {
                                 address
-                                receiver
                                 account {
                                     address
                                 }
                                 stakerID
                                 withdrawRequestID
-                                isDelegation
                                 amount
-                                withdrawPenalty
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
-                            }
-                            deactivation {
-                                address
-                                requestBlock {
-                                    number
-                                    timestamp
-                                }
-                                withdrawBlock {
-                                    number
-                                    timestamp
-                                }
                             }
                         }
                     }

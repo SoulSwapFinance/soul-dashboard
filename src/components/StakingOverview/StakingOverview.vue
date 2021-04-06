@@ -24,14 +24,6 @@
 
             <div class="col">
                 <div class="row no-collapse">
-                    <div class="col f-row-label">Stashed Rewards</div>
-                    <div class="col">
-                        <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                            <template v-if="accountInfo">{{ accountInfo.stashed }} FTM</template>
-                        </f-placeholder>
-                    </div>
-                </div>
-                <div class="row no-collapse">
                     <div class="col f-row-label">Claimed Rewards</div>
                     <div class="col">
                         <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
@@ -78,7 +70,6 @@ export default {
             const data = await Promise.all([this.fetchAccountInfo(), this.fetchDelegations()]);
             const delegations = data[1];
             const accountInfo = {
-                stashed: WEIToFTM(data[0].stashed) || 0,
                 delegated: 0,
                 pendingRewards: 0,
                 claimedRewards: 0,

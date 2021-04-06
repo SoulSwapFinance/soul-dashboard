@@ -164,13 +164,11 @@ export default {
                     stakers {
                         id
                         stakerAddress
-                        isOffline
                         isCheater
                         createdTime
                         stake
                         totalStake
                         delegatedMe
-                        poi
                         isOffline
                         isCheater
                         stakerInfo {
