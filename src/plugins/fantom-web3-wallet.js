@@ -256,10 +256,7 @@ export class FantomWeb3Wallet {
                             edges {
                                 delegation {
                                     toStakerId
-                                    createdEpoch
                                     createdTime
-                                    deactivatedEpoch
-                                    deactivatedTime
                                     amount
                                     amountDelegated
                                     amountInWithdraw
@@ -430,7 +427,6 @@ export class FantomWeb3Wallet {
                         delegatedMe
                         totalDelegatedLimit
                         delegatedLimit
-                        createdEpoch
                         createdTime
                         validationScore
                         downtime

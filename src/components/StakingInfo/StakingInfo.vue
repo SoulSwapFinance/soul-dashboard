@@ -796,10 +796,7 @@ export default {
                     query Delegation($address: Address!, $staker: Long!) {
                         delegation(address: $address, staker: $staker) {
                             toStakerId
-                            createdEpoch
                             createdTime
-                            deactivatedEpoch
-                            deactivatedTime
                             amount
                             amountDelegated
                             amountInWithdraw
