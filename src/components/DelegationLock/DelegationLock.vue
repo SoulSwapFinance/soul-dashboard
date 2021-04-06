@@ -47,6 +47,33 @@
                             </template>
                         </f-slider>
                     </div>
+
+                    <f-input
+                        v-model="amount"
+                        label="Amount"
+                        field-size="large"
+                        type="number"
+                        autocomplete="off"
+                        min="1"
+                        step="any"
+                        name="amount"
+                        :validator="checkAmount"
+                        validate-on-input
+                    >
+                        <template #top="sProps">
+                            <div class="input-label-layout">
+                                <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                <button type="button" class="btn light small" @click="onEntireDelegationClick">
+                                    Entire Delegation
+                                </button>
+                            </div>
+                        </template>
+                        <template #bottom="sProps">
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                {{ amountErrMsg }}
+                            </f-message>
+                        </template>
+                    </f-input>
                 </f-placeholder>
                 <template v-if="canLockDelegation">
                     <!--                    <h3>Description</h3>-->
@@ -63,7 +90,7 @@
                     <button
                         type="submit"
                         class="btn large"
-                        :disabled="!canLockDelegation || !valueIsCorrect"
+                        :disabled="!canLockDelegation || !valueIsCorrect || !!amountErrMsg"
                         @click="onSubmit"
                     >
                         Ok, lock
@@ -84,6 +111,8 @@ import { getUniqueId } from '@/utils';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import { formatDate, timestampToDate } from '@/filters.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import FInput from '@/components/core/FInput/FInput.vue';
+import { WEIToFTM } from '@/utils/transactions.js';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -95,7 +124,7 @@ const blockTime = 15 * 60;
 export default {
     name: 'DelegationLock',
 
-    components: { FPlaceholder, FSlider, FAutoResizeInput, FMessage, FCard },
+    components: { FInput, FPlaceholder, FSlider, FAutoResizeInput, FMessage, FCard },
 
     props: {
         /***/
@@ -114,6 +143,9 @@ export default {
             lockDaysValue: '',
             lockDaysInputValue: '',
             minLock: minDays * dayS,
+            amount: '',
+            amountDelegated: 0,
+            amountErrMsg: '',
             // sliderLabels: ['', ''],
             id: getUniqueId(),
         };
@@ -145,6 +177,8 @@ export default {
          * @return {boolean}
          */
         canLockDelegation() {
+            console.log(this.validatorLockedUntil, this.now(), this.minLock);
+            console.log(this.minLockDays, this.maxLockDays);
             return this.validatorLockedUntil - this.now() > this.minLock && this.minLockDays < this.maxLockDays;
         },
 
@@ -174,6 +208,11 @@ export default {
          */
         sliderLabels() {
             return [`${this.minLockDays} days`, `${this.maxLockDays} days`];
+        },
+
+        undelegateMax() {
+            //withdrawRequestsAmount
+            return this.delegation ? WEIToFTM(this.delegation.amount) - this.delegation.amountInWithdraw : 0;
         },
     },
 
@@ -217,6 +256,9 @@ export default {
             this.delegation = data[0];
             this.validator = data[1];
 
+            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amountDelegated));
+            this.amount = this.amountDelegated.toString(10);
+
             this.lockDaysValue = this.minLockDays.toString();
             this.lockDaysInputValue = this.lockDaysValue;
 
@@ -226,6 +268,36 @@ export default {
                 this.updateARInput();
             });
             // console.log('delegation', this.delegation, this.validator);
+        },
+
+        /**
+         * Validator for `amount` input field.
+         *
+         * @param {String} _value
+         * @return {Boolean}
+         */
+        checkAmount(_value) {
+            const { amountDelegated } = this;
+            const value = parseFloat(_value);
+            let ok = false;
+
+            this.amountErrMsg = 'Invalid amount';
+
+            if (!isNaN(value)) {
+                if (value <= amountDelegated && value >= 1) {
+                    ok = true;
+                } else if (value > 0 && value < 1) {
+                    this.amountErrMsg = `You can't lock amount less than 1 FTM`;
+                } else if (value >= 1) {
+                    this.amountErrMsg = `You can lock max ${amountDelegated} FTM`;
+                }
+            }
+
+            if (ok) {
+                this.amountErrMsg = '';
+            }
+
+            return ok;
         },
 
         updateMessage() {
@@ -324,6 +396,7 @@ export default {
         },
 
         onSubmit() {
+            const amount = parseFloat(this.amount);
             let lockDuration = 0;
 
             if (this.canLockDelegation && this.valueIsCorrect) {
@@ -339,6 +412,9 @@ export default {
                     data: {
                         stakerId: this.stakerId,
                         lockDuration,
+                        amount,
+                        amountDelegated: this.delegation.amountDelegated,
+                        max: amount >= this.amountDelegated,
                     },
                 });
             }
@@ -386,6 +462,10 @@ export default {
             if (_event.key === '+' || _event.key === '-') {
                 _event.preventDefault();
             }
+        },
+
+        onEntireDelegationClick() {
+            this.amount = this.amountDelegated.toString();
         },
     },
 };

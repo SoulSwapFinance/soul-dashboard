@@ -103,9 +103,7 @@ export default {
             console.log(this.amount, this.undelegateMax);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                this.undelegateMax
-                    ? sfcUtils.prepareToWithdrawDelegationTx(stakerId)
-                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
+                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
                 this.currentAccount.address
             );
         },

@@ -71,6 +71,21 @@ export default {
             type: Number,
             default: 0,
         },
+        /** Delegation amount to be locked */
+        amount: {
+            type: Number,
+            default: 0,
+        },
+        /** Total delegation amount (in hex) */
+        amountDelegated: {
+            type: String,
+            default: '',
+        },
+        /** Lock maximal delegation amount */
+        max: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data() {
@@ -101,6 +116,10 @@ export default {
                 ? validator.stakerInfo.name
                 : 'Unknown';
         },
+
+        /*amountHex() {
+            return this.max && this.amountDelegated ? this.amountDelegated : this.amount;
+        },*/
     },
 
     mounted() {
@@ -119,7 +138,7 @@ export default {
 
             if (this.lockDuration > minDays * dayS) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration),
+                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, this.amount),
                     this.currentAccount.address
                 );
             }
