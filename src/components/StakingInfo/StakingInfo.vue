@@ -116,8 +116,8 @@
             <div class="row">
                 <div class="col align-center">
                     <div class="form-buttons">
-                        <template v-if="stakerInfo">
-                            <template v-if="accountInfo && accountInfo.preparedForWithdrawal">
+                        <template v-if="accountInfo.delegated !== '0x0'">
+                            <template v-if="accountInfo && !accountInfo.preparedForWithdrawal">
                                 <f-message type="info" with-icon>
                                     You will be able to delegate from this address again once all pending undelegations
                                     have been withdrawn.
@@ -428,10 +428,10 @@ export default {
             const { accountInfo } = this;
             const delegation = accountInfo ? accountInfo.delegation : null;
             const requests = [];
-            let amount = '';
+            // let amount = '';
 
             if (delegation) {
-                if (accountInfo.preparedForWithdrawal) {
+                /*if (accountInfo.preparedForWithdrawal) {
                     amount = delegation.amountDelegated;
                 }
 
@@ -443,9 +443,10 @@ export default {
                             timestamp: delegation.deactivatedTime,
                         },
                     });
-                }
+                }*/
 
                 if (delegation.withdrawRequests && delegation.withdrawRequests.length) {
+                    console.log('df', delegation.toStakerId, delegation.withdrawRequests);
                     delegation.withdrawRequests.forEach((_request) => {
                         if (delegation.toStakerId === _request.stakerID) {
                             requests.push(_request);
@@ -761,6 +762,8 @@ export default {
                                 }
                                 stakerID
                                 withdrawRequestID
+                                createdTime
+                                withdrawTime
                                 amount
                             }
                         }

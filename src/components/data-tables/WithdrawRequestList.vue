@@ -17,11 +17,11 @@
                             <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                             <template v-else>
                                 <button
-                                    :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
+                                    :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item)"
                                     class="btn withdraw-btn"
                                     :data-item-id="item.id"
                                 >
-                                    {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
+                                    {{ withdrawBtnLabel(item.createdTime) }}
                                 </button>
                             </template>
                         </div>
@@ -30,11 +30,11 @@
                         <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                         <template v-else>
                             <button
-                                :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
+                                :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item)"
                                 class="btn withdraw-btn"
                                 :data-item-id="item.id"
                             >
-                                {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
+                                {{ withdrawBtnLabel(item.createdTime) }}
                             </button>
                         </template>
                     </template>
@@ -91,7 +91,7 @@ export default {
                 {
                     name: 'undelegation_time',
                     label: 'Undelegation Time',
-                    itemProp: 'requestBlock.timestamp',
+                    itemProp: 'createdTime',
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), false, true);
                     },
@@ -99,7 +99,7 @@ export default {
                 {
                     name: 'withdrawal',
                     label: 'Withdrawal',
-                    itemProp: 'withdrawBlock.timestamp',
+                    itemProp: 'withdrawTime',
                 },
             ],
         };
@@ -122,7 +122,7 @@ export default {
     watch: {
         items: {
             handler(_value) {
-                this.dItems = _value.sort(sortByHex('requestBlock.timestamp', 'desc'));
+                this.dItems = _value.sort(sortByHex('createdTime', 'desc'));
             },
             deep: true,
             immediate: true,

@@ -113,12 +113,18 @@ export default {
         async setTx() {
             const { withdrawRequest } = this;
 
-            this.tx = await this.$fWallet.getSFCTransactionToSign(
-                withdrawRequest.withdrawRequestID
-                    ? sfcUtils.withdrawPartTx(parseInt(withdrawRequest.withdrawRequestID, 16))
-                    : sfcUtils.withdrawDelegationTx(parseInt(this.stakerId, 16)),
-                this.currentAccount.address
-            );
+            if (withdrawRequest.withdrawRequestID) {
+                console.log(withdrawRequest);
+                this.tx = await this.$fWallet.getSFCTransactionToSign(
+                    sfcUtils.withdrawPartTx(
+                        parseInt(withdrawRequest.stakerID, 16),
+                        parseInt(withdrawRequest.withdrawRequestID, 16)
+                    ),
+                    this.currentAccount.address
+                );
+            } else {
+                throw 'Need withdrawRequestID :(';
+            }
         },
 
         onSendTransactionSuccess(_data) {

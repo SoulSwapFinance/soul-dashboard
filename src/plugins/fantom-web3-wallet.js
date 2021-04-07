@@ -269,6 +269,8 @@ export class FantomWeb3Wallet {
                                         }
                                         stakerID
                                         withdrawRequestID
+                                        createdTime
+                                        withdrawTime
                                         amount
                                     }
                                 }
