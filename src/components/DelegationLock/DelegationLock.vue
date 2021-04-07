@@ -48,7 +48,7 @@
                         </f-slider>
                     </div>
 
-                    <f-input
+                    <!--                    <f-input
                         v-model="amount"
                         label="Amount"
                         field-size="large"
@@ -73,7 +73,7 @@
                                 {{ amountErrMsg }}
                             </f-message>
                         </template>
-                    </f-input>
+                    </f-input>-->
                 </f-placeholder>
                 <template v-if="canLockDelegation">
                     <!--                    <h3>Description</h3>-->
@@ -111,7 +111,6 @@ import { getUniqueId } from '@/utils';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import { formatDate, timestampToDate } from '@/filters.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import FInput from '@/components/core/FInput/FInput.vue';
 import { WEIToFTM } from '@/utils/transactions.js';
 
 /** Day in seconds. */
@@ -124,7 +123,7 @@ const blockTime = 15 * 60;
 export default {
     name: 'DelegationLock',
 
-    components: { FInput, FPlaceholder, FSlider, FAutoResizeInput, FMessage, FCard },
+    components: { FPlaceholder, FSlider, FAutoResizeInput, FMessage, FCard },
 
     props: {
         /***/
@@ -177,8 +176,6 @@ export default {
          * @return {boolean}
          */
         canLockDelegation() {
-            console.log(this.validatorLockedUntil, this.now(), this.minLock);
-            console.log(this.minLockDays, this.maxLockDays);
             return this.validatorLockedUntil - this.now() > this.minLock && this.minLockDays < this.maxLockDays;
         },
 
@@ -256,7 +253,7 @@ export default {
             this.delegation = data[0];
             this.validator = data[1];
 
-            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amountDelegated));
+            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amount));
             this.amount = this.amountDelegated.toString(10);
 
             this.lockDaysValue = this.minLockDays.toString();
@@ -413,8 +410,9 @@ export default {
                         stakerId: this.stakerId,
                         lockDuration,
                         amount,
-                        amountDelegated: this.delegation.amountDelegated,
-                        max: amount >= this.amountDelegated,
+                        amountHex: this.delegation.amount,
+                        // amountDelegated: this.delegation.amountDelegated,
+                        // max: amount >= this.amountDelegated,
                     },
                 });
             }

@@ -116,8 +116,8 @@
             <div class="row">
                 <div class="col align-center">
                     <div class="form-buttons">
-                        <template v-if="accountInfo.delegated !== '0x0'">
-                            <template v-if="accountInfo && !accountInfo.preparedForWithdrawal">
+                        <template v-if="accountInfo && accountInfo.delegated !== '0x0'">
+                            <template v-if="accountInfo && accountInfo.preparedForWithdrawal && false">
                                 <f-message type="info" with-icon>
                                     You will be able to delegate from this address again once all pending undelegations
                                     have been withdrawn.
@@ -526,6 +526,7 @@ export default {
             accountInfo.delegation = delegation;
 
             accountInfo.delegated = delegation ? delegation.amount : 0;
+            accountInfo.amountDelegated = delegation ? delegation.amountDelegated : 0;
             accountInfo.pendingRewards = delegation ? delegation.pendingRewards.amount : 0;
             accountInfo.claimedRewards = delegation ? delegation.claimedReward : 0;
 

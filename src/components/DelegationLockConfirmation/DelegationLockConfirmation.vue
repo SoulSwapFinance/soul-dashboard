@@ -77,7 +77,7 @@ export default {
             default: 0,
         },
         /** Total delegation amount (in hex) */
-        amountDelegated: {
+        amountHex: {
             type: String,
             default: '',
         },
@@ -116,10 +116,6 @@ export default {
                 ? validator.stakerInfo.name
                 : 'Unknown';
         },
-
-        /*amountHex() {
-            return this.max && this.amountDelegated ? this.amountDelegated : this.amount;
-        },*/
     },
 
     mounted() {
