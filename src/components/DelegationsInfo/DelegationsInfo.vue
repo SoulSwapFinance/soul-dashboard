@@ -1,9 +1,5 @@
 <template>
     <div class="delegations-info">
-        <!--        <f-card class="f-card-double-padding f-data-layout">
-            <staking-overview />
-        </f-card>-->
-
         <f-tabs class="account-main-content-mt">
             <template #delegations>
                 Wallet Delegations
