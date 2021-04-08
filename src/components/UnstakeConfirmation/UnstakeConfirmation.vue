@@ -10,7 +10,7 @@
         >
             <h2 class="cont-with-back-btn">
                 <span>
-                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / {{ isLocked ? '3' : '2' }}</span>
                 </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
@@ -90,6 +90,17 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        /**
+         * Returns `true` if delegetion is still locked.
+         *
+         * @return {boolean}
+         */
+        isLocked() {
+            const { accountInfo } = this;
+
+            return (accountInfo && accountInfo.delegation && accountInfo.delegation.isDelegationLocked) || false;
+        },
     },
 
     // activated() {

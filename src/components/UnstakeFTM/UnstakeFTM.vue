@@ -106,13 +106,14 @@ export default {
          */
         isLocked() {
             const { accountInfo } = this;
-            const lockedUntilTS =
+            /*const lockedUntilTS =
                 accountInfo && accountInfo.delegation && accountInfo.delegation.lockedUntil
                     ? parseInt(accountInfo.delegation.lockedUntil, 16)
                     : 0;
-            const now = new Date().getTime() / 1000;
+            const now = new Date().getTime() / 1000;*/
 
-            return lockedUntilTS > now;
+            // return lockedUntilTS > now;
+            return (accountInfo && accountInfo.delegation && accountInfo.delegation.isDelegationLocked) || false;
         },
 
         /**
