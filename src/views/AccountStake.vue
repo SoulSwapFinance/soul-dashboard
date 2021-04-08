@@ -23,6 +23,7 @@ import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/Cla
 import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/WithdrawFTMConfirmation.vue';
 import DelegationLock from '@/components/DelegationLock/DelegationLock.vue';
 import DelegationLockConfirmation from '@/components/DelegationLockConfirmation/DelegationLockConfirmation.vue';
+import DelegationUnlockConfirmation from '@/components/DelegationUnlockConfirmation/DelegationUnlockConfirmation.vue';
 import DefiMintSFTMConfirmation from '@/components/DefiMintSFTMConfirmation/DefiMintSFTMConfirmation.vue';
 import DefiRepaySFTMConfirmation from '@/components/DefiRepaySFTMConfirmation/DefiRepaySFTMConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
@@ -45,6 +46,7 @@ export default {
         WithdrawFTMConfirmation,
         DelegationLock,
         DelegationLockConfirmation,
+        DelegationUnlockConfirmation,
         DefiMintSFTMConfirmation,
         DefiRepaySFTMConfirmation,
     },
@@ -70,6 +72,7 @@ export default {
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
+                case 'delegation-unlock-confirmation':
                 case 'claim-rewards-confirmation':
                     return {
                         accountInfo: this._data_.accountInfo,

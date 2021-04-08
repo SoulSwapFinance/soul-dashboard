@@ -22,7 +22,7 @@
                         <div class="col f-row-label">Delegated</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                                <template v-if="accountInfo">{{ toFTM(accountInfo.delegated) }} FTM</template>
+                                <template v-if="accountInfo">{{ toFTM(accountInfo.amountDelegated) }} FTM</template>
                             </f-placeholder>
                         </div>
                     </div>
@@ -446,7 +446,6 @@ export default {
                 }*/
 
                 if (delegation.withdrawRequests && delegation.withdrawRequests.length) {
-                    console.log('df', delegation.toStakerId, delegation.withdrawRequests);
                     delegation.withdrawRequests.forEach((_request) => {
                         if (delegation.toStakerId === _request.stakerID) {
                             requests.push(_request);

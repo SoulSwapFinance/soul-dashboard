@@ -5,7 +5,7 @@
                 <legend class="h2">
                     <div class="cont-with-back-btn">
                         <span>
-                            Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                            Undelegate FTM <span class="f-steps"><b>1</b> / {{ isLocked ? '3' : '2' }}</span>
                         </span>
                         <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
                     </div>
@@ -160,7 +160,7 @@ export default {
             const amount = parseFloat(_event.detail.data.amount);
 
             this.$emit('change-component', {
-                to: 'unstake-confirmation',
+                to: this.isLocked ? 'delegation-unlock-confirmation' : 'unstake-confirmation',
                 from: 'unstake-f-t-m',
                 data: {
                     accountInfo: this.accountInfo,
