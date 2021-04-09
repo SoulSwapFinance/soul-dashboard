@@ -111,7 +111,7 @@ import { getUniqueId } from '@/utils';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import { formatDate, timestampToDate } from '@/filters.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
-import { WEIToFTM } from '@/utils/transactions.js';
+import appConfig from '../../../app.config.js';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -205,11 +205,6 @@ export default {
          */
         sliderLabels() {
             return [`${this.minLockDays} days`, `${this.maxLockDays} days`];
-        },
-
-        undelegateMax() {
-            //withdrawRequestsAmount
-            return this.delegation ? WEIToFTM(this.delegation.amount) - this.delegation.amountInWithdraw : 0;
         },
     },
 
@@ -401,6 +396,10 @@ export default {
                     lockDuration = this.validatorLockedUntil - this.now() - blockTime;
                 } else {
                     lockDuration = this.lockDaysInputValue * dayS + blockTime;
+                }
+
+                if (appConfig.useTestnet) {
+                    lockDuration = 185;
                 }
 
                 this.$emit('change-component', {

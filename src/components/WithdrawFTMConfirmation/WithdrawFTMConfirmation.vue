@@ -114,7 +114,6 @@ export default {
             const { withdrawRequest } = this;
 
             if (withdrawRequest.withdrawRequestID) {
-                console.log(withdrawRequest);
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
                     sfcUtils.withdrawPartTx(
                         parseInt(withdrawRequest.stakerID, 16),

@@ -49,6 +49,7 @@ import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import { toFTM } from '@/utils/transactions.js';
 import { formatDate, timestampToDate } from '@/filters.js';
+import appConfig from '../../../app.config.js';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -132,9 +133,15 @@ export default {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
 
-            if (this.lockDuration > minDays * dayS) {
+            if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, this.amount),
+                    sfcUtils.lockupDelegationTx(
+                        stakerId,
+                        this.lockDuration,
+                        this.amount,
+                        undefined,
+                        appConfig.useTestnet
+                    ),
                     this.currentAccount.address
                 );
             }
