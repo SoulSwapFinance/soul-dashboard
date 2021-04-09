@@ -6,6 +6,7 @@
             send-button-label="Undelegate"
             password-label="Please enter your wallet password to undelegate your FTM"
             :on-send-transaction-success="onSendTransactionSuccess"
+            :tmp-pwd-code="tmpPwdCode"
             @change-component="onChangeComponent"
         >
             <h2 class="cont-with-back-btn">
@@ -77,6 +78,11 @@ export default {
         },
         /***/
         stakerId: {
+            type: String,
+            default: '',
+        },
+        /** */
+        tmpPwdCode: {
             type: String,
             default: '',
         },

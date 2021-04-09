@@ -5,6 +5,8 @@
             confirmation-comp-name="delegation-unlock-confirmation"
             send-button-label="Unlock"
             password-label="Please enter your wallet password to unlock your delegated FTM"
+            set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
@@ -50,6 +52,7 @@ import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
+import { getUniqueId } from '@/utils';
 
 export default {
     name: 'DelegationUnlockConfirmation',
@@ -84,6 +87,7 @@ export default {
     data() {
         return {
             tx: {},
+            tmpPwdCode: '',
         };
     },
 
@@ -100,6 +104,8 @@ export default {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
             console.log(this.amount, this.undelegateMax);
+
+            this.tmpPwdCode = getUniqueId();
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.unlockDelegationTx(stakerId, this.amount),
@@ -120,6 +126,7 @@ export default {
                         amount: this.amount,
                         undelegateMax: this.undelegateMax,
                         stakerId: this.stakerId,
+                        tmpPwdCode: this.tmpPwdCode,
                     },
                 },
             });

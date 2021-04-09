@@ -81,6 +81,7 @@ export default {
                         stakerId: this._data_.stakerId,
                         reStake: this._data_.reStake,
                         fromDelegationList: this._data_.fromDelegationList,
+                        tmpPwdCode: this._data_.tmpPwdCode,
                     };
                 case 'transaction-success-message':
                     return {
