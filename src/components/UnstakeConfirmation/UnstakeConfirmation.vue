@@ -11,7 +11,11 @@
         >
             <h2 class="cont-with-back-btn">
                 <span>
-                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / {{ isLocked ? '3' : '2' }}</span>
+                    Undelegate FTM - Confirmation
+                    <span class="f-steps">
+                        <template v-if="!isLocked"><b>2</b> / 2</template>
+                        <template v-else><b>3</b> / 3</template>
+                    </span>
                 </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>

@@ -355,7 +355,7 @@ export default {
             let amount = 0;
 
             if (this.maxRemainingBalance > 0) {
-                amount = parseFloat(this.maxRemainingBalance) - 2;
+                amount = Math.floor(parseFloat(this.maxRemainingBalance) - 2);
             }
 
             this.amount = amount.toString();
