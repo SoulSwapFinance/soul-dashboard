@@ -483,7 +483,7 @@ export default {
 
             if (delegation && delegation.withdrawRequests && delegation.withdrawRequests.length) {
                 delegation.withdrawRequests.forEach((_request) => {
-                    if (!_request.withdrawBlock && delegation.toStakerId === _request.stakerID) {
+                    if (delegation.toStakerId === _request.stakerID) {
                         amount += WeiToFtm(_request.amount);
                     }
                 });
@@ -773,9 +773,6 @@ export default {
                             }
                             withdrawRequests {
                                 address
-                                account {
-                                    address
-                                }
                                 stakerID
                                 withdrawRequestID
                                 createdTime

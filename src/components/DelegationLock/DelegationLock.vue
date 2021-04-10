@@ -388,7 +388,8 @@ export default {
         },
 
         onSubmit() {
-            const amount = parseFloat(this.amount);
+            // const amount = parseFloat(this.amount);
+            const amountDelegated = parseFloat(this.amountDelegated);
             let lockDuration = 0;
 
             if (this.canLockDelegation && this.valueIsCorrect) {
@@ -408,8 +409,8 @@ export default {
                     data: {
                         stakerId: this.stakerId,
                         lockDuration,
-                        amount,
-                        amountHex: this.delegation.amount,
+                        amount: amountDelegated,
+                        amountHex: this.delegation.amountDelegated,
                         // amountDelegated: this.delegation.amountDelegated,
                         // max: amount >= this.amountDelegated,
                     },
