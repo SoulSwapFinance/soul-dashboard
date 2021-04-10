@@ -91,7 +91,7 @@ export default {
 
     computed: {
         undelegateMax() {
-            return this.accountInfo ? WEIToFTM(this.accountInfo.delegation.amount) : 0;
+            return this.accountInfo ? WEIToFTM(this.accountInfo.delegation.amountDelegated) : 0;
             /*
             return this.accountInfo
                 ? WEIToFTM(this.accountInfo.delegation.amount) - this.accountInfo.withdrawRequestsAmount

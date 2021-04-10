@@ -22,7 +22,7 @@
                         <div class="col f-row-label">Delegated</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                                <template v-if="accountInfo">{{ toFTM(accountInfo.amountDelegated) }} FTM</template>
+                                <template v-if="accountInfo">{{ toFTM(accountInfo.delegated) }} FTM</template>
                             </f-placeholder>
                         </div>
                     </div>
@@ -189,13 +189,18 @@
                                     Repay sFTM
                                 </button>
 
-                                <f-message v-if="!canIncreaseDelegation" type="info" with-icon class="align-left">
+                                <f-message
+                                    v-if="!canUndelegate && canClaimRewards"
+                                    type="info"
+                                    with-icon
+                                    class="align-left"
+                                >
                                     You need to claim all pending rewards before
                                     <!--increasing your delegation or-->
                                     undelegating.
-                                    <br />
+                                    <!--                                    <br />
                                     You can claim rewards for a maximum of {{ claimMaxEpochs }} epochs at once (use
-                                    repeatedly if needed).
+                                    repeatedly if needed).-->
                                 </f-message>
                                 <f-message v-if="showRepaySFTMMessage" type="info" with-icon class="align-left">
                                     Can't repay sFTM, not enough unlocked sFTM
@@ -287,16 +292,19 @@ export default {
 
             if (!this.isFluidStakingActive) {
                 return accountInfo.delegation
-                    ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                    ? accountInfo.delegation.amountDelegated !== '0x0' //accountInfo.delegation.amountInWithdraw
                     : true;
             } else {
                 return (
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards !== '0x0' &&
+                    (accountInfo.delegation ? accountInfo.delegation.amountDelegated !== '0x0' : true)
+                    /*
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true)
+*/
                 );
             }
         },
@@ -325,7 +333,8 @@ export default {
 
             if (!this.isFluidStakingActive) {
                 return accountInfo && accountInfo.delegation
-                    ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                    ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw &&
+                          accountInfo.delegation.amountDelegated !== '0x0'
                     : false;
             } else {
                 return (
@@ -334,9 +343,13 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
+                    (accountInfo.delegation ? accountInfo.delegation.amountDelegated !== '0x0' : true)
+                    /*
                     (accountInfo.delegation
-                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
+                        ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw &&
+                          accountInfo.delegation.amountDelegated !== '0x0'
                         : true)
+*/
                 );
             }
         },
@@ -351,9 +364,12 @@ export default {
                     accountInfo &&
                     accountInfo.pendingRewards &&
                     accountInfo.pendingRewards === '0x0' &&
+                    (accountInfo.delegation ? accountInfo.delegation.amountDelegated !== '0x0' : true) &&
+                    /*
                     (accountInfo.delegation
                         ? accountInfo.delegation.amountDelegated !== accountInfo.delegation.amountInWithdraw
                         : true) &&
+*/
                     this._delegation &&
                     !this._delegation.tokenizerAllowedToWithdraw
                 );

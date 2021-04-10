@@ -267,12 +267,14 @@ export default {
          * @return {Promise<void>}
          */
         async updateValidatorInfo() {
-            const validatorInfo = await this.$fWallet.getStakerById(this.validatorInfo.id);
+            if (this.validatorInfo.id) {
+                const validatorInfo = await this.$fWallet.getStakerById(this.validatorInfo.id);
 
-            this.validatorInfo = {
-                ...this.validatorInfo,
-                ...validatorInfo,
-            };
+                this.validatorInfo = {
+                    ...this.validatorInfo,
+                    ...validatorInfo,
+                };
+            }
         },
 
         /**
@@ -355,7 +357,7 @@ export default {
             let amount = 0;
 
             if (this.maxRemainingBalance > 0) {
-                amount = Math.floor(parseFloat(this.maxRemainingBalance) - 2);
+                amount = Math.ceil(this.maxRemainingBalance) - 2;
             }
 
             this.amount = amount.toString();
