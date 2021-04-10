@@ -6,6 +6,7 @@
                 :items="dItems"
                 first-m-v-column-width="6"
                 fixed-header
+                sticky0
                 f-card-off
                 no-f-l-padding
                 class="f-data-table-body-bg-color"
@@ -152,7 +153,7 @@ export default {
             const now = dayjs().utc();
 
             if (appConfig.useTestnet) {
-                end = start.add(3, 'm');
+                end = start.add(4, 'm');
             }
 
             if (now.diff(end) < 0) {
