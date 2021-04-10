@@ -385,11 +385,8 @@ export class FantomWeb3Wallet {
     }
 
     /**
-     * Get balance and total balance of account by address.
-     *
-     * @param {String} _address
-     * @param {Boolean} [_withDelegations] Include delegations and staker info.
-     * @return {Promise<{totalValue: string, address: string, balance: string}>}
+     * @param {number} _id
+     * @return {Promise<*>}
      */
     async getStakerById(_id) {
         const data = await this.apolloClient.query({
@@ -645,9 +642,9 @@ export class FantomWeb3Wallet {
         // let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
         let gasLimit = to ? await this.getEstimateGas(from, to, memo ? Web3.utils.asciiToHex(memo) : null, value) : '';
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             value: value,
@@ -674,9 +671,9 @@ export class FantomWeb3Wallet {
         let gasLimit =
             _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             ..._tx,
@@ -699,9 +696,9 @@ export class FantomWeb3Wallet {
         let gasLimit =
             _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             ..._tx,
