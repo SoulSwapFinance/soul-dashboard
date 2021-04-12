@@ -248,7 +248,7 @@ export default {
             this.delegation = data[0];
             this.validator = data[1];
 
-            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amount));
+            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amountDelegated));
             this.amount = this.amountDelegated.toString(10);
 
             this.lockDaysValue = this.minLockDays.toString();
@@ -399,8 +399,8 @@ export default {
                     lockDuration = this.lockDaysInputValue * dayS + blockTime;
                 }
 
-                if (appConfig.useTestnet) {
-                    lockDuration = 185;
+                if (appConfig.useTestnet && this.lockDaysInputValue === 14) {
+                    lockDuration = 10 * 60 + 5;
                 }
 
                 this.$emit('change-component', {

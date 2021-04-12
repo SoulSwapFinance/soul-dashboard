@@ -153,7 +153,7 @@ export default {
             const now = dayjs().utc();
 
             if (appConfig.useTestnet) {
-                end = start.add(4, 'm');
+                end = start.add(10, 'm');
             }
 
             if (now.diff(end) < 0) {
