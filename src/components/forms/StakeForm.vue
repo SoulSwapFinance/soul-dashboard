@@ -285,13 +285,14 @@ export default {
          */
         async stakeCofirmation(_amount) {
             const amount = parseFloat(_amount);
+            const amountWei = this.$fWallet.toWei(_amount);
             const validatorId = parseInt(this.validatorInfo.id, 16);
             let delegationTx = null;
 
             if (this.increaseDelegation) {
-                delegationTx = sfcUtils.increaseDelegationTx(amount, validatorId);
+                delegationTx = sfcUtils.increaseDelegationTx(amountWei, validatorId);
             } else {
-                delegationTx = sfcUtils.createDelegationTx(amount, validatorId);
+                delegationTx = sfcUtils.createDelegationTx(amountWei, validatorId);
             }
 
             const tx = await this.$fWallet.getSFCTransactionToSign(delegationTx, this.currentAccount.address);

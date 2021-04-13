@@ -133,12 +133,14 @@ export default {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
 
+            console.log(this.amount, this.$fWallet.toWei(this.amount));
+
             if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
                     sfcUtils.lockupDelegationTx(
                         stakerId,
                         this.lockDuration,
-                        this.amount,
+                        this.$fWallet.toWei(this.amount),
                         undefined,
                         appConfig.useTestnet
                     ),

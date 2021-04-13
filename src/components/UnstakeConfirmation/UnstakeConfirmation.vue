@@ -124,7 +124,7 @@ export default {
             console.log(this.amount, this.undelegateMax);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
+                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.$fWallet.toWei(this.amount)),
                 this.currentAccount.address
             );
         },

@@ -103,12 +103,12 @@ export default {
     methods: {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
-            console.log(this.amount, this.undelegateMax);
+            console.log(this.amount, this.undelegateMax, this.$fWallet.toWei(this.amount));
 
             this.tmpPwdCode = getUniqueId();
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.unlockDelegationTx(stakerId, this.amount),
+                sfcUtils.unlockDelegationTx(stakerId, this.$fWallet.toWei(this.amount)),
                 this.currentAccount.address
             );
         },
