@@ -54,7 +54,9 @@ import { WEIToFTM } from '../../utils/transactions.js';
 import FDataTable from '../core/FDataTable/FDataTable.vue';
 import dayjs from 'dayjs';
 import { sortByHex } from '../../utils/array-sorting.js';
-import appConfig from '../../../app.config.js';
+
+/** Estimated time of block in seconds. */
+const blockTime = 15 * 60;
 
 export default {
     name: 'WithdrawRequestList',
@@ -103,6 +105,7 @@ export default {
                     itemProp: 'withdrawTime',
                 },
             ],
+            sfcConfig: {},
         };
     },
 
@@ -130,6 +133,10 @@ export default {
         },
     },
 
+    async created() {
+        this.sfcConfig = await this.$fWallet.getSFCConfig();
+    },
+
     methods: {
         /**
          * Get label for withdraw button.
@@ -149,14 +156,15 @@ export default {
          */
         canNotWithdraw(_timestamp) {
             const start = dayjs(this.prepareTimestamp(_timestamp)).utc();
-            let end = start.add(7, 'days');
+            const { withdrawalPeriodTime } = this.sfcConfig;
+            let end = withdrawalPeriodTime ? start.add(withdrawalPeriodTime.num + blockTime, 'second') : null; // start.add(7, 'days');
             const now = dayjs().utc();
 
-            if (appConfig.useTestnet) {
+            /*if (appConfig.useTestnet) {
                 end = start.add(10, 'm');
-            }
+            }*/
 
-            if (now.diff(end) < 0) {
+            if (end && now.diff(end) < 0) {
                 return end.from(now);
             } else {
                 return '';

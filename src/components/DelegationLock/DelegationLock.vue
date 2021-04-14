@@ -116,7 +116,7 @@ import appConfig from '../../../app.config.js';
 /** Day in seconds. */
 const dayS = 86400;
 /** Minimal lock duration in days. */
-const minDays = 14;
+// const minDays = 14;
 /** Estimated time of block in seconds. */
 const blockTime = 15 * 60;
 
@@ -141,7 +141,8 @@ export default {
             lockedUntilDate: '',
             lockDaysValue: '',
             lockDaysInputValue: '',
-            minLock: minDays * dayS,
+            minLock: 0,
+            // minLock: minDays * dayS,
             amount: '',
             amountDelegated: 0,
             amountErrMsg: '',
@@ -162,7 +163,11 @@ export default {
             // tmp
             // const lockedUntil = this.delegation ? parseInt(this.validator.lockedUntil, 16) - dayS * 5 - this.now() : 0;
 
-            return Math.max(minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS) + 1);
+            return Math.max(this.minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS) + 1);
+        },
+
+        minDays() {
+            return Math.round(this.minLock / dayS);
         },
 
         /**
@@ -244,6 +249,9 @@ export default {
                 this.fetchDelegation(this.stakerId),
                 this.$fWallet.getStakerById(this.stakerId),
             ]);
+            const sfcConfig = await this.$fWallet.getSFCConfig();
+
+            this.minLock = sfcConfig.minLockupDuration.num;
 
             this.delegation = data[0];
             this.validator = data[1];
@@ -300,7 +308,7 @@ export default {
                 if (this.minLockDays >= this.maxLockDays && this.maxLockDays > 0) {
                     this.message = 'You have reached maximum days to lock delegation.';
                 } else {
-                    this.message = `Validator doesn't lock delegations or lock time is less than ${minDays} days.`;
+                    this.message = `Validator doesn't lock delegations or lock time is less than ${this.minDays} days.`;
                 }
             } else if (this.valueIsCorrect) {
                 this.lockedUntilDate = this.lockedUntil();

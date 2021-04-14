@@ -137,6 +137,45 @@ export class FantomWeb3Wallet {
         ];
 
         this.pwdStorage = new PWDStorage();
+        this.sfcConfig = null;
+    }
+
+    async getSFCConfig() {
+        if (this.sfcConfig) {
+            return this.sfcConfig;
+        }
+
+        const data = await this.apolloClient.query({
+            query: gql`
+                query SFCConfig {
+                    sfcConfig {
+                        minValidatorStake
+                        maxDelegatedRatio
+                        minLockupDuration
+                        maxLockupDuration
+                        withdrawalPeriodEpochs
+                        withdrawalPeriodTime
+                    }
+                }
+            `,
+            fetchPolicy: 'network-only',
+        });
+        const sfcConfig = data.data.sfcConfig || {};
+
+        this.sfcConfig = {};
+
+        console.log('nacitam');
+
+        Object.keys(sfcConfig).forEach((_key) => {
+            const value = sfcConfig[_key];
+
+            this.sfcConfig[_key] = {
+                hex: value,
+                num: _key === 'maxDelegatedRatio' ? this.fromWei(value) : parseInt(sfcConfig[_key], 16),
+            };
+        });
+
+        return this.sfcConfig;
     }
 
     /**
