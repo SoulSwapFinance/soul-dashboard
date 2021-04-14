@@ -1,7 +1,7 @@
 <template>
     <ul class="f-social-media-links no-markers">
         <li>
-            <a href="https://t.co/rUA9BE8kf2?amp=1" target="_blank" rel="nofollow" title="Fantom on Discord">
+            <a href="http://chat.fantom.network/" target="_blank" rel="nofollow" title="Fantom on Discord">
                 <icon data="@/assets/svg/social-media/discord.svg" width="24" height="24"></icon>
             </a>
         </li>
