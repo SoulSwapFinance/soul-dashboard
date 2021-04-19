@@ -18,7 +18,7 @@ export const FANTOM_CHAIN_ID = 0xfa;
 
 export const GAS_LIMITS = {
     default: '0xabe0',
-    max: '90F560', // 9500000
+    max: '0x90F560', // 9500000
 };
 
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
