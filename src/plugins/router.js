@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-// import { routes } from '../routes.js';
-import { routes } from '../routes-maintenance.js';
+import { routes } from '../routes.js';
+// import { routes } from '../routes-maintenance.js';
 import { store } from '../store';
 import appConfig from '../../app.config.js';
 
