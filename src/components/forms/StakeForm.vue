@@ -267,12 +267,14 @@ export default {
          * @return {Promise<void>}
          */
         async updateValidatorInfo() {
-            const validatorInfo = await this.$fWallet.getStakerById(this.validatorInfo.id);
+            if (this.validatorInfo.id) {
+                const validatorInfo = await this.$fWallet.getStakerById(this.validatorInfo.id);
 
-            this.validatorInfo = {
-                ...this.validatorInfo,
-                ...validatorInfo,
-            };
+                this.validatorInfo = {
+                    ...this.validatorInfo,
+                    ...validatorInfo,
+                };
+            }
         },
 
         /**
@@ -283,13 +285,14 @@ export default {
          */
         async stakeCofirmation(_amount) {
             const amount = parseFloat(_amount);
+            const amountWei = this.$fWallet.toWei(_amount);
             const validatorId = parseInt(this.validatorInfo.id, 16);
             let delegationTx = null;
 
             if (this.increaseDelegation) {
-                delegationTx = sfcUtils.increaseDelegationTx(amount, validatorId);
+                delegationTx = sfcUtils.increaseDelegationTx(amountWei, validatorId);
             } else {
-                delegationTx = sfcUtils.createDelegationTx(amount, validatorId);
+                delegationTx = sfcUtils.createDelegationTx(amountWei, validatorId);
             }
 
             const tx = await this.$fWallet.getSFCTransactionToSign(delegationTx, this.currentAccount.address);
@@ -355,7 +358,7 @@ export default {
             let amount = 0;
 
             if (this.maxRemainingBalance > 0) {
-                amount = parseFloat(this.maxRemainingBalance) - 2;
+                amount = Math.ceil(this.maxRemainingBalance) - 2;
             }
 
             this.amount = amount.toString();

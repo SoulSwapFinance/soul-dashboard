@@ -1,19 +1,30 @@
 <template>
-    <div class="unstash-confirmation">
+    <div class="delegation-unlock-confirmation">
         <tx-confirmation
             :tx="tx"
-            confirmation-comp-name="unstash-confirmation"
-            send-button-label="Unstash"
-            password-label="Please enter your wallet password to unstash your rewards"
+            confirmation-comp-name="delegation-unlock-confirmation"
+            send-button-label="Unlock"
+            password-label="Please enter your wallet password to unlock your delegated FTM"
+            set-tmp-pwd
+            :tmp-pwd-code="tmpPwdCode"
             :on-send-transaction-success="onSendTransactionSuccess"
             @change-component="onChangeComponent"
         >
             <h2 class="cont-with-back-btn">
-                <span>Unstash Rewards</span>
+                <span>
+                    Unlock FTM - Confirmation <span class="f-steps"><b>2</b> / 3</span>
+                </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 
             <div class="transaction-info">
+                <div class="row no-collapse">
+                    <div class="col-3 f-row-label">Validator</div>
+                    <div class="col break-word">
+                        {{ accountInfo.stakerInfo.stakerInfo.name }}, {{ parseInt(accountInfo.stakerInfo.id) }}
+                    </div>
+                </div>
+
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">From</div>
                     <div class="col break-word">
@@ -23,8 +34,8 @@
                 </div>
 
                 <div class="row no-collapse">
-                    <div class="col-3 f-row-label">Amount</div>
-                    <div class="col break-word">{{ toFTM(accountInfo.stashed) }} FTM</div>
+                    <div class="col-3 f-row-label">Unlock Amount</div>
+                    <div class="col break-word">{{ amount }}</div>
                 </div>
             </div>
 
@@ -36,14 +47,15 @@
 </template>
 
 <script>
-import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
+import { toFTM } from '../../utils/transactions.js';
 import { mapGetters } from 'vuex';
 import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
-import { toFTM } from '../../utils/transactions.js';
+import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
+import { getUniqueId } from '@/utils';
 
 export default {
-    name: 'UnstashConfirmation',
+    name: 'DelegationUnlockConfirmation',
 
     components: { LedgerConfirmationContent, TxConfirmation },
 
@@ -55,6 +67,16 @@ export default {
                 return {};
             },
         },
+        /** Amount of FTM tokens to unstake */
+        amount: {
+            type: Number,
+            default: 1,
+        },
+        /** Unlock maximal amount of FTM tokens */
+        undelegateMax: {
+            type: Boolean,
+            default: false,
+        },
         /***/
         stakerId: {
             type: String,
@@ -65,6 +87,7 @@ export default {
     data() {
         return {
             tx: {},
+            tmpPwdCode: '',
         };
     },
 
@@ -79,8 +102,13 @@ export default {
 
     methods: {
         async setTx() {
+            const stakerId = parseInt(this.stakerId, 16);
+            console.log(this.amount, this.undelegateMax, this.$fWallet.toWei(this.amount));
+
+            this.tmpPwdCode = getUniqueId();
+
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.unstashRewardsTx(),
+                sfcUtils.unlockDelegationTx(stakerId, this.$fWallet.toWei(this.amount)),
                 this.currentAccount.address
             );
         },
@@ -88,13 +116,17 @@ export default {
         onSendTransactionSuccess(_data) {
             this.$emit('change-component', {
                 to: 'transaction-success-message',
-                from: 'unstash-confirmation',
+                from: 'delegation-unlock-confirmation',
                 data: {
                     tx: _data.data.sendTransaction.hash,
-                    successMessage: 'Unstashing Successful',
-                    continueTo: 'staking-info',
+                    successMessage: 'Unlock Successful',
+                    continueTo: 'unstake-confirmation',
                     continueToParams: {
+                        accountInfo: this.accountInfo,
+                        amount: this.amount,
+                        undelegateMax: this.undelegateMax,
                         stakerId: this.stakerId,
+                        tmpPwdCode: this.tmpPwdCode,
                     },
                 },
             });
@@ -102,16 +134,12 @@ export default {
 
         onBackBtnClick() {
             this.$emit('change-component', {
-                to: 'staking-info',
-                from: 'unstash-confirmation',
+                to: 'unstake-f-t-m',
+                from: 'delegation-unlock-confirmation',
                 data: {
+                    accountInfo: this.accountInfo,
                     stakerId: this.stakerId,
                 },
-                /*
-                data: {
-                    withdrawRequest: this.withdrawRequest,
-                },
-*/
             });
         },
 

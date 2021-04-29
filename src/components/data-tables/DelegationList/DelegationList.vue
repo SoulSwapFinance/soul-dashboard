@@ -77,7 +77,7 @@
 import FDataTable from '@/components/core/FDataTable/FDataTable.vue';
 import gql from 'graphql-tag';
 import { cloneObject } from '@/utils';
-import { formatDate, formatHexToInt, formatNumberByLocale, timestampToDate } from '@/filters.js';
+import { formatDate, formatNumberByLocale, timestampToDate } from '@/filters.js';
 import { WEIToFTM } from '@/utils/transactions.js';
 import appConfig from '../../../../app.config.js';
 // import { formatHexToInt } from '@/filters.js';
@@ -116,10 +116,7 @@ export default {
                             cursor
                             delegation {
                                 toStakerId
-                                createdEpoch
                                 createdTime
-                                deactivatedEpoch
-                                deactivatedTime
                                 amount
                                 isDelegationLocked
                                 lockedFromEpoch
@@ -141,13 +138,15 @@ export default {
                 if (_key === 'delegationsByAddress') {
                     data = cloneObject(_data.data.delegationsByAddress);
 
-                    const edges = data.edges;
+                    let edges = data.edges;
 
                     if (edges && edges.length > 0 && edges[0].id && this.dItems.length > 0) {
                         return;
                     }
 
                     this.hasNext = data.pageInfo.hasNext;
+
+                    edges = edges.filter((_edge) => _edge.delegation && _edge.delegation.amount !== '0x0');
 
                     if (this.dItems.length === 0) {
                         this.dItems = edges;
@@ -157,8 +156,10 @@ export default {
                         }
                     }
 
-                    this.totalCount = data.totalCount;
-                    const totalCount = formatHexToInt(this.totalCount);
+                    // this.totalCount = data.totalCount;
+                    // const totalCount = formatHexToInt(this.totalCount);
+                    this.totalCount = this.dItems.length;
+                    const totalCount = this.totalCount;
                     this.$emit('records-count', totalCount);
 
                     if (totalCount === this.dItems.length) {

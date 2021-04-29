@@ -229,6 +229,12 @@ export default {
             default: false,
         },
 
+        /** Set top position of fixed header to 0 */
+        sticky0: {
+            type: Boolean,
+            default: false,
+        },
+
         /** Enable infinite scrolling. */
         infiniteScroll: {
             type: Boolean,
@@ -373,6 +379,7 @@ export default {
                 'f-card-on': !this.fCardOff,
                 'height-set': this.height !== 'auto',
                 'fixed-header': this.fixedHeader,
+                'sticky-0': this.sticky0,
                 'no-fl-padding': this.noFLPadding || !this.fCardOff,
                 'action-on-row': this.actionOnRow,
             };

@@ -49,6 +49,7 @@ import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import { toFTM } from '@/utils/transactions.js';
 import { formatDate, timestampToDate } from '@/filters.js';
+import appConfig from '../../../app.config.js';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -70,6 +71,21 @@ export default {
         lockDuration: {
             type: Number,
             default: 0,
+        },
+        /** Delegation amount to be locked */
+        amount: {
+            type: Number,
+            default: 0,
+        },
+        /** Total delegation amount (in hex) */
+        amountHex: {
+            type: String,
+            default: '',
+        },
+        /** Lock maximal delegation amount */
+        max: {
+            type: Boolean,
+            default: false,
         },
     },
 
@@ -117,9 +133,17 @@ export default {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
 
-            if (this.lockDuration > minDays * dayS) {
+            console.log(this.amount, this.$fWallet.toWei(this.amount));
+
+            if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration),
+                    sfcUtils.lockupDelegationTx(
+                        stakerId,
+                        this.lockDuration,
+                        this.$fWallet.toWei(this.amount),
+                        undefined,
+                        appConfig.useTestnet
+                    ),
                     this.currentAccount.address
                 );
             }

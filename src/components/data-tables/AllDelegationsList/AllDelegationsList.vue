@@ -284,10 +284,7 @@ export default {
                                     cursor
                                     delegation {
                                         toStakerId
-                                        createdEpoch
                                         createdTime
-                                        deactivatedEpoch
-                                        deactivatedTime
                                         amount
                                         isDelegationLocked
                                         lockedFromEpoch

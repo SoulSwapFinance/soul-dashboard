@@ -6,6 +6,7 @@
                 :items="dItems"
                 first-m-v-column-width="6"
                 fixed-header
+                sticky0
                 f-card-off
                 no-f-l-padding
                 class="f-data-table-body-bg-color"
@@ -17,11 +18,11 @@
                             <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                             <template v-else>
                                 <button
-                                    :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
+                                    :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item)"
                                     class="btn withdraw-btn"
                                     :data-item-id="item.id"
                                 >
-                                    {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
+                                    {{ withdrawBtnLabel(item.createdTime) }}
                                 </button>
                             </template>
                         </div>
@@ -30,11 +31,11 @@
                         <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                         <template v-else>
                             <button
-                                :disabled="!!canNotWithdraw(item.requestBlock.timestamp) || !canWithdraw(item)"
+                                :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item)"
                                 class="btn withdraw-btn"
                                 :data-item-id="item.id"
                             >
-                                {{ withdrawBtnLabel(item.requestBlock.timestamp) }}
+                                {{ withdrawBtnLabel(item.createdTime) }}
                             </button>
                         </template>
                     </template>
@@ -53,7 +54,9 @@ import { WEIToFTM } from '../../utils/transactions.js';
 import FDataTable from '../core/FDataTable/FDataTable.vue';
 import dayjs from 'dayjs';
 import { sortByHex } from '../../utils/array-sorting.js';
-import appConfig from '../../../app.config.js';
+
+/** Estimated time of block in seconds. */
+const blockTime = 15 * 60;
 
 export default {
     name: 'WithdrawRequestList',
@@ -91,7 +94,7 @@ export default {
                 {
                     name: 'undelegation_time',
                     label: 'Undelegation Time',
-                    itemProp: 'requestBlock.timestamp',
+                    itemProp: 'createdTime',
                     formatter: (_value) => {
                         return formatDate(timestampToDate(_value), false, true);
                     },
@@ -99,9 +102,10 @@ export default {
                 {
                     name: 'withdrawal',
                     label: 'Withdrawal',
-                    itemProp: 'withdrawBlock.timestamp',
+                    itemProp: 'withdrawTime',
                 },
             ],
+            sfcConfig: {},
         };
     },
 
@@ -122,11 +126,15 @@ export default {
     watch: {
         items: {
             handler(_value) {
-                this.dItems = _value.sort(sortByHex('requestBlock.timestamp', 'desc'));
+                this.dItems = _value.sort(sortByHex('createdTime', 'desc'));
             },
             deep: true,
             immediate: true,
         },
+    },
+
+    async created() {
+        this.sfcConfig = await this.$fWallet.getSFCConfig();
     },
 
     methods: {
@@ -148,14 +156,15 @@ export default {
          */
         canNotWithdraw(_timestamp) {
             const start = dayjs(this.prepareTimestamp(_timestamp)).utc();
-            let end = start.add(7, 'days');
+            const { withdrawalPeriodTime } = this.sfcConfig;
+            let end = withdrawalPeriodTime ? start.add(withdrawalPeriodTime.num + blockTime, 'second') : null; // start.add(7, 'days');
             const now = dayjs().utc();
 
-            if (appConfig.useTestnet) {
-                end = start.add(1, 'm');
-            }
+            /*if (appConfig.useTestnet) {
+                end = start.add(10, 'm');
+            }*/
 
-            if (now.diff(end) < 0) {
+            if (end && now.diff(end) < 0) {
                 return end.from(now);
             } else {
                 return '';

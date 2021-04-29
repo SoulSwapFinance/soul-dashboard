@@ -5,7 +5,7 @@
                 <legend class="h2">
                     <div class="cont-with-back-btn">
                         <span>
-                            Undelegate FTM <span class="f-steps"><b>1</b> / 2</span>
+                            Undelegate FTM <span class="f-steps"><b>1</b> / {{ isLocked ? '3' : '2' }}</span>
                         </span>
                         <button type="button" class="btn light" @click="onPreviousBtnClick">Back</button>
                     </div>
@@ -91,9 +91,12 @@ export default {
 
     computed: {
         undelegateMax() {
+            return this.accountInfo ? WEIToFTM(this.accountInfo.delegation.amountDelegated) : 0;
+            /*
             return this.accountInfo
                 ? WEIToFTM(this.accountInfo.delegation.amount) - this.accountInfo.withdrawRequestsAmount
                 : 0;
+*/
         },
 
         /**
@@ -103,13 +106,14 @@ export default {
          */
         isLocked() {
             const { accountInfo } = this;
-            const lockedUntilTS =
+            /*const lockedUntilTS =
                 accountInfo && accountInfo.delegation && accountInfo.delegation.lockedUntil
                     ? parseInt(accountInfo.delegation.lockedUntil, 16)
                     : 0;
-            const now = new Date().getTime() / 1000;
+            const now = new Date().getTime() / 1000;*/
 
-            return lockedUntilTS > now;
+            // return lockedUntilTS > now;
+            return (accountInfo && accountInfo.delegation && accountInfo.delegation.isDelegationLocked) || false;
         },
 
         /**
@@ -157,7 +161,7 @@ export default {
             const amount = parseFloat(_event.detail.data.amount);
 
             this.$emit('change-component', {
-                to: 'unstake-confirmation',
+                to: this.isLocked ? 'delegation-unlock-confirmation' : 'unstake-confirmation',
                 from: 'unstake-f-t-m',
                 data: {
                     accountInfo: this.accountInfo,

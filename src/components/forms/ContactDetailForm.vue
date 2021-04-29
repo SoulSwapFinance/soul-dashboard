@@ -147,7 +147,8 @@ import FCopyButton from '../core/FCopyButton/FCopyButton.vue';
 import QRCodeWindow from '../windows/QRCodeWindow/QRCodeWindow.vue';
 import FSelect from '../core/FSelect/FSelect.vue';
 import RemoveContactWindow from '../windows/RemoveContactWindow/RemoveContactWindow.vue';
-// import RemoveContactWindow from '../windows/RemoveContactWindow/RemoveContactWindow.vue';
+import Resolution from '@unstoppabledomains/resolution';
+const resolution = new Resolution();
 
 /**
  * @mixes helpersMixin
@@ -192,6 +193,7 @@ export default {
             /** @type {WalletBlockchain} */
             blockchain: 'fantom',
             addressErrorMsg: '',
+            resolvedAddress: null,
         };
     },
 
@@ -221,12 +223,6 @@ export default {
                 order = this.contacts.length + 1;
             }
 
-            /*
-            if (this.action === 'new' && order === this.contacts.length) {
-                order++;
-            }
-*/
-
             if (order < 1) {
                 order = 1;
             }
@@ -255,7 +251,6 @@ export default {
     mounted() {
         this.address = this.contactData.address || '';
         this.blockchain = this.contactData.blockchain || 'fantom';
-        // this.contact = this.getContactByAddress(this.contactData.address);
     },
 
     methods: {
@@ -271,10 +266,9 @@ export default {
          * @param {string} _value
          * @return {boolean}
          */
-        checkAddress(_value) {
+        async checkAddress(_value) {
             const { blockchain } = this;
             const { action } = this;
-            let ok = true;
 
             if (action !== 'new' && action !== 'add') {
                 return true;
@@ -282,9 +276,21 @@ export default {
 
             this.addressErrorMsg = '';
 
-            if (!(ok = !!_value.trim())) {
+            if (!_value.trim()) {
                 this.addressErrorMsg = 'This field cannot be blank';
-            } else if (!(ok = this.$fWallet.isValidAddress(_value, blockchain))) {
+                return false;
+            }
+
+            let address = _value;
+            if (blockchain === 'fantom' && resolution.isSupportedDomainInNetwork(_value)) {
+                try {
+                    this.resolvedAddress = address = await resolution.multiChainAddr(_value, 'FTM', 'OPERA');
+                } catch (e) {
+                    console.log('Domain resolution failed', e);
+                }
+            }
+
+            if (!this.$fWallet.isValidAddress(address, blockchain)) {
                 if (blockchain === 'fantom') {
                     this.addressErrorMsg = 'Not valid fantom address';
                 } else if (blockchain === 'ethereum') {
@@ -292,15 +298,17 @@ export default {
                 } else if (blockchain === 'binance') {
                     this.addressErrorMsg = 'Not valid binance address';
                 }
-            } else if (
-                this.getContactAndIndexByAddress(_value).index !== -1 ||
-                (blockchain === 'fantom' && this.getAccountAndIndexByAddress(_value).index !== -1)
+                return false;
+            }
+            if (
+                this.getContactAndIndexByAddress(address).index !== -1 ||
+                (blockchain === 'fantom' && this.getAccountAndIndexByAddress(address).index !== -1)
             ) {
                 this.addressErrorMsg = 'Address already exists';
-                ok = false;
+                return false;
             }
 
-            return ok;
+            return true;
         },
 
         /**
@@ -328,7 +336,10 @@ export default {
             const { data } = _event.detail;
             const { name } = data;
             const order = parseInt(data.order);
-            const address = data.address || this.address;
+            const address =
+                this.resolvedAddress || // resolved from domain name during checkAddress
+                data.address || // filled in form
+                this.address; // form opened with
 
             if (this.checkName(name) && this.checkOrder(order) && this.checkAddress(address)) {
                 this.$emit('contact-detail-form-data', { ...data, name, order, address });

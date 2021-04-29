@@ -185,21 +185,14 @@ export default {
                 return;
             }
 
-            if (!fromToken.decimals) {
-                fromToken.decimals = 18;
-            }
-
-            if (!toToken.decimals) {
-                toToken.decimals = 18;
-            }
-
             this.tmpPwdCode = params.tmpPwdCode || getUniqueId();
 
             if (!contractAddress) {
                 contractAddress = $defi.contracts.uniswapRouter;
             }
 
-            const liquidity = $defi.fromTokenValue(params.pair.shareOf, fromToken) * (params.currLiquidity / 100);
+            const liquidity =
+                $defi.fromTokenValue(params.pair.shareOf, { decimals: 18 }) * (params.currLiquidity / 100);
 
             // this.liquidity = liquidity;
             this.liquidity = liquidity;

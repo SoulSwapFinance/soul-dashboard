@@ -21,9 +21,9 @@ import UnstakeFTM from '../components/UnstakeFTM/UnstakeFTM.vue';
 import UnstakeConfirmation from '../components/UnstakeConfirmation/UnstakeConfirmation.vue';
 import ClaimRewardsConfirmation from '../components/ClaimRewardsConfirmation/ClaimRewardsConfirmation.vue';
 import WithdrawFTMConfirmation from '../components/WithdrawFTMConfirmation/WithdrawFTMConfirmation.vue';
-import UnstashConfirmation from '../components/UnstashConfirmation/UnstashConfirmation.vue';
 import DelegationLock from '@/components/DelegationLock/DelegationLock.vue';
 import DelegationLockConfirmation from '@/components/DelegationLockConfirmation/DelegationLockConfirmation.vue';
+import DelegationUnlockConfirmation from '@/components/DelegationUnlockConfirmation/DelegationUnlockConfirmation.vue';
 import DefiMintSFTMConfirmation from '@/components/DefiMintSFTMConfirmation/DefiMintSFTMConfirmation.vue';
 import DefiRepaySFTMConfirmation from '@/components/DefiRepaySFTMConfirmation/DefiRepaySFTMConfirmation.vue';
 import { eventBusMixin } from '../mixins/event-bus.js';
@@ -44,9 +44,9 @@ export default {
         UnstakeConfirmation,
         ClaimRewardsConfirmation,
         WithdrawFTMConfirmation,
-        UnstashConfirmation,
         DelegationLock,
         DelegationLockConfirmation,
+        DelegationUnlockConfirmation,
         DefiMintSFTMConfirmation,
         DefiRepaySFTMConfirmation,
     },
@@ -72,6 +72,7 @@ export default {
                     };
                 case 'unstake-f-t-m':
                 case 'unstake-confirmation':
+                case 'delegation-unlock-confirmation':
                 case 'claim-rewards-confirmation':
                     return {
                         accountInfo: this._data_.accountInfo,
@@ -80,6 +81,7 @@ export default {
                         stakerId: this._data_.stakerId,
                         reStake: this._data_.reStake,
                         fromDelegationList: this._data_.fromDelegationList,
+                        tmpPwdCode: this._data_.tmpPwdCode,
                     };
                 case 'transaction-success-message':
                     return {
@@ -90,7 +92,6 @@ export default {
                         stakerId: this._data_.stakerId,
                     };
                 case 'withdraw-f-t-m-confirmation':
-                case 'unstash-confirmation':
                 case 'stake-form':
                 case 'staking-info':
                 case 'delegation-lock':

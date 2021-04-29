@@ -164,13 +164,11 @@ export default {
                     stakers {
                         id
                         stakerAddress
-                        isOffline
                         isCheater
                         createdTime
                         stake
                         totalStake
                         delegatedMe
-                        poi
                         isOffline
                         isCheater
                         stakerInfo {
@@ -368,6 +366,7 @@ export default {
                                     cursor
                                     delegation {
                                         toStakerId
+                                        amount
                                     }
                                 }
                             }
@@ -383,7 +382,10 @@ export default {
                 'delegationsByAddress'
             );
 
-            return delegations.map((_item) => (_item.delegation ? _item.delegation.toStakerId : ''));
+            return delegations
+                .filter((_item) => _item.delegation && _item.delegation.amount !== '0x0' && _item.delegation.toStakerId)
+                .map((_item) => _item.delegation.toStakerId);
+            // return delegations.map((_item) => (_item.delegation ? _item.delegation.toStakerId : ''));
         },
 
         onClick(_event) {

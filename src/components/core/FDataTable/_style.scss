@@ -82,7 +82,7 @@
             z-index: 2;
         }
 
-        &.height-set {
+        &.height-set, &.sticky-0 {
             thead th {
                 top: 0;
             }

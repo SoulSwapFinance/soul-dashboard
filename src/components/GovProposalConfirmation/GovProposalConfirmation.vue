@@ -223,7 +223,7 @@ export default {
                 const data = await fFetch.fetchGQLQuery(
                     {
                         query: gql`
-                            query Delegation($address: Address!, $staker: Long!) {
+                            query Delegation($address: Address!, $staker: BigInt!) {
                                 delegation(address: $address, staker: $staker) {
                                     amount
                                 }

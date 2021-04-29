@@ -6,11 +6,16 @@
             send-button-label="Undelegate"
             password-label="Please enter your wallet password to undelegate your FTM"
             :on-send-transaction-success="onSendTransactionSuccess"
+            :tmp-pwd-code="tmpPwdCode"
             @change-component="onChangeComponent"
         >
             <h2 class="cont-with-back-btn">
                 <span>
-                    Undelegate FTM - Confirmation <span class="f-steps"><b>2</b> / 2</span>
+                    Undelegate FTM - Confirmation
+                    <span class="f-steps">
+                        <template v-if="!isLocked"><b>2</b> / 2</template>
+                        <template v-else><b>3</b> / 3</template>
+                    </span>
                 </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
@@ -80,6 +85,11 @@ export default {
             type: String,
             default: '',
         },
+        /** */
+        tmpPwdCode: {
+            type: String,
+            default: '',
+        },
     },
 
     data() {
@@ -90,6 +100,17 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        /**
+         * Returns `true` if delegetion is still locked.
+         *
+         * @return {boolean}
+         */
+        isLocked() {
+            const { accountInfo } = this;
+
+            return (accountInfo && accountInfo.delegation && accountInfo.delegation.isDelegationLocked) || false;
+        },
     },
 
     // activated() {
@@ -103,9 +124,7 @@ export default {
             console.log(this.amount, this.undelegateMax);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                this.undelegateMax
-                    ? sfcUtils.prepareToWithdrawDelegationTx(stakerId)
-                    : sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.amount),
+                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.$fWallet.toWei(this.amount)),
                 this.currentAccount.address
             );
         },

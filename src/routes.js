@@ -12,7 +12,6 @@ import LedgerAccounts from './views/LedgerAccounts/LedgerAccounts.vue';
 import AccountHistory from './views/AccountHistory/AccountHistory.vue';
 import Settings from './views/Settings/Settings.vue';
 import Wallet from './views/Wallet/Wallet.vue';
-import AccountVote from './views/AccountVote.vue';
 import Defi from './views/Defi/Defi.vue';
 import DefiHome from './views/DefiHome/DefiHome.vue';
 import DefiFMint from './views/DefiFMint/DefiFMint.vue';
@@ -156,12 +155,6 @@ export const routes = [
                         meta: { dontScrollToTop: true },
                     },
                     */
-                    {
-                        name: 'account-vote',
-                        path: 'vote',
-                        component: AccountVote,
-                        meta: { dontScrollToTop: true },
-                    },
                 ],
             },
             {

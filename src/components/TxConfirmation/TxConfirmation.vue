@@ -250,6 +250,10 @@ export default {
                 this.tx.nonce = `0x${this.tx.nonce.toString(16)}`;
                 this.tx.chainId = appConfig.chainId;
 
+                if (!this.tx.gas) {
+                    this.errorMsg = 'Transaction Error';
+                    return;
+                }
                 // console.log('tx', this.tx);
                 // console.log(currentAccount);
 

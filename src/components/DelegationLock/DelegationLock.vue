@@ -47,6 +47,33 @@
                             </template>
                         </f-slider>
                     </div>
+
+                    <!--                    <f-input
+                        v-model="amount"
+                        label="Amount"
+                        field-size="large"
+                        type="number"
+                        autocomplete="off"
+                        min="1"
+                        step="any"
+                        name="amount"
+                        :validator="checkAmount"
+                        validate-on-input
+                    >
+                        <template #top="sProps">
+                            <div class="input-label-layout">
+                                <label :for="sProps.inputId">{{ sProps.label }}</label>
+                                <button type="button" class="btn light small" @click="onEntireDelegationClick">
+                                    Entire Delegation
+                                </button>
+                            </div>
+                        </template>
+                        <template #bottom="sProps">
+                            <f-message v-show="sProps.showErrorMessage" type="error" role="alert" with-icon>
+                                {{ amountErrMsg }}
+                            </f-message>
+                        </template>
+                    </f-input>-->
                 </f-placeholder>
                 <template v-if="canLockDelegation">
                     <!--                    <h3>Description</h3>-->
@@ -63,7 +90,7 @@
                     <button
                         type="submit"
                         class="btn large"
-                        :disabled="!canLockDelegation || !valueIsCorrect"
+                        :disabled="!canLockDelegation || !valueIsCorrect || !!amountErrMsg"
                         @click="onSubmit"
                     >
                         Ok, lock
@@ -84,11 +111,12 @@ import { getUniqueId } from '@/utils';
 import FSlider from '@/components/core/FSlider/FSlider.vue';
 import { formatDate, timestampToDate } from '@/filters.js';
 import FPlaceholder from '@/components/core/FPlaceholder/FPlaceholder.vue';
+import appConfig from '../../../app.config.js';
 
 /** Day in seconds. */
 const dayS = 86400;
 /** Minimal lock duration in days. */
-const minDays = 14;
+// const minDays = 14;
 /** Estimated time of block in seconds. */
 const blockTime = 15 * 60;
 
@@ -113,7 +141,11 @@ export default {
             lockedUntilDate: '',
             lockDaysValue: '',
             lockDaysInputValue: '',
-            minLock: minDays * dayS,
+            minLock: 0,
+            // minLock: minDays * dayS,
+            amount: '',
+            amountDelegated: 0,
+            amountErrMsg: '',
             // sliderLabels: ['', ''],
             id: getUniqueId(),
         };
@@ -131,7 +163,11 @@ export default {
             // tmp
             // const lockedUntil = this.delegation ? parseInt(this.validator.lockedUntil, 16) - dayS * 5 - this.now() : 0;
 
-            return Math.max(minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS) + 1);
+            return Math.max(this.minDays, Math.floor((this.delegationLockedUntil - this.now()) / dayS) + 1);
+        },
+
+        minDays() {
+            return Math.round(this.minLock / dayS);
         },
 
         /**
@@ -213,9 +249,15 @@ export default {
                 this.fetchDelegation(this.stakerId),
                 this.$fWallet.getStakerById(this.stakerId),
             ]);
+            const sfcConfig = await this.$fWallet.getSFCConfig();
+
+            this.minLock = sfcConfig.minLockupDuration.num;
 
             this.delegation = data[0];
             this.validator = data[1];
+
+            this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amountDelegated));
+            this.amount = this.amountDelegated.toString(10);
 
             this.lockDaysValue = this.minLockDays.toString();
             this.lockDaysInputValue = this.lockDaysValue;
@@ -228,6 +270,36 @@ export default {
             // console.log('delegation', this.delegation, this.validator);
         },
 
+        /**
+         * Validator for `amount` input field.
+         *
+         * @param {String} _value
+         * @return {Boolean}
+         */
+        checkAmount(_value) {
+            const { amountDelegated } = this;
+            const value = parseFloat(_value);
+            let ok = false;
+
+            this.amountErrMsg = 'Invalid amount';
+
+            if (!isNaN(value)) {
+                if (value <= amountDelegated && value >= 1) {
+                    ok = true;
+                } else if (value > 0 && value < 1) {
+                    this.amountErrMsg = `You can't lock amount less than 1 FTM`;
+                } else if (value >= 1) {
+                    this.amountErrMsg = `You can lock max ${amountDelegated} FTM`;
+                }
+            }
+
+            if (ok) {
+                this.amountErrMsg = '';
+            }
+
+            return ok;
+        },
+
         updateMessage() {
             this.message = '';
             this.lockedUntilDate = '';
@@ -236,7 +308,7 @@ export default {
                 if (this.minLockDays >= this.maxLockDays && this.maxLockDays > 0) {
                     this.message = 'You have reached maximum days to lock delegation.';
                 } else {
-                    this.message = `Validator doesn't lock delegations or lock time is less than ${minDays} days.`;
+                    this.message = `Validator doesn't lock delegations or lock time is less than ${this.minDays} days.`;
                 }
             } else if (this.valueIsCorrect) {
                 this.lockedUntilDate = this.lockedUntil();
@@ -270,7 +342,7 @@ export default {
         async fetchDelegation(_stakerId) {
             const data = await this.$apollo.query({
                 query: gql`
-                    query Delegation($address: Address!, $staker: Long!) {
+                    query Delegation($address: Address!, $staker: BigInt!) {
                         delegation(address: $address, staker: $staker) {
                             isDelegationLocked
                             lockedFromEpoch
@@ -324,6 +396,8 @@ export default {
         },
 
         onSubmit() {
+            // const amount = parseFloat(this.amount);
+            const amountDelegated = parseFloat(this.amountDelegated);
             let lockDuration = 0;
 
             if (this.canLockDelegation && this.valueIsCorrect) {
@@ -333,12 +407,20 @@ export default {
                     lockDuration = this.lockDaysInputValue * dayS + blockTime;
                 }
 
+                if (appConfig.useTestnet && this.lockDaysInputValue === 14) {
+                    lockDuration = 10 * 60 + 5;
+                }
+
                 this.$emit('change-component', {
                     to: 'delegation-lock-confirmation',
                     from: 'delegation-lock',
                     data: {
                         stakerId: this.stakerId,
                         lockDuration,
+                        amount: amountDelegated,
+                        amountHex: this.delegation.amountDelegated,
+                        // amountDelegated: this.delegation.amountDelegated,
+                        // max: amount >= this.amountDelegated,
                     },
                 });
             }
@@ -386,6 +468,10 @@ export default {
             if (_event.key === '+' || _event.key === '-') {
                 _event.preventDefault();
             }
+        },
+
+        onEntireDelegationClick() {
+            this.amount = this.amountDelegated.toString();
         },
     },
 };

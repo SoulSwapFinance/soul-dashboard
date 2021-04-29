@@ -137,6 +137,45 @@ export class FantomWeb3Wallet {
         ];
 
         this.pwdStorage = new PWDStorage();
+        this.sfcConfig = null;
+    }
+
+    async getSFCConfig() {
+        if (this.sfcConfig) {
+            return this.sfcConfig;
+        }
+
+        const data = await this.apolloClient.query({
+            query: gql`
+                query SFCConfig {
+                    sfcConfig {
+                        minValidatorStake
+                        maxDelegatedRatio
+                        minLockupDuration
+                        maxLockupDuration
+                        withdrawalPeriodEpochs
+                        withdrawalPeriodTime
+                    }
+                }
+            `,
+            fetchPolicy: 'network-only',
+        });
+        const sfcConfig = data.data.sfcConfig || {};
+
+        this.sfcConfig = {};
+
+        console.log('nacitam');
+
+        Object.keys(sfcConfig).forEach((_key) => {
+            const value = sfcConfig[_key];
+
+            this.sfcConfig[_key] = {
+                hex: value,
+                num: _key === 'maxDelegatedRatio' ? this.fromWei(value) : parseInt(sfcConfig[_key], 16),
+            };
+        });
+
+        return this.sfcConfig;
     }
 
     /**
@@ -237,8 +276,6 @@ export class FantomWeb3Wallet {
                     account(address: $address) {
                         address
                         balance
-                        stashed
-                        canUnStash
                         totalValue
                         staker {
                             id
@@ -256,49 +293,24 @@ export class FantomWeb3Wallet {
                             edges {
                                 delegation {
                                     toStakerId
-                                    createdEpoch
                                     createdTime
-                                    deactivatedEpoch
-                                    deactivatedTime
                                     amount
                                     amountDelegated
                                     amountInWithdraw
                                     claimedReward
                                     pendingRewards {
                                         amount
-                                        fromEpoch
-                                        toEpoch
                                     }
                                     withdrawRequests {
                                         address
-                                        receiver
                                         account {
                                             address
                                         }
                                         stakerID
                                         withdrawRequestID
-                                        isDelegation
+                                        createdTime
+                                        withdrawTime
                                         amount
-                                        withdrawPenalty
-                                        requestBlock {
-                                            number
-                                            timestamp
-                                        }
-                                        withdrawBlock {
-                                            number
-                                            timestamp
-                                        }
-                                    }
-                                    deactivation {
-                                        address
-                                        requestBlock {
-                                            number
-                                            timestamp
-                                        }
-                                        withdrawBlock {
-                                            number
-                                            timestamp
-                                        }
                                     }
                                 }
                                 cursor
@@ -412,16 +424,13 @@ export class FantomWeb3Wallet {
     }
 
     /**
-     * Get balance and total balance of account by address.
-     *
-     * @param {String} _address
-     * @param {Boolean} [_withDelegations] Include delegations and staker info.
-     * @return {Promise<{totalValue: string, address: string, balance: string}>}
+     * @param {number} _id
+     * @return {Promise<*>}
      */
     async getStakerById(_id) {
         const data = await this.apolloClient.query({
             query: gql`
-                query StakerById($id: Long!) {
+                query StakerById($id: BigInt!) {
                     staker(id: $id) {
                         id
                         stakerAddress
@@ -430,9 +439,7 @@ export class FantomWeb3Wallet {
                         delegatedMe
                         totalDelegatedLimit
                         delegatedLimit
-                        createdEpoch
                         createdTime
-                        validationScore
                         downtime
                         isActive
                         isOffline
@@ -674,9 +681,9 @@ export class FantomWeb3Wallet {
         // let gasLimit = to ? await this.getEstimateGas(from, to, null, value) : '';
         let gasLimit = to ? await this.getEstimateGas(from, to, memo ? Web3.utils.asciiToHex(memo) : null, value) : '';
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             value: value,
@@ -703,9 +710,9 @@ export class FantomWeb3Wallet {
         let gasLimit =
             _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             ..._tx,
@@ -728,9 +735,9 @@ export class FantomWeb3Wallet {
         let gasLimit =
             _gasLimit || (_tx && _tx.to ? await this.getEstimateGas(_from, _tx.to, _tx.data, _tx.value) : '');
 
-        if (!gasLimit) {
+        /*if (!gasLimit) {
             gasLimit = GAS_LIMITS.max;
-        }
+        }*/
 
         return {
             ..._tx,

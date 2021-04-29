@@ -136,7 +136,6 @@ export default {
 
         async setTx() {
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                // sfcUtils.claimDelegationRewardsTx(this.accountInfo.toEpoch),
                 this.reStake
                     ? sfcUtils.claimDelegationRewardsCompoundTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16))
                     : sfcUtils.claimDelegationRewardsTx(SFC_CLAIM_MAX_EPOCHS, parseInt(this.stakerId, 16)),
@@ -160,7 +159,7 @@ export default {
         async fetchDelegation() {
             const data = await this.$apollo.query({
                 query: gql`
-                    query Delegation($address: Address!, $staker: Long!) {
+                    query Delegation($address: Address!, $staker: BigInt!) {
                         delegation(address: $address, staker: $staker) {
                             pendingRewards {
                                 amount
