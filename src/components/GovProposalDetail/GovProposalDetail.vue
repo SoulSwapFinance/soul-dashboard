@@ -538,7 +538,6 @@ export default {
                             stake
                             totalStake
                             delegatedMe
-                            poi
                             stakerInfo {
                                 name
                                 website
