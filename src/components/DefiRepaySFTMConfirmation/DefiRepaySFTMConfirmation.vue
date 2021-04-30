@@ -174,9 +174,7 @@ export default {
                     web3,
                     $defi.contracts.StakeTokenizerContract,
                     parseInt(this.d_stakerId, 16),
-                    Web3.utils.toHex(
-                        $defi.shiftDecPointRight(this.dOutstandingSFTM.toString(), this.sftmToken.decimals)
-                    )
+                    this.d_outstandingSFTM
                 );
             }
 
