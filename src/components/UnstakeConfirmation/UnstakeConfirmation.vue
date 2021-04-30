@@ -121,10 +121,10 @@ export default {
     methods: {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
-            console.log(this.amount, this.undelegateMax);
+            const amount = this.undelegateMax ? this.accountInfo.amountDelegated : this.$fWallet.toWei(this.amount);
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, this.$fWallet.toWei(this.amount)),
+                sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, amount),
                 this.currentAccount.address
             );
         },
