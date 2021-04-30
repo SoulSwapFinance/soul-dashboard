@@ -38,8 +38,10 @@
 
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Undelegate Amount</div>
-                    <div class="col break-word">{{ amount }}</div>
+                    <div class="col break-word">{{ dAmount }}</div>
                 </div>
+
+                <f-message v-if="amountDiff > 0" type="warning"> {{ amountDiff }} FTM slashing applied </f-message>
             </div>
 
             <template #window-content>
@@ -56,11 +58,13 @@ import sfcUtils from 'fantom-ledgerjs/src/sfc-utils.js';
 import TxConfirmation from '../TxConfirmation/TxConfirmation.vue';
 import { getRandomInt } from '../../utils';
 import LedgerConfirmationContent from '../LedgerConfirmationContent/LedgerConfirmationContent.vue';
+import gql from 'graphql-tag';
+import FMessage from '@/components/core/FMessage/FMessage.vue';
 
 export default {
     name: 'UnstakeConfirmation',
 
-    components: { LedgerConfirmationContent, TxConfirmation },
+    components: { FMessage, LedgerConfirmationContent, TxConfirmation },
 
     props: {
         /** `accountInfo` object from `UnstakeFTM` component. */
@@ -95,6 +99,8 @@ export default {
     data() {
         return {
             tx: {},
+            dAmount: this.amount,
+            amountDiff: 0,
         };
     },
 
@@ -121,12 +127,44 @@ export default {
     methods: {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
-            const amount = this.undelegateMax ? this.accountInfo.amountDelegated : this.$fWallet.toWei(this.amount);
+            let amount = this.undelegateMax ? this.accountInfo.amountDelegated : this.$fWallet.toWei(this.dAmount);
+            const unlockedAmount = await this.fetchUnlockedAmount();
+
+            // amount is bigger than unlocked amount
+            if (this.$defi.compareBN(amount, unlockedAmount) === 1) {
+                amount = unlockedAmount;
+                this.dAmount = this.$fWallet.fromWei(unlockedAmount);
+                this.amountDiff = this.amount - this.dAmount;
+            }
 
             this.tx = await this.$fWallet.getSFCTransactionToSign(
                 sfcUtils.prepareToWithdrawDelegationPartTx(getRandomInt(), stakerId, amount),
                 this.currentAccount.address
             );
+        },
+
+        async fetchUnlockedAmount() {
+            try {
+                const data = await this.$apollo.query({
+                    query: gql`
+                        query GetUnlockedAmount($address: Address!, $staker: BigInt!) {
+                            delegation(address: $address, staker: $staker) {
+                                unlockedAmount
+                            }
+                        }
+                    `,
+                    variables: {
+                        address: this.currentAccount.address,
+                        staker: this.stakerId,
+                    },
+                    fetchPolicy: 'network-only',
+                });
+
+                return data && data.data.delegation ? data.data.delegation.unlockedAmount : '';
+            } catch (_error) {
+                console.error(_error);
+                return '';
+            }
         },
 
         onSendTransactionSuccess(_data) {
