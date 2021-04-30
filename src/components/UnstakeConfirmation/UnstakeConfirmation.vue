@@ -131,7 +131,7 @@ export default {
             const unlockedAmount = await this.fetchUnlockedAmount();
 
             // amount is bigger than unlocked amount
-            if (this.$defi.compareBN(amount, unlockedAmount) === 1) {
+            if (unlockedAmount && this.$defi.compareBN(amount, unlockedAmount) === 1) {
                 amount = unlockedAmount;
                 this.dAmount = this.$fWallet.fromWei(unlockedAmount);
                 this.amountDiff = this.amount - this.dAmount;
