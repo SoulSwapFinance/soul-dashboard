@@ -49,6 +49,14 @@ export function timestampToDate(_timestamp) {
     return new Date(timestamp);
 }
 
+function dateToUTCDate(_date) {
+    if (_date instanceof Date) {
+        return new Date(_date.getTime() - _date.getTimezoneOffset() * 60000);
+    }
+
+    return null;
+}
+
 /**
  * @param {string|Date} _value
  * @param {boolean} [_notWeekday]
@@ -62,6 +70,7 @@ export function formatDate(_value, _notWeekday, _withTime, _options = {}) {
     }
 
     const date = _value instanceof Date ? _value : new Date(_value);
+    const utcDate = dateToUTCDate(date);
     const options = {
         year: 'numeric',
         month: 'long',
@@ -78,7 +87,9 @@ export function formatDate(_value, _notWeekday, _withTime, _options = {}) {
         options.minute = 'numeric';
     }
 
-    return date.toLocaleDateString(filtersOptions.currLocale, options);
+    return utcDate !== null && utcDate.getTime() === 0
+        ? '-'
+        : date.toLocaleDateString(filtersOptions.currLocale, options);
     // return date.toLocaleDateString('en-GB', options);
 }
 
