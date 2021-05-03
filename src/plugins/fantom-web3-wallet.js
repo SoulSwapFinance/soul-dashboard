@@ -5,7 +5,7 @@ import web3utils from 'web3-utils';
 import Accounts from 'web3-eth-accounts';
 import { fFetch } from '@/plugins/ffetch.js';
 import { isArray } from '@/utils';
-import { toBigNumber } from '@/utils/big-number.js';
+import { toBigNumber, toHex } from '@/utils/big-number.js';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -399,9 +399,7 @@ export class FantomWeb3Wallet {
         const bGasPrice = toBigNumber(gasPrice);
 
         // double gas price
-        // gasPrice = toHex(bGasPrice.multipliedBy(2));
-        gasPrice = `0x${bGasPrice.multipliedBy(2).toString(16)}`;
-        console.log(gasPrice);
+        gasPrice = toHex(bGasPrice.multipliedBy(2));
 
         return _inHexFormat ? gasPrice : parseInt(gasPrice);
     }
@@ -885,8 +883,6 @@ export class FantomWeb3Wallet {
         if (!_gasLimit) {
             _gasLimit = GAS_LIMITS.default;
         }
-
-        console.log(_gasLimit);
 
         // const gasPrice = _gasPrice || await this.getGasPrice(true);
         return this.toBN(_gasPrice).mul(this.toBN(_gasLimit));

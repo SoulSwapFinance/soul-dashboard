@@ -35,7 +35,7 @@
 
                 <div class="row no-collapse">
                     <div class="col-3 f-row-label">Unlock Amount</div>
-                    <div class="col break-word">{{ amount }}</div>
+                    <div class="col break-word">{{ cToUnlockAmount }}</div>
                 </div>
             </div>
 
@@ -72,6 +72,11 @@ export default {
             type: Number,
             default: 1,
         },
+        /** Amount of FTM tokens to unlock. (hex number) */
+        toUnlockAmount: {
+            type: String,
+            default: '',
+        },
         /** Unlock maximal amount of FTM tokens */
         undelegateMax: {
             type: Boolean,
@@ -93,6 +98,10 @@ export default {
 
     computed: {
         ...mapGetters(['currentAccount']),
+
+        cToUnlockAmount() {
+            return (this.toUnlockAmount && this.$fWallet.fromWei(this.toUnlockAmount)) || 0;
+        },
     },
 
     // activated() {
@@ -103,12 +112,18 @@ export default {
     methods: {
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
-            console.log(this.amount, this.undelegateMax, this.$fWallet.toWei(this.amount));
+            // let amount = this.$fWallet.toWei(this.amount);
+            let amount = this.toUnlockAmount;
+            // console.log(this.amount, this.undelegateMax, amount, this.toUnlockAmount);
 
             this.tmpPwdCode = getUniqueId();
 
+            if (this.$defi.compareBN(amount, this.accountInfo.amountDelegated) === 1) {
+                amount = this.accountInfo.amountDelegated;
+            }
+
             this.tx = await this.$fWallet.getSFCTransactionToSign(
-                sfcUtils.unlockDelegationTx(stakerId, this.$fWallet.toWei(this.amount)),
+                sfcUtils.unlockDelegationTx(stakerId, amount),
                 this.currentAccount.address
             );
         },
@@ -124,6 +139,7 @@ export default {
                     continueToParams: {
                         accountInfo: this.accountInfo,
                         amount: this.amount,
+                        toUnlockAmount: this.toUnlockAmount,
                         undelegateMax: this.undelegateMax,
                         stakerId: this.stakerId,
                         tmpPwdCode: this.tmpPwdCode,

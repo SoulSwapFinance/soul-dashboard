@@ -341,8 +341,8 @@ export default {
                     this._delegation &&
                     this._delegation.tokenizerAllowedToWithdraw &&
                     accountInfo &&
-                    accountInfo.pendingRewards &&
-                    accountInfo.pendingRewards === '0x0' &&
+                    // accountInfo.pendingRewards &&
+                    // accountInfo.pendingRewards === '0x0' &&
                     (accountInfo.delegation ? accountInfo.delegation.amountDelegated !== '0x0' : true)
                     /*
                     (accountInfo.delegation

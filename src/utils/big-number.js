@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js';
-import web3utils from 'web3-utils';
+// import web3utils from 'web3-utils';
 
 export const BigNumber0 = BigNumber.clone({
-    // DECIMAL_PLACES: 0,
+    DECIMAL_PLACES: 0,
     ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
@@ -50,5 +50,6 @@ export function bToWei(_value) {
  * @return {BigNumber}
  */
 export function toHex(_value) {
-    return web3utils.toHex(_value);
+    // return web3utils.toHex(_value);
+    return `0x${toBigNumber(_value).toString(16)}`;
 }

@@ -77,6 +77,7 @@ export default {
                     return {
                         accountInfo: this._data_.accountInfo,
                         amount: this._data_.amount,
+                        toUnlockAmount: this._data_.toUnlockAmount,
                         undelegateMax: this._data_.undelegateMax,
                         stakerId: this._data_.stakerId,
                         reStake: this._data_.reStake,

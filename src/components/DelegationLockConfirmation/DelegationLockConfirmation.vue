@@ -137,13 +137,7 @@ export default {
 
             if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(
-                        stakerId,
-                        this.lockDuration,
-                        this.$fWallet.toWei(this.amount),
-                        undefined,
-                        appConfig.useTestnet
-                    ),
+                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, this.$fWallet.toWei(this.amount)),
                     this.currentAccount.address
                 );
             }
