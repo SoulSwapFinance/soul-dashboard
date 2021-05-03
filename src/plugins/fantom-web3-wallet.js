@@ -5,6 +5,7 @@ import web3utils from 'web3-utils';
 import Accounts from 'web3-eth-accounts';
 import { fFetch } from '@/plugins/ffetch.js';
 import { isArray } from '@/utils';
+import { toBigNumber, toHex } from '@/utils/big-number.js';
 
 const bip39 = require('bip39');
 const Hdkey = require('hdkey');
@@ -394,8 +395,13 @@ export class FantomWeb3Wallet {
                 }
             `,
         });
+        let { gasPrice } = data.data;
+        const bGasPrice = toBigNumber(gasPrice);
 
-        return _inHexFormat ? data.data.gasPrice : parseInt(data.data.gasPrice);
+        // double gas price
+        gasPrice = toHex(bGasPrice.multipliedBy(2));
+
+        return _inHexFormat ? gasPrice : parseInt(gasPrice);
     }
 
     /**
@@ -462,6 +468,30 @@ export class FantomWeb3Wallet {
         });
 
         return data.data.staker;
+    }
+
+    async fetchUnlockedAmount(_address, _validatorId) {
+        try {
+            const data = await this.apolloClient.query({
+                query: gql`
+                    query GetUnlockedAmount($address: Address!, $staker: BigInt!) {
+                        delegation(address: $address, staker: $staker) {
+                            unlockedAmount
+                        }
+                    }
+                `,
+                variables: {
+                    address: _address,
+                    staker: _validatorId,
+                },
+                fetchPolicy: 'network-only',
+            });
+
+            return data && data.data.delegation ? data.data.delegation.unlockedAmount : '';
+        } catch (_error) {
+            console.error(_error);
+            return '';
+        }
     }
 
     /**
