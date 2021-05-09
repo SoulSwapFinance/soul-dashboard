@@ -407,8 +407,8 @@ export default {
         canRepaySFTM() {
             return (
                 // this.canUndelegate &&
-                this.lockedUntil &&
-                this.lockedUntil !== '0x0' &&
+                /*this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&*/
                 this._delegation &&
                 this._delegation.outstandingSFTM !== '0x0' &&
                 this.outstandingSFTM <= this.availableSFTM
@@ -417,8 +417,8 @@ export default {
 
         showRepaySFTMMessage() {
             return (
-                this.lockedUntil &&
-                this.lockedUntil !== '0x0' &&
+                /*this.lockedUntil &&
+                this.lockedUntil !== '0x0' &&*/
                 this._delegation &&
                 this._delegation.outstandingSFTM !== '0x0' &&
                 this.outstandingSFTM > this.availableSFTM
