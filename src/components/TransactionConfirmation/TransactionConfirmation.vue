@@ -250,6 +250,7 @@ export default {
      * Called when component is activated through `keep-alive`.
      */
     activated() {
+        this.dTxData = this.txData;
         this.setSendToAddress();
     },
 
