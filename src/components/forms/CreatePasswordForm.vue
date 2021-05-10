@@ -87,7 +87,6 @@
 <script>
 import FForm from '../core/FForm/FForm.vue';
 import { ADD_ACCOUNT } from '../../store/actions.type.js';
-import { findFirstFocusableDescendant } from '../../utils/aria.js';
 import FCheckbox from '../core/FCheckbox/FCheckbox.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
 import FPasswordField from '../core/FPasswordField/FPasswordField.vue';
@@ -130,12 +129,12 @@ export default {
         },
     },
 
-    mounted() {
+    /*mounted() {
         const el = findFirstFocusableDescendant(this.$el);
         if (el) {
             el.focus();
         }
-    },
+    },*/
 
     methods: {
         checkPrimaryPassword(_value) {

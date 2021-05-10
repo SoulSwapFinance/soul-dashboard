@@ -1,6 +1,15 @@
 <template>
     <span class="f-password-field">
-        <f-input ref="input" :type="dType" v-bind="fInputProps" @input="onInput">
+        <f-input
+            ref="input"
+            :type="dType"
+            v-bind="fInputProps"
+            :autocomplete="disableAutocomplete ? 'new-password' : null"
+            :readonly="disableAutocomplete"
+            @focus="onFocus"
+            @blur="onBlur"
+            @input="onInput"
+        >
             <template #top="sProps">
                 <slot name="top" v-bind="sProps"></slot>
             </template>
@@ -47,6 +56,11 @@ export default {
 
     props: {
         ...FInput.props,
+
+        disableAutocomplete: {
+            type: Boolean,
+            default: true,
+        },
     },
 
     data() {
@@ -78,6 +92,22 @@ export default {
 
         onInput(_value) {
             this.$emit('input', _value);
+        },
+
+        onFocus() {
+            const { input } = this.$refs;
+
+            if (this.disableAutocomplete && input && input.$refs.input) {
+                input.$refs.input.removeAttribute('readonly');
+            }
+        },
+
+        onBlur() {
+            const { input } = this.$refs;
+
+            if (this.disableAutocomplete && input && input.$refs.input) {
+                input.$refs.input.setAttribute('readonly', 'readonly');
+            }
         },
     },
 };
