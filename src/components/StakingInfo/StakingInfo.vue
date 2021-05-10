@@ -247,7 +247,7 @@
 import FCard from '../core/FCard/FCard.vue';
 import { mapGetters } from 'vuex';
 import { toFTM, WeiToFtm } from '../../utils/transactions.js';
-import { formatHexToInt, timestampToDate, formatDate, prepareTimestamp } from '../../filters.js';
+import { formatHexToInt, timestampToDate, formatDate } from '../../filters.js';
 import appConfig from '../../../app.config.js';
 import WithdrawRequestList from '../data-tables/WithdrawRequestList.vue';
 import FMessage from '../core/FMessage/FMessage.vue';
@@ -277,6 +277,7 @@ export default {
         return {
             isFluidStakingActive: false,
             lockedUntil: '',
+            isDelegationLocked: false,
             explorerUrl: appConfig.explorerUrl2,
             claimMaxEpochs: SFC_CLAIM_MAX_EPOCHS,
             /** @type {DefiToken} */
@@ -378,11 +379,7 @@ export default {
         },
 
         canLockDelegation() {
-            return (
-                this.canUndelegate &&
-                this.lockedUntil &&
-                (this.lockedUntil === '0x0' || prepareTimestamp(this.lockedUntil) < this.now())
-            );
+            return this.canUndelegate && !this.isDelegationLocked;
         },
 
         canMintSFTM() {
@@ -395,9 +392,7 @@ export default {
 
             return (
                 // this.canUndelegate &&
-                this.lockedUntil &&
-                this.lockedUntil !== '0x0' &&
-                prepareTimestamp(this.lockedUntil) > this.now() &&
+                this.isDelegationLocked &&
                 this._delegation &&
                 this._delegation.tokenizerAllowedToWithdraw &&
                 delegationOk
@@ -407,8 +402,6 @@ export default {
         canRepaySFTM() {
             return (
                 // this.canUndelegate &&
-                /*this.lockedUntil &&
-                this.lockedUntil !== '0x0' &&*/
                 this._delegation &&
                 this._delegation.outstandingSFTM !== '0x0' &&
                 this.outstandingSFTM <= this.availableSFTM
@@ -417,8 +410,6 @@ export default {
 
         showRepaySFTMMessage() {
             return (
-                /*this.lockedUntil &&
-                this.lockedUntil !== '0x0' &&*/
                 this._delegation &&
                 this._delegation.outstandingSFTM !== '0x0' &&
                 this.outstandingSFTM > this.availableSFTM
@@ -514,10 +505,7 @@ export default {
          * @return {boolean}
          */
         isLocked() {
-            const lockedUntilTS = parseInt(this.lockedUntil, 16);
-            const now = new Date().getTime() / 1000;
-
-            return lockedUntilTS > now;
+            return this.isDelegationLocked;
         },
     },
 
@@ -536,6 +524,7 @@ export default {
                 this._delegation = delegation;
                 this.isFluidStakingActive = delegation.isFluidStakingActive;
                 this.lockedUntil = delegation.lockedUntil;
+                this.isDelegationLocked = delegation.isDelegationLocked;
             }
 
             accountInfo.delegation = delegation;
