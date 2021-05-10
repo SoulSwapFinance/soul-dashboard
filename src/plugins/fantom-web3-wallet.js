@@ -22,6 +22,8 @@ export const GAS_LIMITS = {
     max: '0x90F560', // 9500000
 };
 
+const MIN_GAS_PRICE = 1500000000;
+
 // SFC_CLAIM_MAX_EPOCHS represents the max number of epochs
 // available for withdraw per single request.
 export const SFC_CLAIM_MAX_EPOCHS = 300;
@@ -139,6 +141,8 @@ export class FantomWeb3Wallet {
 
         this.pwdStorage = new PWDStorage();
         this.sfcConfig = null;
+        this.bMinGasPrice = toBigNumber(MIN_GAS_PRICE);
+        this.bMaxGasPrice = this.bMinGasPrice.multipliedBy(20);
     }
 
     async getSFCConfig() {
@@ -396,10 +400,12 @@ export class FantomWeb3Wallet {
             `,
         });
         let { gasPrice } = data.data;
-        const bGasPrice = toBigNumber(gasPrice);
+        const bDoubleGasPrice = toBigNumber(gasPrice).multipliedBy(2);
 
         // double gas price
-        gasPrice = toHex(bGasPrice.multipliedBy(2));
+        if (bDoubleGasPrice.comparedTo(this.bMaxGasPrice) === -1) {
+            gasPrice = toHex(bDoubleGasPrice);
+        }
 
         return _inHexFormat ? gasPrice : parseInt(gasPrice);
     }
