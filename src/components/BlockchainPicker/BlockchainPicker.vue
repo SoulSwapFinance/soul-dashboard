@@ -40,7 +40,7 @@
                     name="blockchain"
                     value="ethereum"
                     class="not-visible"
-                    :disabled="!appConfig.bnbridgeApi.useETH"
+                    :disabled="!appConfig.bnbridgeApi.useETH || disableETH"
                 />
                 <span>
                     <icon
@@ -72,7 +72,7 @@
                     name="blockchain"
                     value="binance"
                     class="not-visible"
-                    :disabled="!appConfig.bnbridgeApi.useBNB"
+                    :disabled="!appConfig.bnbridgeApi.useBNB || disableBNB"
                 />
                 <span>
                     <icon
@@ -103,6 +103,17 @@ import appConfig from '../../../app.config.js';
 
 export default {
     name: 'BlockchainPicker',
+
+    props: {
+        disableETH: {
+            type: Boolean,
+            default: false,
+        },
+        disableBNB: {
+            type: Boolean,
+            default: false,
+        },
+    },
 
     data() {
         return {

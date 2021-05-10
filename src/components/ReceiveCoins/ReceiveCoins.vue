@@ -4,7 +4,7 @@
 
         <h3 class="align-center h2">Which blockchain are you receiving FTM from?</h3>
 
-        <blockchain-picker @blockchain-pick="onBlockchainPick" />
+        <blockchain-picker disable-e-t-h disable-b-n-b @blockchain-pick="onBlockchainPick" />
 
         <component
             :is="currentComponent"
