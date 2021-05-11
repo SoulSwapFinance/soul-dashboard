@@ -1,4 +1,10 @@
 .f-password-field {
     display: inline-block;
     vertical-align: middle;
+
+    &.showdisc {
+        input[type="text"] {
+            -webkit-text-security: disc;
+        }
+    }
 }

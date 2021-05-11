@@ -1,10 +1,10 @@
 <template>
-    <span class="f-password-field">
+    <span class="f-password-field" :class="classes">
         <f-input
             ref="input"
             :type="dType"
             v-bind="fInputProps"
-            :autocomplete="disableAutocomplete ? 'new-password' : null"
+            :autocomplete="cAutocomplete"
             :readonly="disableAutocomplete"
             @focus="onFocus"
             @blur="onBlur"
@@ -49,6 +49,29 @@
 import { inputMixin } from '../../../mixins/input.js';
 import FInput from '../FInput/FInput.vue';
 
+/*
+function isSafariBrowser() {
+    const nAgt = navigator.userAgent;
+
+    return (
+        nAgt.indexOf('Chrome') === -1 &&
+        nAgt.indexOf('Safari') > -1 &&
+        (nAgt.indexOf('CriOS') === -1 || nAgt.indexOf('iOS') === -1)
+    );
+}
+*/
+
+function isWebkitTextSecuritySupported() {
+    const el = document.createElement('input');
+    el.type = 'text';
+    const style = window.getComputedStyle(el);
+
+    return 'webkitTextSecurity' in style;
+    // return !isSafariBrowser() && 'webkitTextSecurity' in style;
+}
+
+const webkitTextSecuritySupported = isWebkitTextSecuritySupported();
+
 export default {
     components: { FInput },
 
@@ -56,16 +79,22 @@ export default {
 
     props: {
         ...FInput.props,
-
+        /** Disable autocomplete only */
         disableAutocomplete: {
             type: Boolean,
-            default: true,
+            default: !webkitTextSecuritySupported,
+        },
+        /** Prevent save prompt and autocomplete as well */
+        preventSavePrompt: {
+            type: Boolean,
+            default: webkitTextSecuritySupported,
         },
     },
 
     data() {
         return {
-            dType: 'password',
+            dType: this.preventSavePrompt ? 'text' : 'password',
+            pwdVisible: this.preventSavePrompt,
         };
     },
 
@@ -73,6 +102,22 @@ export default {
         fInputProps() {
             return {
                 ...FInput.computed.fInputProps.call(this),
+            };
+        },
+
+        cAutocomplete() {
+            if (this.preventSavePrompt) {
+                return 'off';
+            } else if (this.disableAutocomplete) {
+                return 'new-password';
+            }
+
+            return null;
+        },
+
+        classes() {
+            return {
+                showdisc: this.pwdVisible,
             };
         },
     },
@@ -83,10 +128,14 @@ export default {
         },
 
         onEyeButtonClick() {
-            if (this.dType === 'password') {
-                this.dType = 'text';
+            if (!this.preventSavePrompt) {
+                if (this.dType === 'password') {
+                    this.dType = 'text';
+                } else {
+                    this.dType = 'password';
+                }
             } else {
-                this.dType = 'password';
+                this.pwdVisible = !this.pwdVisible;
             }
         },
 
