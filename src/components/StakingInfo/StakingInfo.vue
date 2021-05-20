@@ -239,7 +239,7 @@
             <h2>Undelegation History</h2>
 
             <f-message
-                v-if="outstandingSFTM !== 0"
+                v-if="outstandingSFTM > 0"
                 type="warning"
                 with-icon
                 class="align-left"
@@ -249,8 +249,8 @@
             </f-message>
 
             <withdraw-request-list
-                :disable-withdraw="outstandingSFTM !== 0"
-                :items="withdrawRequests || showRepaySFTMMessage"
+                :disable-withdraw="outstandingSFTM > 0"
+                :items="withdrawRequests"
                 @withdraw-request-selected="onWithdrawRequestSelected"
             />
         </f-card>
