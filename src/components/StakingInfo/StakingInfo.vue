@@ -238,7 +238,15 @@
         <f-card v-if="withdrawRequests.length" class="f-card-double-padding account-main-content-mt">
             <h2>Undelegation History</h2>
 
-            <withdraw-request-list :items="withdrawRequests" @withdraw-request-selected="onWithdrawRequestSelected" />
+            <f-message v-if="canRepaySFTM" type="warning" with-icon class="align-left" style="margin-bottom: 16px;">
+                Can't withdraw, repay sFTM first please
+            </f-message>
+
+            <withdraw-request-list
+                :disable-withdraw="canRepaySFTM"
+                :items="withdrawRequests"
+                @withdraw-request-selected="onWithdrawRequestSelected"
+            />
         </f-card>
     </div>
 </template>

@@ -169,8 +169,6 @@ export class FantomWeb3Wallet {
 
         this.sfcConfig = {};
 
-        console.log('nacitam');
-
         Object.keys(sfcConfig).forEach((_key) => {
             const value = sfcConfig[_key];
 

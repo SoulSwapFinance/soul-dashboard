@@ -31,7 +31,7 @@
                         <template v-if="value">{{ formatDate(timestampToDate(value), false, true) }}</template>
                         <template v-else>
                             <button
-                                :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item)"
+                                :disabled="!!canNotWithdraw(item.createdTime) || !canWithdraw(item) || disableWithdraw"
                                 class="btn withdraw-btn"
                                 :data-item-id="item.id"
                             >
@@ -75,6 +75,10 @@ export default {
             default() {
                 return [];
             },
+        },
+        disableWithdraw: {
+            type: Boolean,
+            default: false,
         },
     },
 
