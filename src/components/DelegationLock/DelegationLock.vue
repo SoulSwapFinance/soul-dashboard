@@ -118,7 +118,7 @@ const dayS = 86400;
 /** Minimal lock duration in days. */
 // const minDays = 14;
 /** Estimated time of block in seconds. */
-const blockTime = 15 * 60;
+// const blockTime = 15 * 60;
 
 export default {
     name: 'DelegationLock',
@@ -402,10 +402,12 @@ export default {
 
             if (this.canLockDelegation && this.valueIsCorrect) {
                 if (this.lockDaysInputValue === this.maxLockDays) {
-                    lockDuration = this.validatorLockedUntil - this.now() - blockTime;
+                    lockDuration = this.validatorLockedUntil - this.now();
                 } else {
-                    lockDuration = this.lockDaysInputValue * dayS + blockTime;
+                    lockDuration = this.lockDaysInputValue * dayS;
                 }
+
+                lockDuration -= 7200;
 
                 if (appConfig.useTestnet && this.lockDaysInputValue === 14) {
                     lockDuration = 10 * 60 + 5;

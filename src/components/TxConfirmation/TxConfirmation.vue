@@ -251,9 +251,11 @@ export default {
                 this.tx.chainId = appConfig.chainId;
 
                 if (!this.tx.gas) {
-                    this.errorMsg = 'Transaction Error';
+                    this.errorMsg = this.tx._error || 'Transaction Error';
                     return;
                 }
+
+                delete this.tx._error;
                 // console.log('tx', this.tx);
                 // console.log(currentAccount);
 
