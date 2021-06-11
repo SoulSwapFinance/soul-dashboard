@@ -381,6 +381,14 @@ export class FantomWeb3Wallet {
             if (estimateGas) {
                 estimateGas = parseInt(estimateGas, 16);
                 estimateGas = `0x${(estimateGas + 2000).toString(16)}`;
+            } else if (data.errors && data.errors.length) {
+                estimateGas = [];
+
+                data.errors.forEach((error) => {
+                    estimateGas.push(error.message);
+                });
+
+                estimateGas = estimateGas.join(',');
             }
 
             return estimateGas;

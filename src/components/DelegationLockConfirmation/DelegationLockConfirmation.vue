@@ -50,6 +50,7 @@ import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/Le
 import { toFTM } from '@/utils/transactions.js';
 import { formatDate, timestampToDate } from '@/filters.js';
 import appConfig from '../../../app.config.js';
+import { toBigNumber, toHex } from '@/utils/big-number.js';
 
 /** Day in seconds. */
 const dayS = 86400;
@@ -132,12 +133,16 @@ export default {
 
         async setTx() {
             const stakerId = parseInt(this.stakerId, 16);
+            let bAmount = toBigNumber(this.$fWallet.toWei(this.amount));
+            let bDlgAmount = toBigNumber(this.amountHex);
 
-            console.log(this.amount, this.$fWallet.toWei(this.amount));
+            if (bAmount.comparedTo(bDlgAmount.times(0.9995)) === 1) {
+                bAmount = bDlgAmount;
+            }
 
             if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
                 this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, this.$fWallet.toWei(this.amount)),
+                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, toHex(bAmount)),
                     this.currentAccount.address
                 );
             }
