@@ -306,7 +306,7 @@ export default {
                     erc20Utils.erc20TransferTx(
                         token.address,
                         fWallet.toChecksumAddress(dTxData.opera_address),
-                        parseFloat(dTxData.amount) === this.maxRemainingErc20TokenBalance
+                        parseFloat(dTxData.amount) >= this.maxRemainingErc20TokenBalance
                             ? token.balanceOf || token.availableBalance
                             : Web3.utils.toHex(this.$defi.toTokenValue(dTxData.amount, token))
                     ),
