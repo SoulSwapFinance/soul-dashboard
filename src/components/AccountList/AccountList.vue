@@ -200,6 +200,8 @@ export default {
         if (
             routeName.indexOf('account-') > -1 ||
             routeName.indexOf('defi-') > -1 ||
+            routeName.indexOf('fmint') > -1 ||
+            routeName.indexOf('fswap') > -1 ||
             routeName.indexOf('staking') > -1 ||
             routeName.indexOf('funiswap') > -1 ||
             routeName.indexOf('gov-') > -1

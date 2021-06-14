@@ -2,6 +2,8 @@
 @import "../../assets/scss/vars";
 
 .wallet-menu {
+    --f-icon-fill-color: var(--f-wallet-menu-background-color);
+
     height: 0;
 
     .logo {

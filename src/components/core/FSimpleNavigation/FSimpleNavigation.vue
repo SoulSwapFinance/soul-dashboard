@@ -18,6 +18,7 @@
                                 :height="item.iconSize || iconSize"
                                 :fill="item.fill || false"
                                 :original="item.original || false"
+                                :class="{ 'icon-fill-color': item.fillColor }"
                             />
                             <span class="title">{{ item.title }}</span>
                         </router-link>
@@ -35,6 +36,7 @@
                                 :height="item.iconSize || iconSize"
                                 :fill="item.fill || false"
                                 :original="item.original || false"
+                                :class="{ 'icon-fill-color': item.fillColor }"
                             />
                             <span class="title">{{ item.title }}</span>
                         </a>
