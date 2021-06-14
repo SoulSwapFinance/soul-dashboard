@@ -127,7 +127,7 @@
                         <template v-if="usedAsCollateral(item)">
                             <router-link
                                 :to="{
-                                    path: `/defi/${item._fMintAccount.address}/fmint/lock`,
+                                    path: `/fmint/${item._fMintAccount.address}/lock`,
                                     query: { tokenAddress: item.address },
                                 }"
                             >
@@ -137,7 +137,7 @@
                                 ,
                                 <router-link
                                     :to="{
-                                        path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
+                                        path: `/fmint/${item._fMintAccount.address}/unlock`,
                                         query: { tokenAddress: item.address },
                                     }"
                                 >
@@ -146,7 +146,7 @@
                             </template>
                             <template v-if="item.symbol === 'WFTM'">
                                 ,
-                                <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fswap` }">
+                                <router-link :to="{ path: `/fmint/${item._fMintAccount.address}/fswap` }">
                                     Swap
                                 </router-link>
                             </template>
@@ -155,7 +155,7 @@
                             <template v-if="usedInFMint(item)">
                                 <router-link
                                     :to="{
-                                        path: `/defi/${item._fMintAccount.address}/fmint/mint`,
+                                        path: `/fmint/${item._fMintAccount.address}/mint`,
                                         query: { tokenAddress: item.address },
                                     }"
                                 >
@@ -164,7 +164,7 @@
                                 ,
                                 <router-link
                                     :to="{
-                                        path: `/defi/${item._fMintAccount.address}/fmint/repay`,
+                                        path: `/fmint/${item._fMintAccount.address}/repay`,
                                         query: { tokenAddress: item.address },
                                     }"
                                 >
@@ -188,7 +188,7 @@
                     <template v-if="usedAsCollateral(item)">
                         <router-link
                             :to="{
-                                path: `/defi/${item._fMintAccount.address}/fmint/lock`,
+                                path: `/fmint/${item._fMintAccount.address}/lock`,
                                 query: { tokenAddress: item.address },
                             }"
                         >
@@ -198,7 +198,7 @@
                             <br />
                             <router-link
                                 :to="{
-                                    path: `/defi/${item._fMintAccount.address}/fmint/unlock`,
+                                    path: `/fmint/${item._fMintAccount.address}/unlock`,
                                     query: { tokenAddress: item.address },
                                 }"
                             >
@@ -207,7 +207,7 @@
                         </template>
                         <template v-if="item.symbol === 'WFTM'">
                             <br />
-                            <router-link :to="{ path: `/defi/${item._fMintAccount.address}/fswap` }">
+                            <router-link :to="{ path: `/fmint/${item._fMintAccount.address}/fswap` }">
                                 Swap
                             </router-link>
                         </template>
@@ -216,7 +216,7 @@
                         <template v-if="usedInFMint(item)">
                             <router-link
                                 :to="{
-                                    path: `/defi/${item._fMintAccount.address}/fmint/mint`,
+                                    path: `/fmint/${item._fMintAccount.address}/mint`,
                                     query: { tokenAddress: item.address },
                                 }"
                             >
@@ -225,7 +225,7 @@
                             <br />
                             <router-link
                                 :to="{
-                                    path: `/defi/${item._fMintAccount.address}/fmint/repay`,
+                                    path: `/fmint/${item._fMintAccount.address}/repay`,
                                     query: { tokenAddress: item.address },
                                 }"
                             >
