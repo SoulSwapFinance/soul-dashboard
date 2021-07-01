@@ -146,6 +146,7 @@ export default {
             amount: '',
             amountDelegated: 0,
             amountErrMsg: '',
+            isValidator: false,
             // sliderLabels: ['', ''],
             id: getUniqueId(),
         };
@@ -195,7 +196,15 @@ export default {
          * @return {number} Timestamp.
          */
         validatorLockedUntil() {
-            return this.validator ? parseInt(this.validator.lockedUntil, 16) : 0;
+            if (this.validator) {
+                if (this.isValidator) {
+                    return this.now() + 365 * dayS;
+                } else {
+                    return parseInt(this.validator.lockedUntil, 16);
+                }
+            }
+
+            return 0;
         },
 
         /**
@@ -255,6 +264,8 @@ export default {
 
             this.delegation = data[0];
             this.validator = data[1];
+
+            this.isValidator = this.currentAccount.address.toLowerCase() === this.validator.stakerAddress.toLowerCase();
 
             this.amountDelegated = parseFloat(this.$fWallet.WEIToFTM(this.delegation.amountDelegated));
             this.amount = this.amountDelegated.toString(10);
@@ -403,11 +414,10 @@ export default {
             if (this.canLockDelegation && this.valueIsCorrect) {
                 if (this.lockDaysInputValue === this.maxLockDays) {
                     lockDuration = this.validatorLockedUntil - this.now();
+                    lockDuration -= 7300;
                 } else {
                     lockDuration = this.lockDaysInputValue * dayS;
                 }
-
-                lockDuration -= 7200;
 
                 if (appConfig.useTestnet && this.lockDaysInputValue === 14) {
                     lockDuration = 10 * 60 + 5;

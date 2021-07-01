@@ -49,13 +49,10 @@ import TxConfirmation from '@/components/TxConfirmation/TxConfirmation.vue';
 import LedgerConfirmationContent from '@/components/LedgerConfirmationContent/LedgerConfirmationContent.vue';
 import { toFTM } from '@/utils/transactions.js';
 import { formatDate, timestampToDate } from '@/filters.js';
-import appConfig from '../../../app.config.js';
 import { toBigNumber, toHex } from '@/utils/big-number.js';
 
 /** Day in seconds. */
 const dayS = 86400;
-/** Minimal lock duration in days. */
-const minDays = 14;
 
 export default {
     name: 'DelegationLockConfirmation',
@@ -108,7 +105,7 @@ export default {
         },
 
         lockedUntilDays() {
-            return Math.floor(this.lockDuration / dayS);
+            return Math.round(this.lockDuration / dayS);
         },
 
         validatorName() {
@@ -140,12 +137,10 @@ export default {
                 bAmount = bDlgAmount;
             }
 
-            if (this.lockDuration > minDays * dayS || appConfig.useTestnet) {
-                this.tx = await this.$fWallet.getSFCTransactionToSign(
-                    sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, toHex(bAmount)),
-                    this.currentAccount.address
-                );
-            }
+            this.tx = await this.$fWallet.getSFCTransactionToSign(
+                sfcUtils.lockupDelegationTx(stakerId, this.lockDuration, toHex(bAmount)),
+                this.currentAccount.address
+            );
         },
 
         /**
