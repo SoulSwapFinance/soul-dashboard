@@ -29,7 +29,7 @@ const appConfig = {
                 // for subscriptions
                 ws: '',
             },
-            {
+            /*{
                 http: 'https://xapi8.fantom.network/api',
                 // for subscriptions
                 ws: '',
@@ -38,7 +38,7 @@ const appConfig = {
                 http: 'https://xapi9.fantom.network/api',
                 // for subscriptions
                 ws: '',
-            },
+            },*/
             {
                 http: 'https://xapi30.fantom.network/api',
                 // for subscriptions
