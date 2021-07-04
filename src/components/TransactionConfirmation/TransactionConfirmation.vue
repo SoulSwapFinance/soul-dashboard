@@ -118,7 +118,7 @@
                     <li>
                         <div class="row no-collapse">
                             <div class="col-3 f-row-label">Max Fee</div>
-                            <div class="col">{{ txData.fee }}</div>
+                            <div class="col">{{ tx._fee }}</div>
                         </div>
                     </li>
                 </ol>

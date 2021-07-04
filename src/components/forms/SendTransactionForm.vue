@@ -426,7 +426,7 @@ export default {
                     from: 'send-transaction-form',
                     data: {
                         ...data,
-                        fee: this.$fWallet.WEIToFTM(this.$fWallet.getTransactionFee(this.gasPrice)),
+                        // fee: this.$fWallet.WEIToFTM(this.$fWallet.getTransactionFee(this.gasPrice)),
                     },
                 });
             }

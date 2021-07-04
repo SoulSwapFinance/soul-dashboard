@@ -23,7 +23,7 @@
             <div class="confirmation-info">You’re minting {{ parseFloat(dAmountDelegated).toFixed(2) }} sFTM</div>
 
             <template #window-content>
-                <ledger-confirmation-content :to="tx.to" :amount="0" />
+                <ledger-confirmation-content :to="tx.to" :amount="0" :max-fee="tx._fee" />
             </template>
         </tx-confirmation>
         <template v-else>

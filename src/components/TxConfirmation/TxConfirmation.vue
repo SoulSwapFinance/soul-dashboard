@@ -256,6 +256,7 @@ export default {
                 }
 
                 delete this.tx._error;
+                delete this.tx._fee;
                 // console.log('tx', this.tx);
                 // console.log(currentAccount);
 

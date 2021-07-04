@@ -39,7 +39,7 @@
             </div>
 
             <template #window-content>
-                <ledger-confirmation-content :to="stakeData.tx.to" :amount="stakeData.amount" />
+                <ledger-confirmation-content :to="stakeData.tx.to" :amount="stakeData.amount" :max-fee="tx._fee" />
             </template>
         </tx-confirmation>
     </div>

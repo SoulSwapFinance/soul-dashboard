@@ -4,7 +4,7 @@
             <div class="row no-collapse">
                 <div class="col-3 f-row-label">Send To</div>
                 <div class="col break-word">
-                    {{ to }}
+                    {{ $fWallet.toChecksumAddress(to) }}
                 </div>
             </div>
         </li>
@@ -29,6 +29,12 @@
                 </div>
             </div>
         </li>
+        <li v-if="maxFee > 0">
+            <div class="row no-collapse">
+                <div class="col-3 f-row-label">Max Fee</div>
+                <div class="col">{{ maxFee }}</div>
+            </div>
+        </li>
         <slot></slot>
     </ol>
 </template>
@@ -51,6 +57,10 @@ export default {
             required: true,
         },
         amount: {
+            type: Number,
+            default: 0,
+        },
+        maxFee: {
             type: Number,
             default: 0,
         },

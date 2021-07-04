@@ -41,7 +41,7 @@
             </div>
 
             <template #window-content>
-                <ledger-confirmation-content :to="tx.to" :amount="0">
+                <ledger-confirmation-content :to="tx.to" :amount="0" :max-fee="tx._fee">
                     <li>
                         <div class="row no-collapse">
                             <div class="col-3 f-row-label">Transaction Value</div>
