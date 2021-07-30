@@ -10,7 +10,7 @@
         </li>
         <li>
             <div class="row no-collapse">
-                <div class="col-3 f-row-label">From</div>
+                <div class="col-3 f-row-label">Send From</div>
                 <div class="col break-word">
                     {{ currentAccount.address }}
                     <span class="f-row-label">
@@ -23,7 +23,7 @@
         </li>
         <li>
             <div class="row no-collapse">
-                <div class="col-3 f-row-label">Amount</div>
+                <div class="col-3 f-row-label">Amount (FTM)</div>
                 <div class="col">
                     {{ amount }}
                 </div>

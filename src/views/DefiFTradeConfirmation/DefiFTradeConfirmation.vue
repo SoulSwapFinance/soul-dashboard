@@ -39,11 +39,7 @@
             </div>
 
             <template #window-content>
-                <ledger-confirmation-content
-                    :to="tx.to"
-                    :amount="params.fromValue.toFixed($defi.getTokenDecimals(params.fromToken))"
-                    :max-fee="tx._fee"
-                />
+                <ledger-confirmation-content :to="tx.to" :amount="amountFTM" :max-fee="tx._fee" />
             </template>
         </tx-confirmation>
         <template v-else>
@@ -86,6 +82,7 @@ export default {
             compName: 'defi-ftrade',
             priceDecimals: 6,
             tx: {},
+            amountFTM: 0,
         };
     },
 
@@ -206,6 +203,8 @@ export default {
                 );
             } else {
                 if (fromToken.symbol === 'FTM' && toToken.canWrapFTM) {
+                    this.amountFTM = params.fromValue.toFixed(this.$defi.getTokenDecimals(params.fromToken));
+
                     txToSign = wftmUtils.defiWrapFtm(
                         toToken.address,
                         Web3.utils.toHex(this.$defi.shiftDecPointRight(params.toValue.toString(), toToken.decimals))
