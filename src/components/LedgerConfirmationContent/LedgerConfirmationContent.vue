@@ -57,11 +57,11 @@ export default {
             required: true,
         },
         amount: {
-            type: Number,
+            type: [Number, String],
             default: 0,
         },
         maxFee: {
-            type: Number,
+            type: [Number, String],
             default: 0,
         },
     },
