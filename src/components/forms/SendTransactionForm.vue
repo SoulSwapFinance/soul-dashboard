@@ -94,9 +94,7 @@
                                 <br />
                             </template>
 
-                            <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                                Continue
-                            </button>
+                            <button type="submit" class="btn large break-word" style="max-width: 100%">Continue</button>
                         </div>
                     </div>
                 </fieldset>

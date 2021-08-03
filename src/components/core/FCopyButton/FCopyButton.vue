@@ -21,7 +21,7 @@
             :hide-after="hidePopoverAfter"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
-            style="width: auto; max-width: 360px;"
+            style="width: auto; max-width: 360px"
             @window-hide="onWindowHide"
         >
             <slot name="popover-text">{{ popoverText }}</slot>

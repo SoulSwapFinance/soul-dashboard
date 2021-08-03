@@ -36,9 +36,7 @@
                     <pulse-loader color="#1969ff"></pulse-loader>
                 </template>
                 <template v-else>
-                    <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">
-                        Verify on Ledger
-                    </button>
+                    <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">Verify on Ledger</button>
                     <ledger-message :error="error" />
                 </template>
             </div>
@@ -55,7 +53,7 @@
             ref="confirmationWindow"
             modal
             title="Address Verification"
-            style="max-width: 620px;"
+            style="max-width: 620px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >

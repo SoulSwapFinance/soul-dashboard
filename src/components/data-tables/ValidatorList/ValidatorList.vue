@@ -41,8 +41,8 @@
                                 {{ value }}
                             </a>
                             <a
-                                v-if="(item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : '')"
-                                :href="(item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : '')"
+                                v-if="item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : ''"
+                                :href="item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : ''"
                                 target="_blank"
                                 rel="nofollow"
                                 class="validator-website"
@@ -56,8 +56,8 @@
                             {{ value }}
                         </a>
                         <a
-                            v-if="(item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : '')"
-                            :href="(item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : '')"
+                            v-if="item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : ''"
+                            :href="item.stakerInfo ? item.stakerInfo.website || item.stakerInfo.contact : ''"
                             target="_blank"
                             rel="nofollow"
                             class="validator-website"

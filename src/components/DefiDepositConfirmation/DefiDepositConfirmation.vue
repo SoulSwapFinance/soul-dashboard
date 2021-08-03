@@ -55,9 +55,7 @@
             </template>
         </tx-confirmation>
         <template v-else>
-            <f-message type="info" role="alert" class="big">
-                Adjust collateral first, please.
-            </f-message>
+            <f-message type="info" role="alert" class="big"> Adjust collateral first, please. </f-message>
         </template>
     </div>
 </template>

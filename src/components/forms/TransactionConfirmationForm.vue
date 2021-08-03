@@ -38,7 +38,7 @@
                                 v-if="showCancelButton"
                                 type="button"
                                 class="btn secondary large break-word"
-                                style="max-width: 100%;"
+                                style="max-width: 100%"
                                 @click="onCancelButtonClick"
                             >
                                 {{ cancelButtonLabel }}
@@ -46,7 +46,7 @@
                             <button
                                 type="submit"
                                 class="btn large break-word"
-                                style="max-width: 100%;"
+                                style="max-width: 100%"
                                 :disabled="notEnoughFTM || disabledSubmit"
                             >
                                 {{ sendButtonLabel }}

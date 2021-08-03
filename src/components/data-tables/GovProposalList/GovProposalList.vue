@@ -101,7 +101,7 @@
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">
-                                <button class="btn" style="margin-top: 8px;">Detail</button>
+                                <button class="btn" style="margin-top: 8px">Detail</button>
                             </div>
                         </div>
                         <template v-else>

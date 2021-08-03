@@ -5,9 +5,7 @@
             Repay Synths
         </h1>
 
-        <h2 class="perex">
-            Repay synths to unlock your collateral.
-        </h2>
+        <h2 class="perex">Repay synths to unlock your collateral.</h2>
 
         <defi-borrow
             :token="params.token"

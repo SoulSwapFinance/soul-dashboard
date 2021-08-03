@@ -7,7 +7,7 @@
                 <div class="form-body">
                     <span class="form-label">Address</span>
                     <div class="break-word">
-                        <b style="padding-right: 16px;">{{ account.address }}</b>
+                        <b style="padding-right: 16px">{{ account.address }}</b>
                         <f-copy-button
                             :text="account.address"
                             tooltip="Copy address to clipboard"

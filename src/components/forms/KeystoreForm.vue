@@ -47,9 +47,7 @@
                     </div>
 
                     <div class="footer">
-                        <button type="submit" class="btn large" :disabled="dSubmitDisabled">
-                            Unlock wallet
-                        </button>
+                        <button type="submit" class="btn large" :disabled="dSubmitDisabled">Unlock wallet</button>
                     </div>
                 </div>
             </fieldset>

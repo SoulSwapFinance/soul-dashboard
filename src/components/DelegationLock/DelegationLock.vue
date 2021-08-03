@@ -9,7 +9,7 @@
             </h2>
 
             <div class="delegation-lock-body">
-                <f-placeholder :content-loaded="canLockDelegation" block style="min-height: 200px;">
+                <f-placeholder :content-loaded="canLockDelegation" block style="min-height: 200px">
                     <div class="defi-price-input">
                         <f-auto-resize-input ref="lockDaysInputAR" min-width="48px">
                             <input

@@ -4,14 +4,12 @@
             <div class="small-container">
                 <p>
                     <a href="https://fantom.foundation/how-to-use-fantom-wallet/" target="_blank">
-                        How to use Fantom fWallet
+                        How to use Soul fWallet
                     </a>
                 </p>
 
                 <p>
-                    <a href="https://explorer.fantom.network/" target="_blank">
-                        Fantom Explorer
-                    </a>
+                    <a href="https://explorer.fantom.network/" target="_blank"> Fantom Explorer </a>
                 </p>
 
                 <social-media-links />

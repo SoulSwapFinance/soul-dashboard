@@ -17,9 +17,7 @@
                 Confirmation
             </h1>
 
-            <div class="confirmation-info">
-                You’re pushing rewards to distribution.
-            </div>
+            <div class="confirmation-info">You’re pushing rewards to distribution.</div>
 
             <template #window-content>
                 <ledger-confirmation-content :to="tx.to" :amount="0" :max-fee="tx._fee" />

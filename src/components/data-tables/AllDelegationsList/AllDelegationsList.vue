@@ -32,7 +32,7 @@
                         <template v-else><f-ellipsis :text="item.accountAddress" overflow="middle" /></template>
                     </template>
                 </template>
-                <template v-slot:column-validator="{ value, item, column }">
+                <template v-slot:column-validator="{ value, column }">
                     <div v-if="column" class="row no-collapse no-vert-col-padding">
                         <div class="col-5 f-row-label">{{ column.label }}</div>
                         <div class="col break-word">
@@ -54,9 +54,7 @@
                             <!--                            <button class="btn">Detail</button>-->
                             <a href="#" @click="onDetailLinkClick">Detail</a>
                             <br />
-                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)">
-                                Claim Rewards
-                            </a>
+                            <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)"> Claim Rewards </a>
                             <br />
                             <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item, true)">
                                 Claim & Restake
@@ -67,9 +65,7 @@
                         <!--                        <button class="btn">Detail</button>-->
                         <a href="#" @click="onDetailLinkClick">Detail</a>
                         <br />
-                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)">
-                            Claim Rewards
-                        </a>
+                        <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item)"> Claim Rewards </a>
                         <br />
                         <a href="#" @click="(_event) => onClaimRewardsLinkClick(_event, item, true)">
                             Claim & Restake
@@ -138,7 +134,7 @@ export default {
                 },
                 {
                     name: 'amount',
-                    label: 'Amount (FTM)',
+                    label: 'Amount (SOUL)',
                     itemProp: 'delegation.amount',
                     formatter: (_value) => formatNumberByLocale(WEIToFTM(_value)),
                     width: '160px',

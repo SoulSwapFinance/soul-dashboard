@@ -3,7 +3,7 @@
         ref="qrWindow"
         modal
         title="Address"
-        style="max-width: 620px;"
+        style="max-width: 620px"
         animation-in="scale-center-enter-active"
         animation-out="scale-center-leave-active"
         @window-hide="onWindowHide"

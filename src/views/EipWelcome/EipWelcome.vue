@@ -3,9 +3,7 @@
         <account-list target-window="_blank" />
 
         <div v-if="!accounts.length" class="narrow-container">
-            <router-link to="/" class="btn large w100p" target="_blank">
-                Start using Fantom PWA Wallet
-            </router-link>
+            <router-link to="/" class="btn large w100p" target="_blank"> Start using Soul fWallet </router-link>
         </div>
     </div>
 </template>

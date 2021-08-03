@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 1000px; height: 100%;"
+            style="max-width: 1000px; height: 100%"
             class="normal-padding"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"

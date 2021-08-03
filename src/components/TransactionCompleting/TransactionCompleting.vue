@@ -5,7 +5,7 @@
         <template v-if="success">
             <p>We have added the following transaction/s to our log for your address:</p>
 
-            <ul class="no-markers" style="margin-bottom: 16px;">
+            <ul class="no-markers" style="margin-bottom: 16px">
                 <li v-for="result in tsData.result" :key="result.uuid">
                     <b>
                         {{ result.amount }}

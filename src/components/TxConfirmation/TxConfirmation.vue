@@ -35,7 +35,7 @@
             ref="confirmationWindow"
             modal
             title="Transaction Confirmation"
-            style="max-width: 800px;"
+            style="max-width: 800px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
@@ -53,17 +53,13 @@
             modal
             title="Notice"
             class="double-body-padding"
-            style="max-width: 560px;"
+            style="max-width: 560px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
             <div class="align-center">
-                <div v-if="!$metamask.isInstalled()">
-                    Metamask is not installed.
-                </div>
-                <div v-else-if="!$metamask.isCorrectChainId()">
-                    Please, select Opera chain in Metamask.
-                </div>
+                <div v-if="!$metamask.isInstalled()">Metamask is not installed.</div>
+                <div v-else-if="!$metamask.isCorrectChainId()">Please, select Opera chain in Metamask.</div>
                 <div v-else-if="metamaskAccount !== currentAccount.address">
                     Please, select account <b>{{ currentAccount.address }}</b> in Metamask.
                 </div>
@@ -215,7 +211,7 @@ export default {
             this.$apollo
                 .mutate({
                     mutation: gql`
-                        mutation($tx: Bytes!) {
+                        mutation ($tx: Bytes!) {
                             sendTransaction(tx: $tx) {
                                 hash
                                 from

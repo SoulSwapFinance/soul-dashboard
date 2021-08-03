@@ -15,13 +15,7 @@ const ZERO_AMOUNT = '0x0';
  * @param {[string|{BN}]} choices
  * @returns {{data: string, to: *, value: string}}
  */
-function governanceVote(
-    web3,
-    govAddress,
-    delegatedTo,
-    proposalId,
-    choices
-) {
+function governanceVote(web3, govAddress, delegatedTo, proposalId, choices) {
     // create web3 instance if needed
     if (null === web3) {
         web3 = new Web3();
@@ -31,31 +25,34 @@ function governanceVote(
     return {
         to: govAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "delegatedTo",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "proposalID",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256[]",
-                    "name": "choices",
-                    "type": "uint256[]"
-                }
-            ],
-            "name": "vote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [delegatedTo, proposalId, choices])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'delegatedTo',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'proposalID',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256[]',
+                        name: 'choices',
+                        type: 'uint256[]',
+                    },
+                ],
+                name: 'vote',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [delegatedTo, proposalId, choices]
+        ),
     };
 }
 
@@ -69,12 +66,7 @@ function governanceVote(
  * @param {string|{BN}} proposalId
  * @returns {{data: string, to: *, value: string}}
  */
-function governanceCancelVote(
-    web3,
-    govAddress,
-    delegatedTo,
-    proposalId
-) {
+function governanceCancelVote(web3, govAddress, delegatedTo, proposalId) {
     // create web3 instance if needed
     if (null === web3) {
         web3 = new Web3();
@@ -84,31 +76,34 @@ function governanceCancelVote(
     return {
         to: govAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "delegatedTo",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "proposalID",
-                    "type": "uint256"
-                }
-            ],
-            "name": "cancelVote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [delegatedTo, proposalId])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'delegatedTo',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'proposalID',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'cancelVote',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [delegatedTo, proposalId]
+        ),
     };
 }
 
 // what we export here
 export default {
     governanceVote,
-    governanceCancelVote
+    governanceCancelVote,
 };

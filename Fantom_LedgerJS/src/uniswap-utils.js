@@ -1,12 +1,12 @@
 // import needed libs
-import Web3 from 'web3';
-import web3Utils from "web3-utils";
+// import Web3 from 'web3';
+import web3Utils from 'web3-utils';
 
 // ZERO_AMOUNT represents zero amount transferred on some calls.
 const ZERO_AMOUNT = '0x0';
 
 // Get ABI definitions needed for the utility to operate.
-const {abi: UNISWAP_ROUTER_ABI} = require('./abi/uniswap-router');
+const { abi: UNISWAP_ROUTER_ABI } = require('./abi/uniswap-router');
 
 /**
  * uniswapNativeTokenAddress returns address of the native token wrapper
@@ -37,7 +37,7 @@ function uniswapNativeTokenAddress(web3, routerAddress) {
 function uniswapAmountsOut(web3, routerAddress, amountIn, path) {
     // access the contract and make sure to access it with the latest confirmed block context
     const contract = new web3.eth.Contract(UNISWAP_ROUTER_ABI, routerAddress);
-    contract.defaultBlock = "latest";
+    contract.defaultBlock = 'latest';
 
     return contract.methods.getAmountsOut(amountIn, path).call();
 }
@@ -57,7 +57,7 @@ function uniswapAmountsOut(web3, routerAddress, amountIn, path) {
 function uniswapAmountsIn(web3, routerAddress, amountOut, path) {
     // access the contract and make sure to access it with the latest confirmed block context
     const contract = new web3.eth.Contract(UNISWAP_ROUTER_ABI, routerAddress);
-    contract.defaultBlock = "latest";
+    contract.defaultBlock = 'latest';
 
     return contract.methods.getAmountsIn(amountOut, path).call();
 }
@@ -94,72 +94,75 @@ function uniswapAddLiquidity(
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "tokenA",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "tokenB",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountADesired",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountBDesired",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountAMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountBMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "addLiquidity",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountA",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountB",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "liquidity",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'tokenA',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'tokenB',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountADesired',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountBDesired',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountAMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountBMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'addLiquidity',
+                outputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountA',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountB',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'liquidity',
+                        type: 'uint256',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline]
+        ),
     };
 }
 
@@ -193,62 +196,65 @@ function uniswapAddLiquidityFtm(
     return {
         to: routerAddress,
         value: web3Utils.numberToHex(amountFtmDesired),
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountTokenDesired",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountTokenMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountETHMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "addLiquidityETH",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountToken",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountETH",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "liquidity",
-                    "type": "uint256"
-                }
-            ],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-        }, [token, amountTokenDesired, amountTokenMin, amountFtmMin, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountTokenDesired',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountTokenMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountETHMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'addLiquidityETH',
+                outputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountToken',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountETH',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'liquidity',
+                        type: 'uint256',
+                    },
+                ],
+                payable: true,
+                stateMutability: 'payable',
+                type: 'function',
+            },
+            [token, amountTokenDesired, amountTokenMin, amountFtmMin, to, deadline]
+        ),
     };
 }
 
@@ -267,77 +273,70 @@ function uniswapAddLiquidityFtm(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapRemoveLiquidity(
-    web3,
-    routerAddress,
-    tokenA,
-    tokenB,
-    liquidity,
-    amountAMin,
-    amountBMin,
-    to,
-    deadline
-) {
+function uniswapRemoveLiquidity(web3, routerAddress, tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "tokenA",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "tokenB",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "liquidity",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountAMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountBMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "removeLiquidity",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountA",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountB",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'tokenA',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'tokenB',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'liquidity',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountAMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountBMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'removeLiquidity',
+                outputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountA',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountB',
+                        type: 'uint256',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline]
+        ),
     };
 }
 
@@ -355,71 +354,65 @@ function uniswapRemoveLiquidity(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapRemoveLiquidityFtm(
-    web3,
-    routerAddress,
-    token,
-    liquidity,
-    amountTokenMin,
-    amountFtmMin,
-    to,
-    deadline
-) {
+function uniswapRemoveLiquidityFtm(web3, routerAddress, token, liquidity, amountTokenMin, amountFtmMin, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "liquidity",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountTokenMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountETHMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "removeLiquidityETH",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountToken",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountETH",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [token, liquidity, amountTokenMin, amountFtmMin, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'liquidity',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountTokenMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountETHMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'removeLiquidityETH',
+                outputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountToken',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountETH',
+                        type: 'uint256',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [token, liquidity, amountTokenMin, amountFtmMin, to, deadline]
+        ),
     };
 }
 
@@ -437,32 +430,35 @@ function uniswapApproveShareTransfer(web3, routerAddress, pairAddress, amount) {
     return {
         to: pairAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "spender",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "approve",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [routerAddress, amount])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: 'spender',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'value',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'approve',
+                outputs: [
+                    {
+                        internalType: 'bool',
+                        name: '',
+                        type: 'bool',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [routerAddress, amount]
+        ),
     };
 }
 
@@ -482,60 +478,55 @@ function uniswapApproveShareTransfer(web3, routerAddress, pairAddress, amount) {
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapExactTokensForTokens(
-    web3,
-    routerAddress,
-    amountIn,
-    amountOutMin,
-    path,
-    to,
-    deadline
-) {
+function uniswapExactTokensForTokens(web3, routerAddress, amountIn, amountOutMin, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountIn",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountOutMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapExactTokensForTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [amountIn, amountOutMin, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountIn',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOutMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapExactTokensForTokens',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [amountIn, amountOutMin, path, to, deadline]
+        ),
     };
 }
 
@@ -556,55 +547,50 @@ function uniswapExactTokensForTokens(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapExactFtmForTokens(
-    web3,
-    routerAddress,
-    amountIn,
-    amountOutMin,
-    path,
-    to,
-    deadline
-) {
+function uniswapExactFtmForTokens(web3, routerAddress, amountIn, amountOutMin, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: web3Utils.numberToHex(amountIn),
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountOutMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapExactETHForTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-        }, [amountOutMin, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOutMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapExactETHForTokens',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: true,
+                stateMutability: 'payable',
+                type: 'function',
+            },
+            [amountOutMin, path, to, deadline]
+        ),
     };
 }
 
@@ -625,60 +611,55 @@ function uniswapExactFtmForTokens(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapTokensForExactTokens(
-    web3,
-    routerAddress,
-    amountOut,
-    amountInMax,
-    path,
-    to,
-    deadline
-) {
+function uniswapTokensForExactTokens(web3, routerAddress, amountOut, amountInMax, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountOut",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountInMax",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapTokensForExactTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [amountOut, amountInMax, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOut',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountInMax',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapTokensForExactTokens',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [amountOut, amountInMax, path, to, deadline]
+        ),
     };
 }
 
@@ -700,55 +681,50 @@ function uniswapTokensForExactTokens(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapFtmForExactTokens(
-    web3,
-    routerAddress,
-    amountOut,
-    amountInMax,
-    path,
-    to,
-    deadline
-) {
+function uniswapFtmForExactTokens(web3, routerAddress, amountOut, amountInMax, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: web3Utils.numberToHex(amountInMax),
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountOut",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapETHForExactTokens",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-        }, [amountOut, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOut',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapETHForExactTokens',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: true,
+                stateMutability: 'payable',
+                type: 'function',
+            },
+            [amountOut, path, to, deadline]
+        ),
     };
 }
 
@@ -769,60 +745,55 @@ function uniswapFtmForExactTokens(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapTokensForExactFtm(
-    web3,
-    routerAddress,
-    amountOut,
-    amountInMax,
-    path,
-    to,
-    deadline
-) {
+function uniswapTokensForExactFtm(web3, routerAddress, amountOut, amountInMax, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountOut",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountInMax",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapTokensForExactETH",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [amountOut, amountInMax, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOut',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountInMax',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapTokensForExactETH',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [amountOut, amountInMax, path, to, deadline]
+        ),
     };
 }
 
@@ -843,60 +814,55 @@ function uniswapTokensForExactFtm(
  * @param {string|{BN}} deadline
  * @returns {{data: string, to: *, value: string}}
  */
-function uniswapExactTokensForFtm(
-    web3,
-    routerAddress,
-    amountIn,
-    amountOutMin,
-    path,
-    to,
-    deadline
-) {
+function uniswapExactTokensForFtm(web3, routerAddress, amountIn, amountOutMin, path, to, deadline) {
     // make the transaction
     return {
         to: routerAddress,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amountIn",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amountOutMin",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "path",
-                    "type": "address[]"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "deadline",
-                    "type": "uint256"
-                }
-            ],
-            "name": "swapExactTokensForETH",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "amounts",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [amountIn, amountOutMin, path, to, deadline])
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'uint256',
+                        name: 'amountIn',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'amountOutMin',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'path',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'to',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deadline',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'swapExactTokensForETH',
+                outputs: [
+                    {
+                        internalType: 'uint256[]',
+                        name: 'amounts',
+                        type: 'uint256[]',
+                    },
+                ],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [amountIn, amountOutMin, path, to, deadline]
+        ),
     };
 }
 

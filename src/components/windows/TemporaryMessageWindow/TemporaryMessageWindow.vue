@@ -3,7 +3,7 @@
         <f-window
             ref="window"
             modal
-            style="max-width: 700px;"
+            style="max-width: 700px"
             title="Select Address"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"

@@ -45,9 +45,7 @@
                     <li>
                         <div class="row no-collapse">
                             <div class="col-3 f-row-label">Transaction Value</div>
-                            <div class="col">
-                                0
-                            </div>
+                            <div class="col">0</div>
                         </div>
                     </li>
                 </ledger-confirmation-content>

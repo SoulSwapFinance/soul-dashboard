@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 720px;"
+            style="max-width: 720px"
             title="Pick ledger account"
             class="colored-header ledger-accounts-color double-body-padding"
             animation-in="scale-center-enter-active"

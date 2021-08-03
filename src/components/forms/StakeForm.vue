@@ -11,7 +11,7 @@
                             <a
                                 href="#"
                                 class="btn light break-word"
-                                style="max-width: 100%;"
+                                style="max-width: 100%"
                                 aria-label="Go to previous form"
                                 @click.prevent="onPreviousBtnClick"
                             >
@@ -76,9 +76,7 @@
                         </f-input>
 
                         <div class="align-center form-buttons">
-                            <button type="submit" class="btn large break-word" style="max-width: 100%;">
-                                Continue
-                            </button>
+                            <button type="submit" class="btn large break-word" style="max-width: 100%">Continue</button>
                         </div>
                     </div>
                 </fieldset>
@@ -135,10 +133,10 @@ export default {
 
     data() {
         return {
-            amountErrMsg: 'Invalid amount',
+            amountErrMsg: 'Invalid Amount',
             gasPrice: '',
-            validator: 'Select a Validator',
-            validatorErrMsg: 'Please select a validator',
+            validator: 'Select Pool',
+            validatorErrMsg: 'Please select a pool',
             /** Info about selected validator. */
             validatorInfo: {
                 address: '',

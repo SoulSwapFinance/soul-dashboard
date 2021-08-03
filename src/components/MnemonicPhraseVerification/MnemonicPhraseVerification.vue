@@ -2,9 +2,7 @@
     <div class="mnemonic-phrase mnemonic-phrase-verification">
         <h2>Verification</h2>
 
-        <p>
-            Please select the words in the correct order to verify your mnemonic phrase.
-        </p>
+        <p>Please select the words in the correct order to verify your mnemonic phrase.</p>
 
         <ul v-if="dMnemonicToVerify" class="phrase-list no-markers" @click="onMnemonicToVerifyClick">
             <li v-for="(item, index) in dMnemonicToVerify" :key="`mn${index}`" :data-idx="index">

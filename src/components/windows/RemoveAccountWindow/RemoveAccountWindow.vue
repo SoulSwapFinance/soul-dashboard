@@ -4,7 +4,7 @@
             ref="win"
             modal
             title="Remove Wallet"
-            style="max-width: 560px;"
+            style="max-width: 560px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             @window-hide="onWindowHide"

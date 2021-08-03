@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 400px;"
+            style="max-width: 400px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             class="deposit-or-borrow-token-window"

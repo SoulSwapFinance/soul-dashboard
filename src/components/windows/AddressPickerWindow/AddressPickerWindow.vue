@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 1050px;"
+            style="max-width: 1050px"
             title="Select Address"
             class="account-picker-f-window"
             animation-in="scale-center-enter-active"

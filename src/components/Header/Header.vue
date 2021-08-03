@@ -4,7 +4,7 @@
             <div class="row no-collapse align-items-center">
                 <div class="col">
                     <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')">
-                        <img src="fantom-logo.svg" alt="" class="not-fluid" />
+                        <img src="giphy 3.GIF" alt="" class="not-fluid" />
                     </router-link>
                 </div>
             </div>
@@ -13,11 +13,13 @@
 </template>
 
 <script>
+import HeaderWithNavigation from '../HeaderWithNavigation.vue';
 /**
- * Renderes header and takes care of navigation.
+ * Renders header and takes care of navigation.
  */
 export default {
-    components: {},
+    // eslint-disable-next-line vue/no-unused-components
+    components: { HeaderWithNavigation },
 };
 </script>
 

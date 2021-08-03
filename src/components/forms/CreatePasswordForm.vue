@@ -3,12 +3,8 @@
         <f-form @f-form-submit="onFormSubmit" @f-form-change="onFormChange" @f-form-input="onFormInput">
             <fieldset class="">
                 <legend class="h2">
-                    <template v-if="downloadKeystoreFile">
-                        Create a keystore file and password
-                    </template>
-                    <template v-else>
-                        Set the password for your wallet
-                    </template>
+                    <template v-if="downloadKeystoreFile"> Create a keystore file and password </template>
+                    <template v-else> Set the password for your wallet </template>
                 </legend>
 
                 <div class="form-body">
@@ -67,15 +63,11 @@
                         <button
                             type="submit"
                             class="btn large break-word"
-                            style="max-width: 100%;"
+                            style="max-width: 100%"
                             :class="{ disabled: submitDisabled }"
                         >
-                            <template v-if="downloadKeystoreFile">
-                                Download keystore file and continue
-                            </template>
-                            <template v-else>
-                                Continue
-                            </template>
+                            <template v-if="downloadKeystoreFile"> Download keystore file and continue </template>
+                            <template v-else> Continue </template>
                         </button>
                     </div>
                 </div>

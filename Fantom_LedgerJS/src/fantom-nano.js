@@ -6,11 +6,11 @@
  * @version 0.1.7
  * @licese MIT
  */
-import {Assert, stripReturnCodeFromResponse, bip32PathToBuffer, BIP32_HARDENED, buffer2Hex} from "./utils";
-import {Transaction} from "ethereumjs-tx";
-import Common from "ethereumjs-common";
-import {encode} from "rlp";
-import {toBuffer, stripZeros} from "ethereumjs-util";
+import { Assert, stripReturnCodeFromResponse, bip32PathToBuffer, BIP32_HARDENED, buffer2Hex } from './utils';
+import { Transaction } from 'ethereumjs-tx';
+import Common from 'ethereumjs-common';
+import { encode } from 'rlp';
+import { toBuffer, stripZeros } from 'ethereumjs-util';
 
 // FANTOM_CHAIN_ID represents the Fantom Opera main chain id.
 export const FANTOM_CHAIN_ID = 0xfa;
@@ -23,14 +23,14 @@ const INS = {
     GET_VERSION: 0x01,
     GET_PUBLIC_KEY: 0x10,
     GET_ADDRESS: 0x11,
-    SIGN_TRANSACTION: 0x20
+    SIGN_TRANSACTION: 0x20,
 };
 
 // SIGN_STATE represents the state of transaction data processing
 // on the Ledger device
 const SIGN_STATE = {
     COLLECT: 0x02,
-    FINALIZE: 0x04
+    FINALIZE: 0x04,
 };
 
 // MAX_APDU_CHUNK_LENGTH represents the max amount of bytes we send
@@ -41,62 +41,62 @@ const MAX_APDU_CHUNK_LENGTH = 150;
 // in case of unexpected event.
 export const ErrorCodes = {
     // Bad request header.
-    ERR_BAD_REQUEST_HEADER: 0x6E01,
+    ERR_BAD_REQUEST_HEADER: 0x6e01,
 
     // Unknown service class CLA received.
-    ERR_UNKNOWN_CLA: 0x6E02,
+    ERR_UNKNOWN_CLA: 0x6e02,
 
     // Unknown instruction arrived.
-    ERR_UNKNOWN_INS: 0x6E03,
+    ERR_UNKNOWN_INS: 0x6e03,
 
     // Request is not valid in the current context.
-    ERR_INVALID_STATE: 0x6E04,
+    ERR_INVALID_STATE: 0x6e04,
 
     // Request contains invalid parameters P1, P2, or Lc.
-    ERR_INVALID_PARAMETERS: 0x6E05,
+    ERR_INVALID_PARAMETERS: 0x6e05,
 
     // Request contains invalid payload structure, or content.
-    ERR_INVALID_DATA: 0x6E06,
+    ERR_INVALID_DATA: 0x6e06,
 
     // Action has been rejected by user.
-    ERR_REJECTED_BY_USER: 0x6E07,
+    ERR_REJECTED_BY_USER: 0x6e07,
 
     // Action rejected by security policy.
-    ERR_REJECTED_BY_POLICY: 0x6E08,
+    ERR_REJECTED_BY_POLICY: 0x6e08,
 
     // Device is locked.
-    ERR_DEVICE_LOCKED: 0x6E09
+    ERR_DEVICE_LOCKED: 0x6e09,
 };
 
 // ErrorMessages exports list of english error messages associated
 // with corresponding error codes.
 export const ErrorMessages = {
     // Bad request header.
-    [ErrorCodes.ERR_BAD_REQUEST_HEADER]: "Invalid request header sent to the hw wallet.",
+    [ErrorCodes.ERR_BAD_REQUEST_HEADER]: 'Invalid request header sent to the hw wallet.',
 
     // Unknown service class CLA received.
-    [ErrorCodes.ERR_UNKNOWN_CLA]: "Unknown service class, please use correct service identifier.",
+    [ErrorCodes.ERR_UNKNOWN_CLA]: 'Unknown service class, please use correct service identifier.',
 
     // Unknown instruction arrived.
-    [ErrorCodes.ERR_UNKNOWN_INS]: "Unknown instruction sent, please send a supported instruction.",
+    [ErrorCodes.ERR_UNKNOWN_INS]: 'Unknown instruction sent, please send a supported instruction.',
 
     // Request is not valid in the current context.
-    [ErrorCodes.ERR_INVALID_STATE]: "Invalid instruction state, the instruction sequence did not follow the protocol.",
+    [ErrorCodes.ERR_INVALID_STATE]: 'Invalid instruction state, the instruction sequence did not follow the protocol.',
 
     // Request contains invalid parameters P1, P2, or Lc.
-    [ErrorCodes.ERR_INVALID_PARAMETERS]: "Invalid instruction parameters.",
+    [ErrorCodes.ERR_INVALID_PARAMETERS]: 'Invalid instruction parameters.',
 
     // Request contains invalid payload structure, or content.
-    [ErrorCodes.ERR_INVALID_DATA]: "Data sent with the request has not been recognized.",
+    [ErrorCodes.ERR_INVALID_DATA]: 'Data sent with the request has not been recognized.',
 
     // Action has been rejected by user.
-    [ErrorCodes.ERR_REJECTED_BY_USER]: "User rejected requested action.",
+    [ErrorCodes.ERR_REJECTED_BY_USER]: 'User rejected requested action.',
 
     // Action rejected by security policy.
-    [ErrorCodes.ERR_REJECTED_BY_POLICY]: "Requested action has been denied by security policy.",
+    [ErrorCodes.ERR_REJECTED_BY_POLICY]: 'Requested action has been denied by security policy.',
 
     // Device is locked.
-    [ErrorCodes.ERR_DEVICE_LOCKED]: "Can not proceed with the instruction, please unlock the device.",
+    [ErrorCodes.ERR_DEVICE_LOCKED]: 'Can not proceed with the instruction, please unlock the device.',
 };
 
 /**
@@ -113,7 +113,6 @@ export const getErrorMessage = (status) => {
     return ErrorMessages[status] || defaultMsg;
 };
 
-
 /**
  * convertError implements transport layer error message conversion
  * DWE
@@ -124,17 +123,18 @@ export const getErrorMessage = (status) => {
  * @param {function} fn
  * @returns {function(...[*]=)}
  */
-const wrapConvertError = fn => async (...args) => {
-    try {
-        return await fn(...args);
-    } catch (e) {
-        if (e && e.statusCode) {
-            e.message = `Ledger device: ${getErrorMessage(e.statusCode)}`;
+const wrapConvertError =
+    (fn) =>
+    async (...args) => {
+        try {
+            return await fn(...args);
+        } catch (e) {
+            if (e && e.statusCode) {
+                e.message = `Ledger device: ${getErrorMessage(e.statusCode)}`;
+            }
+            throw e;
         }
-        throw e;
-    }
-};
-
+    };
 
 // FantomNano implements high level Fantom Nano Ledger HW wallet communication
 export default class FantomNano {
@@ -157,17 +157,12 @@ export default class FantomNano {
      * @param {Transport} transport
      * @param {string} ledgerAppKey APDU proxy key of the Ledger application
      */
-    constructor(transport, ledgerAppKey = "FTM") {
+    constructor(transport, ledgerAppKey = 'FTM') {
         // keep the transport
         this.transport = transport;
 
         // set the list of supported methods
-        this.methods = [
-            "getVersion",
-            "deriveAddress",
-            "derivePublicKey",
-            "signTransaction"
-        ];
+        this.methods = ['getVersion', 'deriveAddress', 'derivePublicKey', 'signTransaction'];
 
         // wrap local methods within the transport layer
         // this will allow the transport layer to handle API lock and inform us
@@ -195,7 +190,7 @@ export default class FantomNano {
         const data = Buffer.alloc(0);
 
         // execute the call
-        return this.send(CLA, INS.GET_VERSION, p1, p2, data).then(response => {
+        return this.send(CLA, INS.GET_VERSION, p1, p2, data).then((response) => {
             // extract version data
             const data = stripReturnCodeFromResponse(response);
 
@@ -206,11 +201,11 @@ export default class FantomNano {
             // expand the values
             const [major, minor, patch, flag] = data;
             const flags = {
-                isDevelopment: (flag & 0x01)
+                isDevelopment: flag & 0x01,
             };
 
             // return the data structure
-            return {major, minor, patch, flags};
+            return { major, minor, patch, flags };
         });
     }
 
@@ -313,17 +308,17 @@ export default class FantomNano {
      */
     getTransactionSignatureOptions() {
         // create the signature options structure if needed
-        if ("object" !== typeof this.sigOptions) {
+        if ('object' !== typeof this.sigOptions) {
             this.sigOptions = {
                 common: Common.forCustomChain(
                     'mainnet',
                     {
                         name: 'custom-network',
                         networkId: 1,
-                        chainId: FANTOM_CHAIN_ID
+                        chainId: FANTOM_CHAIN_ID,
                     },
                     'petersburg'
-                )
+                ),
             };
         }
 
@@ -344,11 +339,9 @@ export default class FantomNano {
         // get the main set of data and add chain id
         // so we are EIP155 compliant. It's a basic mitigation
         // to replay attacks.
-        const items = txRaw.raw.slice(0, 6).concat([
-            toBuffer(txRaw.getChainId()),
-            stripZeros(toBuffer(0)),
-            stripZeros(toBuffer(0)),
-        ]);
+        const items = txRaw.raw
+            .slice(0, 6)
+            .concat([toBuffer(txRaw.getChainId()), stripZeros(toBuffer(0)), stripZeros(toBuffer(0))]);
 
         return encode(items);
     }
@@ -377,7 +370,7 @@ export default class FantomNano {
             const data = bip32PathToBuffer(bip32Path);
 
             // execute the call
-            return this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, data).then(response => {
+            return this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, data).then((response) => {
                 // extract version data
                 const data = stripReturnCodeFromResponse(response);
 
@@ -394,7 +387,7 @@ export default class FantomNano {
             const p2 = 0x00;
 
             // send the RLP encoded transaction chunk to the device
-            return await this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, chunk).then(response => {
+            return await this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, chunk).then((response) => {
                 // extract version data
                 const data = stripReturnCodeFromResponse(response);
 
@@ -416,7 +409,7 @@ export default class FantomNano {
             const data = Buffer.alloc(0);
 
             // send the RLP encoded transaction chunk to the device
-            return await this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, data).then(response => {
+            return await this.send(CLA, INS.SIGN_TRANSACTION, p1, p2, data).then((response) => {
                 // extract version data
                 const data = stripReturnCodeFromResponse(response);
 
@@ -454,7 +447,7 @@ export default class FantomNano {
         const chunks = [];
         const parts = Math.ceil(txBuffer.length / MAX_APDU_CHUNK_LENGTH);
         for (let i = 0; i < parts; i++) {
-            chunks [i] = txBuffer.slice(i * MAX_APDU_CHUNK_LENGTH, (i + 1) * MAX_APDU_CHUNK_LENGTH);
+            chunks[i] = txBuffer.slice(i * MAX_APDU_CHUNK_LENGTH, (i + 1) * MAX_APDU_CHUNK_LENGTH);
         }
 
         // initialize the signing process first (here we send BIP32 path for signing key derivation)
@@ -482,7 +475,7 @@ export default class FantomNano {
             await panicResetState();
 
             // throw an error, we already failed and trying to finalize the signature is pointless
-            throw new Error("Transaction data was not recognized on the Ledger device!");
+            throw new Error('Transaction data was not recognized on the Ledger device!');
         }
 
         // confirm signature processing on the device and request
@@ -496,21 +489,21 @@ export default class FantomNano {
         const txFinal = new Transaction(
             {
                 ...tx,
-                v: sig.v + ((FANTOM_CHAIN_ID * 2) + 8),
+                v: sig.v + (FANTOM_CHAIN_ID * 2 + 8),
                 r: sig.r,
-                s: sig.s
+                s: sig.s,
             },
             this.getTransactionSignatureOptions()
         );
 
         // return the signed tx structure with all the important details
         return {
-            v: sig.v + ((FANTOM_CHAIN_ID * 2) + 8),
+            v: sig.v + (FANTOM_CHAIN_ID * 2 + 8),
             r: sig.r,
             s: sig.s,
             tx: txFinal,
-            raw: txFinal.serialize()
-        }
+            raw: txFinal.serialize(),
+        };
     }
 
     /**
@@ -529,12 +522,12 @@ export default class FantomNano {
         Assert.isValidBip32Path(bip32Path);
 
         // what params will be sent
-        const p1 = (confirmAddress ? 0x02 : 0x01);
+        const p1 = confirmAddress ? 0x02 : 0x01;
         const p2 = 0x00;
         const data = bip32PathToBuffer(bip32Path);
 
         // execute the call
-        return this.send(CLA, INS.GET_ADDRESS, p1, p2, data).then(response => {
+        return this.send(CLA, INS.GET_ADDRESS, p1, p2, data).then((response) => {
             // extract version data
             const data = stripReturnCodeFromResponse(response);
 
@@ -550,7 +543,7 @@ export default class FantomNano {
             Assert.check(len + 1 === data.length);
 
             // return the address data as an expected hex string
-            return "0x" + buffer2Hex(data.slice(1, 1 + len));
+            return '0x' + buffer2Hex(data.slice(1, 1 + len));
         });
     }
 
@@ -574,7 +567,7 @@ export default class FantomNano {
         const data = bip32PathToBuffer(bip32Path);
 
         // execute the call
-        return this.send(CLA, INS.GET_PUBLIC_KEY, p1, p2, data).then(response => {
+        return this.send(CLA, INS.GET_PUBLIC_KEY, p1, p2, data).then((response) => {
             // extract version data
             const data = stripReturnCodeFromResponse(response);
 
@@ -593,7 +586,7 @@ export default class FantomNano {
             // return the data
             return {
                 publicKey: data.slice(1, 1 + len),
-                chainKey: data.slice(1 + len, 1 + len + len)
+                chainKey: data.slice(1 + len, 1 + len + len),
             };
         });
     }

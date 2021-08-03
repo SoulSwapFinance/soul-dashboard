@@ -14,9 +14,7 @@
                 Confirmation
             </h1>
             <h2 v-else class="cont-with-back-btn">
-                <span>
-                    Mint sFTM - Confirmation
-                </span>
+                <span> Mint sFTM - Confirmation </span>
                 <button type="button" class="btn light" @click="onBackBtnClick">Back</button>
             </h2>
 

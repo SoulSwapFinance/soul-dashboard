@@ -56,7 +56,7 @@
                         :hide-after="3800"
                         animation-in="scale-center-enter-active"
                         animation-out="scale-center-leave-active"
-                        style="width: auto; max-width: 360px;"
+                        style="width: auto; max-width: 360px"
                     >
                         <slot name="popover-text">
                             {{ popoverText }}

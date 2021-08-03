@@ -26,7 +26,7 @@
                         <span
                             v-show="sendToAddressBalance || sendToAccountName"
                             class="f-row-label"
-                            style="display: inline-block;"
+                            style="display: inline-block"
                         >
                             (
                             <template v-if="token.address">
@@ -42,7 +42,7 @@
                     <div class="col-3 f-row-label">Send From</div>
                     <div class="col break-word">
                         {{ currentAccount.address }}
-                        <span class="f-row-label" style="display: inline-block;">
+                        <span class="f-row-label" style="display: inline-block">
                             <template v-if="token.address">
                                 ( <f-token-value :value="maxRemainingErc20TokenBalance" :token="token" />
                             </template>

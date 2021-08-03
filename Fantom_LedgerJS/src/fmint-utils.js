@@ -1,5 +1,5 @@
 // import needed libs
-import Web3 from "web3";
+import Web3 from 'web3';
 
 // ZERO_AMOUNT represents zero amount transferred on some calls.
 const ZERO_AMOUNT = '0x0';
@@ -27,27 +27,30 @@ function fMintDepositTokenTx(fMintContract, tokenAddress, amount) {
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "mustDeposit",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress, amount]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: '_amount',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'mustDeposit',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress, amount]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -68,27 +71,30 @@ function fMintWithdrawTokenTx(fMintContract, tokenAddress, amount) {
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "mustWithdraw",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress, amount]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: '_amount',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'mustWithdraw',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress, amount]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -109,27 +115,30 @@ function fMintMintTokenTx(fMintContract, tokenAddress, amount) {
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "mustMint",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress, amount]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: '_amount',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'mustMint',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress, amount]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -147,38 +156,41 @@ function fMintMintTokenMaxTx(fMintContract, tokenAddress, targetRatio4dec) {
     const web3 = new Web3();
 
     // use default target ratio, if not set
-    if ("undefined" == typeof targetRatio4dec) {
+    if ('undefined' == typeof targetRatio4dec) {
         // this is the default ration 300%
         // with 4 digits precision and encoded to hex
         // the actual value is: 30000
-        targetRatio4dec = "0x7530";
+        targetRatio4dec = '0x7530';
     }
 
     // make the transaction
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_ratio",
-                    "type": "uint256"
-                }
-            ],
-            "name": "mustMintMax",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress, targetRatio4dec]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: '_ratio',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'mustMintMax',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress, targetRatio4dec]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -199,27 +211,30 @@ function fMintRepayTokenTx(fMintContract, tokenAddress, amount) {
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "mustRepay",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress, amount]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: '_amount',
+                        type: 'uint256',
+                    },
+                ],
+                name: 'mustRepay',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress, amount]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -239,22 +254,25 @@ function fMintRepayTokenMaxTx(fMintContract, tokenAddress) {
     return {
         to: fMintContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "mustRepayMax",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, [tokenAddress]),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: 'address',
+                        name: '_token',
+                        type: 'address',
+                    },
+                ],
+                name: 'mustRepayMax',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            [tokenAddress]
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -273,16 +291,19 @@ function fMintClaimRewardTx(fMintRewardContract) {
     return {
         to: fMintRewardContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [],
-            "name": "mustRewardClaim",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, []),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [],
+                name: 'mustRewardClaim',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            []
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -302,16 +323,19 @@ function fMintPushRewardTx(fMintRewardContract) {
     return {
         to: fMintRewardContract,
         value: ZERO_AMOUNT,
-        data: web3.eth.abi.encodeFunctionCall({
-            "constant": false,
-            "inputs": [],
-            "name": "mustRewardPush",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, []),
-        chainId: OPERA_CHAIN_ID
+        data: web3.eth.abi.encodeFunctionCall(
+            {
+                constant: false,
+                inputs: [],
+                name: 'mustRewardPush',
+                outputs: [],
+                payable: false,
+                stateMutability: 'nonpayable',
+                type: 'function',
+            },
+            []
+        ),
+        chainId: OPERA_CHAIN_ID,
     };
 }
 
@@ -326,5 +350,5 @@ export default {
     fMintClaimRewardTx,
     fMintPushRewardTx,
     OPERA_CHAIN_ID,
-    TESTNET_CHAIN_ID
+    TESTNET_CHAIN_ID,
 };

@@ -3,7 +3,7 @@
         ref="win"
         modal
         title="Add Metamask Account"
-        style="max-width: 560px;"
+        style="max-width: 560px"
         animation-in="scale-center-enter-active"
         animation-out="scale-center-leave-active"
         @window-hide="$emit('window-hide', $event)"

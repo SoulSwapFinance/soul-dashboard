@@ -15,9 +15,7 @@
                             />
                         </div>
                         <p class="description">Mint fUSD by locking your FTM</p>
-                        <router-link :to="{ name: 'defi-fmint' }" class="clickable title">
-                            Mint fUSD
-                        </router-link>
+                        <router-link :to="{ name: 'defi-fmint' }" class="clickable title"> Mint fUSD </router-link>
                     </div>
                 </li>
                 <li class="col-4 col-6-lg">

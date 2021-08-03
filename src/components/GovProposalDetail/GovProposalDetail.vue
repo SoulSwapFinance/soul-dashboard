@@ -42,9 +42,7 @@
                 </h3>
 
                 <div v-if="!canVote && votingResolved" class="align-center">
-                    <f-message type="warning" with-icon>
-                        You can't vote, you have no delegations.
-                    </f-message>
+                    <f-message type="warning" with-icon> You can't vote, you have no delegations. </f-message>
                     <br />
                 </div>
 
@@ -100,9 +98,7 @@
                                     </div>
 
                                     <div class="align-center form-buttons">
-                                        <button type="submit" class="btn large" :disabled="votingDisabled">
-                                            Vote
-                                        </button>
+                                        <button type="submit" class="btn large" :disabled="votingDisabled">Vote</button>
                                     </div>
                                 </div>
 

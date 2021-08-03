@@ -25,7 +25,7 @@
                     <template v-else>
                         <span class="form-label">Address</span>
                         <div class="break-word">
-                            <b style="padding-right: 16px;">{{ contactData.address }}</b>
+                            <b style="padding-right: 16px">{{ contactData.address }}</b>
                             <f-copy-button
                                 :text="contactData.address"
                                 tooltip="Copy address to clipboard"

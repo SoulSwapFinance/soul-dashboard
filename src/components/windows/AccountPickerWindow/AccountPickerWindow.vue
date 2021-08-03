@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 1050px;"
+            style="max-width: 1050px"
             title="Select Wallet"
             class="account-picker-f-window normal-padding"
             animation-in="scale-center-enter-active"

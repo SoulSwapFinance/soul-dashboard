@@ -5,9 +5,7 @@
             Lock Collateral
         </h1>
 
-        <h2 class="perex">
-            Lock collateral to increase the collateral ratio and mint synths.
-        </h2>
+        <h2 class="perex">Lock collateral to increase the collateral ratio and mint synths.</h2>
 
         <defi-deposit
             :token="params.token"

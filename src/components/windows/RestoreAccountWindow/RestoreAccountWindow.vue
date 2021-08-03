@@ -3,7 +3,7 @@
         <f-window
             ref="win"
             modal
-            style="max-width: 720px;"
+            style="max-width: 720px"
             class="colored-header restore-account-color double-body-padding c-main c-footer"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"

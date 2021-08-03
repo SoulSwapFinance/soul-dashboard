@@ -49,12 +49,8 @@
         </div>
 
         <div class="form-buttons">
-            <router-link :to="{ name: 'defi-manage-deposit' }" class="btn large">
-                Deposit/Withdraw
-            </router-link>
-            <router-link :to="{ name: 'defi-manage-borrow' }" class="btn large">
-                Borrow/Repay
-            </router-link>
+            <router-link :to="{ name: 'defi-manage-deposit' }" class="btn large"> Deposit/Withdraw </router-link>
+            <router-link :to="{ name: 'defi-manage-borrow' }" class="btn large"> Borrow/Repay </router-link>
         </div>
 
         <div class="defi-tabs">

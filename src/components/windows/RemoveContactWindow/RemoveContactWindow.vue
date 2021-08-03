@@ -4,7 +4,7 @@
             ref="win"
             modal
             title="Remove Wallet"
-            style="max-width: 560px;"
+            style="max-width: 560px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             @window-hide="onWindowHide"
@@ -13,9 +13,7 @@
                 Are you sure you want to remove contact <span class="break-word">{{ contactAddress }}</span> ?
             </div>
             <br />
-            <f-message type="warning" with-icon>
-                Removing a contact clears it from local storage.
-            </f-message>
+            <f-message type="warning" with-icon> Removing a contact clears it from local storage. </f-message>
             <br />
             <div class="align-center form-buttons">
                 <button class="btn large secondary" @click="$refs.win.hide()">Cancel</button>

@@ -49,7 +49,7 @@
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
             class="light popover-menu"
-            style="width: auto; max-width: 100%;"
+            style="width: auto; max-width: 100%"
         >
             <address-actions-box vertical-mode @window-hide="onWindowHide" />
         </f-window>
