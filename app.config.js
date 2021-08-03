@@ -1,10 +1,10 @@
 const appConfig = {
     // app title
-    name: 'Fantom fWallet',
+    name: 'Soul Dashboard',
     // app description
-    description: 'Fantom fWallet',
+    description: 'SoulSwap fWallet Dashboard',
     // app keywords
-    keywords: 'fantom, metamask',
+    keywords: 'soulswap, fantom, metamask',
     // apollo client settings
     apollo: {
         // list of providers. if one of them is unavailable, another is randomly picked
@@ -89,7 +89,7 @@ const appConfig = {
     // pwa settings
     pwa: {
         // name used in pwa manifest
-        name: 'Fantom fWallet',
+        name: 'Soul fWallet Dashboard',
         categories: ['finance'],
     },
     // determines if app is chrome extension
@@ -99,9 +99,9 @@ const appConfig = {
         // chrome extension version - increase version number, if you want to publish in the chrome web store
         version: '0.0.1',
         // chrome extension name
-        name: 'Fantom fWallet',
+        name: 'Soul fWallet Dashboard',
         // chrome extension description
-        description: 'Fantom fWallet',
+        description: 'Soul fWallet',
         // output directory for application
         outputDir: 'chrome-extension/dist',
         // output directory for application (relative to outputDir)

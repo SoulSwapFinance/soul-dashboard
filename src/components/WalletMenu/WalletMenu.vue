@@ -97,7 +97,7 @@ export default {
                     url: {
                         name: 'dashboard',
                     },
-                    title: 'Home',
+                    title: 'HOME',
                     icon: homeIcon,
                     fill: true,
                 },
@@ -105,34 +105,34 @@ export default {
                     url: {
                         name: ACCOUNT_DEFAULT_VIEW,
                     },
-                    title: 'Wallet',
+                    title: 'DASH',
                     icon: walletIcon,
                     walletLink: true,
                     fill: true,
                 },
                 {
                     url: {
-                        name: 'staking',
+                        name: 'stake',
                     },
-                    title: 'Staking',
+                    title: 'STAKE',
                     icon: stakingIcon,
                     stakingLink: true,
                     fill: true,
                 },
                 {
                     url: {
-                        name: 'fmint',
+                        name: 'synths',
                     },
-                    title: 'fMint',
+                    title: 'SYTHS',
                     icon: fmintIcon,
                     fillColor: true,
                     fmintLink: true,
                 },
                 {
                     url: {
-                        name: 'fswap',
+                        name: 'wrap',
                     },
-                    title: 'fSwap',
+                    title: 'WRAP',
                     icon: swapIcon,
                     fill: true,
                     fswapLink: true,
@@ -148,9 +148,9 @@ export default {
                 },*/
                 {
                     url: {
-                        name: 'funiswap',
+                        name: 'soulswap',
                     },
-                    title: 'fUNI',
+                    title: 'SWAP',
                     icon: funiIcon,
                     fill: true,
                     fUniswapLink: true,
@@ -159,7 +159,7 @@ export default {
                     url: {
                         name: 'gov',
                     },
-                    title: 'Governance',
+                    title: 'GOVERN',
                     icon: voteIcon,
                     govLink: true,
                     fill: true,
@@ -168,7 +168,7 @@ export default {
                     url: {
                         name: 'settings',
                     },
-                    title: 'Settings',
+                    title: 'CONFIG',
                     icon: settingsIcon,
                     // original: true,
                     fill: true,

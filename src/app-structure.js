@@ -280,28 +280,23 @@ const appStructure = [
                                                                 id: 'funiswap-add-liquidity-confirmation2',
                                                                 _c: [
                                                                     {
-                                                                        id:
-                                                                            'funiswap-add-liquidity-transaction-success-message2',
+                                                                        id: 'funiswap-add-liquidity-transaction-success-message2',
                                                                         _c: [
                                                                             {
-                                                                                id:
-                                                                                    'funiswap-add-liquidity-confirmation3',
+                                                                                id: 'funiswap-add-liquidity-confirmation3',
                                                                                 _c: [
                                                                                     {
-                                                                                        id:
-                                                                                            'funiswap-add-liquidity-transaction-success-message3',
+                                                                                        id: 'funiswap-add-liquidity-transaction-success-message3',
                                                                                     },
                                                                                     {
-                                                                                        id:
-                                                                                            'funiswap-add-liquidity-transaction-reject-message3',
+                                                                                        id: 'funiswap-add-liquidity-transaction-reject-message3',
                                                                                     },
                                                                                 ],
                                                                             },
                                                                         ],
                                                                     },
                                                                     {
-                                                                        id:
-                                                                            'funiswap-add-liquidity-transaction-reject-message2',
+                                                                        id: 'funiswap-add-liquidity-transaction-reject-message2',
                                                                     },
                                                                 ],
                                                             },
@@ -325,12 +320,10 @@ const appStructure = [
                                                                 id: 'funiswap-remove-liquidity-confirmation2',
                                                                 _c: [
                                                                     {
-                                                                        id:
-                                                                            'funiswap-remove-liquidity-transaction-success-message2',
+                                                                        id: 'funiswap-remove-liquidity-transaction-success-message2',
                                                                     },
                                                                     {
-                                                                        id:
-                                                                            'funiswap-remove-liquidity-transaction-reject-message2',
+                                                                        id: 'funiswap-remove-liquidity-transaction-reject-message2',
                                                                     },
                                                                 ],
                                                             },

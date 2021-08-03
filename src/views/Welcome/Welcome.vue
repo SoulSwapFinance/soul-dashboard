@@ -1,8 +1,8 @@
 <template>
     <div class="welcome-view">
         <div class="intro">
-            <h1>Welcome to Fantom fWallet</h1>
-            <h2>Send, receive and stake your Opera FTM</h2>
+            <h1>Welcome to Soul Finance</h1>
+            <h2>Send, receive and stake your SOUL on FTM</h2>
         </div>
 
         <div class="view-account-main">
@@ -33,7 +33,7 @@
 
 <script>
 import AccountList from '../../components/AccountList/AccountList.vue';
-import InstallationInfo from '../../components/InstallationInfo/InstallationInfo.vue';
+// import InstallationInfo from '../../components/InstallationInfo/InstallationInfo.vue';
 import ConnectWalletWindow from '@/components/windows/ConnectWalletWindow/ConnectWalletWindow.vue';
 
 // import {WEIToFTM} from "../utils/transactions.js";
@@ -42,7 +42,7 @@ export default {
 
     components: {
         ConnectWalletWindow,
-        InstallationInfo,
+        // InstallationInfo,
         AccountList,
     },
 

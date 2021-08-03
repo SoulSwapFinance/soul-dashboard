@@ -18,9 +18,9 @@
                         <template #top="sProps">
                             <div class="input-label-layout">
                                 <label :for="sProps.inputId">{{ sProps.label }}</label>
-                                <f-info window-closeable window-class="light" style="margin-left: 8px;">
-                                    Your transaction in fUNI will revert if the price changes unfavorable by more than
-                                    this percentage.
+                                <f-info window-closeable window-class="light" style="margin-left: 8px">
+                                    Your transaction in SoulSwap will revert if the price changes unfavorable by more
+                                    than this percentage.
                                 </f-info>
                             </div>
                         </template>
