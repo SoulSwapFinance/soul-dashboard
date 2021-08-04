@@ -27,11 +27,11 @@ module.exports = {
 
     pwa: {
         name: appConfig.pwa.name,
-        themeColor: '#1969ff',
-        msTileColor: '#1969ff',
+        themeColor: '#C8A2C8',
+        msTileColor: '#C8A2C8',
         assetsVersion: '4',
         manifestOptions: {
-            background_color: '#1969ff',
+            background_color: '#C8A2C8',
             categories: appConfig.pwa.categories,
         },
         workboxOptions: {

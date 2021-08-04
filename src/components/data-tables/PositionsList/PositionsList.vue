@@ -9,7 +9,7 @@
             class="f-data-table-body-bg-color"
             @row-action="onRowAction"
         >
-            <template v-slot:column-asset="{ value, item, column }">
+            <template v-slot:column-asset="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -21,7 +21,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-amount="{ value, item, column }">
+            <template v-slot:column-amount="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -35,7 +35,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-amount_fusd="{ value, item, column }">
+            <template v-slot:column-amount_fusd="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -49,7 +49,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-rewards="{ value, item, column }">
+            <template v-slot:column-rewards="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -93,7 +93,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-actions="{ value, item, column }">
+            <template v-slot:column-actions="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">

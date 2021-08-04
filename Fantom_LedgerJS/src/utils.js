@@ -2,13 +2,12 @@
 export const BIP32_HARDENED = 0x80000000;
 
 // MAX_FTM_TRANSFER_STR represents maximum amount of FTM tokens (in WEI units) transferable by a transaction.
-const MAX_FTM_TRANSFER_STR = ["2", "284", "136", "835", "000000000000000000"].join("");
+// eslint-disable-next-line no-unused-vars
+const MAX_FTM_TRANSFER_STR = ['2', '284', '136', '835', '000000000000000000'].join('');
 
 // REQUIRED_TX_ATTRIBUTES represents a list of object attributes we require
 // on an outgoing transaction
-const REQUIRED_TX_ATTRIBUTES = [
-    "nonce", "gasPrice", "gasLimit", "value"
-];
+const REQUIRED_TX_ATTRIBUTES = ['nonce', 'gasPrice', 'gasLimit', 'value'];
 
 // Assert implements set of assertions used to validate data
 // before being processed
@@ -16,18 +15,18 @@ export const Assert = {
     // Generic check
     check: (cond) => {
         if (!cond) {
-            throw new Error("Data validation failed!");
+            throw new Error('Data validation failed!');
         }
     },
 
     // isString validates if the given data set is a string
     isObject: (data) => {
-        Assert.check("object" === typeof data);
+        Assert.check('object' === typeof data);
     },
 
     // isString validates if the given data set is a string
     isString: (data) => {
-        Assert.check("string" === typeof data);
+        Assert.check('string' === typeof data);
     },
 
     // isInteger validates that the give data is an integer number
@@ -69,6 +68,7 @@ export const Assert = {
     // hasAttribute validates that given object does have a specified attribute
     hasAttribute: (obj, attr) => {
         Assert.isObject(obj);
+        // eslint-disable-next-line no-prototype-builtins
         Assert.check(obj.hasOwnProperty(attr));
     },
 
@@ -80,8 +80,8 @@ export const Assert = {
         }
 
         // check for prefixes
-        Assert.check(path[0] === BIP32_HARDENED | 44);
-        Assert.check(path[1] === BIP32_HARDENED | 60);
+        Assert.check((path[0] === BIP32_HARDENED) | 44);
+        Assert.check((path[1] === BIP32_HARDENED) | 60);
 
         // account key is also expected to be hardened
         Assert.check(path[2] >= BIP32_HARDENED);
@@ -90,15 +90,16 @@ export const Assert = {
     // isValidTransaction validates transaction for needed data elements
     isValidTransaction: (tx) => {
         // it could be the Transaction object itself
-        if ("object" === typeof tx && tx.hasOwnProperty("raw") && Array.isArray(tx.raw)) {
-            return
+        // eslint-disable-next-line no-prototype-builtins
+        if ('object' === typeof tx && tx.hasOwnProperty('raw') && Array.isArray(tx.raw)) {
+            return;
         }
 
         // validate fields
         for (let i = 0; i < REQUIRED_TX_ATTRIBUTES.length; i++) {
-            Assert.hasAttribute(tx, REQUIRED_TX_ATTRIBUTES [i]);
+            Assert.hasAttribute(tx, REQUIRED_TX_ATTRIBUTES[i]);
         }
-    }
+    },
 };
 
 /**
@@ -108,10 +109,9 @@ export const Assert = {
  * @returns {string}
  */
 export function buffer2Hex(buffer) {
-    return Array
-        .from(new Uint8Array(buffer))
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
+    return Array.from(new Uint8Array(buffer))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
 }
 
 /**
@@ -122,7 +122,7 @@ export function buffer2Hex(buffer) {
  */
 export function hex2Buffer(data) {
     Assert.isString(data);
-    return Buffer.from(data, "hex");
+    return Buffer.from(data, 'hex');
 }
 
 /**
@@ -143,7 +143,7 @@ export function stripReturnCodeFromResponse(response) {
 
     // check if the return code indicates successful call
     // 0x9000 is the standard code for success
-    if (buffer2Hex(returnCode) !== "9000") {
+    if (buffer2Hex(returnCode) !== '9000') {
         throw new Error(`Invalid response status code ${buffer2Hex(returnCode)} received.`);
     }
 
@@ -165,7 +165,7 @@ export function bip32PathToBuffer(path) {
     // prep target buffer
     // the output path buffer has single byte length
     // followed by 32 bit (4 bytes) Uint number for each path key
-    const data = Buffer.alloc(1 + (4 * path.length));
+    const data = Buffer.alloc(1 + 4 * path.length);
 
     // write number of elements in thew path
     data.writeUInt8(path.length, 0);
@@ -180,10 +180,10 @@ export function bip32PathToBuffer(path) {
 
 // hasHexPrefix checks if the given string does have a usual hex prefix "0x".
 function hasHexPrefix(str) {
-    if ("string" !== typeof str) {
-        throw new Error("String parameter expected.");
+    if ('string' !== typeof str) {
+        throw new Error('String parameter expected.');
     }
-    return "0x" === str.slice(0, 2);
+    return '0x' === str.slice(0, 2);
 }
 
 /**
@@ -214,5 +214,5 @@ export default {
     bip32PathToBuffer,
 
     // stripHexPrefix removes "0x" prefix from a hex string if presented
-    stripHexPrefix
+    stripHexPrefix,
 };

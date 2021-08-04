@@ -8,7 +8,7 @@
             class="f-data-table-body-bg-color"
             :class="{ 'f-data-table-body-bg-color': defiAssetsList }"
         >
-            <template v-slot:column-asset="{ value, item, column }">
+            <template v-slot:column-asset="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -20,7 +20,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-balance="{ value, item, column }">
+            <template v-slot:column-balance="{ value, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -34,7 +34,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-borrowed="{ value, item, column }">
+            <template v-slot:column-borrowed="{ value, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -48,7 +48,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-actions="{ value, item, column }">
+            <template v-slot:column-actions="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -110,7 +110,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-actions-account="{ value, item, column }">
+            <template v-slot:column-actions-account="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
