@@ -6,7 +6,7 @@
                     <social-media-links></social-media-links>
                 </div>
                 <div class="col align-center-sm align-right">
-                    <a href="https://fantom.foundation/" target="_blank" rel="nofollow">©2020 Fantom Foundation </a>
+                    <a href="https://soulswap.finance/" target="_blank" rel="nofollow">©2021 Soul Finance </a>
                 </div>
             </div>
         </div>

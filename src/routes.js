@@ -29,7 +29,7 @@ import DefiLock from '@/views/DefiLock/DefiLock.vue';
 import DefiUnlock from '@/views/DefiUnlock/DefiUnlock.vue';
 import DefiMint from '@/views/DefiMint/DefiMint.vue';
 import DefiRepay from '@/views/DefiRepay/DefiRepay.vue';
-import Staking from '@/views/Staking/Staking.vue';
+// import Staking from '@/views/Staking/Staking.vue';
 import DefiFMintClaimRewardsConfirmation from '@/views/DefiFMintClaimRewardsConfirmation/DefiFMintClaimRewardsConfirmation.vue';
 import DefiFMintPushRewardsConfirmation from '@/views/DefiFMintPushRewardsConfirmation/DefiFMintPushRewardsConfirmation.vue';
 import AccountSendErc20 from '@/views/AccountSendErc20/AccountSendErc20.vue';
@@ -157,11 +157,11 @@ export const routes = [
                 path: '/dashboard',
                 component: Dashboard,
             },
-            {
-                name: 'staking',
-                path: '/staking/:address',
-                component: Staking,
-            },
+            // {
+            //     name: 'staking',
+            //     path: '/staking/:address',
+            //     component: Staking,
+            // },
             {
                 name: 'fmint',
                 path: '/fmint/:address',

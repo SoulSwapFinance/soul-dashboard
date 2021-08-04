@@ -7,7 +7,7 @@
                     <a
                         href="#"
                         class="btn light break-word"
-                        style="max-width: 100%;"
+                        style="max-width: 100%"
                         aria-label="Go to previous form"
                         @click.prevent="onPreviousBtnClick"
                     >
@@ -27,24 +27,24 @@
                         </div>
                     </div>
                     <div class="row no-collapse">
-                        <div class="col f-row-label">Pending Rewards</div>
+                        <div class="col f-row-label">Pending</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
                                 <template v-if="accountInfo">{{ toFTM(accountInfo.pendingRewards) }} FTM</template>
                             </f-placeholder>
                         </div>
                     </div>
-                    <div class="row no-collapse">
+                    <!-- <div class="row no-collapse">
                         <div class="col f-row-label">Claimed Rewards</div>
                         <div class="col">
                             <f-placeholder :content-loaded="!!accountInfo" block :replacement-num-chars="10">
-                                <template v-if="accountInfo">
-                                    -
-                                    <!--{{ toFTM(accountInfo.claimedRewards) }} FTM-->
-                                </template>
+                                <template v-if="accountInfo"> -->
+                    <!-- - -->
+                    <!--{{ toFTM(accountInfo.claimedRewards) }} FTM-->
+                    <!-- </template>
                             </f-placeholder>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row no-collapse">
                         <div class="col f-row-label">Minted sFTM</div>
                         <div class="col">
@@ -101,7 +101,7 @@
                                     <f-message
                                         v-if="lockedUntil !== '0x0'"
                                         :type="lockedUntilMessageType"
-                                        style="margin-top: 0; padding-top: 0;"
+                                        style="margin-top: 0; padding-top: 0"
                                     >
                                         {{ formatDate(timestampToDate(lockedUntil), false, true) }}
                                     </f-message>
@@ -243,7 +243,7 @@
                 type="warning"
                 with-icon
                 class="align-left"
-                style="margin-bottom: 16px;"
+                style="margin-bottom: 16px"
             >
                 Can't withdraw, repay sFTM first please
             </f-message>

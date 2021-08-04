@@ -4,7 +4,7 @@
             <div class="row no-collapse align-items-center">
                 <div class="col-2">
                     <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')"
-                        ><img src="fantom-logo.svg" alt="" class="not-fluid"
+                        ><img src="soul-logo.png" alt="" class="not-fluid"
                     /></router-link>
                 </div>
                 <div class="col right-col">
@@ -23,7 +23,7 @@
             <div class="body"></div>
             <div class="footer">
                 <div class="copyright">
-                    <a href="https://fantom.foundation/" target="_blank" rel="nofollow">©2020 Fantom Foundation</a>
+                    <a href="https://mobile.soulswap.finance/" target="_blank" rel="nofollow">©2021 Soul Financec</a>
                 </div>
             </div>
         </div>
@@ -300,9 +300,8 @@ export default {
 
         .f-hamburger-switch {
             display: inline-block;
-
-            &.on {
-            }
+            // &.on {
+            // }
         }
 
         .f-drawer {

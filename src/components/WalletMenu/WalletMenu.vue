@@ -12,15 +12,15 @@
             <div class="header">
                 <div class="header-logo">
                     <router-link to="/">
-                        <img src="fantom-logo.svg" alt="" class="not-fluid" />
+                        <img src="soul-logo.png" alt="" class="not-fluid" />
                     </router-link>
                 </div>
             </div>
             <div class="body">
                 <div class="logo">
                     <router-link to="/" class="logo-link">
-                        <icon data="@/assets/svg/fantom.svg" width="40" height="50" />
-                        <span class="wallet-label">fWallet</span>
+                        <icon data="@/assets/svg/triangles.svg" width="40" height="50" />
+                        <span class="wallet-label">Soul fWallet</span>
                     </router-link>
                 </div>
                 <f-simple-navigation :items="navigation" />
@@ -28,7 +28,7 @@
             <div class="footer">
                 <social-media-links />
                 <div class="copyright">
-                    <a href="https://fantom.foundation/" target="_blank" rel="nofollow">©2020 Fantom Foundation</a>
+                    <a href="https://soulswap.finance/" target="_blank" rel="nofollow">©2021 Soul Finance</a>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@ import homeIcon from '../../assets/svg/monochrome/Sidebar/Home.svg';
 import settingsIcon from '../../assets/svg/monochrome/Sidebar/Settings.svg';
 import walletIcon from '../../assets/svg/monochrome/Sidebar/Wallet.svg';
 // import defiIcon from '../../assets/svg/monochrome/Sidebar/DeFi.svg';
-import stakingIcon from '../../assets/svg/monochrome/Sidebar/Staking.svg';
+// import stakingIcon from '../../assets/svg/monochrome/Sidebar/Staking.svg';
 import funiIcon from '../../assets/svg/monochrome/Sidebar/fUNI.svg';
 import swapIcon from '../../assets/svg/defi/ftrade.svg';
 import voteIcon from '../../assets/svg/monochrome/Sidebar/Governance.svg';
@@ -110,15 +110,15 @@ export default {
                     walletLink: true,
                     fill: true,
                 },
-                {
-                    url: {
-                        name: 'stake',
-                    },
-                    title: 'STAKE',
-                    icon: stakingIcon,
-                    stakingLink: true,
-                    fill: true,
-                },
+                // {
+                //     url: {
+                //         name: 'stake',
+                //     },
+                //     title: 'STAKE',
+                //     icon: stakingIcon,
+                //     stakingLink: true,
+                //     fill: true,
+                // },
                 {
                     url: {
                         name: 'synths',
@@ -148,7 +148,7 @@ export default {
                 },*/
                 {
                     url: {
-                        name: 'soulswap',
+                        name: 'swap',
                     },
                     title: 'SWAP',
                     icon: funiIcon,

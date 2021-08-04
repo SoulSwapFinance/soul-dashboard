@@ -19,9 +19,9 @@
                     <h3 class="gov-proposal-confirmation__subtitle">
                         You're voting with
                         <f-placeholder :content-loaded="!!amountDelegated" :replacement-num-chars="10">
-                            {{ amountDelegated }}
+                            {{ amountDelegated }} POWER
                         </f-placeholder>
-                        FTM delegated to {{ d_validator.stakerInfo.name }} ({{ parseInt(d_validator.id, 16) }})
+                        <!-- FTM delegated to {{ d_validator.stakerInfo.name }} ({{ parseInt(d_validator.id, 16) }}) -->
                         <span v-if="d_validator.stakerInfo._unknown" class="perex">
                             {{ d_validator.stakerAddress }}
                         </span>

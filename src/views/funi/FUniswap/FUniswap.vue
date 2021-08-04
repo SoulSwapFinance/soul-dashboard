@@ -7,7 +7,7 @@
             <address-info-box />
 
             <main class="main">
-                <h1>SWAP</h1>
+                <h1>Exchange</h1>
                 <f-uniswap-menu />
                 <router-view></router-view>
             </main>

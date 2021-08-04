@@ -123,7 +123,7 @@ export class FantomWeb3Wallet {
 
     constructor(_options) {
         this.apolloClient = _options.apolloClient;
-        /** List of blockchains. */
+        /** list blockchains | todo: add testnet */
         this.blockchains = [
             {
                 value: 'fantom',

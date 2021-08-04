@@ -1,5 +1,5 @@
 {
-    "name": "fantom-pwa-wallet",
+    "name": "soul-pwa-wallet",
     "version": "0.1.0",
     "scripts": {
         "serve": "vue-cli-service serve",

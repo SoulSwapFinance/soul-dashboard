@@ -47,7 +47,7 @@
                         </template>
                     </template>
 
-                    <template v-slot:column-startend="{ value, item, column }">
+                    <template v-slot:column-startend="{ item, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col-8">
@@ -61,7 +61,7 @@
                         </template>
                     </template>
 
-                    <template v-slot:column-votes="{ value, item, column }">
+                    <template v-slot:column-votes="{ value, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">
@@ -85,7 +85,7 @@
                         </template>
                     </template>
 
-                    <template v-slot:column-voted="{ value, item, column }">
+                    <template v-slot:column-voted="{ value, column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">
@@ -97,7 +97,7 @@
                         </template>
                     </template>
 
-                    <template v-slot:column-detail="{ value, item, column }">
+                    <template v-slot:column-detail="{ column }">
                         <div v-if="column" class="row no-collapse no-vert-col-padding">
                             <div class="col-4 f-row-label">{{ column.label }}</div>
                             <div class="col break-word">

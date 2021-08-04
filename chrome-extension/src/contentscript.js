@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use strict';
 /* global chrome */
 
@@ -28,7 +29,7 @@ function injectScriptFile(url) {
  * @returns {boolean} {@code true} - if the provider should be injected
  */
 function shouldInjectProvider() {
-    return doctypeCheck() && suffixCheck() && documentElementCheck()
+    return doctypeCheck() && suffixCheck() && documentElementCheck();
 }
 
 /**
@@ -36,10 +37,10 @@ function shouldInjectProvider() {
  *
  * @returns {boolean} {@code true} - if the doctype is html or if none exists
  */
-function doctypeCheck () {
-    const doctype = window.document.doctype
+function doctypeCheck() {
+    const doctype = window.document.doctype;
     if (doctype) {
-        return doctype.name === 'html'
+        return doctype.name === 'html';
     } else {
         return true;
     }
@@ -55,10 +56,7 @@ function doctypeCheck () {
  * @returns {boolean} - whether or not the extension of the current document is prohibited
  */
 function suffixCheck() {
-    const prohibitedTypes = [
-        /\.xml$/,
-        /\.pdf$/,
-    ]
+    const prohibitedTypes = [/\.xml$/, /\.pdf$/];
     const currentUrl = window.location.pathname;
     for (let i = 0; i < prohibitedTypes.length; i++) {
         if (prohibitedTypes[i].test(currentUrl)) {
@@ -82,34 +80,48 @@ function documentElementCheck() {
 }
 
 function sendToInpage() {
-    window.postMessage({
-        target: 'FantomPWAwalletInpage',
-        data: data,
-    }, location.origin);
+    window.postMessage(
+        {
+            target: 'FantomPWAwalletInpage',
+            // eslint-disable-next-line no-undef
+            data: data,
+        },
+        location.origin
+    );
 }
 
 // inpage -> background + callback
-window.addEventListener('message', function(event) {
-    var msg = event.data
-    if (event.origin !== location.origin) return
-    if (event.source !== window) return
-    if (typeof msg !== 'object') return
-    if (msg.target !== 'FantomPWAwalletBackground') return
-    if (!msg.data) return
+window.addEventListener(
+    'message',
+    function (event) {
+        var msg = event.data;
+        if (event.origin !== location.origin) return;
+        if (event.source !== window) return;
+        if (typeof msg !== 'object') return;
+        if (msg.target !== 'FantomPWAwalletBackground') return;
+        if (!msg.data) return;
 
-    chrome.runtime.sendMessage(msg.data, function(response) {
-        window.postMessage({
-            target: 'FantomPWAwalletInpage',
-            data: response,
-            msgId: msg.msgId
-        }, location.origin);
-    });
-}, false);
+        chrome.runtime.sendMessage(msg.data, function (response) {
+            window.postMessage(
+                {
+                    target: 'FantomPWAwalletInpage',
+                    data: response,
+                    msgId: msg.msgId,
+                },
+                location.origin
+            );
+        });
+    },
+    false
+);
 
 // background -> inpage
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    window.postMessage({
-        target: 'FantomPWAwalletInpage',
-        data: request,
-    }, location.origin);
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    window.postMessage(
+        {
+            target: 'FantomPWAwalletInpage',
+            data: request,
+        },
+        location.origin
+    );
 });

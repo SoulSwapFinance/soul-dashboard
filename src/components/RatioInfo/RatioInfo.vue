@@ -18,7 +18,7 @@
                     <template #value>
                         <tspan>
                             <template v-if="value > maxPercentage"
-                                ><tspan style="font-size: 50%;">&gt;</tspan> {{ maxPercentage }}</template
+                                ><tspan style="font-size: 50%">&gt;</tspan> {{ maxPercentage }}</template
                             >
                             <template v-else>{{ parseInt(value) }}</template>
                         </tspan>
@@ -40,7 +40,7 @@
                         >
                             <template>
                                 <template v-if="value > maxPercentage">
-                                    <span style="font-size: 50%; position: relative; top: -4px;">&gt;</span>
+                                    <span style="font-size: 50%; position: relative; top: -4px">&gt;</span>
                                     {{ maxPercentage }}%
                                 </template>
                                 <template v-else>{{ parseInt(value) }}%</template>

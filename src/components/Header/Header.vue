@@ -3,9 +3,9 @@
         <div class="narrow-container">
             <div class="row no-collapse align-items-center">
                 <div class="col">
-                    <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')">
-                        <img src="giphy 3.GIF" alt="" class="not-fluid" />
-                    </router-link>
+                    <!-- <router-link to="/" class="logo" :aria-label="$t('view_home.back_to_home')">
+                        <img src="soul-logo.png" alt="" class="not-fluid" />
+                    </router-link> -->
                 </div>
             </div>
         </div>

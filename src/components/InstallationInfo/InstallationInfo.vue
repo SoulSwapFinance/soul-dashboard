@@ -1,7 +1,7 @@
 <template>
     <div class="installation-info">
         <p class="align-center">
-            The Fantom fWallet has been created as a Progressive Web App (PWA) which is easy to launch on all platforms:
+            The Soul fWallet has been created as a Progressive Web App (PWA) which is easy to launch on all platforms:
         </p>
 
         <div class="inst-buttons">
@@ -31,14 +31,14 @@
             ref="desktopInfo"
             modal
             title="Desktop Installation"
-            style="max-width: 520px;"
+            style="max-width: 520px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
             <div class="inst-content">
                 <ul class="no-markers">
                     <li>
-                        <b>Step 1:</b> Open the <a href="https://pwawallet.fantom.network/">Fantom Wallet</a> in
+                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul fWallet</a> in
                         <b>Chrome</b>
                     </li>
                     <li><b>Step 2:</b> Go to <b>Settings</b> (Three dots in the top right corner)</li>
@@ -51,14 +51,14 @@
             ref="iosInfo"
             modal
             title="iOS Installation"
-            style="max-width: 520px;"
+            style="max-width: 520px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
             <div class="inst-content">
                 <ul class="no-markers">
                     <li>
-                        <b>Step 1:</b> Open the <a href="https://pwawallet.fantom.network/">Fantom Wallet</a> in
+                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul fWallet</a> in
                         <b>Safari</b>
                     </li>
                     <li><b>Step 2:</b> Click the <b>Share button</b> in Safari (at the bottom)</li>
@@ -71,14 +71,14 @@
             ref="androidInfo"
             modal
             title="Android Installation"
-            style="max-width: 520px;"
+            style="max-width: 520px"
             animation-in="scale-center-enter-active"
             animation-out="scale-center-leave-active"
         >
             <div class="inst-content">
                 <ul class="no-markers">
                     <li>
-                        <b>Step 1:</b> Open the <a href="https://pwawallet.fantom.network/">Fantom Wallet</a> in
+                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul fWallet</a> in
                         <b>Chrome</b>
                     </li>
                     <li><b>Step 2:</b> Click <b>Settings</b> (top right corner)</li>

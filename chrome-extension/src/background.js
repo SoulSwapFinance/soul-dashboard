@@ -17,7 +17,7 @@ const errorCodes = {
     invalidRequest: -32600,
     methodNotFound: -32601,
     invalidParams: -32602,
-    internal: -32603
+    internal: -32603,
 };
 
 const proxiedMethods = [
@@ -43,7 +43,8 @@ const proxiedMethods = [
     'eth_getUncleByBlockNumberAndIndex',
 ];
 
-const requiresLatestMethods = [ // requires block number as 2th param
+const requiresLatestMethods = [
+    // requires block number as 2th param
     'eth_call',
     'eth_getBalance',
     'eth_getTransactionCount',
@@ -56,60 +57,66 @@ let sendTransactionRequests = {};
 let accountsChangedCallbacks = {};
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-
-    if (request.method === 'wallet_init') { // internal, called by inpage on page load
+    if (request.method === 'wallet_init') {
+        // internal, called by inpage on page load
         sendResponse(appConfig.chainId); // in hex
-    }
-    else if (request.method === 'wallet_sendTransaction_ready' && sender.origin === window.origin) { // from EipSendTransaction
+    } else if (request.method === 'wallet_sendTransaction_ready' && sender.origin === window.origin) {
+        // from EipSendTransaction
         sendResponse(sendTransactionRequests[request.id].request);
-    }
-    else if (request.method === 'wallet_sendTransaction_done' && sender.origin === window.origin) { // from EipSendTransaction
+    } else if (request.method === 'wallet_sendTransaction_done' && sender.origin === window.origin) {
+        // from EipSendTransaction
         console.log('wallet_sendTransaction_done', request);
-        sendTransactionRequests[request.stid].sendResponse(
-            { 'jsonrpc': '2.0', 'id': sendTransactionRequests[request.stid].request.id, 'result': request.response }
-        );
+        sendTransactionRequests[request.stid].sendResponse({
+            jsonrpc: '2.0',
+            id: sendTransactionRequests[request.stid].request.id,
+            result: request.response,
+        });
         delete sendTransactionRequests[request.stid];
-    }
-    else if (request.method === 'wallet_requestAccounts_done' && sender.origin === window.origin) { // from EipSelectAccounts
+    } else if (request.method === 'wallet_requestAccounts_done' && sender.origin === window.origin) {
+        // from EipSelectAccounts
         console.log('wallet_requestAccounts_done', request);
         handleAccountsChanged(request.origin, request.accounts);
     }
 
     // implementation of Ethereum RPC API: https://eth.wiki/json-rpc/API#json-rpc-methods
     // and EIP-1102: Opt-in account exposure: https://eips.ethereum.org/EIPS/eip-1102
-
-    else if (request.method === 'eth_accounts' || request.method === 'eth_requestAccounts') { // list of addresses owned by client
+    else if (request.method === 'eth_accounts' || request.method === 'eth_requestAccounts') {
+        // list of addresses owned by client
         console.log(request.method, request);
         getAccounts(sender.origin, (accounts, haveAccounts) => {
             if (accounts.length === 0 || request.method === 'eth_requestAccounts') {
-                if (haveAccounts) { // select accounts from already opened accounts
+                if (haveAccounts) {
+                    // select accounts from already opened accounts
                     popupManager.goto('app/index.html#/eip-select-accounts/' + encodeURIComponent(sender.origin));
-                } else { // need to add new account
+                } else {
+                    // need to add new account
                     popupManager.goto('app/index.html');
                 }
 
                 if (!accountsChangedCallbacks[sender.origin]) accountsChangedCallbacks[sender.origin] = [];
                 accountsChangedCallbacks[sender.origin].push((accounts) => {
-                    sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': accounts });
+                    sendResponse({ jsonrpc: '2.0', id: request.id, result: accounts });
                 });
             } else {
-                sendResponse({ 'jsonrpc': '2.0', 'id': request.id, 'result': accounts.map((account) => account.address) });
+                sendResponse({ jsonrpc: '2.0', id: request.id, result: accounts.map((account) => account.address) });
             }
         });
         return true;
-    }
-
-    else if (request.method === 'net_version') { // current network id (decimal string)
+    } else if (request.method === 'net_version') {
+        // current network id (decimal string)
         sendResponse({ jsonrpc: '2.0', id: request.id, result: parseInt(appConfig.chainId).toString() });
-    }
-
-    else if (request.method === 'eth_sendTransaction') {
+    } else if (request.method === 'eth_sendTransaction') {
         console.log('eth_sendTransaction', request);
         getAccounts(sender.origin, (accounts) => {
             let from = request.params[0].from.toLowerCase();
             if (accounts.filter((account) => account.address.toLowerCase() === from).length === 0) {
-                sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
-                        { 'code': errorCodes.invalidParams, 'message': 'Invalid parameters: unauthorized "from" address: ' + from }
+                sendResponse({
+                    jsonrpc: '2.0',
+                    id: request.id,
+                    error: {
+                        code: errorCodes.invalidParams,
+                        message: 'Invalid parameters: unauthorized "from" address: ' + from,
+                    },
                 });
                 return;
             }
@@ -117,12 +124,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             let stid = ++sendTransactionRequestCounter;
             sendTransactionRequests[stid] = { request, sendResponse };
             popupManager.goto('app/index.html#/eip-send-transaction/' + stid);
-
         });
         return true;
-    }
-
-    else if (proxiedMethods.includes(request.method)) {
+    } else if (proxiedMethods.includes(request.method)) {
         if (requiresLatestMethods.includes(request.method) && !request.params[1]) {
             request.params[1] = 'latest';
         }
@@ -131,17 +135,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             id: request.id || 0, // requests without id are ignored
             method: request.method,
             params: request.params,
-        }).then(response => {
+        }).then((response) => {
             console.log('sendToRpc', request, response);
             sendResponse(response);
         });
         return true;
-    }
-
-    else {
+    } else {
         console.log('Unsupported method', request);
-        sendResponse({ 'jsonrpc':'2.0', 'id': request.id, 'error':
-                { 'code': errorCodes.methodNotFound, 'message': 'the method ' + request.method + ' does not exist/is not available' }
+        sendResponse({
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+                code: errorCodes.methodNotFound,
+                message: 'the method ' + request.method + ' does not exist/is not available',
+            },
         });
     }
 });
@@ -151,7 +158,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     let change = changes[STORAGE_KEY];
     console.log('state changed', change);
 
-    forEachTab(function(tab, origin) {
+    forEachTab(function (tab, origin) {
         let oldAccounts = getAccountsFromState(origin, change.oldValue).map((account) => account.address);
         let newAccounts = getAccountsFromState(origin, change.newValue).map((account) => account.address);
 
@@ -164,10 +171,10 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 });
 
 function forEachTab(callback) {
-    chrome.tabs.query({}, function(tabs) {
-        tabs.forEach(function(tab) {
+    chrome.tabs.query({}, function (tabs) {
+        tabs.forEach(function (tab) {
             if (!tab.url) return;
-            let origin = (new URL(tab.url)).origin;
+            let origin = new URL(tab.url).origin;
             callback(tab, origin);
         });
     });
@@ -203,11 +210,15 @@ async function sendToRpc(request) {
     return fetch(appConfig.rpc, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
-    }).then((response) => response.json())
+        body: JSON.stringify(request),
+    })
+        .then((response) => response.json())
         .catch((ex) => {
-            return { 'jsonrpc':'2.0', 'id': request.id, 'error':
-                    { 'code': errorCodes.internal, 'message': 'RPC error: ' + ex }};
+            return {
+                jsonrpc: '2.0',
+                id: request.id,
+                error: { code: errorCodes.internal, message: 'RPC error: ' + ex },
+            };
         });
 }
 
