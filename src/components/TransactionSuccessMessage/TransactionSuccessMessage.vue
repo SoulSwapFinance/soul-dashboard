@@ -11,7 +11,7 @@
     >
         <template v-if="loading">
             <h2>Verifying Transaction</h2>
-            <pulse-loader color="#1969ff"></pulse-loader>
+            <pulse-loader color="#9719ff"></pulse-loader>
         </template>
         <template v-else>
             <div :class="{ 'center-v': windowMode }">

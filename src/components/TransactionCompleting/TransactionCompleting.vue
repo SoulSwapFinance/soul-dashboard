@@ -41,7 +41,7 @@
             </div>
         </template>
         <template v-else>
-            <pulse-loader color="#1969ff"></pulse-loader>
+            <pulse-loader color="#9719ff"></pulse-loader>
         </template>
     </f-card>
 </template>

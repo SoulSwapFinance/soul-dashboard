@@ -5,7 +5,7 @@
                 <div class="funiswap__token__balance">
                     <span>
                         From <template v-if="showFromEstimated">(estimated)</template>
-                        <!--<pulse-loader color="#1969ff" size="10px" :loading="fromValueLoading"></pulse-loader>-->
+                        <!--<pulse-loader color="#9719ff" size="10px" :loading="fromValueLoading"></pulse-loader>-->
                     </span>
                     <span class="balance">
                         Balance:
@@ -55,7 +55,7 @@
                 <div class="funiswap__token__balance">
                     <span>
                         To <template v-if="showToEstimated">(estimated)</template>
-                        <!--<pulse-loader color="#1969ff" size="10px" :loading="toValueLoading"></pulse-loader>-->
+                        <!--<pulse-loader color="#9719ff" size="10px" :loading="toValueLoading"></pulse-loader>-->
                     </span>
                     <span class="balance">
                         Balance:
@@ -98,7 +98,7 @@
                         type="button"
                         @click="onToTokenSelectorClick"
                     >
-                        Select a token <icon data="@/assets/svg/chevron-down.svg" width="12" height="12" />
+                        Select Token <icon data="@/assets/svg/chevron-down.svg" width="12" height="12" />
                     </button>
                 </div>
             </div>
@@ -245,7 +245,7 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: appConfig.settings.fUniswapLiquidityProviderFee,
-            submitLabel: 'Select a token',
+            submitLabel: 'Select Token',
             /** @type {UniswapPair} */
             dPair: {},
             /** @type {UniswapPair[]} */
@@ -834,7 +834,7 @@ export default {
                     this.submitBtnDisabled = false;
                 }
             } else if (!this.toToken.address) {
-                this.submitLabel = 'Select a token';
+                this.submitLabel = 'Select Token';
             } else if (this.sufficientPairLiquidity === false) {
                 this.submitLabel = 'Insufficient Pair Liquidity';
             } else {

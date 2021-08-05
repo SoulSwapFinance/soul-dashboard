@@ -14,7 +14,7 @@
                             :fill="wallet.iconFill || false"
                         />
                         <div v-else class="loader">
-                            <pulse-loader color="#1969ff"></pulse-loader>
+                            <pulse-loader color="#9719ff"></pulse-loader>
                         </div>
                     </div>
                 </div>

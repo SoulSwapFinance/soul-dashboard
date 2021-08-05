@@ -21,7 +21,7 @@
                             @click="onAddChainClick('testnet')"
                         >
                             Add Fantom Testnet
-                            <pulse-loader v-if="addFantomTestnetInProgress" color="#1969ff"></pulse-loader>
+                            <pulse-loader v-if="addFantomTestnetInProgress" color="#9719ff"></pulse-loader>
                         </button>
                     </div>
 
