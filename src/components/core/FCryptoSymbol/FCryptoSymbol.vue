@@ -14,9 +14,14 @@
 </template>
 
 <script>
+// import soulIcon from '../../../assets/svg/tokens/SOUL.svg';
 import ftmIcon from '../../../assets/svg/tokens/FTM.svg';
 import wftmIcon from '../../../assets/svg/tokens/wFTM.svg';
 import fusdIcon from '../../../assets/svg/tokens/fUSD.svg';
+import ethIcon from '../../../assets/svg/tokens/fETH.svg';
+import btcIcon from '../../../assets/svg/tokens/fBTC.svg';
+import linkIcon from '../../../assets/svg/tokens/fLINK.svg';
+import triangleIcon from '../../../assets/svg/triangles.svg';
 
 /**
  * Render crypto logo and name by given token.
@@ -61,16 +66,26 @@ export default {
 
             if (token) {
                 switch (token.symbol) {
+                    case 'SOUL':
+                        return triangleIcon;
                     case 'FTM':
                         return ftmIcon;
                     case 'WFTM':
                         return wftmIcon;
+                    case 'SFTM':
+                        return wftmIcon;
                     case 'FUSD':
                         return fusdIcon;
+                    case 'FETH':
+                        return ethIcon;
+                    case 'FBTC':
+                        return btcIcon;
+                    case 'FLINK':
+                        return linkIcon;
                 }
             }
 
-            return null;
+            return triangleIcon;
         },
     },
 };

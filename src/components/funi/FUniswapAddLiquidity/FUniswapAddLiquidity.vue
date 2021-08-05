@@ -96,7 +96,7 @@
                         type="button"
                         @click="onToTokenSelectorClick"
                     >
-                        Select a token <icon data="@/assets/svg/chevron-down.svg" width="12" height="12" />
+                        Select Token <icon data="@/assets/svg/chevron-down.svg" width="12" height="12" />
                     </button>
                 </div>
             </div>
@@ -132,7 +132,7 @@
 
         <div class="funiswap__bottom-box">
             <template v-if="!dPair.pairAddress">
-                By adding liquidity you'll earn 0.3% of all trades on this pair proportional to your share of the pool.
+                By adding liquidity you'll earn 0.2% of all trades on this pair proportional to your share of the pool.
                 Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.
             </template>
             <f-uniswap-pair-liquidity-info v-else :pair="dPair" :from-token="fromToken" :to-token="toToken" />
@@ -200,7 +200,7 @@ export default {
             sliderLabels: ['0%', '25%', '50%', '75%', '100%'],
             id: getUniqueId(),
             liquidityProviderFee: appConfig.settings.fUniswapLiquidityProviderFee,
-            submitLabel: 'Select a token',
+            submitLabel: 'Select Token',
             /** @type {UniswapPair} */
             dPair: {},
             /** @type {UniswapPair[]} */
@@ -764,7 +764,7 @@ export default {
                 this.submitLabel = 'Connect Wallet';
                 // } else if (fromInputValue && fromInputValue !== '0' && toInputValue && toInputValue !== '0') {
             } else if (!this.toToken.address) {
-                this.submitLabel = 'Select a token';
+                this.submitLabel = 'Select Token';
             } else if (this.fromTokenBalance === 0 && this.toTokenBalance === 0) {
                 this.submitLabel = 'Insufficient  Balance';
             } else if (this.fromTokenBalance === 0) {
@@ -783,7 +783,7 @@ export default {
             } else if (this.sufficientPairLiquidity === false) {
                 this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
-                this.submitLabel = 'Enter an amount';
+                this.submitLabel = 'Enter Amount';
             }
         },
 

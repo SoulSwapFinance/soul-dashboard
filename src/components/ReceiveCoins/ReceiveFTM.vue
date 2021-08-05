@@ -33,7 +33,7 @@
         <div v-if="currentAccount.isLedgerAccount" class="verify-cont center-v">
             <div>
                 <template v-if="verifying">
-                    <pulse-loader color="#1969ff"></pulse-loader>
+                    <pulse-loader color="#9719ff"></pulse-loader>
                 </template>
                 <template v-else>
                     <button class="btn large" :disabled="verifying" @click="onVerifyBtnClick">Verify on Ledger</button>

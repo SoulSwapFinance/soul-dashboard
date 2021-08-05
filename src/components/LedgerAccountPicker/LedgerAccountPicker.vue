@@ -25,7 +25,7 @@
             </div>
         </div>
         <div v-if="loadingAccounts" class="loader">
-            <pulse-loader color="#1969ff"></pulse-loader>
+            <pulse-loader color="#9719ff"></pulse-loader>
         </div>
         <!--
         <f-message v-if="$asyncComputed.accounts.error" type="error" with-icon>

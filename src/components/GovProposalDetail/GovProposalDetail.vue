@@ -16,7 +16,7 @@
             <!--<h2 v-if="loading || votingResolved" class="perex">{{ d_proposal.description }}</h2>-->
 
             <div v-if="loading" class="gov-proposal-detail__loader">
-                <pulse-loader color="#1969ff"></pulse-loader>
+                <pulse-loader color="#9719ff"></pulse-loader>
             </div>
             <template v-else>
                 <f-card v-if="votingResolved" class="gov-proposal-detail__winner cont-650">

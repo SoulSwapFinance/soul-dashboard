@@ -62,7 +62,7 @@
                                 </div>
                             </details>-->
                         </template>
-                        <pulse-loader v-else color="#1969ff"></pulse-loader>
+                        <pulse-loader v-else color="#9719ff"></pulse-loader>
                     </div>
                 </div>
             </fieldset>

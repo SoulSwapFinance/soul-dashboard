@@ -72,7 +72,7 @@
                             <tr v-if="infiniteScroll && cItems.length" v-show="!disableInfiniteScroll">
                                 <td :colspan="dVisibleColumnsNum">
                                     <div v-observe-visibility="dObserveVisibilityOptions" class="f-loading-more">
-                                        <pulse-loader color="#1969ff"></pulse-loader>
+                                        <pulse-loader color="#9719ff"></pulse-loader>
                                     </div>
                                 </td>
                             </tr>
@@ -80,7 +80,7 @@
                             <tr v-if="loading && (!cItems.length || forceLoading)">
                                 <td :colspan="dVisibleColumnsNum">
                                     <div class="f-loading-more">
-                                        <pulse-loader color="#1969ff"></pulse-loader>
+                                        <pulse-loader color="#9719ff"></pulse-loader>
                                     </div>
                                 </td>
                             </tr>
@@ -121,13 +121,13 @@
 
                     <div v-if="infiniteScroll && cItems.length" v-show="!disableInfiniteScroll">
                         <div v-observe-visibility="dObserveVisibilityOptions" class="f-loading-more">
-                            <pulse-loader color="#1969ff"></pulse-loader>
+                            <pulse-loader color="#9719ff"></pulse-loader>
                         </div>
                     </div>
 
                     <div v-if="loading && (!cItems.length || forceLoading)">
                         <div class="f-loading-more">
-                            <pulse-loader color="#1969ff"></pulse-loader>
+                            <pulse-loader color="#9719ff"></pulse-loader>
                         </div>
                     </div>
                 </div>

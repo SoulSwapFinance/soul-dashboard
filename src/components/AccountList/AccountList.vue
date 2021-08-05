@@ -62,20 +62,20 @@
                                         />
                                     </button>
                                 </span>
-                                <span class="label">
+                                <!-- <span class="label">
                                     <template v-if="account.isLedgerAccount"> Ledger </template>
                                     <template v-else-if="account.isMetamaskAccount"> Metamask </template>
                                     <template v-else> Keystore file </template>
-                                </span>
+                                </span> -->
                             </span>
                             <span class="col col-6-md">
                                 <span class="value">{{ toFTM(account.balance) }} <span class="ftm">FTM</span></span>
                                 <span class="currency">
                                     {{ formatCurrencyByLocale(account.balance, tokenPrice) }}
                                 </span>
-                                <span class="label">Available</span>
+                                <!-- <span class="label">Available</span> -->
                             </span>
-                            <span class="col col-6-md">
+                            <!-- <span class="col col-6-md">
                                 <span class="value">
                                     {{ toFTM(account.totalBalance) }} <span class="ftm">FTM</span>
                                 </span>
@@ -83,7 +83,7 @@
                                     {{ formatCurrencyByLocale(account.totalBalance, tokenPrice) }}
                                 </span>
                                 <span class="label">Total</span>
-                            </span>
+                            </span> -->
 
                             <!--
                             <span v-if="editMode" class="col-1 col-2-md align-right">

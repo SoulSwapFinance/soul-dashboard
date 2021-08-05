@@ -26,7 +26,7 @@
                 </f-message>
 
                 <div class="form-buttons">
-                    <pulse-loader v-if="loading" color="#1969ff"></pulse-loader>
+                    <pulse-loader v-if="loading" color="#9719ff"></pulse-loader>
                     <template v-else>
                         <f-message v-if="error" type="info" with-icon>{{ error }}</f-message>
                         <button class="btn large btn-next" @click="onNextBtnClick">Confirm Deposit</button>
@@ -40,7 +40,7 @@
             </template>
             <template v-else>
                 <br /><br />
-                <pulse-loader color="#1969ff"></pulse-loader>
+                <pulse-loader color="#9719ff"></pulse-loader>
             </template>
         </div>
     </div>
