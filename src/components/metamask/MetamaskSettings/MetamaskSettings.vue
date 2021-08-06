@@ -11,7 +11,7 @@
                             :disabled="addFantomMainnetInProgress"
                             @click="onAddChainClick('mainnet')"
                         >
-                            Add Fantom Opera Mainnet
+                            Add Mainnet
                             <pulse-loader v-if="addFantomMainnetInProgress" color="#fff"></pulse-loader>
                         </button>
                         <button
@@ -20,7 +20,7 @@
                             :disabled="addFantomTestnetInProgress"
                             @click="onAddChainClick('testnet')"
                         >
-                            Add Fantom Testnet
+                            Add Testnet
                             <pulse-loader v-if="addFantomTestnetInProgress" color="#9719ff"></pulse-loader>
                         </button>
                     </div>
@@ -41,7 +41,7 @@
                             :disabled="addCustomTokenInProgress"
                             @click="onAddCustomTokenClick"
                         >
-                            Add Custom Token <pulse-loader v-if="addCustomTokenInProgress" color="#fff"></pulse-loader>
+                            Add Custom <pulse-loader v-if="addCustomTokenInProgress" color="#fff"></pulse-loader>
                         </button>
                     </div>
 

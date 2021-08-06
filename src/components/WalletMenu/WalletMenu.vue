@@ -20,7 +20,7 @@
                 <div class="logo">
                     <router-link to="/" class="logo-link">
                         <icon data="@/assets/svg/triangles.svg" width="40" height="50" />
-                        <span class="wallet-label">Soul fWallet</span>
+                        <span class="wallet-label">SoulDeFi</span>
                     </router-link>
                 </div>
                 <f-simple-navigation :items="navigation" />

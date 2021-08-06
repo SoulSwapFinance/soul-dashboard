@@ -49,7 +49,7 @@ export class Governance {
     getProposalStatus(_status) {
         switch (parseInt(_status, 16)) {
             case 0:
-                return 'In progress';
+                return 'Live';
             case 1:
                 return 'Resolved';
             case 2:
@@ -57,7 +57,7 @@ export class Governance {
             case 4:
                 return 'Canceled';
             case 8:
-                return 'Execution Expired';
+                return 'Expired';
         }
 
         return '-';
