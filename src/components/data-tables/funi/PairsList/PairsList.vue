@@ -167,7 +167,19 @@
                             },
                         }"
                     >
-                        Add Liquidity
+                        [+]
+                    </router-link>
+                    <router-link
+                        :to="{
+                            name: 'funiswap-remove-liquidity',
+                            params: {
+                                tokena: item.tokens[0].address,
+                                tokenb: item.tokens[1].address,
+                                address: currAccountAddress,
+                            },
+                        }"
+                    >
+                        [-]
                     </router-link>
                     <br />
                     <router-link
@@ -184,18 +196,6 @@
                     </router-link>
                     <template v-if="item.shareOf && item.shareOf !== '0x0'">
                         <br />
-                        <router-link
-                            :to="{
-                                name: 'funiswap-remove-liquidity',
-                                params: {
-                                    tokena: item.tokens[0].address,
-                                    tokenb: item.tokens[1].address,
-                                    address: currAccountAddress,
-                                },
-                            }"
-                        >
-                            Remove Liquidity
-                        </router-link>
                     </template>
                 </template>
             </template>
@@ -258,21 +258,18 @@ export default {
                     width: '180px',
                     css: { textAlign: 'right' },
                 },
-                /*
-                {
-                    name: 'totalSupply',
-                    label: 'Total Supply',
-                    formatter: (_value, _item) => {
-                        const token = _item.tokens[0];
-
-                        return formatNumberByLocale(
-                            this.$defi.fromTokenValue(_value, token),
-                            this.defi.getTokenDecimals(token, MAX_TOKEN_DECIMALS_IN_TABLES)
-                        );
-                    },
-                    css: { textAlign: 'center' },
-                },
-                */
+                // {
+                //     name: 'totalSupply',
+                //     label: 'Total Supply',
+                //     formatter: (_value, _item) => {
+                //         const token = _item.tokens[0];
+                //         return formatNumberByLocale(
+                //             this.$defi.fromTokenValue(_value, token),
+                //             this.defi.getTokenDecimals(token, MAX_TOKEN_DECIMALS_IN_TABLES)
+                //         );
+                //     },
+                //     css: { textAlign: 'center' },
+                // },
                 {
                     name: 'position',
                     label: 'Your Position',
@@ -281,7 +278,7 @@ export default {
                 {
                     name: 'actions',
                     label: 'Actions',
-                    css: { textAlign: 'right' },
+                    css: { textAlign: 'center' },
                 },
             ],
             /** Stop loading data */

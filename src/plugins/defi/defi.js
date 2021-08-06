@@ -53,7 +53,7 @@ export class DeFi {
         this.contracts = {
             fMint: '',
             fMintReward: '',
-            uniswapCoreFactory: '',
+            uniswapCoreFactory: '', // todo: 0x91c0d9987E1Ea80E94ca702b5B4906E6bbAb308C [SoulSwapFactory.sol]
             uniswapRouter: '',
             StakeTokenizerContract: '',
         };
@@ -100,6 +100,7 @@ export class DeFi {
         this.tokens = _tokens;
         this.fusdToken = _tokens.find((_item) => _item.symbol === 'FUSD');
         this.ftmToken = _tokens.find((_item) => _item.symbol === 'FTM');
+        this.soulToken = _tokens.find((_item) => _item.symbol === 'SOUL');
 
         /*
         if (isObjectEmpty(this.tokenDecimals)) {
@@ -1295,7 +1296,7 @@ export class DeFi {
 
         testPairs.forEach((_pair, _idx) => {
             const pair = {
-                pairAddress: `0x2ace15004a2351bcfffe76c5ae1b3e28c29b74f${_idx}`,
+                pairAddress: `0x2ace15004a2351bcfffe76c5ae1b3e28c29b74f${_idx}`, // todo: update // router: 0x67a937ea41cd05ec8c832a044afc0100f30aa4b5
                 tokens: [
                     { ...tokens.find((_token) => _token.symbol === _pair[0]), __typename: 'ERC20Token' },
                     { ...tokens.find((_token) => _token.symbol === _pair[1]), __typename: 'ERC20Token' },

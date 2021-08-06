@@ -10,7 +10,7 @@ const OPERA_CHAIN_ID = appConfig.chainId;
 /** @type {MetamaskChain} */
 export const OPERA_MAINNET = {
     chainId: appConfig.mainnet.chainId,
-    chainName: 'Fantom Opera Mainnet',
+    chainName: 'Fantom Mainnet',
     nativeCurrency: {
         name: 'Fantom',
         symbol: 'FTM',

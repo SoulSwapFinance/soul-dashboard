@@ -157,11 +157,11 @@ export const routes = [
                 path: '/dashboard',
                 component: Dashboard,
             },
-            // {
-            //     name: 'staking',
-            //     path: '/staking/:address',
-            //     component: Staking,
-            // },
+            /* {
+                name: 'staking',
+                path: '/staking/:address',
+                component: Staking,
+            }, */
             {
                 name: 'fmint',
                 path: '/fmint/:address',
