@@ -73,7 +73,7 @@ export default {
         /** Basic line color. */
         color: {
             type: String,
-            default: '#286FF6',
+            default: '#8828F6',
         },
         /** Default scale top margin */
         scaleMarginTop: {
