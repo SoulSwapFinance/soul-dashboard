@@ -38,12 +38,14 @@
                         <f-token-value :token="token2" :value="totalToken2Liquidity" :decimals="0" />
                     </div>
                 </f-card>
-                <!--                <f-card>
+                <!--
+                <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Total Liquidity</h3>
                     <div class="funiswappairdetail_stats_body">
                         {{ totalLiquidity }}
                     </div>
-                </f-card>-->
+                </f-card>
+                -->
                 <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Volume (24h)</h3>
                     <div class="funiswappairdetail_stats_body funiswappairdetail_stats_cols">
@@ -58,7 +60,8 @@
                         <f-price-diff :curr-value="volume24h" :prev-value="prevVolume24h" :decimals="1" />
                     </div>
                 </f-card>
-                <!--                <f-card>
+                <!-- 
+                    <f-card>
                     <h3 class="funiswappairdetail_subsubtitle">Pooled Tokens</h3>
                     <div class="funiswappairdetail_stats_body">
                         <f-crypto-symbol :token="token1" img-width="21px" img-height="21px" no-symbol />
@@ -160,7 +163,7 @@
             </f-card>
         </div>
 
-        <h2 class="funiswappairdetail_subtitle">Pair information</h2>
+        <h2 class="funiswappairdetail_subtitle">Pair Information</h2>
         <f-card class="funiswappairdetail_info">
             <div class="funiswappairdetail_info_item">
                 <h3 class="funiswappairdetail_subsubtitle">Pair Name</h3>

@@ -38,11 +38,11 @@
             <div class="inst-content">
                 <ul class="no-markers">
                     <li>
-                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul fWallet</a> in
+                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul Dashboard</a> in
                         <b>Chrome</b>
                     </li>
                     <li><b>Step 2:</b> Go to <b>Settings</b> (Three dots in the top right corner)</li>
-                    <li><b>Step 3:</b> Click <b>“Install Fantom PWA Wallet”</b></li>
+                    <li><b>Step 3:</b> Click <b>“Install Soul PWA Wallet”</b></li>
                 </ul>
             </div>
         </f-window>
@@ -78,7 +78,7 @@
             <div class="inst-content">
                 <ul class="no-markers">
                     <li>
-                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul fWallet</a> in
+                        <b>Step 1:</b> Open the <a href="https://wallet.soulswap.finance/">Soul Dashboard</a> in
                         <b>Chrome</b>
                     </li>
                     <li><b>Step 2:</b> Click <b>Settings</b> (top right corner)</li>
