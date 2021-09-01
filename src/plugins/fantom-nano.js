@@ -118,7 +118,7 @@ export class FNano {
             transport.setExchangeTimeout(300000);
 
             const bridge = new FantomNano(transport);
-            // console.log(bridge, _accountId, _firstAddressId, _length);
+            console.log(bridge, _accountId, _firstAddressId, _length);
 
             try {
                 const addresses = await bridge.listAddresses(_accountId, _firstAddressId, _length);

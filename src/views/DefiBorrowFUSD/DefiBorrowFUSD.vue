@@ -14,7 +14,7 @@
         <div class="grid">
             <div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Max mintable</h3>
+                    <h3 class="label">Max Mintable</h3>
                     <div class="value"><f-token-value :token="fusdToken" :value="maxMintable" /></div>
                 </div>
                 <!--
@@ -25,7 +25,7 @@
                 -->
 
                 <div class="df-data-item smaller">
-                    <h3 class="label">Current price</h3>
+                    <h3 class="label">Current Price</h3>
                     <div class="value">
                         <f-placeholder :content-loaded="!!tokenPrice" replacement-text="$0.00000">
                             {{ currentPrice }}
@@ -39,7 +39,7 @@
                         <div class="value"><f-token-value :token="fusdToken" :value="debt" /></div>
                     </div>
                     <div class="df-data-item smaller">
-                        <h3 class="label">Locked balance</h3>
+                        <h3 class="label">Locked Balance</h3>
                         <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                     </div>
                 </template>
@@ -108,11 +108,11 @@
             </div>
             <div v-if="largeView" class="right-col">
                 <div v-if="!smallView" class="df-data-item smaller">
-                    <h3 class="label">Today’s change</h3>
+                    <h3 class="label">Today’s Change</h3>
                     <div class="value">2.38%</div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Locked balance</h3>
+                    <h3 class="label">Locked Balance</h3>
                     <div class="value"><f-token-value :token="wftmToken" :value="collateral" /></div>
                 </div>
                 <div v-if="smallView" class="df-data-item smaller">
