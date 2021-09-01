@@ -14,7 +14,7 @@
 </template>
 
 <script>
-// import soulIcon from '../../../assets/svg/tokens/SOUL.svg';
+import soulIcon from '../../../assets/svg/tokens/SOUL.svg';
 import ftmIcon from '../../../assets/svg/tokens/FTM.svg';
 import wftmIcon from '../../../assets/svg/tokens/wFTM.svg';
 import fusdIcon from '../../../assets/svg/tokens/fUSD.svg';
@@ -67,7 +67,7 @@ export default {
             if (token) {
                 switch (token.symbol) {
                     case 'SOUL':
-                        return triangleIcon;
+                        return soulIcon;
                     case 'FTM':
                         return ftmIcon;
                     case 'WFTM':
@@ -82,6 +82,8 @@ export default {
                         return btcIcon;
                     case 'FLINK':
                         return linkIcon;
+                    case 'SOUL-LP':
+                        return soulIcon;
                 }
             }
 
