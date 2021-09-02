@@ -50,7 +50,7 @@
                     <div class="value"><f-token-value :token="fusdToken" :value="debtFUSD" /></div>
                 </div>
                 <div class="df-data-item smaller">
-                    <h3 class="label">Est. Pending / Stashed Rewards</h3>
+                    <h3 class="label">Pending Rewards</h3>
                     <div class="value">
                         <f-placeholder
                             :content-loaded="!!wftmToken.symbol && 'rewardsEarned' in rewards"
@@ -90,14 +90,14 @@
             <div class="row">
                 <div class="col align-left align-center-md">
                     <router-link :to="{ name: 'defi-lock', params: { token: { ...wftmToken } } }" class="btn large">
-                        Lock Collateral
+                        Collateral
                     </router-link>
                     <br />
                     <router-link
                         :to="{ name: 'defi-unlock', params: { token: { ...wftmToken } } }"
                         class="btn large secondary"
                     >
-                        Unlock Collateral
+                        Unlock
                     </router-link>
                 </div>
                 <div class="col">
@@ -120,7 +120,7 @@
                         :disabled="!canClaimRewards"
                         @click="onClaimRewardsBtnClick"
                     >
-                        Claim Rewards
+                        Rewards
                     </button>
                     <button
                         type="button"
@@ -128,7 +128,7 @@
                         :disabled="!canPushRewards"
                         @click="onPushRewardsBtnClick"
                     >
-                        Push Rewards
+                        Push
                     </button>
                 </div>
                 <div class="col align-right align-center-md">
@@ -156,11 +156,11 @@
                 <span class="f-records-count">({{ fMintOverviewRecordsCount }})</span>
             </template>
             <template #collateral-positions>
-                Collateral Positions
+                Collateral
                 <span class="f-records-count">({{ collateralPositionsRecordsCount }})</span>
             </template>
             <template #synths-positions>
-                Synths Positions
+                Synths
                 <span class="f-records-count">({{ synthsPositionsRecordsCount }})</span>
             </template>
             <template #assets>

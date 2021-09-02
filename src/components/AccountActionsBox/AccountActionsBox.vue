@@ -25,7 +25,6 @@
                     <span class="link-label">Receive</span>
                 </router-link>
             </li>
-            <!--
             <li>
                 <router-link :to="{ name: 'account-stake' }" class="action" title="Stake">
                     <span class="btn large same-size round">
@@ -34,7 +33,6 @@
                     <span class="link-label">Staking</span>
                 </router-link>
             </li>
-            -->
         </ul>
     </nav>
 </template>

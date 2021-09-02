@@ -49,7 +49,7 @@ import homeIcon from '../../assets/svg/monochrome/Sidebar/Home.svg';
 import settingsIcon from '../../assets/svg/monochrome/Sidebar/Settings.svg';
 import walletIcon from '../../assets/svg/monochrome/Sidebar/Wallet.svg';
 // import defiIcon from '../../assets/svg/monochrome/Sidebar/DeFi.svg';
-// import stakingIcon from '../../assets/svg/monochrome/Sidebar/Staking.svg';
+import stakingIcon from '../../assets/svg/monochrome/Sidebar/Staking.svg';
 import funiIcon from '../../assets/svg/monochrome/Sidebar/fUNI.svg';
 import swapIcon from '../../assets/svg/defi/ftrade.svg';
 import voteIcon from '../../assets/svg/monochrome/Sidebar/Governance.svg';
@@ -110,15 +110,15 @@ export default {
                     walletLink: true,
                     fill: true,
                 },
-                // {
-                //     url: {
-                //         name: 'stake',
-                //     },
-                //     title: 'STAKE',
-                //     icon: stakingIcon,
-                //     stakingLink: true,
-                //     fill: true,
-                // },
+                {
+                    url: {
+                        name: 'stake',
+                    },
+                    title: 'STAKE',
+                    icon: stakingIcon,
+                    stakingLink: true,
+                    fill: true,
+                },
                 {
                     url: {
                         name: 'synths',

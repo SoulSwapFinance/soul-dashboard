@@ -340,12 +340,12 @@ export default {
                 },
                 {
                     name: 'rewards',
-                    label: 'Est. Pending / Stashed Rewards',
+                    label: 'Rewards',
                     css: { textAlign: 'center' },
                 },
                 {
                     name: 'actions',
-                    label: 'Actions',
+                    label: 'Action',
                     width: '180px',
                     css: { textAlign: 'right' },
                 },

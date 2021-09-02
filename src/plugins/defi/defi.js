@@ -40,7 +40,7 @@ export class DeFi {
         this.rewardCollateralRatio = 5;
         this.mintFee = 0.0025;
         /** DeFi settings was loaded. */
-        this.settingsLoaded = false;
+        this.settingsLoaded = true;
         /** @type {DefiToken[]} */
         this.tokens = [];
         /** @type {DefiToken} */
@@ -51,11 +51,11 @@ export class DeFi {
         this.tokenDecimals = {};
         /** Addresses of various contracts. */
         this.contracts = {
-            fMint: '',
-            fMintReward: '',
-            uniswapCoreFactory: '0x69fcC260353530DE3fB8D0897ae821fCc2c81f0f', // 1 SEP
-            uniswapRouter: '0x2CDa3B64Da9c1b7F18891E1567bc43eD558D089b', // 1 SEP
-            StakeTokenizerContract: '',
+            fMint: '0xBB634cafEf389cDD03bB276c82738726079FcF2E', // fMint Core // 2 SEP
+            fMintReward: '0x073e408E5897b3358edcf130199Cfd895769D3E4', // fMint Rewards // 2 SEP
+            uniswapCoreFactory: '0x1120e150dA9def6Fe930f4fEDeD18ef57c0CA7eF', // 2 SEP
+            uniswapRouter: '0x6b3d631b87fe27af29efec61d2ab8ce4d621ccbf', // 2 SEP
+            StakeTokenizerContract: '0xFC00FACE00000000000000000000000000000000', // 2 SEP
         };
     }
 
