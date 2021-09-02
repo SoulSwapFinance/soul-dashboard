@@ -264,7 +264,7 @@ export default {
                 },
                 {
                     name: 'amount_fusd',
-                    label: 'Amount (fUSD)',
+                    label: 'fUSD ($)',
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
@@ -280,7 +280,7 @@ export default {
                 },
                 {
                     name: 'rewards',
-                    label: 'Est. Pending / Stashed Rewards',
+                    label: 'Rewards',
                     css: { textAlign: 'center' },
                 },
                 {

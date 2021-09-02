@@ -8,7 +8,7 @@
             f-card-off
             class="f-data-table-body-bg-color"
         >
-            <template v-slot:column-asset="{ value, item, column }">
+            <template v-slot:column-asset="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -20,7 +20,7 @@
                 </template>
             </template>
 
-            <template v-slot:column-amount="{ value, item, column }">
+            <template v-slot:column-amount="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">{{ formatDebt(item) }}</div>
@@ -28,7 +28,7 @@
                 <template v-else>{{ formatDebt(item) }}</template>
             </template>
 
-            <template v-slot:column-amount_fusd="{ value, item, column }">
+            <template v-slot:column-amount_fusd="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">{{ formatDebtFUSD(item) }}</div>
@@ -36,7 +36,7 @@
                 <template v-else>{{ formatDebtFUSD(item) }}</template>
             </template>
 
-            <template v-slot:column-actions="{ value, item, column }">
+            <template v-slot:column-actions="{ item, column }">
                 <div v-if="column" class="row no-collapse no-vert-col-padding">
                     <div class="col-6 f-row-label">{{ column.label }}</div>
                     <div class="col break-word">
@@ -145,7 +145,7 @@ export default {
                 },
                 {
                     name: 'amount_fusd',
-                    label: 'Amount (fUSD)',
+                    label: 'fUSD($)',
                     sortDir: 'desc',
                     sortFunc: (_itemProp, _direction = 'asc') => {
                         return (_a, _b) => {
