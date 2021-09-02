@@ -53,8 +53,8 @@ export class DeFi {
         this.contracts = {
             fMint: '',
             fMintReward: '',
-            uniswapCoreFactory: '', // todo: 0x91c0d9987E1Ea80E94ca702b5B4906E6bbAb308C [SoulSwapFactory.sol]
-            uniswapRouter: '',
+            uniswapCoreFactory: '0x69fcC260353530DE3fB8D0897ae821fCc2c81f0f', // 1 SEP
+            uniswapRouter: '0x2CDa3B64Da9c1b7F18891E1567bc43eD558D089b', // 1 SEP
             StakeTokenizerContract: '',
         };
     }

@@ -1,7 +1,7 @@
 <template>
     <div class="view-staking">
         <template v-if="!currentAccount">
-            <f-message type="error" with-icon>Bad wallet</f-message>
+            <f-message type="error" with-icon>Bad Wallet</f-message>
         </template>
         <template v-else>
             <address-info-box />

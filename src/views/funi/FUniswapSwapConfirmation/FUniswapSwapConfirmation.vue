@@ -39,13 +39,13 @@
                     </span>
                     <br /><br />
                     <template v-if="minimumReceived > 0">
-                        Minimum Received
+                        Minimum received
                         <span class="price">
                             {{ minimumReceived.toFixed($defi.getTokenDecimals(params.toToken)) }} {{ toTokenSymbol }}
                         </span>
                     </template>
                     <template v-else>
-                        Maximum Spent
+                        Maximum spent
                         <span class="price">
                             {{ maximumSold.toFixed($defi.getTokenDecimals(params.fromToken)) }} {{ fromTokenSymbol }}
                         </span>

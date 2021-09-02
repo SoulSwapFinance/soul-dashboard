@@ -60,11 +60,11 @@
                     <span class="f-records-count">({{ depositRecordsCount }})</span>
                 </template>
                 <template #borrow>
-                    Available to borrow
+                    Available to Borrow
                     <span class="f-records-count">({{ borrowRecordsCount }})</span>
                 </template>
                 <template #positions>
-                    Open positions
+                    Open Positions
                     <span class="f-records-count">({{ positionsRecordsCount }})</span>
                 </template>
 
