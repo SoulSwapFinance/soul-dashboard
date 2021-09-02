@@ -838,7 +838,7 @@ export default {
             } else if (this.sufficientPairLiquidity === false) {
                 this.submitLabel = 'Insufficient Pair Liquidity';
             } else {
-                this.submitLabel = 'Enter an amount';
+                this.submitLabel = 'Enter Amount';
             }
 
             // this.$refs.submitBut.innerText = submitLabel;
