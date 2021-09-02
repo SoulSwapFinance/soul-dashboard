@@ -1,4 +1,4 @@
-# Fantom PWA Wallet
+# Soul DeFi Wallet
 
 JavaScript and Vue based Fantom pwa wallet.
 

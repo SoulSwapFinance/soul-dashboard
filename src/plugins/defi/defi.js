@@ -40,22 +40,24 @@ export class DeFi {
         this.rewardCollateralRatio = 5;
         this.mintFee = 0.0025;
         /** DeFi settings was loaded. */
-        this.settingsLoaded = true;
+        this.settingsLoaded = false; // todo: update to true to load
         /** @type {DefiToken[]} */
         this.tokens = [];
         /** @type {DefiToken} */
         this.fusdToken = {};
         /** @type {DefiToken} */
         this.ftmToken = {};
+        /** @type {DefiToken} */
+        this.soulToken = {};
         /** Keys are token symbols, values are number of decimals. */
         this.tokenDecimals = {};
         /** Addresses of various contracts. */
         this.contracts = {
-            fMint: '0xBB634cafEf389cDD03bB276c82738726079FcF2E', // fMint Core // 2 SEP
-            fMintReward: '0x073e408E5897b3358edcf130199Cfd895769D3E4', // fMint Rewards // 2 SEP
-            uniswapCoreFactory: '0x1120e150dA9def6Fe930f4fEDeD18ef57c0CA7eF', // 2 SEP
-            uniswapRouter: '0x6b3d631b87fe27af29efec61d2ab8ce4d621ccbf', // 2 SEP
-            StakeTokenizerContract: '0xFC00FACE00000000000000000000000000000000', // 2 SEP
+            // fMint: '0xBB634cafEf389cDD03bB276c82738726079FcF2E', // fMint Core // 2 SEP
+            // fMintReward: '0x073e408E5897b3358edcf130199Cfd895769D3E4', // fMint Rewards // 2 SEP
+            // uniswapCoreFactory: '0x1120e150dA9def6Fe930f4fEDeD18ef57c0CA7eF', // 2 SEP
+            // uniswapRouter: '0x6b3d631b87fe27af29efec61d2ab8ce4d621ccbf', // 2 SEP
+            // StakeTokenizerContract: '0xFC00FACE00000000000000000000000000000000', // 2 SEP
         };
     }
 
@@ -283,7 +285,7 @@ export class DeFi {
      */
     getTokenSymbol(_token) {
         return _token && _token.symbol
-            ? _token.symbol !== 'FTM'
+            ? _token.symbol !== 'FTM' && _token.symbol != 'SOUL'
                 ? lowercaseFirstChar(_token.symbol)
                 : _token.symbol
             : '';
@@ -768,7 +770,7 @@ export class DeFi {
         if (filterTokens.length > 0) {
             defiTokens = defiTokens.filter(this.filterTokensBySymbol);
         }
-        // console.log(defiTokens);
+        console.log(defiTokens);
 
         let tokens = [];
 

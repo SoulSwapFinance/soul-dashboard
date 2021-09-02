@@ -1,7 +1,7 @@
 <template>
     <div class="funiswap-pair-liquidity-info">
         <template v-if="pair.pairAddress">
-            <h4>Your position</h4>
+            <h4>Your Position</h4>
             <div class="row no-vert-col-padding no-collapse">
                 <div class="col defi-label funiswap-pair-liquidity-info__position">
                     <f-crypto-symbol :token="fromToken" img-width="18px" img-height="auto" />
