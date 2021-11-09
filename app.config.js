@@ -64,9 +64,9 @@ const appConfig = {
         // auth token
         token: '',
         // use Ethereum chain
-        useETH: true,
+        useETH: false,
         // use Binance chain
-        useBNB: true,
+        useBNB: false,
         // minimal amount of FTM to ETH transfer
         minFTMToTransfer: 50,
     },
